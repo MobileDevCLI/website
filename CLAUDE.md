@@ -70,6 +70,31 @@ git remote -v
 
 ## CRITICAL: Vercel + GitHub Troubleshooting
 
+### Problem: Vercel shows old deployment time (not auto-deploying)
+
+**Symptoms:**
+- Vercel dashboard shows "11 hours ago" or old time
+- Git pushes succeed but site doesn't update
+- Browser shows old content even after cache clear
+
+**Diagnosis:**
+Vercel has lost its GitHub webhook connection.
+
+**Fix - Reconnect Git in Vercel:**
+1. Vercel Dashboard → Your Project → Settings → Git
+2. Click "Disconnect" under Connected Git Repository
+3. Click "Connect Git Repository"
+4. Select `MobileDevCLI/website`, branch `master`
+5. Click Deploy
+
+**Quick Fix - Manual Redeploy:**
+1. Vercel Dashboard → Deployments tab
+2. Click "..." on any deployment → "Redeploy"
+3. UNCHECK "Use existing Build Cache"
+4. Click "Redeploy"
+
+---
+
 ### Problem: Vercel stops deploying after making repo private
 
 **What happens:**
