@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MobileDevCLI - AI Command Line in Your Pocket</title>
+    <title>MobileCLI - AI Command Line in Your Pocket</title>
     <meta name="description" content="Full AI CLI development on your phone. Claude, Gemini, Codex + Termux = code anywhere.">
     <link rel="canonical" href="https://mobilecli.com">
 
-    <meta property="og:title" content="MobileDevCLI">
+    <meta property="og:title" content="MobileCLI">
     <meta property="og:description" content="AI Command Line in Your Pocket">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mobilecli.com">
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@MobileDevCLI">
-    <meta name="twitter:title" content="MobileDevCLI">
-    <meta name="twitter:description" content="AI Command Line in Your Pocket">
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -26,34 +26,44 @@
 
         :root {
             --bg: #000000;
-            --bg-secondary: #0a0a0a;
-            --bg-card: #111111;
+            --bg-secondary: #050505;
+            --bg-card: #0a0a0a;
+            --bg-card-hover: #111111;
             --text: #ffffff;
-            --text-secondary: #888888;
-            --text-muted: #444444;
-            --matrix: #00ff41;
-            --matrix-dark: #003b00;
-            --accent-2: #00d4ff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #555555;
+            --primary: #00ff88;
+            --primary-dim: #00cc6a;
+            --primary-glow: rgba(0, 255, 136, 0.4);
+            --secondary: #00d4ff;
+            --accent: #a855f7;
             --border: #1a1a1a;
+            --border-light: #2a2a2a;
+            --gradient-1: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            --gradient-2: linear-gradient(135deg, #a855f7 0%, #00d4ff 100%);
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        a {
-            color: var(--matrix);
-            text-decoration: none;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
+        /* Three.js Canvas */
+        #hero-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
 
         /* Navigation */
@@ -62,20 +72,27 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 60px;
-            background: rgba(0, 0, 0, 0.9);
+            height: 72px;
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             z-index: 1000;
             display: flex;
             align-items: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            width: 100%;
         }
 
         nav .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
         }
 
         .logo-wrapper {
@@ -83,212 +100,213 @@
         }
 
         .logo {
-            font-size: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
             font-weight: 700;
-            color: var(--matrix);
-            font-family: 'Courier New', monospace;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
         }
 
         .logo-dropdown {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 12px);
             left: 0;
             background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 0;
-            min-width: 160px;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 180px;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.2s;
+            transform: translateY(-8px);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1001;
-            margin-top: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
-        .logo-wrapper:hover .logo-dropdown,
-        .logo-wrapper:focus-within .logo-dropdown {
+        .logo-wrapper:hover .logo-dropdown {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
         }
 
         .logo-dropdown a {
-            display: block;
-            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
             color: var(--text-secondary);
             font-size: 0.9rem;
+            border-radius: 8px;
             transition: all 0.2s;
         }
 
         .logo-dropdown a:hover {
-            background: var(--matrix-dark);
-            color: var(--matrix);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
         }
 
         .nav-links {
             display: flex;
-            gap: 28px;
+            align-items: center;
+            gap: 8px;
         }
 
         .nav-links a {
             color: var(--text-secondary);
             font-size: 0.9rem;
             font-weight: 500;
-            transition: color 0.2s;
+            padding: 10px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
         }
 
         .nav-links a:hover {
-            color: var(--matrix);
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        /* Mobile Tabs */
-        .mobile-tabs {
-            display: none;
-            position: fixed;
-            top: 60px;
-            left: 0;
-            right: 0;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            z-index: 999;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+        .nav-links .btn-primary {
+            background: var(--primary);
+            color: var(--bg);
+            font-weight: 600;
+            margin-left: 8px;
         }
 
-        .mobile-tabs::-webkit-scrollbar {
-            display: none;
+        .nav-links .btn-primary:hover {
+            background: var(--primary-dim);
+            box-shadow: 0 0 30px var(--primary-glow);
         }
 
-        .mobile-tabs-inner {
-            display: flex;
-            min-width: max-content;
-        }
-
-        .mobile-tab {
-            flex: 0 0 auto;
-            padding: 12px 16px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 500;
-            white-space: nowrap;
-            border-bottom: 2px solid transparent;
-        }
-
-        .mobile-tab.active {
-            color: var(--matrix);
-            border-bottom-color: var(--matrix);
-        }
-
-        /* Matrix Hero */
+        /* Hero Section */
         .hero {
             position: relative;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            background: var(--bg);
-        }
-
-        #matrix-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.3;
+            padding: 120px 32px 80px;
+            z-index: 1;
         }
 
         .hero-content {
-            position: relative;
-            z-index: 10;
             text-align: center;
-            padding: 20px;
+            max-width: 900px;
+            position: relative;
         }
 
         .hero-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             padding: 8px 20px;
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid var(--matrix);
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
             border-radius: 100px;
-            color: var(--matrix);
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
-            font-family: 'Courier New', monospace;
+            color: var(--primary);
             margin-bottom: 32px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.4); }
         }
 
         .hero h1 {
-            font-size: 4.5rem;
+            font-size: clamp(3rem, 8vw, 6rem);
             font-weight: 800;
-            line-height: 1.1;
+            line-height: 1.05;
             margin-bottom: 24px;
-            font-family: 'Courier New', monospace;
+            letter-spacing: -0.03em;
         }
 
-        .hero h1 .line1 {
-            display: block;
-            color: var(--matrix);
-            text-shadow: 0 0 40px rgba(0, 255, 65, 0.5);
+        .hero h1 .gradient-text {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero h1 .line2 {
             display: block;
             font-size: 0.5em;
-            color: var(--text);
             font-weight: 400;
+            color: var(--text-secondary);
             margin-top: 16px;
+            letter-spacing: 0;
         }
 
         .hero-tagline {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             color: var(--text-secondary);
             max-width: 600px;
-            margin: 0 auto 40px;
+            margin: 0 auto 48px;
+            line-height: 1.7;
         }
 
-        .hero-code {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--matrix);
+        /* Terminal Command */
+        .terminal-wrapper {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 4px;
+            margin-bottom: 48px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+
+        .terminal {
+            background: var(--bg-card);
             border-radius: 12px;
-            padding: 20px 32px;
-            display: inline-flex;
+            padding: 20px 28px;
+            display: flex;
             align-items: center;
             gap: 16px;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            margin-bottom: 40px;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
         }
 
-        .hero-code .prompt {
-            color: var(--matrix);
+        .terminal-prompt {
+            color: var(--primary);
         }
 
-        .hero-code code {
+        .terminal-command {
             color: var(--text);
+            word-break: break-all;
         }
 
-        .copy-btn {
-            background: var(--matrix);
+        .terminal-copy {
+            background: var(--primary);
             border: none;
             color: var(--bg);
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
-        .copy-btn:hover {
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        .terminal-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--primary-glow);
         }
 
+        /* Hero Buttons */
         .hero-buttons {
             display: flex;
             gap: 16px;
@@ -297,162 +315,325 @@
         }
 
         .btn {
-            padding: 16px 32px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            border: none;
         }
 
         .btn-primary {
-            background: var(--matrix);
+            background: var(--primary);
             color: var(--bg);
         }
 
         .btn-primary:hover {
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px var(--primary-glow);
         }
 
         .btn-secondary {
             background: transparent;
             color: var(--text);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-light);
         }
 
         .btn-secondary:hover {
-            border-color: var(--matrix);
-            color: var(--matrix);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+            transform: translateY(-3px);
         }
 
-        /* Sections */
-        section {
-            padding: 100px 0;
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        .scroll-indicator .arrow {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--text-muted);
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+        }
+
+        /* Features Section */
+        .features {
+            position: relative;
+            z-index: 1;
+            padding: 120px 0;
+            background: linear-gradient(180deg, transparent 0%, var(--bg-secondary) 20%);
         }
 
         .section-label {
-            color: var(--matrix);
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
-            font-weight: 600;
+            color: var(--primary);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.15em;
             margin-bottom: 16px;
-            font-family: 'Courier New', monospace;
         }
 
         .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
             margin-bottom: 16px;
+            letter-spacing: -0.02em;
         }
 
         .section-desc {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: var(--text-secondary);
+            margin-bottom: 64px;
             max-width: 600px;
-            margin-bottom: 48px;
         }
 
-        /* Features Grid */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
         }
 
         .feature-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            transition: all 0.3s;
+            border-radius: 20px;
+            padding: 40px 32px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.4s;
         }
 
         .feature-card:hover {
-            border-color: var(--matrix);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
+            transform: translateY(-8px);
+            border-color: var(--border-light);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
         }
 
         .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            width: 56px;
+            height: 56px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
         }
 
         .feature-card h3 {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
+            font-weight: 700;
             margin-bottom: 12px;
         }
 
         .feature-card p {
             color: var(--text-secondary);
             font-size: 0.95rem;
+            line-height: 1.7;
         }
 
-        /* Quick Links */
-        .quick-links {
+        /* Stats Section */
+        .stats-section {
+            position: relative;
+            z-index: 1;
+            padding: 80px 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            position: relative;
+            z-index: 1;
+            padding: 120px 0;
             background: var(--bg-secondary);
         }
 
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+        .steps-container {
+            display: flex;
+            gap: 32px;
+            margin-top: 64px;
         }
 
-        .link-card {
+        .step-card {
+            flex: 1;
             background: var(--bg-card);
             border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px 32px;
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 32px;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: var(--bg);
             border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
-        .link-card:hover {
-            border-color: var(--matrix);
-            transform: translateY(-4px);
-        }
-
-        .link-card .icon {
-            font-size: 2rem;
+        .step-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
             margin-bottom: 12px;
+            margin-top: 12px;
         }
 
-        .link-card h4 {
-            font-size: 1rem;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-
-        .link-card p {
-            font-size: 0.85rem;
+        .step-card p {
             color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .step-code {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+            overflow-x: auto;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            position: relative;
+            z-index: 1;
+            padding: 120px 0;
+            background: var(--bg);
+            text-align: center;
+        }
+
+        .cta-card {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 32px;
+            padding: 80px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cta-card h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .cta-card p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
         }
 
         /* Footer */
         footer {
-            padding: 48px 0;
+            position: relative;
+            z-index: 1;
+            background: var(--bg-secondary);
             border-top: 1px solid var(--border);
-            background: var(--bg);
+            padding: 80px 0 40px;
         }
 
         .footer-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 48px;
-            margin-bottom: 48px;
+            grid-template-columns: 2fr repeat(3, 1fr);
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
         }
 
         .footer-brand .logo {
+            font-size: 1.5rem;
             margin-bottom: 16px;
+            display: inline-block;
         }
 
         .footer-brand p {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
         }
 
         .footer-column h4 {
@@ -473,17 +654,19 @@
         .footer-column a {
             color: var(--text-secondary);
             font-size: 0.9rem;
+            transition: color 0.2s;
+            text-decoration: none;
         }
 
         .footer-column a:hover {
-            color: var(--matrix);
+            color: var(--primary);
         }
 
         .footer-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 32px;
+            padding-top: 40px;
             border-top: 1px solid var(--border);
         }
 
@@ -494,21 +677,43 @@
 
         .social-links {
             display: flex;
-            gap: 24px;
+            gap: 20px;
         }
 
         .social-links a {
             color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 16px;
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            .mobile-tabs {
-                display: block;
+            .steps-container {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
             }
 
             .nav-links {
@@ -516,65 +721,41 @@
             }
 
             .hero {
-                padding-top: 120px;
-                min-height: auto;
-                padding-bottom: 60px;
+                padding: 120px 20px 60px;
             }
 
             .hero h1 {
-                font-size: 2rem;
-                word-break: break-word;
-            }
-
-            .hero h1 .line2 {
-                font-size: 0.55em;
+                font-size: 2.5rem;
             }
 
             .hero-tagline {
-                font-size: 1rem;
-                padding: 0 8px;
+                font-size: 1.1rem;
             }
 
-            .hero-code {
+            .terminal {
                 flex-direction: column;
                 padding: 16px;
-                font-size: 0.7rem;
-                max-width: 100%;
-                word-break: break-all;
-            }
-
-            .hero-code code {
-                display: block;
-                white-space: pre-wrap;
-                word-break: break-all;
-                line-height: 1.6;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 280px;
-                justify-content: center;
-            }
-
-            .section-title {
-                font-size: 1.75rem;
-            }
-
-            .section-desc {
-                font-size: 1rem;
+                font-size: 0.8rem;
             }
 
             .features-grid {
                 grid-template-columns: 1fr;
             }
 
-            .links-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .cta-card {
+                padding: 48px 24px;
+            }
+
+            .cta-card h2 {
+                font-size: 1.75rem;
             }
 
             .footer-grid {
@@ -584,50 +765,59 @@
 
             .footer-bottom {
                 flex-direction: column;
-                gap: 16px;
+                gap: 20px;
                 text-align: center;
-            }
-
-            section {
-                padding: 60px 0;
             }
         }
 
-        /* Extra small screens */
-        @media (max-width: 400px) {
-            .container {
-                padding: 0 12px;
-            }
-
+        @media (max-width: 480px) {
             .hero h1 {
-                font-size: 1.6rem;
+                font-size: 2rem;
             }
 
-            .hero-code {
-                font-size: 0.6rem;
-                padding: 12px;
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
             }
 
-            .links-grid {
-                grid-template-columns: 1fr;
+            .btn {
+                width: 100%;
+                justify-content: center;
             }
+        }
 
-            .feature-card {
-                padding: 20px;
+        /* Mobile Navigation */
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Three.js Canvas -->
+    <canvas id="hero-canvas"></canvas>
+
+    <!-- Navigation -->
     <nav>
         <div class="container">
             <div class="logo-wrapper">
                 <a href="/" class="logo">&gt;_ MobileCLI</a>
                 <div class="logo-dropdown">
                     <a href="https://github.com/MobileDevCLI">GitHub</a>
-                    <a href="https://twitter.com/MobileDevCLI">X / Twitter</a>
+                    <a href="https://twitter.com/MobileDevCLI">Twitter / X</a>
                     <a href="https://youtube.com/@MobileDevCLI">YouTube</a>
-                    <a href="mailto:mobiledev.li@gmail.com">Email</a>
+                    <a href="mailto:mobiledev.li@gmail.com">Contact</a>
                 </div>
             </div>
             <div class="nav-links">
@@ -635,129 +825,154 @@
                 <a href="/learn.html">Docs</a>
                 <a href="/examples.html">Examples</a>
                 <a href="/dashboard.html">Dashboard</a>
-                <a href="/login.html">Login</a>
+                <a href="/login.html" class="btn-primary">Get Started</a>
             </div>
+            <button class="mobile-menu-btn">Menu</button>
         </div>
     </nav>
 
-    <div class="mobile-tabs">
-        <div class="mobile-tabs-inner">
-            <a href="/" class="mobile-tab active">Home</a>
-            <a href="/pricing.html" class="mobile-tab">Pricing</a>
-            <a href="/learn.html" class="mobile-tab">Docs</a>
-            <a href="/examples.html" class="mobile-tab">Examples</a>
-            <a href="/dashboard.html" class="mobile-tab">Dashboard</a>
-            <a href="/login.html" class="mobile-tab">Login</a>
-        </div>
-    </div>
-
-    <!-- Matrix Hero -->
+    <!-- Hero Section -->
     <section class="hero">
-        <canvas id="matrix-canvas"></canvas>
         <div class="hero-content">
-            <div class="hero-badge">// AI-Powered Development</div>
+            <div class="hero-badge">
+                <span>AI-Powered Development</span>
+            </div>
             <h1>
-                <span class="line1">MOBILE_CLI</span>
-                <span class="line2">AI Command Line<br>For Your Phone</span>
+                <span class="gradient-text">Code Anywhere.</span>
+                <span class="line2">AI command line for your phone.</span>
             </h1>
-            <p class="hero-tagline">Full AI development environment in your pocket. Write code, ship apps, build anything — from your Android phone.</p>
+            <p class="hero-tagline">
+                Full development environment in your pocket. Write code, ship apps,
+                build anything — all from your Android phone with AI assistance.
+            </p>
 
-            <div class="hero-code">
-                <span><span class="prompt">$</span> <code>curl -sL https://raw.githubusercontent.com/MobileDevCLI/setup/main/setup.sh | bash</code></span>
-                <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <div class="terminal-wrapper">
+                <div class="terminal">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-command">curl -sL mobilecli.com/setup | bash</span>
+                    <button class="terminal-copy" onclick="copyCommand()">Copy</button>
+                </div>
             </div>
 
             <div class="hero-buttons">
                 <a href="/login.html" class="btn btn-primary">Get Started Free</a>
-                <a href="/pricing.html" class="btn btn-secondary">View Pricing</a>
+                <a href="/learn.html" class="btn btn-secondary">Read the Docs</a>
             </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="arrow"></div>
         </div>
     </section>
 
     <!-- Features -->
-    <section>
+    <section class="features">
         <div class="container">
-            <div class="section-label">// What You Get</div>
+            <div class="section-label">// Features</div>
             <h2 class="section-title">Everything You Need</h2>
             <p class="section-desc">One command. Full development environment. No laptop required.</p>
 
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🤖</div>
-                    <h3>Any AI CLI Tool</h3>
-                    <p>Claude Code, Gemini CLI, Codex, and more. Use any AI assistant that runs in the terminal. They all work on your phone.</p>
+                    <h3>Any AI CLI</h3>
+                    <p>Claude Code, Gemini CLI, Codex, and more. Use any AI assistant that runs in the terminal.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">⚡</div>
                     <h3>Boris Mode</h3>
-                    <p>Full autonomous mode. No permission prompts. Just describe what you want and let Claude build it.</p>
+                    <p>Full autonomous operation. No permission prompts. Just describe what you want and let AI build it.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📱</div>
                     <h3>Termux Power</h3>
-                    <p>Real Linux terminal on Android. Git, Node.js, Python, and thousands of packages at your fingertips.</p>
+                    <p>Real Linux terminal on Android. Git, Node.js, Python, and thousands of packages.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Background Tasks</h3>
+                    <p>Start a task, pocket your phone. Claude keeps working while you do other things.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🚀</div>
-                    <h3>Ship From Anywhere</h3>
-                    <p>Push to GitHub, deploy to Vercel, manage servers — all from your phone while on the go.</p>
+                    <h3>One Command Setup</h3>
+                    <p>Our setup script installs everything. From zero to coding in under 5 minutes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Ship Anywhere</h3>
+                    <p>Deploy to Vercel, push to GitHub, publish packages. Full workflow from your pocket.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Quick Links -->
-    <section class="quick-links">
+    <!-- Stats -->
+    <section class="stats-section">
         <div class="container">
-            <div class="section-label">// Explore</div>
-            <h2 class="section-title">Quick Links</h2>
-            <p class="section-desc">Jump to what you need.</p>
-
-            <div class="links-grid">
-                <a href="/games.html" class="link-card">
-                    <div class="icon">🎮</div>
-                    <h4>Games</h4>
-                    <p>Play & learn from open source games</p>
-                </a>
-                <a href="/learn.html" class="link-card">
-                    <div class="icon">📚</div>
-                    <h4>Learn</h4>
-                    <p>Compare AI dev environments</p>
-                </a>
-                <a href="https://youtube.com/@MobileDevCLI" class="link-card">
-                    <div class="icon">▶️</div>
-                    <h4>YouTube</h4>
-                    <p>Tutorials & demos</p>
-                </a>
-                <a href="https://twitter.com/MobileDevCLI" class="link-card">
-                    <div class="icon">𝕏</div>
-                    <h4>Twitter</h4>
-                    <p>Latest updates & tips</p>
-                </a>
-                <a href="https://github.com/MobileDevCLI" class="link-card">
-                    <div class="icon">⚙️</div>
-                    <h4>GitHub</h4>
-                    <p>Source code & scripts</p>
-                </a>
-                <a href="#newsletter" class="link-card">
-                    <div class="icon">📧</div>
-                    <h4>Newsletter</h4>
-                    <p>Weekly AI dev tips</p>
-                </a>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">5min</div>
+                    <div class="stat-label">Setup Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Laptops Needed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Possibilities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Code Anywhere</div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Newsletter -->
-    <section id="newsletter">
-        <div class="container" style="text-align: center;">
-            <div class="section-label">// Stay Updated</div>
-            <h2 class="section-title">Newsletter</h2>
-            <p class="section-desc" style="margin-left: auto; margin-right: auto;">Get weekly updates on AI tools, mobile dev tips, and cool projects.</p>
-            <form style="display: flex; gap: 12px; max-width: 480px; margin: 0 auto; flex-wrap: wrap; justify-content: center;">
-                <input type="email" placeholder="you@example.com" required style="flex: 1; min-width: 250px; padding: 16px 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card); color: var(--text); font-size: 1rem;">
-                <button type="submit" class="btn btn-primary">Subscribe</button>
-            </form>
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-label">// Quick Start</div>
+            <h2 class="section-title">Up and Running in Minutes</h2>
+            <p class="section-desc">Three simple steps to start building from your phone.</p>
+
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Install Termux</h3>
+                    <p>Download Termux from F-Droid. It's a full Linux terminal for Android.</p>
+                    <div class="step-code">f-droid.org/packages/com.termux</div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Run Setup</h3>
+                    <p>One command installs Node.js, Git, and your AI CLI of choice.</p>
+                    <div class="step-code">curl -sL mobilecli.com/setup | bash</div>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Start Building</h3>
+                    <p>Launch Claude Code (or any AI) and describe what you want to build.</p>
+                    <div class="step-code">claude --dangerously-skip-permissions</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <h2>Ready to Code from Your Phone?</h2>
+                <p>Join developers who are building the future from their pocket.</p>
+                <div class="hero-buttons">
+                    <a href="/login.html" class="btn btn-primary">Get Started Free</a>
+                    <a href="/pricing.html" class="btn btn-secondary">View Pricing</a>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -766,15 +981,16 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="logo">&gt;_ MobileDevCLI</div>
-                    <p>AI command line interface in your pocket. Build anything, anywhere.</p>
+                    <span class="logo">&gt;_ MobileCLI</span>
+                    <p>Full AI development environment in your pocket. Build anything, anywhere.</p>
                 </div>
                 <div class="footer-column">
                     <h4>Product</h4>
                     <ul>
-                        <li><a href="https://github.com/MobileDevCLI/setup">Setup Script</a></li>
+                        <li><a href="/pricing.html">Pricing</a></li>
                         <li><a href="/learn.html">Documentation</a></li>
-                        <li><a href="/games.html">Games</a></li>
+                        <li><a href="/examples.html">Examples</a></li>
+                        <li><a href="/dashboard.html">Dashboard</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -786,18 +1002,10 @@
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="https://f-droid.org/packages/com.termux/">Termux</a></li>
-                        <li><a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a></li>
-                        <li><a href="https://twitter.com/bcherny">Boris Cherny</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="/terms.html">Terms of Service</a></li>
-                        <li><a href="/privacy.html">Privacy Policy</a></li>
+                        <li><a href="/terms.html">Terms</a></li>
+                        <li><a href="/privacy.html">Privacy</a></li>
                         <li><a href="/disclaimer.html">Disclaimer</a></li>
                     </ul>
                 </div>
@@ -814,52 +1022,215 @@
     </footer>
 
     <script>
-        // Matrix Rain Effect
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
-        const charArray = chars.split('');
-        const fontSize = 14;
-        const columns = Math.floor(canvas.width / fontSize);
-        const drops = Array(columns).fill(1);
-
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#00ff41';
-            ctx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < drops.length; i++) {
-                const char = charArray[Math.floor(Math.random() * charArray.length)];
-                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
+        // Copy command
+        function copyCommand() {
+            const cmd = 'curl -sL mobilecli.com/setup | bash';
+            navigator.clipboard.writeText(cmd);
+            const btn = document.querySelector('.terminal-copy');
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 2000);
         }
 
-        setInterval(drawMatrix, 50);
+        // Three.js Scene
+        const canvas = document.getElementById('hero-canvas');
+        const renderer = new THREE.WebGLRenderer({
+            canvas,
+            alpha: true,
+            antialias: true,
+            powerPreference: "high-performance"
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Copy function
-        function copyCode() {
-            const code = 'curl -sL https://raw.githubusercontent.com/MobileDevCLI/setup/main/setup.sh | bash';
-            navigator.clipboard.writeText(code).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                btn.textContent = 'Copied!';
-                setTimeout(() => btn.textContent = 'Copy', 2000);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0x00ff88, 2, 100);
+        pointLight1.position.set(20, 20, 20);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0x00d4ff, 2, 100);
+        pointLight2.position.set(-20, -20, 20);
+        scene.add(pointLight2);
+
+        const pointLight3 = new THREE.PointLight(0xa855f7, 1.5, 100);
+        pointLight3.position.set(0, 30, -20);
+        scene.add(pointLight3);
+
+        // Create floating geometric shapes
+        const shapes = [];
+        const geometries = [
+            new THREE.IcosahedronGeometry(2, 0),
+            new THREE.OctahedronGeometry(2, 0),
+            new THREE.TetrahedronGeometry(2, 0),
+            new THREE.TorusGeometry(1.5, 0.5, 8, 16),
+            new THREE.TorusKnotGeometry(1.2, 0.4, 64, 8),
+        ];
+
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0x111111,
+            metalness: 0.9,
+            roughness: 0.1,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+            envMapIntensity: 1.5,
+            transparent: true,
+            opacity: 0.8,
+        });
+
+        // Create wireframe material for glowing edges
+        const wireMaterial = new THREE.LineBasicMaterial({
+            color: 0x00ff88,
+            transparent: true,
+            opacity: 0.3,
+        });
+
+        for (let i = 0; i < 15; i++) {
+            const geo = geometries[Math.floor(Math.random() * geometries.length)];
+            const mesh = new THREE.Mesh(geo, material.clone());
+
+            // Random position
+            mesh.position.x = (Math.random() - 0.5) * 60;
+            mesh.position.y = (Math.random() - 0.5) * 60;
+            mesh.position.z = (Math.random() - 0.5) * 30 - 10;
+
+            // Random rotation
+            mesh.rotation.x = Math.random() * Math.PI;
+            mesh.rotation.y = Math.random() * Math.PI;
+
+            // Random scale
+            const scale = 0.5 + Math.random() * 1.5;
+            mesh.scale.set(scale, scale, scale);
+
+            // Add wireframe
+            const wireGeo = new THREE.WireframeGeometry(geo);
+            const wireframe = new THREE.LineSegments(wireGeo, wireMaterial.clone());
+            mesh.add(wireframe);
+
+            // Store velocity for physics-like motion
+            mesh.userData.velocity = {
+                x: (Math.random() - 0.5) * 0.02,
+                y: (Math.random() - 0.5) * 0.02,
+                z: (Math.random() - 0.5) * 0.01,
+                rotX: (Math.random() - 0.5) * 0.01,
+                rotY: (Math.random() - 0.5) * 0.01,
+            };
+
+            shapes.push(mesh);
+            scene.add(mesh);
+        }
+
+        // Particle system
+        const particleCount = 500;
+        const particleGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 100;
+            positions[i + 1] = (Math.random() - 0.5) * 100;
+            positions[i + 2] = (Math.random() - 0.5) * 50 - 20;
+
+            // Green to cyan gradient
+            const t = Math.random();
+            colors[i] = 0;
+            colors[i + 1] = 0.7 + t * 0.3;
+            colors[i + 2] = 0.5 + t * 0.5;
+        }
+
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const particleMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending,
+        });
+
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
+
+        // Mouse interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Smooth camera movement
+            targetX += (mouseX * 5 - targetX) * 0.05;
+            targetY += (mouseY * 5 - targetY) * 0.05;
+            camera.position.x = targetX;
+            camera.position.y = targetY;
+            camera.lookAt(scene.position);
+
+            // Animate shapes
+            shapes.forEach((shape, i) => {
+                // Apply velocity
+                shape.position.x += shape.userData.velocity.x;
+                shape.position.y += shape.userData.velocity.y;
+                shape.position.z += shape.userData.velocity.z;
+
+                // Rotation
+                shape.rotation.x += shape.userData.velocity.rotX;
+                shape.rotation.y += shape.userData.velocity.rotY;
+
+                // Bounds check - wrap around
+                if (Math.abs(shape.position.x) > 35) shape.userData.velocity.x *= -1;
+                if (Math.abs(shape.position.y) > 35) shape.userData.velocity.y *= -1;
+                if (shape.position.z > 10 || shape.position.z < -40) shape.userData.velocity.z *= -1;
             });
+
+            // Animate particles
+            const positions = particles.geometry.attributes.position.array;
+            for (let i = 0; i < positions.length; i += 3) {
+                positions[i + 1] += 0.01;
+                if (positions[i + 1] > 50) positions[i + 1] = -50;
+            }
+            particles.geometry.attributes.position.needsUpdate = true;
+            particles.rotation.y += 0.0002;
+
+            // Animate lights
+            const time = Date.now() * 0.001;
+            pointLight1.position.x = Math.sin(time * 0.5) * 25;
+            pointLight1.position.y = Math.cos(time * 0.3) * 25;
+            pointLight2.position.x = Math.cos(time * 0.4) * 25;
+            pointLight2.position.z = Math.sin(time * 0.5) * 20;
+
+            renderer.render(scene, camera);
         }
+
+        animate();
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Scroll effect - fade out hero canvas
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const heroHeight = window.innerHeight;
+            const opacity = Math.max(0, 1 - scrollY / heroHeight);
+            canvas.style.opacity = opacity;
+        });
     </script>
 </body>
 </html>
