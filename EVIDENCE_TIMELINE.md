@@ -10,13 +10,13 @@
 
 ## EXECUTIVE SUMMARY
 
-The invention - a **METHOD for autonomous software development using AI on mobile phones** - was conceived on **January 1, 2026** while the inventor was driving to Pismo Dunes, California. Development began immediately thereafter, with the inventor working from their truck at Pismo Dunes.
+The invention - a **METHOD for autonomous software development using AI on mobile phones** - was conceived on **January 1, 2026** while traveling. Development began immediately thereafter, with the inventor working remotely from their vehicle.
 
 **Key Evidence Summary:**
 - First conception: January 1, 2026 (morning, while driving)
 - First documented activity: January 1, 2026, 8:47 AM PST (screenshot)
 - First Termux/CLI work: January 1, 2026, 2:12 PM PST (screenshot)
-- First "Pismo CLI" app screenshot: January 1, 2026, 2:55 PM PST
+- First CLI app screenshot: January 1, 2026, 2:55 PM PST
 - DM to Boris Cherny (unread): January 2, 2026, 4:35 PM PST
 - GitHub repo creation: January 4, 2026, 1:27:27 AM UTC (5:27 PM PST Jan 3)
 - Website repo creation: January 4, 2026, 1:32:43 AM UTC (5:32 PM PST Jan 3)
@@ -46,11 +46,11 @@ The invention - a **METHOD for autonomous software development using AI on mobil
 
 ### Day 1: January 1, 2026 - THE SPARK
 
-**Location**: Driving to Pismo Dunes, California, then working from truck at dunes
+**Location**: [REDACTED - see private records] Remote location, working from vehicle
 
 | Time (PST) | Evidence Type | Description |
 |------------|---------------|-------------|
-| Morning | Inventor testimony | Spark of genius while driving to Pismo Dunes |
+| Morning | Inventor testimony | Spark of genius while driving |
 | 8:47 AM | Screenshot | X (Twitter) app - `Screenshot_20260101_084746_X.jpg` |
 | 9:22 AM | Screenshot | X (Twitter) app - `Screenshot_20260101_092232_X.jpg` |
 | 1:36 PM | Screenshot | Samsung Internet research - `Screenshot_20260101_133615_Samsung Internet.jpg` |
@@ -59,24 +59,24 @@ The invention - a **METHOD for autonomous software development using AI on mobil
 | 2:14-2:51 PM | Screenshots (15+) | Multiple Samsung Internet research sessions |
 | 2:53 PM | Screenshot | My Files - `Screenshot_20260101_145350_My Files.jpg` |
 | 2:54 PM | Screenshot | Permission controller - `Screenshot_20260101_145449_Permission controller.jpg` |
-| **2:55 PM** | Screenshot | **FIRST "PISMO CLI" APP** - `Screenshot_20260101_145515_Pismo CLI.jpg` |
+| **2:55 PM** | Screenshot | **FIRST CLI APP** - `Screenshot_20260101_145515_[redacted].jpg` |
 | 2:55 PM | Screenshots (3) | One UI Home showing app installation |
 | 3:01-3:08 PM | Screenshots | Samsung Internet, My Files |
 | 3:10 PM | Screenshot | One UI Home - `Screenshot_20260101_151035_One UI Home.jpg` |
 | 3:16-3:38 PM | Screenshots | Samsung Internet research sessions |
 | 3:41-4:01 PM | Screenshots | Package installer - installing tools |
 | 4:06 PM | Screenshot | Samsung Internet - `Screenshot_20260101_160641_Samsung Internet.jpg` |
-| **4:10 PM** | Screenshot | Pismo CLI active - `Screenshot_20260101_161005_Pismo CLI.jpg` |
-| **4:34-4:38 PM** | Screenshots (4) | **PISMO CLI DEVELOPMENT** - `Screenshot_20260101_163432_Pismo CLI.jpg` through `Screenshot_20260101_163841_Pismo CLI.jpg` |
+| **4:10 PM** | Screenshot | CLI app active - `Screenshot_20260101_161005_[redacted].jpg` |
+| **4:34-4:38 PM** | Screenshots (4) | **CLI DEVELOPMENT** - `Screenshot_20260101_163432_[redacted].jpg` through `Screenshot_20260101_163841_[redacted].jpg` |
 | 5:12 PM | Screenshot | Samsung Internet - `Screenshot_20260101_171224_Samsung Internet.jpg` |
 | **6:10 PM** | Screenshot | **TERMUX SESSION** - `Screenshot_20260101_181058_Termux.jpg` |
 
 **Key Evidence from Day 1:**
 - 50+ screenshots documenting the entire day's work
 - First Termux terminal session at 2:12 PM
-- First "Pismo CLI" app screenshot at 2:55 PM (shows naming of concept)
+- First CLI app screenshot at 2:55 PM (shows naming of concept)
 - Active CLI development from 4:10 PM onwards
-- All work done from mobile phone at Pismo Dunes location
+- All work done from mobile phone at remote outdoor location
 
 ---
 
@@ -172,14 +172,14 @@ Screenshot_YYYYMMDD_HHMMSS_AppName.jpg
 - **Time**: 2:12:20 PM PST
 - **Significance**: First documented use of Linux terminal on mobile
 
-#### 2. First "Pismo CLI" App (Concept Naming)
-- **File**: `Screenshot_20260101_145515_Pismo CLI.jpg`
+#### 2. First CLI App (Concept Naming)
+- **File**: `Screenshot_20260101_145515_[redacted].jpg`
 - **Date**: January 1, 2026
 - **Time**: 2:55:15 PM PST
 - **Significance**: Shows inventor was naming the concept/app early Day 1
 
-#### 3. Pismo CLI Development Session
-- **Files**: `Screenshot_20260101_163432_Pismo CLI.jpg` through `Screenshot_20260101_163841_Pismo CLI.jpg`
+#### 3. CLI Development Session
+- **Files**: `Screenshot_20260101_163432_[redacted].jpg` through `Screenshot_20260101_163841_[redacted].jpg`
 - **Date**: January 1, 2026
 - **Time**: 4:34-4:38 PM PST
 - **Significance**: Active CLI development

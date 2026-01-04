@@ -1214,6 +1214,13 @@
         // Matrix characters (mix of katakana, latin, numbers)
         const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*(){}[]|;:<>?';
         const charArray = chars.split('');
+
+        // Hidden message easter egg - appears occasionally in the rain
+        const secretMessage = 'WELCOME TO THE FUTURE OF AI DEVELOPMENT';
+        let messageIndex = 0;
+        let messageTimer = 0;
+        let showingMessage = false;
+        let messageColumns = [];
         
         // Column setup
         const fontSize = 16;
@@ -1236,39 +1243,89 @@
             // Semi-transparent black to create fade effect
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
+
             // Green text
             ctx.fillStyle = '#00ff88';
             ctx.font = fontSize + 'px JetBrains Mono, monospace';
-            
+
+            // Hidden message logic - trigger every ~8 seconds
+            messageTimer++;
+            if (messageTimer > 480 && !showingMessage) {
+                showingMessage = true;
+                messageIndex = 0;
+                // Calculate columns for message (centered)
+                const startCol = Math.floor((columns - secretMessage.length) / 2);
+                messageColumns = [];
+                for (let i = 0; i < secretMessage.length; i++) {
+                    messageColumns.push({
+                        col: startCol + i,
+                        char: secretMessage[i],
+                        revealed: false,
+                        y: Math.floor(canvas.height / 2 / fontSize)
+                    });
+                }
+            }
+
+            // Reveal message letters progressively
+            if (showingMessage && messageTimer % 3 === 0 && messageIndex < messageColumns.length) {
+                messageColumns[messageIndex].revealed = true;
+                messageIndex++;
+                if (messageIndex >= messageColumns.length) {
+                    // Message fully revealed, reset after a delay
+                    setTimeout(() => {
+                        showingMessage = false;
+                        messageTimer = 0;
+                        messageColumns = [];
+                    }, 2000);
+                }
+            }
+
             for (let i = 0; i < drops.length; i++) {
-                // Random character
-                const char = charArray[Math.floor(Math.random() * charArray.length)];
-                
+                // Check if this column should show a message character
+                let char;
+                let isMessageChar = false;
+                const msgCol = messageColumns.find(m => m.col === i && m.revealed);
+
+                if (msgCol && Math.abs(drops[i] * fontSize - msgCol.y * fontSize) < fontSize * 2) {
+                    char = msgCol.char;
+                    isMessageChar = true;
+                } else {
+                    // Random character
+                    char = charArray[Math.floor(Math.random() * charArray.length)];
+                }
+
                 // Draw character
                 const x = i * fontSize;
                 const y = drops[i] * fontSize;
-                
-                // Vary the green shade
-                const shade = Math.random();
-                if (shade > 0.95) {
-                    ctx.fillStyle = '#ffffff'; // Occasional white flash
-                } else if (shade > 0.8) {
-                    ctx.fillStyle = '#00ffcc'; // Cyan highlight
+
+                // Vary the green shade (message chars are brighter)
+                if (isMessageChar) {
+                    ctx.fillStyle = '#ffffff'; // White for message
+                    ctx.shadowColor = '#00ff88';
+                    ctx.shadowBlur = 10;
                 } else {
-                    ctx.fillStyle = '#00ff88'; // Main green
+                    ctx.shadowBlur = 0;
+                    const shade = Math.random();
+                    if (shade > 0.95) {
+                        ctx.fillStyle = '#ffffff'; // Occasional white flash
+                    } else if (shade > 0.8) {
+                        ctx.fillStyle = '#00ffcc'; // Cyan highlight
+                    } else {
+                        ctx.fillStyle = '#00ff88'; // Main green
+                    }
                 }
-                
+
                 ctx.fillText(char, x, y);
-                
+                ctx.shadowBlur = 0;
+
                 // Reset drop to top randomly or when it goes off screen
                 if (y > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
-                
+
                 drops[i]++;
             }
-            
+
             requestAnimationFrame(drawMatrix);
         }
         
