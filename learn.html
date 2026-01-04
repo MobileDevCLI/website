@@ -808,7 +808,7 @@ terminal install --packages example</code></pre>
                 <h2>4. Autonomous Mode</h2>
                 <p>By default, Claude asks permission before reading files, writing files, and running commands. On mobile, this is tedious.</p>
 
-                <p><strong>Autonomous Mode</strong> runs with <code>--dangerously-skip-permissions</code>, letting Claude work autonomously without asking permission for every action.</p>
+                <p><strong>Autonomous Mode</strong> runs with special permission flags, letting the AI work autonomously without asking permission for every action. Pro subscribers get the exact flags and configuration.</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -1000,7 +1000,7 @@ claude &
                 <details>
                     <summary>Smart Permissions: Pre-Allow Safe Commands</summary>
                     <div class="detail-content">
-                        <p>Don't use <code>--dangerously-skip-permissions</code> on sensitive systems. Instead, pre-allow specific commands.</p>
+                        <p>Don't use full autonomous mode on sensitive systems. Instead, pre-allow specific commands.</p>
                         <div class="code-block">
                             <div class="code-header">
                                 <span class="code-label">/permissions (pre-allowed commands)</span>
