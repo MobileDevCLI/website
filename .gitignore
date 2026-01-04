@@ -1,6 +1,13 @@
 # Personal files - not for public repository
 PERSONAL_AI_JOURNEY.md
 ADDITIONAL_EVIDENCE.md
+LEGAL_STATUS_REPORT.md
+
+# Any file with PRIVATE or SECRET in name
+*_PRIVATE.md
+*_SECRET.*
+PRIVATE_*
+SECRET_*
 
 # Node modules
 node_modules/
