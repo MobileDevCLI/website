@@ -56,6 +56,19 @@
             overflow-x: hidden;
         }
 
+        /* Atmospheric vignette overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
         /* Three.js Canvas */
         #hero-canvas {
             position: fixed;

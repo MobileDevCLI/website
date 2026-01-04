@@ -334,6 +334,72 @@
                 <div class="meta-item">Session: One continuous Claude Code conversation</div>
             </div>
 
+            <!-- Discovery 0: The Great Cache Crisis -->
+            <div class="discovery" id="cache-crisis" style="border-color: #ff6b35;">
+                <div class="discovery-header">
+                    <div>
+                        <span class="discovery-tag tag-integration">Integration</span>
+                        <h2>The Great Cache Crisis of January 4th</h2>
+                    </div>
+                    <div class="discovery-date">Jan 4, 2026</div>
+                </div>
+
+                <p>We spent hours debugging why the website wasn't updating. Multiple phones, multiple browsers, different locations (even had mom check from her house). All showed old content. The solution taught us everything about web caching.</p>
+
+                <h3>The Symptoms</h3>
+                <ul>
+                    <li>Git push succeeded to both repos</li>
+                    <li>GitHub showed the new code</li>
+                    <li>Vercel showed the correct commit deployed</li>
+                    <li>But browsers showed OLD content everywhere</li>
+                    <li>Multiple devices, multiple browsers, multiple locations - all cached</li>
+                </ul>
+
+                <h3>The Breakthrough</h3>
+                <p>The key was using <code>curl</code> to bypass ALL caching layers:</p>
+                <div class="code-block">
+                    <code>curl -sL "https://mobilecli.com" | grep "new content"</code>
+                </div>
+                <p>If curl shows new content but browsers don't → It's cache, not deployment.</p>
+
+                <h3>The Four Layers of Cache Hell</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Layer 1</div>
+                        <div class="timeline-content"><strong>Browser Cache:</strong> Your browser stores pages locally. Even incognito can miss this.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Layer 2</div>
+                        <div class="timeline-content"><strong>Vercel Edge Cache:</strong> Vercel's 100+ global CDN nodes all cache your content.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Layer 3</div>
+                        <div class="timeline-content"><strong>ISP Cache:</strong> Your internet provider may cache popular sites.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Layer 4</div>
+                        <div class="timeline-content"><strong>OS/Network Cache:</strong> Android, routers, DNS all have caching layers.</div>
+                    </div>
+                </div>
+
+                <h3>The Solution</h3>
+                <p>We added <code>vercel.json</code> with aggressive cache-control headers:</p>
+                <div class="code-block">
+                    <code>{<br>  "headers": [{<br>    "source": "/(.*).html",<br>    "headers": [{<br>      "key": "Cache-Control",<br>      "value": "public, max-age=0, must-revalidate"<br>    }]<br>  }]<br>}</code>
+                </div>
+
+                <h3>The Nuclear Test</h3>
+                <p>When truly desperate, add an impossible-to-miss visual element:</p>
+                <div class="code-block">
+                    <code>&lt;div style="background: #ff0000; color: white; padding: 15px;<br>     position: fixed; top: 0; left: 0; right: 0; z-index: 9999;"&gt;<br>  SITE UPDATED: [timestamp] - If you see this, it works!<br>&lt;/div&gt;</code>
+                </div>
+
+                <div class="insight">
+                    <div class="insight-label">Key Lesson</div>
+                    <p>When debugging "site not updating" issues, ALWAYS test with curl first. It bypasses every cache layer and shows exactly what the server is returning. If curl shows new content, the problem is cached somewhere between the server and your eyeballs.</p>
+                </div>
+            </div>
+
             <!-- Discovery 1: Screenshot Access -->
             <div class="discovery" id="screenshot-access">
                 <div class="discovery-header">

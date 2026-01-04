@@ -121,10 +121,61 @@ git push website master
 4. Click "Configure GitHub App" to grant private repo access
 5. Redeploy
 
-### Problem: Changes not showing on live site
+### Problem: Changes not showing on live site (THE BIG ONE)
 
 **Root Cause Analysis (January 4, 2026):**
-Most "site not updating" issues are actually **browser cache** problems, not Vercel issues.
+
+We spent HOURS debugging this. Multiple phones, multiple browsers, different locations (even had mom check from her house) - all showed old content. But `curl` showed new content. Here's what we learned:
+
+**The Real Issue: Multi-Layer Caching**
+
+There are FOUR caching layers that can serve stale content:
+1. **Browser Cache** - Your browser stores pages locally
+2. **Vercel Edge Cache** - Vercel's global CDN caches at edge nodes
+3. **ISP/DNS Cache** - Your internet provider may cache
+4. **OS/Network Cache** - Device-level caching
+
+**The Definitive Test:**
+```bash
+# This bypasses ALL caching and shows what the server actually has
+curl -sL "https://www.mobilecli.com" | grep "some unique text"
+```
+
+If `curl` shows the new content but browsers don't → It's a cache problem, NOT a deployment problem.
+
+**The Solution We Implemented:**
+
+Added `vercel.json` with aggressive cache-busting:
+```json
+{
+  "headers": [
+    {
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**The Visual Verification Test:**
+When in doubt, add a bright red banner with timestamp:
+```html
+<div style="background: #ff0000; color: white; text-align: center; padding: 15px; font-size: 18px; font-weight: bold; position: fixed; top: 0; left: 0; right: 0; z-index: 9999;">
+    SITE UPDATED: [DATE/TIME] - If you see this, deployment works!
+</div>
+```
+
+If you see the red banner → Deployment works, remove the banner.
+If you don't → Check Vercel connection to correct repo.
+
+---
+
+### Legacy: Browser Cache Solutions
 
 **Diagnosis Steps:**
 1. Verify GitHub has the changes:
