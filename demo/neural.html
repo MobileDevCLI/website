@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Neural Network - MobileCLI Demos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a1a;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 200, 50, 0.2);
+            border-color: rgba(255, 200, 50, 0.3);
+        }
+
+        .info {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            max-width: 280px;
+        }
+
+        .info h3 {
+            color: #ffc832;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 200, 50, 0.2);
+            border-color: rgba(255, 200, 50, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 200, 50, 0.3);
+            border-color: #ffc832;
+            color: #ffc832;
+        }
+
+        .stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffc832;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+            text-align: right;
+        }
+
+        @media (max-width: 600px) {
+            .info { display: none; }
+            .ui { top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <a href="/demos.html" class="back-btn">← Back to Demos</a>
+        <div class="info">
+            <h3>Neural Network</h3>
+            <p>Watch a neural network learn in real-time. Tap to change the training target. See activations flow through layers!</p>
+        </div>
+    </div>
+
+    <div class="stats" id="stats">Loss: 0.000</div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="resetNetwork()">Reset</button>
+        <button class="control-btn" onclick="toggleTraining()">Pause Training</button>
+        <button class="control-btn" onclick="changeTarget()">New Target</button>
+        <button class="control-btn" onclick="toggleSpeed()">Speed</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Neural network architecture
+        const layers = [2, 8, 8, 8, 3]; // Input: x,y -> Hidden layers -> Output: r,g,b
+
+        // Neuron class
+        class Neuron {
+            constructor() {
+                this.value = 0;
+                this.activation = 0;
+                this.delta = 0;
+                this.bias = (Math.random() - 0.5) * 2;
+            }
+        }
+
+        // Network structure
+        let neurons = [];
+        let weights = [];
+        let training = true;
+        let speed = 1;
+        let loss = 0;
+
+        // Target function (what we're trying to learn)
+        let targetFunc = 0;
+        const targetFunctions = [
+            // Circular gradient
+            (x, y) => {
+                const d = Math.sqrt((x - 0.5) ** 2 + (y - 0.5) ** 2);
+                return [
+                    Math.sin(d * 10) * 0.5 + 0.5,
+                    Math.cos(d * 10) * 0.5 + 0.5,
+                    1 - d
+                ];
+            },
+            // Stripes
+            (x, y) => {
+                return [
+                    Math.sin(x * 15) * 0.5 + 0.5,
+                    Math.sin(y * 15) * 0.5 + 0.5,
+                    Math.sin((x + y) * 10) * 0.5 + 0.5
+                ];
+            },
+            // Checkerboard
+            (x, y) => {
+                const c = (Math.floor(x * 8) + Math.floor(y * 8)) % 2;
+                return [c, 1 - c, (x + y) * 0.5];
+            },
+            // Spiral
+            (x, y) => {
+                const cx = x - 0.5, cy = y - 0.5;
+                const angle = Math.atan2(cy, cx);
+                const dist = Math.sqrt(cx * cx + cy * cy);
+                const spiral = Math.sin(angle * 3 + dist * 20);
+                return [
+                    spiral * 0.5 + 0.5,
+                    (1 - dist) * 0.8,
+                    Math.cos(angle * 2) * 0.5 + 0.5
+                ];
+            }
+        ];
+
+        // Initialize network
+        function initNetwork() {
+            neurons = [];
+            weights = [];
+
+            // Create neurons for each layer
+            for (let l = 0; l < layers.length; l++) {
+                neurons[l] = [];
+                for (let n = 0; n < layers[l]; n++) {
+                    neurons[l][n] = new Neuron();
+                }
+            }
+
+            // Create weights between layers
+            for (let l = 0; l < layers.length - 1; l++) {
+                weights[l] = [];
+                for (let i = 0; i < layers[l]; i++) {
+                    weights[l][i] = [];
+                    for (let j = 0; j < layers[l + 1]; j++) {
+                        // Xavier initialization
+                        const scale = Math.sqrt(2 / (layers[l] + layers[l + 1]));
+                        weights[l][i][j] = (Math.random() - 0.5) * 2 * scale;
+                    }
+                }
+            }
+
+            loss = 1;
+        }
+
+        // Activation function (ReLU for hidden, sigmoid for output)
+        function relu(x) { return Math.max(0, x); }
+        function sigmoid(x) { return 1 / (1 + Math.exp(-x)); }
+        function reluDerivative(x) { return x > 0 ? 1 : 0; }
+        function sigmoidDerivative(x) { return x * (1 - x); }
+
+        // Forward pass
+        function forward(input) {
+            // Set input layer
+            neurons[0][0].activation = input[0];
+            neurons[0][1].activation = input[1];
+
+            // Propagate through layers
+            for (let l = 1; l < layers.length; l++) {
+                for (let j = 0; j < layers[l]; j++) {
+                    let sum = neurons[l][j].bias;
+                    for (let i = 0; i < layers[l - 1]; i++) {
+                        sum += neurons[l - 1][i].activation * weights[l - 1][i][j];
+                    }
+                    neurons[l][j].value = sum;
+
+                    // Use sigmoid for output layer, ReLU for hidden
+                    if (l === layers.length - 1) {
+                        neurons[l][j].activation = sigmoid(sum);
+                    } else {
+                        neurons[l][j].activation = relu(sum);
+                    }
+                }
+            }
+
+            // Return output
+            const output = layers.length - 1;
+            return [
+                neurons[output][0].activation,
+                neurons[output][1].activation,
+                neurons[output][2].activation
+            ];
+        }
+
+        // Backward pass (backpropagation)
+        function backward(target, learningRate = 0.1) {
+            const output = layers.length - 1;
+
+            // Calculate output layer deltas
+            for (let j = 0; j < layers[output]; j++) {
+                const error = target[j] - neurons[output][j].activation;
+                neurons[output][j].delta = error * sigmoidDerivative(neurons[output][j].activation);
+            }
+
+            // Calculate hidden layer deltas
+            for (let l = output - 1; l > 0; l--) {
+                for (let i = 0; i < layers[l]; i++) {
+                    let error = 0;
+                    for (let j = 0; j < layers[l + 1]; j++) {
+                        error += neurons[l + 1][j].delta * weights[l][i][j];
+                    }
+                    neurons[l][i].delta = error * reluDerivative(neurons[l][i].value);
+                }
+            }
+
+            // Update weights and biases
+            for (let l = 0; l < layers.length - 1; l++) {
+                for (let i = 0; i < layers[l]; i++) {
+                    for (let j = 0; j < layers[l + 1]; j++) {
+                        weights[l][i][j] += learningRate * neurons[l + 1][j].delta * neurons[l][i].activation;
+                    }
+                }
+                for (let j = 0; j < layers[l + 1]; j++) {
+                    neurons[l + 1][j].bias += learningRate * neurons[l + 1][j].delta;
+                }
+            }
+        }
+
+        // Train one step
+        function trainStep() {
+            // Random sample point
+            const x = Math.random();
+            const y = Math.random();
+
+            // Get target
+            const target = targetFunctions[targetFunc](x, y);
+
+            // Forward and backward
+            const output = forward([x, y]);
+            backward(target, 0.1 * speed);
+
+            // Calculate loss
+            let mse = 0;
+            for (let i = 0; i < 3; i++) {
+                mse += (target[i] - output[i]) ** 2;
+            }
+            loss = loss * 0.99 + (mse / 3) * 0.01;
+        }
+
+        // Draw neural network
+        function drawNetwork() {
+            const padding = 80;
+            const layerWidth = (width - padding * 2) / (layers.length - 1);
+
+            // Draw connections (weights)
+            for (let l = 0; l < layers.length - 1; l++) {
+                for (let i = 0; i < layers[l]; i++) {
+                    for (let j = 0; j < layers[l + 1]; j++) {
+                        const x1 = padding + l * layerWidth;
+                        const y1 = height / 2 + (i - (layers[l] - 1) / 2) * 50;
+                        const x2 = padding + (l + 1) * layerWidth;
+                        const y2 = height / 2 + (j - (layers[l + 1] - 1) / 2) * 50;
+
+                        const w = weights[l][i][j];
+                        const intensity = Math.abs(w) * 0.5;
+                        const alpha = Math.min(0.8, intensity);
+
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+
+                        if (w > 0) {
+                            ctx.strokeStyle = `rgba(100, 200, 255, ${alpha})`;
+                        } else {
+                            ctx.strokeStyle = `rgba(255, 100, 100, ${alpha})`;
+                        }
+                        ctx.lineWidth = Math.min(3, Math.abs(w) * 2);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw neurons
+            for (let l = 0; l < layers.length; l++) {
+                for (let n = 0; n < layers[l]; n++) {
+                    const x = padding + l * layerWidth;
+                    const y = height / 2 + (n - (layers[l] - 1) / 2) * 50;
+
+                    const activation = neurons[l][n].activation;
+
+                    // Glow
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 25);
+                    gradient.addColorStop(0, `rgba(255, 200, 50, ${activation * 0.5})`);
+                    gradient.addColorStop(1, 'rgba(255, 200, 50, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 25, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Neuron body
+                    ctx.beginPath();
+                    ctx.arc(x, y, 12, 0, Math.PI * 2);
+
+                    const brightness = Math.floor(activation * 255);
+                    ctx.fillStyle = `rgb(${brightness}, ${Math.floor(brightness * 0.8)}, ${Math.floor(brightness * 0.3)})`;
+                    ctx.fill();
+
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            }
+
+            // Labels
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.font = '12px Inter, sans-serif';
+            ctx.textAlign = 'center';
+
+            ctx.fillText('Input (x, y)', padding, height / 2 + layers[0] * 30);
+            ctx.fillText('Hidden Layers', width / 2, height / 2 - 180);
+            ctx.fillText('Output (R, G, B)', width - padding, height / 2 + layers[layers.length - 1] * 30);
+        }
+
+        // Draw the learned function as a small preview
+        function drawPreview() {
+            const previewSize = 150;
+            const previewX = width - previewSize - 20;
+            const previewY = height - previewSize - 100;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(previewX - 5, previewY - 5, previewSize + 10, previewSize + 10);
+
+            const imageData = ctx.createImageData(previewSize, previewSize);
+
+            for (let py = 0; py < previewSize; py++) {
+                for (let px = 0; px < previewSize; px++) {
+                    const x = px / previewSize;
+                    const y = py / previewSize;
+
+                    const output = forward([x, y]);
+
+                    const idx = (py * previewSize + px) * 4;
+                    imageData.data[idx] = Math.floor(output[0] * 255);
+                    imageData.data[idx + 1] = Math.floor(output[1] * 255);
+                    imageData.data[idx + 2] = Math.floor(output[2] * 255);
+                    imageData.data[idx + 3] = 255;
+                }
+            }
+
+            ctx.putImageData(imageData, previewX, previewY);
+
+            ctx.strokeStyle = 'rgba(255, 200, 50, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(previewX, previewY, previewSize, previewSize);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = '11px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Network Output', previewX + previewSize / 2, previewY + previewSize + 15);
+        }
+
+        // Draw target function preview
+        function drawTarget() {
+            const previewSize = 80;
+            const previewX = 20;
+            const previewY = height - previewSize - 100;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(previewX - 5, previewY - 5, previewSize + 10, previewSize + 10);
+
+            const imageData = ctx.createImageData(previewSize, previewSize);
+
+            for (let py = 0; py < previewSize; py++) {
+                for (let px = 0; px < previewSize; px++) {
+                    const x = px / previewSize;
+                    const y = py / previewSize;
+
+                    const target = targetFunctions[targetFunc](x, y);
+
+                    const idx = (py * previewSize + px) * 4;
+                    imageData.data[idx] = Math.floor(target[0] * 255);
+                    imageData.data[idx + 1] = Math.floor(target[1] * 255);
+                    imageData.data[idx + 2] = Math.floor(target[2] * 255);
+                    imageData.data[idx + 3] = 255;
+                }
+            }
+
+            ctx.putImageData(imageData, previewX, previewY);
+
+            ctx.strokeStyle = 'rgba(0, 255, 136, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(previewX, previewY, previewSize, previewSize);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = '11px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Target', previewX + previewSize / 2, previewY + previewSize + 15);
+        }
+
+        // Control functions
+        window.resetNetwork = function() {
+            initNetwork();
+        };
+
+        window.toggleTraining = function() {
+            training = !training;
+            document.querySelectorAll('.control-btn')[1].classList.toggle('active', !training);
+        };
+
+        window.changeTarget = function() {
+            targetFunc = (targetFunc + 1) % targetFunctions.length;
+            initNetwork();
+        };
+
+        window.toggleSpeed = function() {
+            speed = speed === 1 ? 3 : speed === 3 ? 10 : 1;
+        };
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Clear
+            ctx.fillStyle = '#0a0a1a';
+            ctx.fillRect(0, 0, width, height);
+
+            // Train
+            if (training) {
+                for (let i = 0; i < 100 * speed; i++) {
+                    trainStep();
+                }
+            }
+
+            // Draw
+            drawNetwork();
+            drawPreview();
+            drawTarget();
+
+            // Update stats
+            document.getElementById('stats').textContent = `Loss: ${loss.toFixed(4)}`;
+        }
+
+        initNetwork();
+        animate();
+    </script>
+</body>
+</html>
