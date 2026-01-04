@@ -67,27 +67,110 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Touch hint overlay */
-        .touch-hint {
+        /* Mode Toggle Button */
+        .mode-toggle {
             position: fixed;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            border-radius: 100px;
-            padding: 10px 24px;
+            bottom: 100px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--border-light);
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .mode-toggle:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .mode-toggle.play-mode {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .mode-toggle.play-mode:hover {
+            background: rgba(0, 255, 136, 0.3);
+        }
+
+        .mode-label {
+            position: fixed;
+            bottom: 170px;
+            right: 24px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--primary);
-            z-index: 50;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            width: 64px;
+            z-index: 100;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transform: translateY(10px);
+            transition: all 0.3s;
             pointer-events: none;
         }
 
-        .touch-hint.visible {
+        .mode-label.visible {
             opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mode-label.play-mode {
+            color: var(--primary);
+        }
+
+        /* Play mode overlay hint */
+        .play-hint {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--primary);
+            border-radius: 16px;
+            padding: 24px 32px;
+            color: var(--text);
+            font-size: 0.9rem;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .play-hint.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .play-hint h4 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .play-hint ul {
+            list-style: none;
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+
+        .play-hint ul li::before {
+            content: "→ ";
+            color: var(--primary);
         }
 
         /* Navigation */
@@ -893,8 +976,22 @@
     <!-- Three.js Canvas -->
     <canvas id="hero-canvas"></canvas>
 
-    <!-- Touch hint -->
-    <div class="touch-hint" id="touchHint">Tap and drag to interact with physics</div>
+    <!-- Mode Toggle Button -->
+    <button class="mode-toggle" id="modeToggle" title="Toggle Play Mode">
+        <span id="modeIcon">🖱️</span>
+    </button>
+    <div class="mode-label" id="modeLabel">SCROLL</div>
+
+    <!-- Play Mode Hint -->
+    <div class="play-hint" id="playHint">
+        <h4>Play Mode Active</h4>
+        <ul>
+            <li>Drag to create ripples</li>
+            <li>Push floating objects</li>
+            <li>Double-tap for explosion</li>
+            <li>Long-press for fire burst</li>
+        </ul>
+    </div>
 
     <!-- Navigation -->
     <nav>
@@ -1176,285 +1273,483 @@
         }
 
         // ============================================
-        // THREE.JS PHYSICS SCENE WITH CANNON.JS
+        // EPIC HERO: WATER + FIRE + PARTICLES + PHYSICS
         // ============================================
         const canvas = document.getElementById('hero-canvas');
         const heroContent = document.getElementById('heroContent');
-        const touchHint = document.getElementById('touchHint');
+        const modeToggle = document.getElementById('modeToggle');
+        const modeIcon = document.getElementById('modeIcon');
+        const modeLabel = document.getElementById('modeLabel');
+        const playHint = document.getElementById('playHint');
 
-        // Renderer
+        // Mode state
+        let playMode = false;
+        let playModeTimeout = null;
+        const PLAY_MODE_TIMEOUT = 30000; // 30 seconds
+
+        // Detect mobile
+        const isMobile = 'ontouchstart' in window;
+
+        // ============================================
+        // RENDERER SETUP
+        // ============================================
         const renderer = new THREE.WebGLRenderer({
             canvas,
             alpha: true,
-            antialias: true,
+            antialias: !isMobile,
             powerPreference: "high-performance"
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        // Scene
         const scene = new THREE.Scene();
 
-        // Camera
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 5, 30);
+        camera.position.set(0, 8, 25);
+        camera.lookAt(0, 0, 0);
 
-        // Cannon.js Physics World
+        // ============================================
+        // CANNON.JS PHYSICS
+        // ============================================
         const world = new CANNON.World();
-        world.gravity.set(0, -20, 0);
+        world.gravity.set(0, -15, 0);
         world.broadphase = new CANNON.NaiveBroadphase();
-        world.solver.iterations = 10;
+        world.solver.iterations = 8;
 
-        // Materials for physics
         const physicsMaterial = new CANNON.Material('physics');
         const contactMaterial = new CANNON.ContactMaterial(physicsMaterial, physicsMaterial, {
             friction: 0.3,
-            restitution: 0.6
+            restitution: 0.5
         });
         world.addContactMaterial(contactMaterial);
 
         // ============================================
         // LIGHTING
         // ============================================
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
-        scene.add(ambientLight);
+        scene.add(new THREE.AmbientLight(0x404060, 0.5));
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(10, 20, 10);
-        directionalLight.castShadow = true;
-        directionalLight.shadow.mapSize.width = 1024;
-        directionalLight.shadow.mapSize.height = 1024;
-        scene.add(directionalLight);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        mainLight.position.set(10, 20, 10);
+        scene.add(mainLight);
 
-        // Dynamic colored lights
-        const lights = [
-            { light: new THREE.PointLight(0x00ff88, 3, 50), pos: [15, 10, 10] },
-            { light: new THREE.PointLight(0x00d4ff, 3, 50), pos: [-15, 10, 10] },
-            { light: new THREE.PointLight(0xa855f7, 2, 50), pos: [0, 15, -10] },
-            { light: new THREE.PointLight(0xff6b6b, 2, 40), pos: [10, -5, 15] }
-        ];
+        // Colored accent lights
+        const greenLight = new THREE.PointLight(0x00ff88, 2, 40);
+        greenLight.position.set(-15, 10, 5);
+        scene.add(greenLight);
 
-        lights.forEach(({ light, pos }) => {
-            light.position.set(...pos);
-            scene.add(light);
-        });
+        const cyanLight = new THREE.PointLight(0x00d4ff, 2, 40);
+        cyanLight.position.set(15, 8, 5);
+        scene.add(cyanLight);
+
+        const fireLight = new THREE.PointLight(0xff6633, 3, 30);
+        fireLight.position.set(0, -5, 10);
+        scene.add(fireLight);
 
         // ============================================
-        // PHYSICS OBJECTS
+        // WATER SURFACE
+        // ============================================
+        const waterSize = isMobile ? 64 : 100;
+        const waterGeometry = new THREE.PlaneGeometry(60, 40, waterSize, waterSize);
+        waterGeometry.rotateX(-Math.PI / 2);
+
+        const waterUniforms = {
+            uTime: { value: 0 },
+            uRipples: { value: [] },
+            uRippleCount: { value: 0 },
+            uColor1: { value: new THREE.Color(0x001133) },
+            uColor2: { value: new THREE.Color(0x004466) },
+            uColor3: { value: new THREE.Color(0x00ffaa) }
+        };
+
+        // Initialize ripple uniforms
+        for (let i = 0; i < 10; i++) {
+            waterUniforms[`uRipple${i}`] = { value: new THREE.Vector4(0, 0, 0, 0) };
+        }
+
+        const waterMaterial = new THREE.ShaderMaterial({
+            uniforms: waterUniforms,
+            vertexShader: `
+                uniform float uTime;
+                uniform vec4 uRipple0, uRipple1, uRipple2, uRipple3, uRipple4;
+                uniform vec4 uRipple5, uRipple6, uRipple7, uRipple8, uRipple9;
+                uniform int uRippleCount;
+
+                varying vec2 vUv;
+                varying float vElevation;
+                varying vec3 vNormal;
+
+                float wave(vec2 pos, float time) {
+                    float w = 0.0;
+                    w += sin(pos.x * 0.5 + time * 1.5) * 0.3;
+                    w += sin(pos.y * 0.7 + time * 1.2) * 0.25;
+                    w += sin((pos.x + pos.y) * 0.3 + time * 2.0) * 0.2;
+                    w += sin(length(pos) * 0.4 - time * 1.8) * 0.15;
+                    return w;
+                }
+
+                float ripple(vec2 pos, vec4 rippleData) {
+                    if (rippleData.w <= 0.0) return 0.0;
+                    float dist = length(pos - rippleData.xy);
+                    float age = rippleData.z;
+                    float strength = rippleData.w;
+                    float rippleRadius = age * 15.0;
+                    float rippleWidth = 2.0 + age * 3.0;
+                    float rippleEffect = sin((dist - rippleRadius) * 3.14159 / rippleWidth);
+                    float falloff = smoothstep(rippleRadius + rippleWidth, rippleRadius, dist);
+                    falloff *= smoothstep(0.0, 0.1, age) * (1.0 - smoothstep(0.8, 1.5, age));
+                    return rippleEffect * falloff * strength * 1.5;
+                }
+
+                void main() {
+                    vUv = uv;
+                    vec3 pos = position;
+
+                    float elevation = wave(pos.xz, uTime);
+
+                    // Add ripples
+                    elevation += ripple(pos.xz, uRipple0);
+                    elevation += ripple(pos.xz, uRipple1);
+                    elevation += ripple(pos.xz, uRipple2);
+                    elevation += ripple(pos.xz, uRipple3);
+                    elevation += ripple(pos.xz, uRipple4);
+                    elevation += ripple(pos.xz, uRipple5);
+                    elevation += ripple(pos.xz, uRipple6);
+                    elevation += ripple(pos.xz, uRipple7);
+                    elevation += ripple(pos.xz, uRipple8);
+                    elevation += ripple(pos.xz, uRipple9);
+
+                    pos.y += elevation;
+                    vElevation = elevation;
+
+                    // Calculate normal
+                    float delta = 0.1;
+                    float hL = wave(pos.xz - vec2(delta, 0.0), uTime);
+                    float hR = wave(pos.xz + vec2(delta, 0.0), uTime);
+                    float hD = wave(pos.xz - vec2(0.0, delta), uTime);
+                    float hU = wave(pos.xz + vec2(0.0, delta), uTime);
+                    vNormal = normalize(vec3(hL - hR, 2.0 * delta, hD - hU));
+
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float uTime;
+                uniform vec3 uColor1;
+                uniform vec3 uColor2;
+                uniform vec3 uColor3;
+
+                varying vec2 vUv;
+                varying float vElevation;
+                varying vec3 vNormal;
+
+                void main() {
+                    // Base color gradient based on elevation
+                    vec3 color = mix(uColor1, uColor2, smoothstep(-0.5, 0.5, vElevation));
+
+                    // Add highlights on peaks
+                    color = mix(color, uColor3, smoothstep(0.3, 0.8, vElevation) * 0.6);
+
+                    // Fresnel-like edge glow
+                    float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 1.0, 0.0))), 2.0);
+                    color += vec3(0.0, 0.5, 0.8) * fresnel * 0.3;
+
+                    // Caustic pattern
+                    float caustic = sin(vUv.x * 30.0 + uTime * 2.0) * sin(vUv.y * 30.0 + uTime * 1.5);
+                    caustic = pow(abs(caustic), 3.0) * 0.15;
+                    color += vec3(0.2, 0.8, 1.0) * caustic;
+
+                    // Transparency based on depth
+                    float alpha = 0.85 + vElevation * 0.1;
+
+                    gl_FragColor = vec4(color, alpha);
+                }
+            `,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+
+        const water = new THREE.Mesh(waterGeometry, waterMaterial);
+        water.position.y = -2;
+        scene.add(water);
+
+        // Ripple system
+        const ripples = [];
+        function addRipple(x, z, strength = 1) {
+            ripples.push({ x, z, time: 0, strength, maxTime: 1.5 });
+            if (ripples.length > 10) ripples.shift();
+        }
+
+        // ============================================
+        // FLOATING PHYSICS OBJECTS
         // ============================================
         const physicsObjects = [];
+        const WATER_LEVEL = -2;
+        const BUOYANCY_FORCE = 35;
 
-        // Materials
-        const glassMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x111111,
-            metalness: 0.1,
-            roughness: 0.05,
-            transmission: 0.9,
-            thickness: 0.5,
-            transparent: true,
-            opacity: 0.7,
-            clearcoat: 1.0,
-            clearcoatRoughness: 0.1,
-        });
-
-        const metalMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x00ff88,
-            metalness: 0.95,
-            roughness: 0.1,
-            envMapIntensity: 1.0,
-        });
-
-        const accentMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x00d4ff,
-            metalness: 0.8,
-            roughness: 0.2,
-            emissive: 0x003344,
-            emissiveIntensity: 0.3,
-        });
-
-        const purpleMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0xa855f7,
-            metalness: 0.7,
-            roughness: 0.3,
-            emissive: 0x220033,
-            emissiveIntensity: 0.2,
-        });
-
-        const materials = [glassMaterial, metalMaterial, accentMaterial, purpleMaterial];
-
-        // Create physics cubes
-        function createPhysicsBox(size, position, material) {
-            // Three.js mesh
-            const geometry = new THREE.BoxGeometry(size, size, size);
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.copy(position);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            scene.add(mesh);
-
-            // Cannon.js body
-            const shape = new CANNON.Box(new CANNON.Vec3(size / 2, size / 2, size / 2));
-            const body = new CANNON.Body({
-                mass: size * 2,
-                material: physicsMaterial
-            });
-            body.addShape(shape);
-            body.position.copy(position);
-            body.angularDamping = 0.3;
-            body.linearDamping = 0.1;
-            world.addBody(body);
-
-            physicsObjects.push({ mesh, body, type: 'box' });
-            return { mesh, body };
-        }
-
-        // Create physics spheres
-        function createPhysicsSphere(radius, position, material) {
-            const geometry = new THREE.SphereGeometry(radius, 32, 32);
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.copy(position);
-            mesh.castShadow = true;
-            scene.add(mesh);
-
-            const shape = new CANNON.Sphere(radius);
-            const body = new CANNON.Body({
-                mass: radius * 3,
-                material: physicsMaterial
-            });
-            body.addShape(shape);
-            body.position.copy(position);
-            body.angularDamping = 0.2;
-            world.addBody(body);
-
-            physicsObjects.push({ mesh, body, type: 'sphere' });
-            return { mesh, body };
-        }
-
-        // Create physics icosahedron (approximated as sphere in physics)
-        function createPhysicsIcosahedron(radius, position, material) {
-            const geometry = new THREE.IcosahedronGeometry(radius, 0);
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.copy(position);
-            mesh.castShadow = true;
-            scene.add(mesh);
-
-            const shape = new CANNON.Sphere(radius * 0.9);
-            const body = new CANNON.Body({
-                mass: radius * 4,
-                material: physicsMaterial
-            });
-            body.addShape(shape);
-            body.position.copy(position);
-            body.angularDamping = 0.3;
-            world.addBody(body);
-
-            physicsObjects.push({ mesh, body, type: 'icosahedron' });
-            return { mesh, body };
-        }
-
-        // Invisible floor
-        const floorBody = new CANNON.Body({
-            mass: 0,
-            material: physicsMaterial
-        });
-        floorBody.addShape(new CANNON.Plane());
-        floorBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-        floorBody.position.set(0, -15, 0);
-        world.addBody(floorBody);
-
-        // Invisible walls
-        const wallPositions = [
-            { pos: [-25, 0, 0], rot: [0, Math.PI / 2, 0] },
-            { pos: [25, 0, 0], rot: [0, -Math.PI / 2, 0] },
-            { pos: [0, 0, -20], rot: [0, 0, 0] },
-            { pos: [0, 0, 20], rot: [0, Math.PI, 0] },
-            { pos: [0, 20, 0], rot: [Math.PI / 2, 0, 0] }
+        const objectMaterials = [
+            new THREE.MeshPhysicalMaterial({ color: 0x00ff88, metalness: 0.8, roughness: 0.2, emissive: 0x003311, emissiveIntensity: 0.3 }),
+            new THREE.MeshPhysicalMaterial({ color: 0x00d4ff, metalness: 0.7, roughness: 0.3, emissive: 0x001133, emissiveIntensity: 0.4 }),
+            new THREE.MeshPhysicalMaterial({ color: 0xa855f7, metalness: 0.6, roughness: 0.4, emissive: 0x110033, emissiveIntensity: 0.3 }),
+            new THREE.MeshPhysicalMaterial({ color: 0xff6633, metalness: 0.5, roughness: 0.5, emissive: 0x331100, emissiveIntensity: 0.4 }),
+            new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.1, roughness: 0.05, transmission: 0.8, thickness: 0.5, transparent: true, opacity: 0.8 })
         ];
 
-        wallPositions.forEach(({ pos, rot }) => {
-            const wallBody = new CANNON.Body({ mass: 0, material: physicsMaterial });
-            wallBody.addShape(new CANNON.Plane());
-            wallBody.position.set(...pos);
-            wallBody.quaternion.setFromEuler(...rot);
-            world.addBody(wallBody);
+        function createFloatingObject(type, position, size) {
+            let geometry;
+            if (type === 'box') {
+                geometry = new THREE.BoxGeometry(size, size, size);
+            } else if (type === 'sphere') {
+                geometry = new THREE.SphereGeometry(size / 2, 24, 24);
+            } else {
+                geometry = new THREE.IcosahedronGeometry(size / 2, 0);
+            }
+
+            const material = objectMaterials[Math.floor(Math.random() * objectMaterials.length)].clone();
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.copy(position);
+            scene.add(mesh);
+
+            const shape = type === 'sphere'
+                ? new CANNON.Sphere(size / 2)
+                : new CANNON.Box(new CANNON.Vec3(size / 2, size / 2, size / 2));
+
+            const body = new CANNON.Body({
+                mass: size * 2,
+                material: physicsMaterial,
+                linearDamping: 0.4,
+                angularDamping: 0.5
+            });
+            body.addShape(shape);
+            body.position.copy(position);
+            world.addBody(body);
+
+            physicsObjects.push({ mesh, body, size, type });
+            return { mesh, body };
+        }
+
+        // Spawn floating objects
+        for (let i = 0; i < 10; i++) {
+            const types = ['box', 'sphere', 'icosahedron'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            const size = 1.2 + Math.random() * 1.2;
+            const position = new THREE.Vector3(
+                (Math.random() - 0.5) * 25,
+                Math.random() * 8 + 5,
+                (Math.random() - 0.5) * 15 - 3
+            );
+            createFloatingObject(type, position, size);
+        }
+
+        // Invisible walls
+        const wallBodies = [];
+        [
+            { pos: [0, 0, -25], rot: [0, 0, 0] },
+            { pos: [0, 0, 15], rot: [0, Math.PI, 0] },
+            { pos: [-35, 0, 0], rot: [0, Math.PI/2, 0] },
+            { pos: [35, 0, 0], rot: [0, -Math.PI/2, 0] },
+            { pos: [0, -8, 0], rot: [-Math.PI/2, 0, 0] }
+        ].forEach(({ pos, rot }) => {
+            const body = new CANNON.Body({ mass: 0, material: physicsMaterial });
+            body.addShape(new CANNON.Plane());
+            body.position.set(...pos);
+            body.quaternion.setFromEuler(...rot);
+            world.addBody(body);
+            wallBodies.push(body);
         });
 
-        // Spawn initial objects
-        function spawnObjects() {
-            for (let i = 0; i < 12; i++) {
-                const x = (Math.random() - 0.5) * 30;
-                const y = Math.random() * 20 + 5;
-                const z = (Math.random() - 0.5) * 20 - 5;
-                const position = new THREE.Vector3(x, y, z);
-                const material = materials[Math.floor(Math.random() * materials.length)].clone();
-                const type = Math.floor(Math.random() * 3);
+        // ============================================
+        // FIRE PARTICLE SYSTEM
+        // ============================================
+        const fireCount = isMobile ? 800 : 1500;
+        const fireGeometry = new THREE.BufferGeometry();
+        const firePositions = new Float32Array(fireCount * 3);
+        const fireColors = new Float32Array(fireCount * 3);
+        const fireSizes = new Float32Array(fireCount);
+        const fireVelocities = [];
+        const fireLifetimes = new Float32Array(fireCount);
 
-                if (type === 0) {
-                    createPhysicsBox(1.5 + Math.random() * 1.5, position, material);
-                } else if (type === 1) {
-                    createPhysicsSphere(0.8 + Math.random() * 0.8, position, material);
-                } else {
-                    createPhysicsIcosahedron(1 + Math.random(), position, material);
-                }
+        // Fire spawn points (corners and edges)
+        const fireSpawns = [
+            { x: -25, z: 8, intensity: 1.2 },
+            { x: 25, z: 8, intensity: 1.2 },
+            { x: -20, z: -15, intensity: 0.8 },
+            { x: 20, z: -15, intensity: 0.8 },
+            { x: 0, z: 12, intensity: 1.5 }
+        ];
+
+        function initFireParticle(i) {
+            const spawn = fireSpawns[Math.floor(Math.random() * fireSpawns.length)];
+            firePositions[i * 3] = spawn.x + (Math.random() - 0.5) * 8;
+            firePositions[i * 3 + 1] = WATER_LEVEL + Math.random() * 2;
+            firePositions[i * 3 + 2] = spawn.z + (Math.random() - 0.5) * 4;
+
+            fireVelocities[i] = {
+                x: (Math.random() - 0.5) * 0.5,
+                y: 2 + Math.random() * 3,
+                z: (Math.random() - 0.5) * 0.3
+            };
+
+            fireLifetimes[i] = Math.random();
+            fireSizes[i] = 0.3 + Math.random() * 0.4;
+
+            // Color: orange to yellow with some green/cyan accents
+            const t = Math.random();
+            if (Math.random() > 0.85) {
+                // Accent particles (green/cyan)
+                fireColors[i * 3] = 0.0;
+                fireColors[i * 3 + 1] = 0.8 + Math.random() * 0.2;
+                fireColors[i * 3 + 2] = 0.5 + Math.random() * 0.5;
+            } else {
+                // Fire colors
+                fireColors[i * 3] = 1.0;
+                fireColors[i * 3 + 1] = 0.3 + t * 0.5;
+                fireColors[i * 3 + 2] = t * 0.2;
             }
         }
 
-        spawnObjects();
-
-        // ============================================
-        // PARTICLE SYSTEM
-        // ============================================
-        const particleCount = 300;
-        const particleGeometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        const colors = new Float32Array(particleCount * 3);
-        const velocities = [];
-
-        for (let i = 0; i < particleCount; i++) {
-            positions[i * 3] = (Math.random() - 0.5) * 80;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 60;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 40 - 10;
-
-            const t = Math.random();
-            colors[i * 3] = t * 0.2;
-            colors[i * 3 + 1] = 0.6 + t * 0.4;
-            colors[i * 3 + 2] = 0.5 + t * 0.5;
-
-            velocities.push({
-                x: (Math.random() - 0.5) * 0.02,
-                y: Math.random() * 0.03 + 0.01,
-                z: (Math.random() - 0.5) * 0.01
-            });
+        for (let i = 0; i < fireCount; i++) {
+            initFireParticle(i);
         }
 
-        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        fireGeometry.setAttribute('position', new THREE.BufferAttribute(firePositions, 3));
+        fireGeometry.setAttribute('color', new THREE.BufferAttribute(fireColors, 3));
+        fireGeometry.setAttribute('size', new THREE.BufferAttribute(fireSizes, 1));
 
-        const particleMaterial = new THREE.PointsMaterial({
-            size: 0.15,
+        const fireMaterial = new THREE.PointsMaterial({
+            size: 0.5,
             vertexColors: true,
             transparent: true,
-            opacity: 0.6,
+            opacity: 0.8,
             blending: THREE.AdditiveBlending,
+            sizeAttenuation: true
         });
 
-        const particles = new THREE.Points(particleGeometry, particleMaterial);
-        scene.add(particles);
+        const fireParticles = new THREE.Points(fireGeometry, fireMaterial);
+        scene.add(fireParticles);
+
+        // Burst fire at position
+        let burstParticles = [];
+        function burstFire(x, y, z, count = 50) {
+            for (let i = 0; i < count; i++) {
+                burstParticles.push({
+                    x: x + (Math.random() - 0.5) * 2,
+                    y: y,
+                    z: z + (Math.random() - 0.5) * 2,
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: 3 + Math.random() * 5,
+                    vz: (Math.random() - 0.5) * 3,
+                    life: 1.0,
+                    color: Math.random() > 0.7 ? 'accent' : 'fire'
+                });
+            }
+            if (burstParticles.length > 200) {
+                burstParticles = burstParticles.slice(-200);
+            }
+        }
 
         // ============================================
-        // TOUCH AND MOUSE INTERACTION
+        // AMBIENT PARTICLES (DUST/SPARKS)
         // ============================================
-        let isInteracting = false;
-        let interactionStart = { x: 0, y: 0 };
-        let lastInteraction = { x: 0, y: 0 };
-        let selectedBody = null;
-        let interactionPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+        const dustCount = isMobile ? 150 : 300;
+        const dustGeometry = new THREE.BufferGeometry();
+        const dustPositions = new Float32Array(dustCount * 3);
+        const dustColors = new Float32Array(dustCount * 3);
+        const dustVelocities = [];
+
+        for (let i = 0; i < dustCount; i++) {
+            dustPositions[i * 3] = (Math.random() - 0.5) * 70;
+            dustPositions[i * 3 + 1] = (Math.random() - 0.5) * 40;
+            dustPositions[i * 3 + 2] = (Math.random() - 0.5) * 40 - 5;
+
+            dustVelocities.push({
+                x: (Math.random() - 0.5) * 0.02,
+                y: 0.01 + Math.random() * 0.02,
+                z: (Math.random() - 0.5) * 0.01
+            });
+
+            const t = Math.random();
+            dustColors[i * 3] = 0.2 + t * 0.3;
+            dustColors[i * 3 + 1] = 0.6 + t * 0.4;
+            dustColors[i * 3 + 2] = 0.8 + t * 0.2;
+        }
+
+        dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+        dustGeometry.setAttribute('color', new THREE.BufferAttribute(dustColors, 3));
+
+        const dustMaterial = new THREE.PointsMaterial({
+            size: 0.12,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.5,
+            blending: THREE.AdditiveBlending
+        });
+
+        const dustParticles = new THREE.Points(dustGeometry, dustMaterial);
+        scene.add(dustParticles);
+
+        // ============================================
+        // MODE TOGGLE
+        // ============================================
+        function setPlayMode(enabled) {
+            playMode = enabled;
+
+            if (enabled) {
+                modeToggle.classList.add('play-mode');
+                modeIcon.textContent = '🎮';
+                modeLabel.textContent = 'PLAY';
+                modeLabel.classList.add('visible', 'play-mode');
+                playHint.classList.add('visible');
+                canvas.style.pointerEvents = 'auto';
+                document.body.style.overflow = 'hidden';
+
+                // Hide hint after 3 seconds
+                setTimeout(() => playHint.classList.remove('visible'), 3000);
+
+                // Reset timeout
+                resetPlayModeTimeout();
+            } else {
+                modeToggle.classList.remove('play-mode');
+                modeIcon.textContent = '🖱️';
+                modeLabel.textContent = 'SCROLL';
+                modeLabel.classList.remove('play-mode');
+                playHint.classList.remove('visible');
+                canvas.style.pointerEvents = 'none';
+                document.body.style.overflow = '';
+
+                clearTimeout(playModeTimeout);
+            }
+        }
+
+        function resetPlayModeTimeout() {
+            clearTimeout(playModeTimeout);
+            playModeTimeout = setTimeout(() => {
+                if (playMode) setPlayMode(false);
+            }, PLAY_MODE_TIMEOUT);
+        }
+
+        modeToggle.addEventListener('click', () => {
+            setPlayMode(!playMode);
+        });
+
+        // Show label on hover
+        modeToggle.addEventListener('mouseenter', () => {
+            modeLabel.classList.add('visible');
+        });
+        modeToggle.addEventListener('mouseleave', () => {
+            if (!playMode) modeLabel.classList.remove('visible');
+        });
+
+        // ============================================
+        // TOUCH/MOUSE INTERACTION
+        // ============================================
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
+        let isInteracting = false;
+        let selectedBody = null;
+        let lastPointer = { x: 0, y: 0 };
+        let longPressTimer = null;
+        let lastTapTime = 0;
 
-        // Convert screen coords to normalized device coords
         function getPointerPos(e) {
             const x = e.touches ? e.touches[0].clientX : e.clientX;
             const y = e.touches ? e.touches[0].clientY : e.clientY;
@@ -1466,160 +1761,149 @@
             };
         }
 
-        // Find physics object under pointer
+        function getWorldPosition(pos, targetY = WATER_LEVEL) {
+            mouse.set(pos.x, pos.y);
+            raycaster.setFromCamera(mouse, camera);
+            const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -targetY);
+            const point = new THREE.Vector3();
+            raycaster.ray.intersectPlane(plane, point);
+            return point;
+        }
+
         function getObjectUnderPointer(pos) {
             mouse.set(pos.x, pos.y);
             raycaster.setFromCamera(mouse, camera);
-
-            const meshes = physicsObjects.map(obj => obj.mesh);
+            const meshes = physicsObjects.map(o => o.mesh);
             const intersects = raycaster.intersectObjects(meshes);
-
             if (intersects.length > 0) {
-                const mesh = intersects[0].object;
-                return physicsObjects.find(obj => obj.mesh === mesh);
+                return physicsObjects.find(o => o.mesh === intersects[0].object);
             }
             return null;
         }
 
-        // Pointer down
         function onPointerDown(e) {
-            // Only interact in hero section
-            const scrollY = window.scrollY;
-            if (scrollY > window.innerHeight * 0.5) return;
+            if (!playMode) return;
+            resetPlayModeTimeout();
 
             const pos = getPointerPos(e);
-            interactionStart = { x: pos.screenX, y: pos.screenY };
-            lastInteraction = { x: pos.screenX, y: pos.screenY };
+            lastPointer = { x: pos.screenX, y: pos.screenY };
 
             const obj = getObjectUnderPointer(pos);
             if (obj) {
                 isInteracting = true;
                 selectedBody = obj.body;
+                selectedBody.linearDamping = 0.9;
                 canvas.style.cursor = 'grabbing';
-
-                // Reduce gravity effect on grabbed object
-                selectedBody.linearDamping = 0.95;
-
-                if (e.touches) {
-                    e.preventDefault();
-                }
             }
+
+            // Long press for fire burst
+            longPressTimer = setTimeout(() => {
+                const worldPos = getWorldPosition(pos, WATER_LEVEL + 2);
+                burstFire(worldPos.x, worldPos.y, worldPos.z, 80);
+                longPressTimer = null;
+            }, 500);
+
+            if (e.touches) e.preventDefault();
         }
 
-        // Pointer move
         function onPointerMove(e) {
-            if (!isInteracting || !selectedBody) return;
+            if (!playMode) return;
+
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
 
             const pos = getPointerPos(e);
-            const deltaX = (pos.screenX - lastInteraction.x) * 0.5;
-            const deltaY = (pos.screenY - lastInteraction.y) * 0.5;
 
-            // Apply force to object
-            const force = new CANNON.Vec3(deltaX * 20, -deltaY * 20, 0);
-            selectedBody.applyImpulse(force, selectedBody.position);
+            if (isInteracting && selectedBody) {
+                const deltaX = (pos.screenX - lastPointer.x) * 0.8;
+                const deltaY = (pos.screenY - lastPointer.y) * 0.8;
 
-            lastInteraction = { x: pos.screenX, y: pos.screenY };
-
-            if (e.touches) {
-                e.preventDefault();
+                selectedBody.applyImpulse(
+                    new CANNON.Vec3(deltaX * 15, -deltaY * 15, 0),
+                    selectedBody.position
+                );
             }
+
+            // Create ripples while dragging
+            if (isInteracting) {
+                const worldPos = getWorldPosition(pos);
+                if (worldPos && Math.random() > 0.7) {
+                    addRipple(worldPos.x, worldPos.z, 0.5);
+                }
+            }
+
+            lastPointer = { x: pos.screenX, y: pos.screenY };
+            if (e.touches) e.preventDefault();
         }
 
-        // Pointer up
         function onPointerUp(e) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+
             if (selectedBody) {
-                // Throw velocity based on last movement
-                const pos = e.changedTouches ?
-                    { screenX: e.changedTouches[0].clientX, screenY: e.changedTouches[0].clientY } :
-                    { screenX: e.clientX, screenY: e.clientY };
+                selectedBody.linearDamping = 0.4;
+            }
 
-                const velocityX = (pos.screenX - lastInteraction.x) * 2;
-                const velocityY = (pos.screenY - lastInteraction.y) * 2;
-
-                selectedBody.velocity.x += velocityX;
-                selectedBody.velocity.y -= velocityY;
-                selectedBody.linearDamping = 0.1;
+            // Create ripple on tap
+            if (playMode && !isInteracting) {
+                const pos = getPointerPos(e.changedTouches ? { touches: [e.changedTouches[0]] } : e);
+                const worldPos = getWorldPosition(pos);
+                if (worldPos) {
+                    addRipple(worldPos.x, worldPos.z, 1.0);
+                }
             }
 
             isInteracting = false;
             selectedBody = null;
-            canvas.style.cursor = 'default';
+            canvas.style.cursor = playMode ? 'pointer' : 'default';
         }
 
-        // Add event listeners
-        canvas.addEventListener('mousedown', onPointerDown);
-        canvas.addEventListener('mousemove', onPointerMove);
-        canvas.addEventListener('mouseup', onPointerUp);
-        canvas.addEventListener('mouseleave', onPointerUp);
-
-        canvas.addEventListener('touchstart', onPointerDown, { passive: false });
-        canvas.addEventListener('touchmove', onPointerMove, { passive: false });
-        canvas.addEventListener('touchend', onPointerUp);
-
-        // Smart touch handling - enable canvas pointer events only in hero area
-        function updateCanvasInteractivity() {
-            const scrollY = window.scrollY;
-            const heroHeight = window.innerHeight;
-
-            if (scrollY < heroHeight * 0.5) {
-                canvas.style.pointerEvents = 'auto';
-            } else {
-                canvas.style.pointerEvents = 'none';
-            }
-        }
-
-        // ============================================
-        // EXPLOSION / DESTRUCTION EFFECT
-        // ============================================
-        function createExplosion(position, force = 30) {
-            physicsObjects.forEach(obj => {
-                const direction = new CANNON.Vec3(
-                    obj.body.position.x - position.x,
-                    obj.body.position.y - position.y,
-                    obj.body.position.z - position.z
-                );
-                const distance = direction.length();
-                if (distance < 15) {
-                    direction.normalize();
-                    const strength = (1 - distance / 15) * force;
-                    direction.scale(strength, direction);
-                    obj.body.applyImpulse(direction, obj.body.position);
-
-                    // Add spin
-                    obj.body.angularVelocity.set(
-                        (Math.random() - 0.5) * 10,
-                        (Math.random() - 0.5) * 10,
-                        (Math.random() - 0.5) * 10
-                    );
-                }
-            });
-        }
-
-        // Double tap/click for explosion
-        let lastTapTime = 0;
         function onDoubleTap(e) {
+            if (!playMode) return;
+
             const now = Date.now();
             if (now - lastTapTime < 300) {
+                // Explosion!
                 const pos = getPointerPos(e);
-                mouse.set(pos.x, pos.y);
-                raycaster.setFromCamera(mouse, camera);
+                const worldPos = getWorldPosition(pos, 0);
 
-                const point = new THREE.Vector3();
-                raycaster.ray.at(20, point);
+                physicsObjects.forEach(obj => {
+                    const dir = new CANNON.Vec3(
+                        obj.body.position.x - worldPos.x,
+                        obj.body.position.y - worldPos.y,
+                        obj.body.position.z - worldPos.z
+                    );
+                    const dist = dir.length();
+                    if (dist < 20) {
+                        dir.normalize();
+                        const force = (1 - dist / 20) * 50;
+                        dir.scale(force, dir);
+                        obj.body.applyImpulse(dir, obj.body.position);
+                        obj.body.angularVelocity.set(
+                            (Math.random() - 0.5) * 15,
+                            (Math.random() - 0.5) * 15,
+                            (Math.random() - 0.5) * 15
+                        );
+                    }
+                });
 
-                createExplosion(point, 40);
-
-                // Spawn new objects occasionally
-                if (physicsObjects.length < 25 && Math.random() > 0.5) {
-                    const material = materials[Math.floor(Math.random() * materials.length)].clone();
-                    createPhysicsSphere(1 + Math.random(), new THREE.Vector3(point.x, point.y + 10, point.z), material);
-                }
+                // Visual feedback
+                addRipple(worldPos.x, worldPos.z, 2.0);
+                burstFire(worldPos.x, WATER_LEVEL, worldPos.z, 100);
             }
             lastTapTime = now;
         }
 
+        canvas.addEventListener('mousedown', onPointerDown);
+        canvas.addEventListener('mousemove', onPointerMove);
+        canvas.addEventListener('mouseup', onPointerUp);
+        canvas.addEventListener('mouseleave', onPointerUp);
         canvas.addEventListener('click', onDoubleTap);
+
+        canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+        canvas.addEventListener('touchmove', onPointerMove, { passive: false });
         canvas.addEventListener('touchend', (e) => {
+            onPointerUp(e);
             if (e.changedTouches.length === 1) {
                 onDoubleTap({ clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY });
             }
@@ -1637,15 +1921,19 @@
                     const heroHeight = window.innerHeight;
                     const scrollPercent = Math.min(scrollY / heroHeight, 1);
 
-                    // Fade out canvas
                     canvas.style.opacity = Math.max(0, 1 - scrollPercent * 1.5);
-
-                    // Fade and move hero content
                     heroContent.style.opacity = Math.max(0, 1 - scrollPercent * 2);
                     heroContent.style.transform = `translateY(${scrollPercent * -50}px)`;
 
-                    // Update canvas interactivity
-                    updateCanvasInteractivity();
+                    // Hide mode toggle when scrolled
+                    modeToggle.style.opacity = scrollPercent > 0.3 ? '0' : '1';
+                    modeToggle.style.pointerEvents = scrollPercent > 0.3 ? 'none' : 'auto';
+                    modeLabel.style.opacity = scrollPercent > 0.3 ? '0' : '';
+
+                    // Auto-disable play mode when scrolled
+                    if (scrollPercent > 0.3 && playMode) {
+                        setPlayMode(false);
+                    }
 
                     ticking = false;
                 });
@@ -1659,76 +1947,122 @@
         // ANIMATION LOOP
         // ============================================
         const clock = new THREE.Clock();
-        let showedHint = false;
 
         function animate() {
             requestAnimationFrame(animate);
 
             const delta = Math.min(clock.getDelta(), 0.05);
+            const time = clock.elapsedTime;
 
             // Update physics
             world.step(1 / 60, delta, 3);
 
-            // Sync Three.js meshes with Cannon.js bodies
+            // Apply buoyancy to floating objects
             physicsObjects.forEach(obj => {
                 obj.mesh.position.copy(obj.body.position);
                 obj.mesh.quaternion.copy(obj.body.quaternion);
 
-                // Reset objects that fall too far
-                if (obj.body.position.y < -20) {
+                // Buoyancy
+                const waterY = WATER_LEVEL + Math.sin(obj.body.position.x * 0.5 + time * 1.5) * 0.3;
+                if (obj.body.position.y < waterY + obj.size / 2) {
+                    const submerged = Math.min(1, (waterY + obj.size / 2 - obj.body.position.y) / obj.size);
+                    const buoyancy = new CANNON.Vec3(0, BUOYANCY_FORCE * submerged, 0);
+                    obj.body.applyForce(buoyancy, obj.body.position);
+
+                    // Water drag
+                    obj.body.velocity.x *= 0.98;
+                    obj.body.velocity.z *= 0.98;
+                }
+
+                // Reset fallen objects
+                if (obj.body.position.y < -10) {
                     obj.body.position.set(
                         (Math.random() - 0.5) * 20,
-                        25 + Math.random() * 10,
-                        (Math.random() - 0.5) * 15
+                        15 + Math.random() * 5,
+                        (Math.random() - 0.5) * 10
                     );
                     obj.body.velocity.set(0, 0, 0);
                     obj.body.angularVelocity.set(0, 0, 0);
                 }
             });
 
-            // Animate particles
-            const particlePositions = particles.geometry.attributes.position.array;
-            for (let i = 0; i < particleCount; i++) {
-                particlePositions[i * 3] += velocities[i].x;
-                particlePositions[i * 3 + 1] += velocities[i].y;
-                particlePositions[i * 3 + 2] += velocities[i].z;
+            // Update water shader
+            waterMaterial.uniforms.uTime.value = time;
 
-                if (particlePositions[i * 3 + 1] > 35) {
-                    particlePositions[i * 3 + 1] = -35;
-                }
-                if (Math.abs(particlePositions[i * 3]) > 45) {
-                    velocities[i].x *= -1;
+            // Update ripples
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                ripples[i].time += delta;
+                if (ripples[i].time > ripples[i].maxTime) {
+                    ripples.splice(i, 1);
                 }
             }
-            particles.geometry.attributes.position.needsUpdate = true;
+            for (let i = 0; i < 10; i++) {
+                const ripple = ripples[i];
+                if (ripple) {
+                    waterMaterial.uniforms[`uRipple${i}`].value.set(
+                        ripple.x, ripple.z, ripple.time, ripple.strength
+                    );
+                } else {
+                    waterMaterial.uniforms[`uRipple${i}`].value.set(0, 0, 0, 0);
+                }
+            }
+
+            // Update fire particles
+            const firePos = fireParticles.geometry.attributes.position.array;
+            for (let i = 0; i < fireCount; i++) {
+                fireLifetimes[i] += delta * (0.5 + Math.random() * 0.5);
+
+                if (fireLifetimes[i] > 1) {
+                    initFireParticle(i);
+                } else {
+                    firePos[i * 3] += fireVelocities[i].x * delta * 60;
+                    firePos[i * 3 + 1] += fireVelocities[i].y * delta * 60;
+                    firePos[i * 3 + 2] += fireVelocities[i].z * delta * 60;
+
+                    // Turbulence
+                    firePos[i * 3] += Math.sin(time * 5 + i) * 0.02;
+                    fireVelocities[i].y += delta * 0.5;
+                }
+            }
+            fireParticles.geometry.attributes.position.needsUpdate = true;
+
+            // Update burst particles (simplified - just fade out)
+            burstParticles = burstParticles.filter(p => {
+                p.life -= delta * 2;
+                return p.life > 0;
+            });
+
+            // Update dust particles
+            const dustPos = dustParticles.geometry.attributes.position.array;
+            for (let i = 0; i < dustCount; i++) {
+                dustPos[i * 3] += dustVelocities[i].x;
+                dustPos[i * 3 + 1] += dustVelocities[i].y;
+                dustPos[i * 3 + 2] += dustVelocities[i].z;
+
+                if (dustPos[i * 3 + 1] > 25) dustPos[i * 3 + 1] = -15;
+                if (Math.abs(dustPos[i * 3]) > 40) dustVelocities[i].x *= -1;
+            }
+            dustParticles.geometry.attributes.position.needsUpdate = true;
 
             // Animate lights
-            const time = Date.now() * 0.001;
-            lights[0].light.position.x = Math.sin(time * 0.5) * 20;
-            lights[0].light.position.y = 10 + Math.cos(time * 0.3) * 5;
-            lights[1].light.position.x = Math.cos(time * 0.4) * 20;
-            lights[1].light.position.z = Math.sin(time * 0.5) * 15;
-            lights[2].light.position.y = 15 + Math.sin(time * 0.6) * 8;
+            greenLight.position.x = -15 + Math.sin(time * 0.5) * 5;
+            greenLight.intensity = 2 + Math.sin(time * 2) * 0.5;
+            cyanLight.position.x = 15 + Math.cos(time * 0.4) * 5;
+            fireLight.intensity = 3 + Math.sin(time * 8) * 1;
+            fireLight.position.x = Math.sin(time * 0.3) * 10;
 
             // Camera sway
-            camera.position.x = Math.sin(time * 0.2) * 2;
-            camera.position.y = 5 + Math.cos(time * 0.15) * 1;
-            camera.lookAt(0, 0, -5);
+            camera.position.x = Math.sin(time * 0.15) * 1.5;
+            camera.position.y = 8 + Math.cos(time * 0.1) * 0.5;
+            camera.lookAt(0, -1, -3);
 
             renderer.render(scene, camera);
-
-            // Show touch hint after 2 seconds
-            if (!showedHint && clock.elapsedTime > 2) {
-                touchHint.classList.add('visible');
-                showedHint = true;
-                setTimeout(() => touchHint.classList.remove('visible'), 4000);
-            }
         }
 
         animate();
 
         // ============================================
-        // RESIZE HANDLER
+        // RESIZE
         // ============================================
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -1737,7 +2071,7 @@
         });
 
         // Initial state
-        updateCanvasInteractivity();
+        canvas.style.pointerEvents = 'none';
     </script>
 </body>
 </html>
