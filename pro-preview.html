@@ -548,6 +548,99 @@
             .footer-grid { grid-template-columns: 1fr; }
             .quick-links { grid-template-columns: 1fr; }
         }
+
+        /* Workflow Details Expandables */
+        .workflow-details {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .workflow-details summary {
+            padding: 16px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.2s;
+            list-style: none;
+        }
+
+        .workflow-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .workflow-details summary::before {
+            content: '▶';
+            font-size: 0.7rem;
+            color: var(--primary);
+            transition: transform 0.2s;
+        }
+
+        .workflow-details[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        .workflow-details summary:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .workflow-details .detail-content {
+            padding: 0 20px 20px 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .workflow-details .detail-content p {
+            margin: 16px 0 0 0;
+        }
+
+        .workflow-details .detail-content ul,
+        .workflow-details .detail-content ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .workflow-details .detail-content li {
+            margin: 8px 0;
+            color: var(--text-secondary);
+        }
+
+        .workflow-details .detail-content .code-block {
+            margin: 16px 0;
+        }
+
+        .workflow-details .detail-content h4 {
+            color: var(--primary);
+            margin-top: 16px;
+        }
+
+        .workflow-details .detail-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+
+        .workflow-details .detail-content table th,
+        .workflow-details .detail-content table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .workflow-details .detail-content table th {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .workflow-details .detail-content table td {
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -978,6 +1071,259 @@ Claude reads this file at the start of every session.</pre>
             </div>
 
             <p><strong>Key insight:</strong> Every mistake becomes a permanent rule. When Claude does something wrong, add it to CLAUDE.md. It won't make that mistake again.</p>
+
+            <h2>Pro Workflow Patterns</h2>
+            <p style="margin-bottom: 24px;">These advanced patterns maximize productivity for AI-assisted development. Run sessions for 24+ hours, use millions of tokens, with completely autonomous operation.</p>
+
+            <details class="workflow-details">
+                <summary>Parallel Sessions: Run 5-10 Claudes Simultaneously</summary>
+                <div class="detail-content">
+                    <p>Don't wait. While one Claude is thinking, prompt another.</p>
+                    <ul>
+                        <li>Run 5 terminal Claudes in numbered tabs (1-5)</li>
+                        <li>Run 5-10 more on claude.ai/code in parallel</li>
+                        <li>Use <code>--teleport</code> to transfer sessions between terminal and web</li>
+                        <li>Start sessions from phone, check back later</li>
+                    </ul>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Terminal</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># Background a session and hand off to web
+claude &
+# Use --teleport to move sessions between devices
+claude --teleport</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="workflow-details">
+                <summary>Model Selection: Always Use Opus 4.5 with Thinking</summary>
+                <div class="detail-content">
+                    <p>Bigger models are actually faster in practice.</p>
+                    <ul>
+                        <li>Less steering required — Opus understands context better</li>
+                        <li>Better at tool use — fewer errors, less back-and-forth</li>
+                        <li>Almost always faster end-to-end despite being "slower"</li>
+                    </ul>
+                    <p><strong>The math:</strong> If Sonnet needs 5 back-and-forth corrections but Opus gets it right first try, Opus wins every time.</p>
+                </div>
+            </details>
+
+            <details class="workflow-details">
+                <summary>Plan Mode First: Think Before Coding</summary>
+                <div class="detail-content">
+                    <p>Most sessions should start in Plan mode.</p>
+                    <ol>
+                        <li>Enter Plan mode: <code>shift+tab</code> twice</li>
+                        <li>Describe what you want</li>
+                        <li>Go back and forth until the plan is solid</li>
+                        <li>Switch to auto-accept mode</li>
+                        <li>Claude 1-shots the implementation</li>
+                    </ol>
+                    <p><strong>Why:</strong> A good plan is the foundation. You catch architectural issues before code is written. Much faster than fixing bad code.</p>
+                </div>
+            </details>
+
+            <details class="workflow-details">
+                <summary>Slash Commands: Automate Inner Loops</summary>
+                <div class="detail-content">
+                    <p>Create commands for workflows you do multiple times per day.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">.claude/commands/commit-push-pr.md</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># /commit-push-pr
+
+1. Run git status to see changes
+2. Create a commit message based on the diff
+3. Push to origin
+4. Create a PR with a summary of changes
+5. Return the PR URL</pre>
+                    </div>
+                    <p>Now just type <code>/commit-push-pr</code> and it's done.</p>
+                </div>
+            </details>
+
+            <details class="workflow-details">
+                <summary>Subagents: Specialized AI Workers</summary>
+                <div class="detail-content">
+                    <p>Create agents for specific tasks. Claude can spawn these itself.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">.claude/agents/ directory structure</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>├── code-simplifier.md    # Cleanup after implementation
+├── code-architect.md     # Architectural decisions
+├── verify-app.md         # End-to-end testing
+├── build-validator.md    # Validate builds
+└── oncall-guide.md       # Production issue handling</pre>
+                    </div>
+                    <p><strong>code-simplifier:</strong> Run as a cleanup pass. Reduces complexity, improves readability.</p>
+                    <p><strong>verify-app:</strong> Step-by-step testing procedures. Ensures nothing breaks before shipping.</p>
+                </div>
+            </details>
+
+            <details class="workflow-details">
+                <summary>PostToolUse Hooks: Auto-Format Everything</summary>
+                <div class="detail-content">
+                    <p>Run commands automatically after Claude edits files.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">.claude/settings.json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "command": "npm run format || true"
+      }
+    ]
+  }
+}</pre>
+                    </div>
+                    <p>Claude generates well-formatted code 90% of the time. The hook handles the last 10%. <code>|| true</code> prevents formatting errors from blocking work.</p>
+                </div>
+            </details>
+
+            <details class="workflow-details">
+                <summary>Smart Permissions: Pre-Allow Safe Commands</summary>
+                <div class="detail-content">
+                    <p>Don't use full autonomous mode on sensitive systems. Instead, pre-allow specific commands.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">/permissions (pre-allowed commands)</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Bash(npm run build:*)
+Bash(npm run test:*)
+Bash(npm run lint:*)
+Bash(git status:*)
+Bash(git diff:*)
+Bash(git log:*)</pre>
+                    </div>
+                    <p>Check these into <code>.claude/settings.json</code> and share with your team.</p>
+                </div>
+            </details>
+
+            <details class="workflow-details">
+                <summary>MCP Servers: Connect Any Tool</summary>
+                <div class="detail-content">
+                    <p>Claude Code can use external tools via MCP (Model Context Protocol).</p>
+                    <ul>
+                        <li>Search and post to Slack</li>
+                        <li>Query databases (BigQuery, Postgres)</li>
+                        <li>Grab error logs from Sentry</li>
+                        <li>Any tool with an MCP server</li>
+                    </ul>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">.mcp.json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "mcpServers": {
+    "slack": {
+      "type": "http",
+      "url": "https://slack.mcp.anthropic.com/mcp"
+    }
+  }
+}</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="workflow-details">
+                <summary>Long-Running Tasks: Let Claude Cook</summary>
+                <div class="detail-content">
+                    <p>Start a task, walk away. Check back hours later.</p>
+                    <ul>
+                        <li><strong>Background Agent Verification:</strong> Prompt Claude to verify its own work when done</li>
+                        <li><strong>Agent Stop Hook:</strong> Trigger verification deterministically when Claude finishes</li>
+                        <li><strong>ralph-wiggum Plugin:</strong> Community plugin for long-running autonomous sessions</li>
+                    </ul>
+                    <p><strong>Real example:</strong> Sessions can run for over a day using millions of tokens. Completely autonomous while you sleep.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Autonomous Mode Commands</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># Full autonomous mode (sandboxed environments only)
+claude --dangerously-skip-permissions
+
+# Or permission mode that doesn't ask
+claude --permission-mode=dontAsk</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="workflow-details" open>
+                <summary>Verification: The 2-3x Quality Multiplier</summary>
+                <div class="detail-content">
+                    <p><strong>This is the most important insight.</strong> If Claude has a feedback loop, it will 2-3x the quality of the final result.</p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <th style="text-align: left; padding: 8px; color: var(--primary);">Domain</th>
+                            <th style="text-align: left; padding: 8px; color: var(--primary);">Verification Method</th>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 8px;">Web UI</td>
+                            <td style="padding: 8px;">Chrome extension — opens browser, tests UI, iterates</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 8px;">CLI Tools</td>
+                            <td style="padding: 8px;">Run bash commands, check exit codes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 8px;">Libraries</td>
+                            <td style="padding: 8px;">Run test suite after changes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 8px;">Mobile Apps</td>
+                            <td style="padding: 8px;">Phone simulator or device testing</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;">Games</td>
+                            <td style="padding: 8px;">Serve locally, screenshot, visual check</td>
+                        </tr>
+                    </table>
+                    <p><strong>Key insight:</strong> "Verification looks different for each domain. Make sure to invest in making this rock-solid. It's the highest-leverage improvement you can make."</p>
+                </div>
+            </details>
+
+            <details class="workflow-details">
+                <summary>Mobile/Terminal Adaptations</summary>
+                <div class="detail-content">
+                    <p>Special considerations for Android development:</p>
+                    <ul>
+                        <li>Target 30fps minimum on mobile devices</li>
+                        <li>Use Termux:API for hardware access, not raw intents</li>
+                        <li>Test Three.js games on actual device, not just browser</li>
+                    </ul>
+                    <h4 style="margin-top: 16px;">Mobile Verification Loop:</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Terminal — Verification Workflow</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># 1. Serve locally
+npx http-server -p 8080
+
+# 2. Capture screenshot
+termux-screenshot ~/screenshot.png
+
+# 3. Notify when done
+termux-notification -t "Build complete"
+
+# 4. Check screenshot or feed back to Claude</pre>
+                    </div>
+                </div>
+            </details>
 
             <h2>Dual-Repo Deployment</h2>
             <p>How to push to multiple repos (source + deployment):</p>
