@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MobileDevCLI - Full dev environment in your pocket</title>
-    <meta name="description" content="Turn any Android phone into a complete AI-powered coding environment with one command. Claude Code + Termux = coding anywhere.">
-    <meta name="keywords" content="mobile development, termux, claude code, android coding, ai coding assistant">
+    <meta name="description" content="Turn any Android phone into a complete AI-powered coding environment. Tutorials, resources, research, and tools for mobile developers.">
+    <meta name="keywords" content="mobile development, termux, claude code, android coding, ai coding assistant, boris cherny">
     <link rel="canonical" href="https://mobilecli.com">
 
     <!-- Open Graph -->
@@ -29,13 +29,16 @@
 
         :root {
             --bg: #0a0a0a;
-            --bg-secondary: #111111;
+            --bg-secondary: #0f0f0f;
             --bg-tertiary: #1a1a1a;
+            --bg-card: #111111;
             --text: #ffffff;
             --text-secondary: #888888;
+            --text-muted: #555555;
             --accent-1: #00ff88;
             --accent-2: #00d4ff;
             --gradient: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            --border: #222222;
         }
 
         body {
@@ -49,13 +52,30 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
+        }
+
+        a {
+            color: var(--accent-1);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        a:hover {
+            opacity: 0.8;
         }
 
         /* Navigation */
         nav {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--bg-tertiary);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 0;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
         }
 
         nav .container {
@@ -65,7 +85,7 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             background: var(--gradient);
             -webkit-background-clip: text;
@@ -75,28 +95,45 @@
 
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 32px;
         }
 
         .nav-links a {
             color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .nav-links a:hover {
             color: var(--text);
+            opacity: 1;
         }
 
         /* Hero */
         .hero {
-            padding: 100px 0;
+            padding: 160px 0 100px;
             text-align: center;
         }
 
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span {
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -104,21 +141,25 @@
         }
 
         .hero .tagline {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             color: var(--text-secondary);
-            margin-bottom: 50px;
+            margin-bottom: 48px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .code-block {
-            background: var(--bg-secondary);
-            border: 1px solid var(--bg-tertiary);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 20px 30px;
-            display: inline-block;
+            padding: 20px 32px;
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            position: relative;
+            font-size: 1rem;
+            margin-bottom: 32px;
         }
 
         .code-block code {
@@ -126,123 +167,235 @@
         }
 
         .code-block .prompt {
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
         .copy-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
             background: var(--bg-tertiary);
-            border: none;
+            border: 1px solid var(--border);
             color: var(--text-secondary);
-            padding: 8px 12px;
+            padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
+            font-size: 0.85rem;
+            transition: all 0.2s;
         }
 
         .copy-btn:hover {
             background: var(--accent-1);
             color: var(--bg);
+            border-color: var(--accent-1);
         }
 
         .cta-buttons {
             display: flex;
-            gap: 20px;
+            gap: 16px;
             justify-content: center;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 15px 30px;
+            padding: 14px 28px;
             border-radius: 8px;
-            text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
-            background: var(--gradient);
+            background: var(--text);
             color: var(--bg);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+            opacity: 1;
         }
 
         .btn-secondary {
             background: transparent;
             color: var(--text);
-            border: 1px solid var(--bg-tertiary);
+            border: 1px solid var(--border);
         }
 
         .btn-secondary:hover {
-            border-color: var(--accent-1);
+            border-color: var(--text-secondary);
+            opacity: 1;
         }
 
-        /* Features */
-        .features {
-            padding: 80px 0;
+        /* Section Styles */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-1);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 48px;
+        }
+
+        /* Resources Grid */
+        .resources {
             background: var(--bg-secondary);
         }
 
-        .features h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-        }
-
-        .features-grid {
+        .resources-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
         }
 
-        .feature-card {
-            background: var(--bg);
-            border: 1px solid var(--bg-tertiary);
+        .resource-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 30px;
-            transition: all 0.3s;
+            padding: 28px;
+            transition: all 0.2s;
         }
 
-        .feature-card:hover {
+        .resource-card:hover {
+            border-color: var(--text-muted);
+            transform: translateY(-4px);
+        }
+
+        .resource-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .resource-card h3 .icon {
+            font-size: 1.5rem;
+        }
+
+        .resource-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .resource-card .link {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Essential Downloads */
+        .downloads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .download-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s;
+        }
+
+        .download-card:hover {
             border-color: var(--accent-1);
-            transform: translateY(-5px);
+            opacity: 1;
         }
 
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+        .download-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
         }
 
-        .feature-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
+        .download-info h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
         }
 
-        .feature-card p {
+        .download-info p {
+            font-size: 0.85rem;
             color: var(--text-secondary);
         }
 
+        /* Research Section */
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .research-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.2s;
+        }
+
+        .research-card:hover {
+            border-color: var(--text-muted);
+        }
+
+        .research-card .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            color: var(--accent-1);
+            margin-bottom: 16px;
+        }
+
+        .research-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+        }
+
+        .research-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .research-card .author {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
         /* Steps */
-        .steps {
-            padding: 80px 0;
-        }
-
-        .steps h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-        }
-
         .steps-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
         }
 
         .step {
@@ -250,60 +403,46 @@
         }
 
         .step-number {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             background: var(--gradient);
-            border-radius: 50%;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--bg);
             margin: 0 auto 20px;
         }
 
         .step h3 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
         }
 
         .step p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         /* Newsletter */
         .newsletter {
-            padding: 80px 0;
             background: var(--bg-secondary);
             text-align: center;
         }
 
-        .newsletter h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-
-        .newsletter p {
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-        }
-
         .newsletter-form {
             display: flex;
-            gap: 10px;
-            max-width: 500px;
+            gap: 12px;
+            max-width: 480px;
             margin: 0 auto;
-            flex-wrap: wrap;
-            justify-content: center;
         }
 
         .newsletter-form input {
             flex: 1;
-            min-width: 250px;
-            padding: 15px 20px;
-            border: 1px solid var(--bg-tertiary);
+            padding: 16px 20px;
+            border: 1px solid var(--border);
             border-radius: 8px;
             background: var(--bg);
             color: var(--text);
@@ -316,77 +455,139 @@
         }
 
         .newsletter-form button {
-            padding: 15px 30px;
-            background: var(--gradient);
+            padding: 16px 32px;
+            background: var(--text);
             border: none;
             border-radius: 8px;
             color: var(--bg);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
         .newsletter-form button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
         }
 
         /* Footer */
         footer {
-            padding: 40px 0;
-            border-top: 1px solid var(--bg-tertiary);
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
         }
 
-        footer .container {
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-brand p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 16px;
+            max-width: 300px;
+        }
+
+        .footer-column h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-column a:hover {
+            color: var(--text);
+        }
+
+        .footer-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 30px;
-        }
-
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent-1);
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
         }
 
         .copyright {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
             color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         /* Responsive */
+        @media (max-width: 968px) {
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.5rem;
             }
 
             .hero .tagline {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
 
             .code-block {
-                font-size: 0.9rem;
-                padding: 15px 20px;
-                padding-right: 80px;
+                flex-direction: column;
+                padding: 16px 20px;
+                font-size: 0.85rem;
             }
 
             .nav-links {
                 display: none;
             }
 
-            .features h2,
-            .steps h2 {
+            .section-title {
                 font-size: 2rem;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
             }
         }
     </style>
@@ -394,118 +595,275 @@
 <body>
     <nav>
         <div class="container">
-            <div class="logo">MobileDevCLI</div>
+            <a href="/" class="logo">MobileDevCLI</a>
             <div class="nav-links">
+                <a href="#resources">Resources</a>
+                <a href="#research">Research</a>
+                <a href="#setup">Setup</a>
                 <a href="https://github.com/MobileDevCLI">GitHub</a>
                 <a href="https://twitter.com/MobileDevCLI">Twitter</a>
             </div>
         </div>
     </nav>
 
+    <!-- Hero -->
     <section class="hero">
         <div class="container">
-            <h1>MobileDevCLI</h1>
-            <p class="tagline">Full dev environment in your pocket</p>
+            <div class="hero-badge">Powered by Claude Code + Termux</div>
+            <h1>Full dev environment<br><span>in your pocket</span></h1>
+            <p class="tagline">Turn any Android phone into a complete AI-powered coding environment. One command. Zero complexity.</p>
 
             <div class="code-block">
-                <span class="prompt">$</span> <code>curl -sL mobilecli.com/setup.sh | bash</code>
+                <span><span class="prompt">$</span> <code>curl -sL https://raw.githubusercontent.com/MobileDevCLI/setup/main/setup.sh | bash</code></span>
                 <button class="copy-btn" onclick="copyCode()">Copy</button>
             </div>
 
             <div class="cta-buttons">
-                <a href="https://github.com/MobileDevCLI/setup" class="btn btn-primary">Get Started</a>
-                <a href="https://github.com/MobileDevCLI/setup#readme" class="btn btn-secondary">Documentation</a>
+                <a href="https://github.com/MobileDevCLI/setup" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    Get Started
+                </a>
+                <a href="#resources" class="btn btn-secondary">View Resources</a>
             </div>
         </div>
     </section>
 
-    <section class="features">
+    <!-- Essential Downloads -->
+    <section id="resources">
         <div class="container">
-            <h2>Everything You Need</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">&#129302;</div>
-                    <h3>Claude Code</h3>
-                    <p>Anthropic's AI coding assistant. Write, debug, and ship code with natural language.</p>
+            <div class="section-label">Essential Apps</div>
+            <h2 class="section-title">Everything you need</h2>
+            <p class="section-desc">Download these apps to set up your mobile development environment.</p>
+
+            <div class="downloads-grid">
+                <a href="https://f-droid.org/packages/com.termux/" class="download-card" target="_blank">
+                    <div class="download-icon">></div>
+                    <div class="download-info">
+                        <h4>Termux</h4>
+                        <p>Linux terminal emulator for Android</p>
+                    </div>
+                </a>
+                <a href="https://f-droid.org/packages/com.termux.api/" class="download-card" target="_blank">
+                    <div class="download-icon">+</div>
+                    <div class="download-info">
+                        <h4>Termux:API</h4>
+                        <p>Access Android hardware from terminal</p>
+                    </div>
+                </a>
+                <a href="https://f-droid.org/packages/com.termux.widget/" class="download-card" target="_blank">
+                    <div class="download-icon">W</div>
+                    <div class="download-info">
+                        <h4>Termux:Widget</h4>
+                        <p>Home screen shortcuts for scripts</p>
+                    </div>
+                </a>
+                <a href="https://f-droid.org/packages/com.termux.styling/" class="download-card" target="_blank">
+                    <div class="download-icon">S</div>
+                    <div class="download-info">
+                        <h4>Termux:Styling</h4>
+                        <p>Customize colors and fonts</p>
+                    </div>
+                </a>
+                <a href="https://f-droid.org/packages/com.termux.boot/" class="download-card" target="_blank">
+                    <div class="download-icon">B</div>
+                    <div class="download-info">
+                        <h4>Termux:Boot</h4>
+                        <p>Run scripts on device boot</p>
+                    </div>
+                </a>
+                <a href="https://f-droid.org/packages/com.termux.float/" class="download-card" target="_blank">
+                    <div class="download-icon">F</div>
+                    <div class="download-info">
+                        <h4>Termux:Float</h4>
+                        <p>Floating terminal window</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources -->
+    <section class="resources">
+        <div class="container">
+            <div class="section-label">Documentation</div>
+            <h2 class="section-title">Learn & Build</h2>
+            <p class="section-desc">Resources to master mobile development with AI.</p>
+
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h3><span class="icon">&#128218;</span> Claude Code Docs</h3>
+                    <p>Official documentation for Claude Code - Anthropic's AI coding assistant in your terminal.</p>
+                    <a href="https://docs.anthropic.com/en/docs/claude-code" class="link" target="_blank">docs.anthropic.com/claude-code &rarr;</a>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#9889;</div>
-                    <h3>Boris Mode</h3>
-                    <p>Full autonomous mode. No permission prompts. Just you and Claude building together.</p>
+                <div class="resource-card">
+                    <h3><span class="icon">&#128187;</span> Termux Wiki</h3>
+                    <p>Complete guide to Termux - packages, configuration, tips and tricks for power users.</p>
+                    <a href="https://wiki.termux.com" class="link" target="_blank">wiki.termux.com &rarr;</a>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128241;</div>
-                    <h3>Termux Power</h3>
-                    <p>Real Linux environment on Android. Git, Node.js, and everything you need.</p>
+                <div class="resource-card">
+                    <h3><span class="icon">&#128640;</span> MobileDevCLI Setup</h3>
+                    <p>Our main setup repository. One-command installation for Claude Code on Termux.</p>
+                    <a href="https://github.com/MobileDevCLI/setup" class="link" target="_blank">github.com/MobileDevCLI/setup &rarr;</a>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128640;</div>
-                    <h3>One Command</h3>
-                    <p>From zero to coding in minutes. No complex setup. Just copy, paste, code.</p>
+                <div class="resource-card">
+                    <h3><span class="icon">&#129302;</span> Boris Cherny</h3>
+                    <p>Creator of Claude Code. Follow his work on building AI-powered development tools.</p>
+                    <a href="https://twitter.com/bcherny" class="link" target="_blank">@bcherny on Twitter &rarr;</a>
+                </div>
+                <div class="resource-card">
+                    <h3><span class="icon">&#128736;</span> Claude Code GitHub</h3>
+                    <p>Official Claude Code repository. Issues, discussions, and community contributions.</p>
+                    <a href="https://github.com/anthropics/claude-code" class="link" target="_blank">github.com/anthropics/claude-code &rarr;</a>
+                </div>
+                <div class="resource-card">
+                    <h3><span class="icon">&#127891;</span> Anthropic Research</h3>
+                    <p>Research papers and publications from Anthropic on AI safety and capabilities.</p>
+                    <a href="https://www.anthropic.com/research" class="link" target="_blank">anthropic.com/research &rarr;</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="steps">
+    <!-- Research Papers -->
+    <section id="research">
         <div class="container">
-            <h2>Get Started in 4 Steps</h2>
+            <div class="section-label">Research</div>
+            <h2 class="section-title">Papers & Publications</h2>
+            <p class="section-desc">Research on mobile AI development, workflows, and best practices.</p>
+
+            <div class="research-grid">
+                <div class="research-card">
+                    <span class="tag">Workflow</span>
+                    <h3>Claude Code Best Practices</h3>
+                    <p>Complete workflow guide from Boris Cherny on maximizing productivity with Claude Code. Parallel sessions, plan mode, slash commands, and verification loops.</p>
+                    <span class="author">Boris Cherny &bull; January 2026</span>
+                </div>
+                <div class="research-card">
+                    <span class="tag">Mobile Dev</span>
+                    <h3>Mobile-First AI Development</h3>
+                    <p>How to build full applications from your phone. Termux optimization, battery management, and mobile-specific workflows.</p>
+                    <span class="author">MobileDevCLI &bull; Coming Soon</span>
+                </div>
+                <div class="research-card">
+                    <span class="tag">AI Safety</span>
+                    <h3>Constitutional AI</h3>
+                    <p>Anthropic's approach to training AI systems that are helpful, harmless, and honest through constitutional methods.</p>
+                    <span class="author">Anthropic Research</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Setup Steps -->
+    <section id="setup" class="resources">
+        <div class="container">
+            <div class="section-label">Quick Start</div>
+            <h2 class="section-title">Get started in 4 steps</h2>
+            <p class="section-desc">From zero to coding in under 5 minutes.</p>
+
             <div class="steps-grid">
                 <div class="step">
                     <div class="step-number">1</div>
                     <h3>Install Termux</h3>
-                    <p>Download Termux from F-Droid or Google Play Store</p>
+                    <p>Download from F-Droid for the latest version with all features enabled.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">2</div>
                     <h3>Run Setup</h3>
-                    <p>Paste the curl command and let it install everything</p>
+                    <p>Paste the curl command. It installs Node.js, Git, GitHub CLI, and Claude Code.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
                     <h3>Login to GitHub</h3>
-                    <p>Run gh auth login to connect your account</p>
+                    <p>Run <code>gh auth login</code> to connect your GitHub account.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">4</div>
                     <h3>Start Coding</h3>
-                    <p>Type cc and start building with Claude</p>
+                    <p>Type <code>cc</code> and start building with Claude in Boris Mode.</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Newsletter -->
     <section class="newsletter">
         <div class="container">
-            <h2>Stay Updated</h2>
-            <p>Get notified about new features and updates.</p>
-            <form class="newsletter-form" action="https://formspree.io/f/your-form-id" method="POST">
-                <input type="email" name="email" placeholder="Enter your email" required>
+            <div class="section-label">Newsletter</div>
+            <h2 class="section-title">Stay in the loop</h2>
+            <p class="section-desc">Get updates on new tools, tutorials, and mobile dev tips. No spam, ever.</p>
+            <form class="newsletter-form" action="https://formspree.io/f/placeholder" method="POST">
+                <input type="email" name="email" placeholder="you@example.com" required>
                 <button type="submit">Subscribe</button>
             </form>
         </div>
     </section>
 
+    <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="footer-links">
-                <a href="https://github.com/MobileDevCLI">GitHub</a>
-                <a href="https://twitter.com/MobileDevCLI">Twitter</a>
-                <a href="mailto:mobiledevcli@gmail.com">Contact</a>
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">MobileDevCLI</div>
+                    <p>Full dev environment in your pocket. Build anything, anywhere, with AI.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/MobileDevCLI/setup">Setup Script</a></li>
+                        <li><a href="https://github.com/MobileDevCLI/setup#readme">Documentation</a></li>
+                        <li><a href="https://f-droid.org/packages/com.termux/">Termux</a></li>
+                        <li><a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/MobileDevCLI">GitHub</a></li>
+                        <li><a href="https://twitter.com/MobileDevCLI">Twitter</a></li>
+                        <li><a href="https://reddit.com/r/termux">r/termux</a></li>
+                        <li><a href="https://discord.gg/termux">Discord</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>More</h4>
+                    <ul>
+                        <li><a href="https://twitter.com/bcherny">Boris Cherny</a></li>
+                        <li><a href="https://anthropic.com">Anthropic</a></li>
+                        <li><a href="mailto:mobiledev.li@gmail.com">Contact</a></li>
+                    </ul>
+                </div>
             </div>
-            <p class="copyright">&copy; 2025 MobileDevCLI. MIT License.</p>
+            <div class="footer-bottom">
+                <p class="copyright">&copy; 2025 MobileDevCLI. MIT License.</p>
+                <div class="social-links">
+                    <a href="https://github.com/MobileDevCLI">GitHub</a>
+                    <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+                    <a href="mailto:mobiledev.li@gmail.com">Email</a>
+                </div>
+            </div>
         </div>
     </footer>
 
     <script>
         function copyCode() {
-            const code = 'curl -sL mobilecli.com/setup.sh | bash';
+            const code = 'curl -sL https://raw.githubusercontent.com/MobileDevCLI/setup/main/setup.sh | bash';
             navigator.clipboard.writeText(code).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 btn.textContent = 'Copied!';
                 setTimeout(() => btn.textContent = 'Copy', 2000);
             });
         }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
     </script>
 </body>
 </html>
