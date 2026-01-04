@@ -117,6 +117,203 @@ Everything you see at mobilecli.com was created this way:
 
 ---
 
+## DETAILED METHOD (Technical Specification)
+
+### Step 1: Hardware Setup
+```
+Device: Android smartphone (ARM64 architecture)
+Minimum: Android 7.0+, 4GB RAM, 10GB storage
+Tested on: Samsung Galaxy series
+```
+
+### Step 2: Terminal Environment Installation
+```bash
+# Install Termux from F-Droid (NOT Play Store - outdated)
+# URL: https://f-droid.org/packages/com.termux/
+
+# Grant storage permissions
+termux-setup-storage
+
+# Update package manager
+pkg update && pkg upgrade -y
+
+# Install core development tools
+pkg install -y git nodejs python openssh
+```
+
+### Step 3: Claude Code CLI Installation
+```bash
+# Install Claude Code via npm
+npm install -g @anthropic-ai/claude-code
+
+# Authenticate with Anthropic account
+claude login
+
+# This opens browser for OAuth authentication
+# Grants: user:inference, user:profile, user:sessions:claude_code
+```
+
+### Step 4: Persistence Configuration
+```bash
+# Install Termux:API app from F-Droid
+pkg install termux-api
+
+# Prevent Android from killing the process
+termux-wake-lock
+
+# Create persistent notification (keeps priority high)
+termux-notification -t "Development Session" --ongoing
+
+# Install tmux for session persistence
+pkg install tmux
+
+# Create persistent session
+tmux new -s dev
+```
+
+### Step 5: Autonomous Operation Mode
+```bash
+# Start Claude with autonomous permissions
+claude --dangerously-skip-permissions
+
+# Or use permission mode that doesn't ask
+claude --permission-mode=dontAsk
+
+# Claude now operates autonomously without human confirmation
+# Sessions can run for 24+ hours
+```
+
+### Step 6: Development Workflow
+```
+1. Human provides high-level intent in natural language
+   Example: "Build a website with auth, payments, and physics demos"
+
+2. AI (Claude Opus 4.5) interprets and plans
+   - Reads existing codebase
+   - Creates implementation plan
+   - Identifies required components
+
+3. AI executes autonomously
+   - Writes code files
+   - Runs shell commands
+   - Tests implementations
+   - Fixes errors
+   - Commits to git
+
+4. Human reviews and guides
+   - Provides feedback
+   - Adjusts direction
+   - Approves deployments
+
+5. Continuous loop until complete
+```
+
+### Step 7: Version Control Integration
+```bash
+# Initialize git repository
+git init
+
+# Configure remotes for dual-repo deployment
+git remote add origin https://github.com/USER/source.git
+git remote add website https://github.com/USER/deploy.git
+
+# AI commits and pushes autonomously
+git add -A && git commit -m "message"
+git push origin master
+git push website master
+```
+
+### Step 8: Production Deployment
+```
+Platform: Vercel (auto-deploys from GitHub)
+Method: Push to 'website' remote triggers deployment
+CDN: Global edge network
+SSL: Automatic HTTPS
+
+Configuration file: vercel.json
+{
+  "headers": [{
+    "source": "/(.*).html",
+    "headers": [{
+      "key": "Cache-Control",
+      "value": "public, max-age=0, must-revalidate"
+    }]
+  }]
+}
+```
+
+### Step 9: Authentication Layer
+```
+Provider: Supabase
+Method: GitHub OAuth
+Flow:
+1. User clicks "Login with GitHub"
+2. Redirects to GitHub OAuth
+3. GitHub redirects to Supabase callback
+4. Supabase creates session
+5. User returned to dashboard
+```
+
+### Step 10: The CLAUDE.md Compounding System
+```
+File: CLAUDE.md (checked into repository)
+Purpose: Persistent AI memory across sessions
+
+Contents:
+- Project context and structure
+- Coding standards and preferences
+- Known issues and solutions
+- Workflow documentation
+- Lessons learned
+
+Effect: Each session starts with full context
+Result: AI improves over time, doesn't repeat mistakes
+```
+
+### Novel Combination of Elements
+
+The invention combines these existing technologies in a novel way:
+
+1. **Mobile Linux (Termux)** - existed separately
+2. **AI CLI tools (Claude Code)** - existed separately
+3. **Autonomous operation modes** - existed separately
+4. **Persistence mechanisms (tmux, wake-lock)** - existed separately
+5. **Git-based deployment (Vercel)** - existed separately
+6. **CLAUDE.md knowledge compounding** - novel contribution
+
+**The novel invention is the METHOD of combining these elements** to create:
+- A complete development environment on mobile
+- That operates autonomously for extended periods
+- With AI as the primary code author
+- Deploying directly to production
+- While accumulating knowledge across sessions
+
+### Performance Metrics (Measured)
+
+| Metric | Value |
+|--------|-------|
+| Setup time | 5 minutes |
+| Session duration | 24+ hours tested |
+| Token usage | 2.4 million in single session |
+| Files created | 50+ |
+| Demos built | 17 |
+| Lines of code | 15,000+ |
+| Human intervention | ~5% of actions |
+| Cost | Claude subscription only |
+
+### Reproducibility
+
+This method can be reproduced by anyone with:
+- Android phone (ARM64, Android 7+)
+- Internet connection
+- Claude subscription ($20/month or $100/month Max)
+- GitHub account (free)
+- Vercel account (free tier)
+
+Time to reproduce: Under 1 hour to setup, then unlimited creation.
+
+---
+
 ## The Invention Statement
 
 **I, Samblamz, invented a method for autonomous website and software creation using:**
