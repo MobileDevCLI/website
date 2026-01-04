@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>N-Body Gravity - MobileCLI Demos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 200, 50, 0.2);
+            border-color: rgba(255, 200, 50, 0.3);
+        }
+
+        .info {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            max-width: 280px;
+        }
+
+        .info h3 {
+            color: #ffc832;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 200, 50, 0.2);
+            border-color: rgba(255, 200, 50, 0.3);
+        }
+
+        .stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffc832;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 600px) {
+            .info { display: none; }
+            .ui { top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <a href="/demos.html" class="back-btn">← Back to Demos</a>
+        <div class="info">
+            <h3>N-Body Gravity</h3>
+            <p>Tap to spawn stars. Watch gravitational attraction create orbits and collisions. Double-tap for a massive star.</p>
+        </div>
+    </div>
+
+    <div class="stats" id="stats">Bodies: 0</div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="clearBodies()">Clear</button>
+        <button class="control-btn" onclick="addSolarSystem()">Solar System</button>
+        <button class="control-btn" onclick="addCluster()">Star Cluster</button>
+        <button class="control-btn" onclick="toggleTrails()">Toggle Trails</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Physics constants
+        const G = 0.5; // Gravitational constant
+        const SOFTENING = 5; // Prevents singularities
+        const MAX_BODIES = 500;
+
+        // Body class
+        class Body {
+            constructor(x, y, vx, vy, mass, color) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx || 0;
+                this.vy = vy || 0;
+                this.mass = mass || 10;
+                this.radius = Math.sqrt(mass) * 1.5;
+                this.color = color || this.getColorByMass();
+                this.trail = [];
+                this.maxTrail = 50;
+            }
+
+            getColorByMass() {
+                if (this.mass > 500) return '#ffc832'; // Yellow giant
+                if (this.mass > 100) return '#ff8844'; // Orange
+                if (this.mass > 50) return '#ff6666'; // Red
+                if (this.mass > 20) return '#ffffff'; // White
+                return '#88ccff'; // Blue
+            }
+
+            update(bodies) {
+                // Calculate gravitational forces from all other bodies
+                let ax = 0, ay = 0;
+
+                for (const other of bodies) {
+                    if (other === this) continue;
+
+                    const dx = other.x - this.x;
+                    const dy = other.y - this.y;
+                    const distSq = dx * dx + dy * dy + SOFTENING * SOFTENING;
+                    const dist = Math.sqrt(distSq);
+
+                    const force = G * other.mass / distSq;
+                    ax += force * dx / dist;
+                    ay += force * dy / dist;
+                }
+
+                this.vx += ax;
+                this.vy += ay;
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Trail
+                if (showTrails) {
+                    this.trail.push({ x: this.x, y: this.y });
+                    if (this.trail.length > this.maxTrail) {
+                        this.trail.shift();
+                    }
+                }
+            }
+
+            draw() {
+                // Draw trail
+                if (showTrails && this.trail.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(this.trail[0].x, this.trail[0].y);
+                    for (let i = 1; i < this.trail.length; i++) {
+                        ctx.lineTo(this.trail[i].x, this.trail[i].y);
+                    }
+                    ctx.strokeStyle = this.color + '40';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+
+                // Draw glow
+                const gradient = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, this.radius * 3
+                );
+                gradient.addColorStop(0, this.color + 'aa');
+                gradient.addColorStop(0.5, this.color + '44');
+                gradient.addColorStop(1, this.color + '00');
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 3, 0, Math.PI * 2);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+
+                // Draw body
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        let bodies = [];
+        let showTrails = true;
+
+        // Check collisions and merge bodies
+        function checkCollisions() {
+            for (let i = bodies.length - 1; i >= 0; i--) {
+                for (let j = i - 1; j >= 0; j--) {
+                    const a = bodies[i];
+                    const b = bodies[j];
+                    if (!a || !b) continue;
+
+                    const dx = b.x - a.x;
+                    const dy = b.y - a.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < a.radius + b.radius) {
+                        // Merge: conservation of momentum
+                        const totalMass = a.mass + b.mass;
+                        b.vx = (a.vx * a.mass + b.vx * b.mass) / totalMass;
+                        b.vy = (a.vy * a.mass + b.vy * b.mass) / totalMass;
+                        b.x = (a.x * a.mass + b.x * b.mass) / totalMass;
+                        b.y = (a.y * a.mass + b.y * b.mass) / totalMass;
+                        b.mass = totalMass;
+                        b.radius = Math.sqrt(b.mass) * 1.5;
+                        b.color = b.getColorByMass();
+
+                        bodies.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Remove bodies that are too far
+        function removeDistant() {
+            const maxDist = Math.max(width, height) * 3;
+            bodies = bodies.filter(b => {
+                const dx = b.x - width / 2;
+                const dy = b.y - height / 2;
+                return Math.sqrt(dx * dx + dy * dy) < maxDist;
+            });
+        }
+
+        // Input handling
+        let lastTap = 0;
+        let tapPos = { x: 0, y: 0 };
+
+        function addBody(x, y, massive = false) {
+            if (bodies.length >= MAX_BODIES) return;
+
+            const mass = massive ? 200 + Math.random() * 300 : 5 + Math.random() * 20;
+
+            // Give it some orbital velocity if there are other bodies
+            let vx = 0, vy = 0;
+            if (bodies.length > 0) {
+                // Find nearest massive body
+                let nearest = bodies[0];
+                let minDist = Infinity;
+                for (const b of bodies) {
+                    const dx = b.x - x;
+                    const dy = b.y - y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < minDist && b.mass > 50) {
+                        minDist = dist;
+                        nearest = b;
+                    }
+                }
+
+                // Calculate orbital velocity
+                const dx = x - nearest.x;
+                const dy = y - nearest.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const orbitalSpeed = Math.sqrt(G * nearest.mass / dist) * 0.8;
+
+                // Perpendicular direction
+                vx = -dy / dist * orbitalSpeed;
+                vy = dx / dist * orbitalSpeed;
+            }
+
+            bodies.push(new Body(x, y, vx, vy, mass));
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const now = Date.now();
+            const x = e.clientX;
+            const y = e.clientY;
+
+            if (now - lastTap < 300 && Math.abs(x - tapPos.x) < 30 && Math.abs(y - tapPos.y) < 30) {
+                addBody(x, y, true);
+            } else {
+                addBody(x, y, false);
+            }
+
+            lastTap = now;
+            tapPos = { x, y };
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length === 0) return;
+            const touch = e.changedTouches[0];
+            const now = Date.now();
+            const x = touch.clientX;
+            const y = touch.clientY;
+
+            if (now - lastTap < 300 && Math.abs(x - tapPos.x) < 30 && Math.abs(y - tapPos.y) < 30) {
+                addBody(x, y, true);
+            } else {
+                addBody(x, y, false);
+            }
+
+            lastTap = now;
+            tapPos = { x, y };
+        });
+
+        // Control functions
+        window.clearBodies = function() {
+            bodies = [];
+        };
+
+        window.addSolarSystem = function() {
+            bodies = [];
+            const cx = width / 2;
+            const cy = height / 2;
+
+            // Sun
+            bodies.push(new Body(cx, cy, 0, 0, 500, '#ffc832'));
+
+            // Planets
+            const distances = [80, 120, 180, 250, 350];
+            const masses = [5, 8, 15, 12, 25];
+            const colors = ['#888888', '#ddaa66', '#4488ff', '#ff6644', '#ddcc88'];
+
+            for (let i = 0; i < distances.length; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const x = cx + Math.cos(angle) * distances[i];
+                const y = cy + Math.sin(angle) * distances[i];
+
+                // Orbital velocity
+                const orbitalSpeed = Math.sqrt(G * 500 / distances[i]);
+                const vx = -Math.sin(angle) * orbitalSpeed;
+                const vy = Math.cos(angle) * orbitalSpeed;
+
+                bodies.push(new Body(x, y, vx, vy, masses[i], colors[i]));
+            }
+        };
+
+        window.addCluster = function() {
+            const cx = width / 2;
+            const cy = height / 2;
+
+            for (let i = 0; i < 50; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 150 + 50;
+                const x = cx + Math.cos(angle) * dist;
+                const y = cy + Math.sin(angle) * dist;
+                const mass = 5 + Math.random() * 30;
+
+                // Random velocity towards center with some tangential component
+                const vx = (cx - x) * 0.005 + (Math.random() - 0.5) * 2;
+                const vy = (cy - y) * 0.005 + (Math.random() - 0.5) * 2;
+
+                bodies.push(new Body(x, y, vx, vy, mass));
+            }
+        };
+
+        window.toggleTrails = function() {
+            showTrails = !showTrails;
+            if (!showTrails) {
+                bodies.forEach(b => b.trail = []);
+            }
+        };
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Semi-transparent background for trail effect
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Update physics
+            for (const body of bodies) {
+                body.update(bodies);
+            }
+
+            checkCollisions();
+            removeDistant();
+
+            // Draw bodies
+            for (const body of bodies) {
+                body.draw();
+            }
+
+            // Update stats
+            document.getElementById('stats').textContent = `Bodies: ${bodies.length}`;
+        }
+
+        // Start with a solar system
+        addSolarSystem();
+        animate();
+    </script>
+</body>
+</html>
