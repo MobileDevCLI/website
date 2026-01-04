@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start - MobileCLI</title>
+    <meta name="description" content="Get AI development running on your phone in 5 minutes. Simple commands, no fluff.">
+    <link rel="canonical" href="https://mobilecli.com/quickstart.html">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #000000;
+            --bg-card: #0a0a0a;
+            --text: #e6e6e6;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --matrix: #00ff41;
+            --accent: #00d4ff;
+            --border: #1a1a1a;
+            --warning: #ff6b35;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        a { color: var(--matrix); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--matrix);
+            text-decoration: none;
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 100px;
+            padding-bottom: 80px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--matrix), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        /* Step Cards */
+        .step {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: var(--matrix);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .step h2 {
+            font-size: 1.3rem;
+            color: var(--text);
+        }
+
+        .step p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 12px 0;
+            position: relative;
+        }
+
+        .code-block code {
+            color: var(--matrix);
+            display: block;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Expandable Details */
+        details {
+            margin-top: 16px;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+
+        summary {
+            cursor: pointer;
+            color: var(--accent);
+            font-size: 0.9rem;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        summary::-webkit-details-marker { display: none; }
+
+        summary::before {
+            content: ">";
+            font-family: 'Courier New', monospace;
+            transition: transform 0.2s;
+        }
+
+        details[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        .detail-content {
+            margin-top: 12px;
+            padding: 16px;
+            background: rgba(0,212,255,0.05);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .detail-content ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .detail-content li {
+            margin-bottom: 8px;
+        }
+
+        /* Links Section */
+        .link-doc {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--matrix);
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        /* Section Dividers */
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin: 48px 0 24px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Roadmap */
+        .roadmap {
+            display: grid;
+            gap: 16px;
+        }
+
+        .roadmap-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .roadmap-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .roadmap-content h3 {
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .roadmap-content p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .nav-links { display: none; }
+            .step { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">>_ MobileCLI</a>
+            <div class="nav-links">
+                <a href="/pricing.html">Pricing</a>
+                <a href="/learn.html">Full Docs</a>
+                <a href="/quickstart.html" style="color: var(--matrix);">Quick Start</a>
+                <a href="/research.html">Research</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <h1>Quick Start</h1>
+            <p class="subtitle">Phone to dev machine in 5 minutes. Just commands, no fluff.</p>
+
+            <!-- Step 1: Termux -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2>Get Termux</h2>
+                </div>
+                <p>Download from F-Droid (not Play Store - that version is dead):</p>
+                <div class="code-block">
+                    <code>https://f-droid.org/packages/com.termux/</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('https://f-droid.org/packages/com.termux/')">Copy</button>
+                </div>
+                <p>Open Termux, allow storage access:</p>
+                <div class="code-block">
+                    <code>termux-setup-storage</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('termux-setup-storage')">Copy</button>
+                </div>
+
+                <details>
+                    <summary>Why F-Droid?</summary>
+                    <div class="detail-content">
+                        The Play Store version of Termux hasn't been updated since 2020. F-Droid has the latest version with proper Android 12+ support.
+                        <a href="/learn.html#install-termux" class="link-doc">Full details</a>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Step 2: Packages -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2>Install Packages</h2>
+                </div>
+                <p>Run this in Termux:</p>
+                <div class="code-block">
+                    <code>pkg update -y && pkg install nodejs-lts git gh -y</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('pkg update -y && pkg install nodejs-lts git gh -y')">Copy</button>
+                </div>
+
+                <details>
+                    <summary>What this installs</summary>
+                    <div class="detail-content">
+                        <ul>
+                            <li><strong>nodejs-lts</strong> - JavaScript runtime (required for Claude Code)</li>
+                            <li><strong>git</strong> - Version control</li>
+                            <li><strong>gh</strong> - GitHub CLI for auth and repo management</li>
+                        </ul>
+                        <a href="/learn.html#setup-packages" class="link-doc">Full details</a>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Step 3: Claude Code -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2>Install Claude Code</h2>
+                </div>
+                <p>Install globally:</p>
+                <div class="code-block">
+                    <code>npm install -g @anthropic-ai/claude-code</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install -g @anthropic-ai/claude-code')">Copy</button>
+                </div>
+                <p>Login with Anthropic account:</p>
+                <div class="code-block">
+                    <code>claude</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('claude')">Copy</button>
+                </div>
+
+                <details>
+                    <summary>First run</summary>
+                    <div class="detail-content">
+                        When you run <code>claude</code> the first time, it opens a browser for Anthropic login. Use your Google/GitHub account or create one. The CLI gets better rates than the API.
+                        <a href="/learn.html#install-claude" class="link-doc">Full details</a>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Step 4: GitHub -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h2>Connect GitHub</h2>
+                </div>
+                <p>Authenticate so Claude can push code:</p>
+                <div class="code-block">
+                    <code>gh auth login</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('gh auth login')">Copy</button>
+                </div>
+                <p>Choose: GitHub.com > HTTPS > Login with browser</p>
+
+                <details>
+                    <summary>Git config</summary>
+                    <div class="detail-content">
+                        Set your identity:
+                        <div class="code-block">
+                            <code>git config --global user.name "Your Name"<br>git config --global user.email "your@email.com"</code>
+                        </div>
+                        <a href="/learn.html#github-auth" class="link-doc">Full details</a>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Step 5: Boris Mode -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <h2>Enable Boris Mode</h2>
+                </div>
+                <p>Run Claude autonomously without permission prompts:</p>
+                <div class="code-block">
+                    <code>claude --dangerously-skip-permissions</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('claude --dangerously-skip-permissions')">Copy</button>
+                </div>
+
+                <details>
+                    <summary>What is Boris Mode?</summary>
+                    <div class="detail-content">
+                        Named after Boris Cherny (Claude Code creator), this flag lets Claude run without asking permission for file edits, shell commands, etc. Essential for autonomous overnight tasks.
+                        <a href="/learn.html#boris-mode" class="link-doc">Full details</a>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Step 6: Stay Running -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <h2>Keep It Running</h2>
+                </div>
+                <p>Prevent Android from killing Termux:</p>
+                <div class="code-block">
+                    <code>termux-wake-lock</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('termux-wake-lock')">Copy</button>
+                </div>
+                <p>Use tmux for persistent sessions:</p>
+                <div class="code-block">
+                    <code>pkg install tmux -y<br>tmux new -s dev</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('pkg install tmux -y && tmux new -s dev')">Copy</button>
+                </div>
+
+                <details>
+                    <summary>Reconnecting</summary>
+                    <div class="detail-content">
+                        After closing Termux, reopen and run:
+                        <div class="code-block">
+                            <code>tmux attach -t dev</code>
+                        </div>
+                        Your session (and Claude) will be exactly where you left it.
+                        <a href="/learn.html#persistent" class="link-doc">Full details</a>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Done! -->
+            <div class="step" style="border-color: var(--matrix);">
+                <div class="step-header">
+                    <div class="step-number" style="background: var(--accent);">!</div>
+                    <h2>You're Done</h2>
+                </div>
+                <p>Start coding by describing what you want:</p>
+                <div class="code-block">
+                    <code>claude "Create a React app with auth and deploy to Vercel"</code>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('claude \"Create a React app with auth and deploy to Vercel\"')">Copy</button>
+                </div>
+                <p>Claude will write code, run commands, push to GitHub, and deploy - all autonomously.</p>
+            </div>
+
+            <!-- Building a Business Section -->
+            <h2 class="section-title">Building a Business?</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">Here's the exact stack we used to build MobileCLI from a phone:</p>
+
+            <div class="roadmap">
+                <div class="roadmap-item">
+                    <div class="roadmap-icon">1</div>
+                    <div class="roadmap-content">
+                        <h3>Domain + Email</h3>
+                        <p>Buy domain on Vercel ($20/yr). Get free email forwarding. Or use Google Workspace ($6/mo) for custom email.</p>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-icon">2</div>
+                    <div class="roadmap-content">
+                        <h3>GitHub Organization</h3>
+                        <p>Create org at github.com/organizations/new. Free tier is fine. This holds all your repos.</p>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-icon">3</div>
+                    <div class="roadmap-content">
+                        <h3>Vercel Deployment</h3>
+                        <p>Connect GitHub repo to Vercel. Auto-deploys on every push. Free tier includes SSL, CDN, previews.</p>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-icon">4</div>
+                    <div class="roadmap-content">
+                        <h3>Supabase Backend</h3>
+                        <p>Free tier: Postgres DB, Auth (GitHub/Google OAuth), Storage. All you need for a SaaS.</p>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-icon">5</div>
+                    <div class="roadmap-content">
+                        <h3>Stripe Payments</h3>
+                        <p>Add subscriptions with Stripe. Test mode is free. 2.9% + $0.30 per transaction when live.</p>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-icon">6</div>
+                    <div class="roadmap-content">
+                        <h3>Social Presence</h3>
+                        <p>Create X (Twitter) and YouTube accounts. Same handle as your domain. Post updates, demos, builds.</p>
+                    </div>
+                </div>
+            </div>
+
+            <details style="margin-top: 32px; border: 1px solid var(--border); padding: 16px; border-radius: 8px; background: var(--bg-card);">
+                <summary style="font-size: 1rem; color: var(--matrix);">The AI Does Most of It</summary>
+                <div class="detail-content">
+                    <p style="margin-bottom: 12px;">You create the accounts (Google, GitHub, Vercel, Supabase, Stripe). Then Claude handles:</p>
+                    <ul>
+                        <li>Writing all the code (HTML, CSS, JS, backend)</li>
+                        <li>Setting up OAuth integrations</li>
+                        <li>Database schema and migrations</li>
+                        <li>Stripe webhook handlers</li>
+                        <li>Git commits and pushes</li>
+                        <li>CI/CD and deployment</li>
+                    </ul>
+                    <p style="margin-top: 12px;">Just describe what you want. Check back in the morning. Ship.</p>
+                    <a href="/research.html" class="link-doc">See the full research log</a>
+                </div>
+            </details>
+
+            <!-- Link to full docs -->
+            <div style="text-align: center; margin-top: 60px; padding: 32px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border);">
+                <h3 style="color: var(--text); margin-bottom: 12px;">Want the Full Story?</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">The Boris Stack, hooks, agents, MCP servers, and everything else.</p>
+                <a href="/learn.html" style="display: inline-block; padding: 12px 32px; background: var(--matrix); color: #000; font-weight: 600; border-radius: 8px; text-decoration: none;">Read Full Documentation</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 MobileCLI. Built entirely on a phone.</p>
+        </div>
+    </footer>
+</body>
+</html>

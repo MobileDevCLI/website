@@ -36,6 +36,8 @@ This is MobileCLI - a brand/website/SaaS that turns Android phones into AI devel
 │   └── supabase-config.js  # Supabase auth config
 ├── games/
 │   └── sketchbook.html   # Quick Draw paint app
+├── quickstart.html       # Simple setup guide (command-focused)
+├── research.html         # Research log / discoveries
 ├── PROJECT_HISTORY.md    # Full project history
 ├── ROADMAP.md            # Platform vision
 ├── CLAUDE.md             # This file
@@ -253,6 +255,65 @@ Logo dropdown includes: GitHub, Twitter, YouTube, Email
 - Supabase: https://supabase.com/dashboard
 - Vercel: https://vercel.com/dashboard
 - GitHub OAuth: https://github.com/settings/developers
+
+---
+
+## Discovered Capabilities
+
+### Screenshot Access (January 4, 2026)
+Claude Code can read and analyze screenshots directly from the phone's storage:
+
+```bash
+# Screenshots location (Samsung)
+~/storage/dcim/Screenshots/
+
+# Screenshots location (Pixel)
+~/storage/pictures/Screenshots/
+
+# Claude can read these with the Read tool
+Read ~/storage/dcim/Screenshots/Screenshot_20260104.jpg
+```
+
+**Use cases:**
+- Visual debugging - screenshot a bug, Claude sees it
+- UI iteration - "make this button bigger" with visual reference
+- Game development - Claude can see rendered frames
+- Verification loop - Boris's 2-3x quality multiplier, now visual
+
+### Termux:API Integration
+Full hardware access via Termux:API app:
+
+```bash
+pkg install termux-api  # Install package
+# Also install Termux:API app from F-Droid
+
+# Available commands:
+termux-camera-photo     # Take photo
+termux-screenshot       # Screenshot (needs Termux:API)
+termux-notification     # Send notification
+termux-toast            # Show toast message
+termux-vibrate          # Vibrate phone
+termux-tts-speak        # Text to speech
+termux-speech-to-text   # Voice input
+termux-clipboard-get    # Read clipboard
+termux-clipboard-set    # Write clipboard
+termux-share            # Share intent
+termux-open-url         # Open URL
+termux-wifi-connectioninfo  # WiFi info
+termux-battery-status   # Battery info
+termux-wake-lock        # Prevent CPU sleep
+```
+
+### Long-Running Sessions
+Keep Claude running for days:
+
+```bash
+# The combo for persistent sessions
+termux-wake-lock                           # Prevent sleep
+termux-notification -t "Dev" --ongoing     # Keep priority
+tmux new -s dev                            # Survive Termux close
+claude --dangerously-skip-permissions      # Autonomous mode
+```
 
 ---
 

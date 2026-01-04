@@ -87,6 +87,10 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .mode-toggle:hover {
@@ -1008,10 +1012,9 @@
             <div class="nav-links">
                 <a href="/pricing.html">Pricing</a>
                 <a href="/learn.html">Docs</a>
-                <a href="/examples.html">Examples</a>
+                <a href="/quickstart.html">Quick Start</a>
+                <a href="/research.html">Research</a>
                 <a href="/demos.html">Demos</a>
-                <a href="/labs.html">Labs</a>
-                <a href="/dashboard.html">Dashboard</a>
                 <a href="/login.html" class="btn-primary">Get Started</a>
             </div>
             <button class="mobile-menu-btn" id="mobileMenuBtn">Menu</button>
@@ -1022,13 +1025,12 @@
     <div class="mobile-menu" id="mobileMenu">
         <a href="/pricing.html">Pricing</a>
         <a href="/learn.html">Docs</a>
-        <a href="/examples.html">Examples</a>
+        <a href="/quickstart.html">Quick Start</a>
+        <a href="/research.html">Research</a>
         <a href="/demos.html">Demos</a>
         <a href="/labs.html">Labs</a>
-        <a href="/dashboard.html">Dashboard</a>
         <a href="/games.html">Games</a>
-        <a href="/news.html">News</a>
-        <a href="/proof.html">Proof</a>
+        <a href="/dashboard.html">Dashboard</a>
         <a href="/login.html" class="btn-primary">Get Started</a>
     </div>
 
@@ -1571,32 +1573,40 @@
         });
 
         // ============================================
-        // CIRCULAR PARTICLE TEXTURE (not squares!)
+        // CIRCULAR PARTICLE TEXTURE (soft glowing circles)
         // ============================================
-        function createCircleTexture(color = '#ffffff', size = 64) {
+        function createCircleTexture(size = 128) {
             const canvas = document.createElement('canvas');
             canvas.width = size;
             canvas.height = size;
             const ctx = canvas.getContext('2d');
 
-            // Soft circular gradient
-            const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-            gradient.addColorStop(0, color);
-            gradient.addColorStop(0.3, color);
-            gradient.addColorStop(0.7, 'rgba(255,255,255,0.3)');
-            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            // Clear canvas with transparent background
+            ctx.clearRect(0, 0, size, size);
+
+            // Create a soft circular gradient (white with alpha falloff)
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const radius = size / 2;
+
+            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+            gradient.addColorStop(0.1, 'rgba(255, 255, 255, 0.9)');
+            gradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.5)');
+            gradient.addColorStop(0.7, 'rgba(255, 255, 255, 0.15)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
             ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.fillRect(0, 0, size, size);
 
             const texture = new THREE.CanvasTexture(canvas);
             texture.needsUpdate = true;
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
             return texture;
         }
 
-        const circleTexture = createCircleTexture('#ffffff', 64);
+        const circleTexture = createCircleTexture(128);
 
         // ============================================
         // FIRE/EMBER PARTICLE SYSTEM (calmer, slower)
@@ -1656,11 +1666,12 @@
         fireGeometry.setAttribute('size', new THREE.BufferAttribute(fireSizes, 1));
 
         const fireMaterial = new THREE.PointsMaterial({
-            size: 0.4,
+            size: 0.5,
             map: circleTexture,
             vertexColors: true,
             transparent: true,
-            opacity: 0.7,
+            opacity: 0.8,
+            alphaTest: 0.01,
             blending: THREE.AdditiveBlending,
             sizeAttenuation: true,
             depthWrite: false
@@ -1721,12 +1732,14 @@
         dustGeometry.setAttribute('color', new THREE.BufferAttribute(dustColors, 3));
 
         const dustMaterial = new THREE.PointsMaterial({
-            size: 0.08, // Smaller
+            size: 0.12,
             map: circleTexture,
             vertexColors: true,
             transparent: true,
-            opacity: 0.4,
+            opacity: 0.5,
+            alphaTest: 0.01,
             blending: THREE.AdditiveBlending,
+            sizeAttenuation: true,
             depthWrite: false
         });
 
@@ -1779,17 +1792,28 @@
             }, PLAY_MODE_TIMEOUT);
         }
 
-        modeToggle.addEventListener('click', () => {
+        // Toggle button - works on both click AND touch
+        function handleModeToggle(e) {
+            e.preventDefault();
+            e.stopPropagation();
             setPlayMode(!playMode);
-        });
+        }
 
-        // Show label on hover
+        modeToggle.addEventListener('click', handleModeToggle);
+        modeToggle.addEventListener('touchend', handleModeToggle, { passive: false });
+
+        // Show label on hover (desktop)
         modeToggle.addEventListener('mouseenter', () => {
             modeLabel.classList.add('visible');
         });
         modeToggle.addEventListener('mouseleave', () => {
             if (!playMode) modeLabel.classList.remove('visible');
         });
+
+        // Prevent default touch behavior that might interfere
+        modeToggle.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+        }, { passive: true });
 
         // ============================================
         // TOUCH/MOUSE INTERACTION
