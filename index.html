@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MobileDevCLI - Full dev environment in your pocket</title>
+    <meta name="description" content="Turn any Android phone into a complete AI-powered coding environment with one command. Claude Code + Termux = coding anywhere.">
+    <meta name="keywords" content="mobile development, termux, claude code, android coding, ai coding assistant">
+    <link rel="canonical" href="https://mobilecli.com">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="MobileDevCLI">
+    <meta property="og:description" content="Full dev environment in your pocket">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mobilecli.com">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@MobileDevCLI">
+    <meta name="twitter:title" content="MobileDevCLI">
+    <meta name="twitter:description" content="Full dev environment in your pocket">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --accent-1: #00ff88;
+            --accent-2: #00d4ff;
+            --gradient: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 50px;
+        }
+
+        .code-block {
+            background: var(--bg-secondary);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 20px 30px;
+            display: inline-block;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .code-block code {
+            color: var(--accent-1);
+        }
+
+        .code-block .prompt {
+            color: var(--text-secondary);
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-1);
+            color: var(--bg);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-1);
+        }
+
+        /* Features */
+        .features {
+            padding: 80px 0;
+            background: var(--bg-secondary);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: var(--bg);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-1);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Steps */
+        .steps {
+            padding: 80px 0;
+        }
+
+        .steps h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--bg);
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Newsletter */
+        .newsletter {
+            padding: 80px 0;
+            background: var(--bg-secondary);
+            text-align: center;
+        }
+
+        .newsletter h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .newsletter p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 15px 20px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--accent-1);
+        }
+
+        .newsletter-form button {
+            padding: 15px 30px;
+            background: var(--gradient);
+            border: none;
+            border-radius: 8px;
+            color: var(--bg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .newsletter-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--bg-tertiary);
+        }
+
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-1);
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .tagline {
+                font-size: 1.2rem;
+            }
+
+            .code-block {
+                font-size: 0.9rem;
+                padding: 15px 20px;
+                padding-right: 80px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .features h2,
+            .steps h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">MobileDevCLI</div>
+            <div class="nav-links">
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+                <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>MobileDevCLI</h1>
+            <p class="tagline">Full dev environment in your pocket</p>
+
+            <div class="code-block">
+                <span class="prompt">$</span> <code>curl -sL mobilecli.com/setup.sh | bash</code>
+                <button class="copy-btn" onclick="copyCode()">Copy</button>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="https://github.com/MobileDevCLI/setup" class="btn btn-primary">Get Started</a>
+                <a href="https://github.com/MobileDevCLI/setup#readme" class="btn btn-secondary">Documentation</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Everything You Need</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">&#129302;</div>
+                    <h3>Claude Code</h3>
+                    <p>Anthropic's AI coding assistant. Write, debug, and ship code with natural language.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#9889;</div>
+                    <h3>Boris Mode</h3>
+                    <p>Full autonomous mode. No permission prompts. Just you and Claude building together.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128241;</div>
+                    <h3>Termux Power</h3>
+                    <p>Real Linux environment on Android. Git, Node.js, and everything you need.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128640;</div>
+                    <h3>One Command</h3>
+                    <p>From zero to coding in minutes. No complex setup. Just copy, paste, code.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="steps">
+        <div class="container">
+            <h2>Get Started in 4 Steps</h2>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Install Termux</h3>
+                    <p>Download Termux from F-Droid or Google Play Store</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Run Setup</h3>
+                    <p>Paste the curl command and let it install everything</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Login to GitHub</h3>
+                    <p>Run gh auth login to connect your account</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Start Coding</h3>
+                    <p>Type cc and start building with Claude</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <div class="container">
+            <h2>Stay Updated</h2>
+            <p>Get notified about new features and updates.</p>
+            <form class="newsletter-form" action="https://formspree.io/f/your-form-id" method="POST">
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+                <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+                <a href="mailto:mobiledevcli@gmail.com">Contact</a>
+            </div>
+            <p class="copyright">&copy; 2025 MobileDevCLI. MIT License.</p>
+        </div>
+    </footer>
+
+    <script>
+        function copyCode() {
+            const code = 'curl -sL mobilecli.com/setup.sh | bash';
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+    </script>
+</body>
+</html>
