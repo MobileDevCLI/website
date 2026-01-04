@@ -1,0 +1,14 @@
+# MobileCLI Robots.txt
+# https://mobilecli.com
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://mobilecli.com/sitemap.xml
+
+# Disallow admin/preview pages
+Disallow: /pro-preview.html
+
+# Crawl delay (be nice to servers)
+Crawl-delay: 1
