@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Metaballs - MobileCLI Demos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 200, 150, 0.2);
+            border-color: rgba(0, 200, 150, 0.3);
+        }
+
+        .info {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            max-width: 280px;
+        }
+
+        .info h3 {
+            color: #00c896;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 200, 150, 0.2);
+            border-color: rgba(0, 200, 150, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(0, 200, 150, 0.3);
+            border-color: #00c896;
+            color: #00c896;
+        }
+
+        .stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #00c896;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 600px) {
+            .info { display: none; }
+            .ui { top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <a href="/demos.html" class="back-btn">← Back to Demos</a>
+        <div class="info">
+            <h3>Metaballs</h3>
+            <p>Organic blobby shapes that merge and split. Tap to add new blobs. Watch them interact!</p>
+        </div>
+    </div>
+
+    <div class="stats" id="stats">Blobs: 0</div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="reset()">Reset</button>
+        <button class="control-btn" onclick="addBlobs()">Add Blobs</button>
+        <button class="control-btn" onclick="toggleGradient()">Gradient</button>
+        <button class="control-btn" onclick="toggleOutline()">Outline</button>
+        <button class="control-btn" onclick="toggleColors()">Colors</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Metaball class
+        class Metaball {
+            constructor(x, y, radius) {
+                this.x = x || Math.random() * width;
+                this.y = y || Math.random() * height;
+                this.radius = radius || 50 + Math.random() * 50;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = (Math.random() - 0.5) * 4;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off walls
+                if (this.x < this.radius || this.x > width - this.radius) {
+                    this.vx *= -1;
+                    this.x = Math.max(this.radius, Math.min(width - this.radius, this.x));
+                }
+                if (this.y < this.radius || this.y > height - this.radius) {
+                    this.vy *= -1;
+                    this.y = Math.max(this.radius, Math.min(height - this.radius, this.y));
+                }
+            }
+        }
+
+        let metaballs = [];
+        let showGradient = true;
+        let showOutline = false;
+        let colorScheme = 0;
+
+        const colorSchemes = [
+            { bg: '#0a1628', fg: '#00c896' },
+            { bg: '#1a0a28', fg: '#ff6b9d' },
+            { bg: '#0a2818', fg: '#88ff00' },
+            { bg: '#281a0a', fg: '#ff8800' },
+            { bg: '#0a1828', fg: '#00b4ff' }
+        ];
+
+        // Initialize
+        function init() {
+            metaballs = [];
+            for (let i = 0; i < 8; i++) {
+                metaballs.push(new Metaball());
+            }
+        }
+
+        // Calculate field value at point
+        function getFieldValue(x, y) {
+            let sum = 0;
+            for (const ball of metaballs) {
+                const dx = x - ball.x;
+                const dy = y - ball.y;
+                const distSq = dx * dx + dy * dy;
+                sum += (ball.radius * ball.radius) / distSq;
+            }
+            return sum;
+        }
+
+        // Render metaballs using marching squares
+        function render() {
+            const threshold = 1;
+            const cellSize = 4;
+            const cols = Math.ceil(width / cellSize);
+            const rows = Math.ceil(height / cellSize);
+
+            // Clear
+            const scheme = colorSchemes[colorScheme];
+            ctx.fillStyle = scheme.bg;
+            ctx.fillRect(0, 0, width, height);
+
+            // Calculate field values at grid points
+            const field = [];
+            for (let y = 0; y <= rows; y++) {
+                field[y] = [];
+                for (let x = 0; x <= cols; x++) {
+                    field[y][x] = getFieldValue(x * cellSize, y * cellSize);
+                }
+            }
+
+            // Draw filled metaballs
+            if (showGradient) {
+                // Gradient fill based on field strength
+                const imageData = ctx.createImageData(width, height);
+                const data = imageData.data;
+
+                const fgColor = hexToRgb(scheme.fg);
+                const bgColor = hexToRgb(scheme.bg);
+
+                for (let py = 0; py < height; py++) {
+                    for (let px = 0; px < width; px++) {
+                        const val = getFieldValue(px, py);
+                        const idx = (py * width + px) * 4;
+
+                        if (val >= threshold) {
+                            const t = Math.min(1, (val - threshold) / 2);
+                            data[idx] = fgColor.r + (255 - fgColor.r) * t * 0.5;
+                            data[idx + 1] = fgColor.g + (255 - fgColor.g) * t * 0.5;
+                            data[idx + 2] = fgColor.b + (255 - fgColor.b) * t * 0.5;
+                            data[idx + 3] = 255;
+                        } else {
+                            // Glow effect
+                            const glow = Math.max(0, val / threshold);
+                            data[idx] = bgColor.r + (fgColor.r - bgColor.r) * glow * 0.3;
+                            data[idx + 1] = bgColor.g + (fgColor.g - bgColor.g) * glow * 0.3;
+                            data[idx + 2] = bgColor.b + (fgColor.b - bgColor.b) * glow * 0.3;
+                            data[idx + 3] = 255;
+                        }
+                    }
+                }
+
+                ctx.putImageData(imageData, 0, 0);
+            } else {
+                // Solid fill
+                ctx.fillStyle = scheme.fg;
+                ctx.beginPath();
+
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        const x0 = x * cellSize;
+                        const y0 = y * cellSize;
+
+                        // Get corner values
+                        const a = field[y][x] >= threshold ? 1 : 0;
+                        const b = field[y][x + 1] >= threshold ? 1 : 0;
+                        const c = field[y + 1][x + 1] >= threshold ? 1 : 0;
+                        const d = field[y + 1][x] >= threshold ? 1 : 0;
+
+                        const caseIndex = a | (b << 1) | (c << 2) | (d << 3);
+
+                        if (caseIndex === 15) {
+                            // Full cell
+                            ctx.rect(x0, y0, cellSize, cellSize);
+                        } else if (caseIndex !== 0) {
+                            // Partial cell - draw polygon
+                            drawMarchingSquaresCell(x0, y0, cellSize, field, x, y, threshold);
+                        }
+                    }
+                }
+
+                ctx.fill();
+            }
+
+            // Draw outline if enabled
+            if (showOutline) {
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        const x0 = x * cellSize;
+                        const y0 = y * cellSize;
+
+                        // Linear interpolation for smooth edges
+                        const tl = field[y][x];
+                        const tr = field[y][x + 1];
+                        const br = field[y + 1][x + 1];
+                        const bl = field[y + 1][x];
+
+                        const a = tl >= threshold ? 1 : 0;
+                        const b = tr >= threshold ? 1 : 0;
+                        const c = br >= threshold ? 1 : 0;
+                        const d = bl >= threshold ? 1 : 0;
+
+                        const caseIndex = a | (b << 1) | (c << 2) | (d << 3);
+
+                        if (caseIndex !== 0 && caseIndex !== 15) {
+                            drawMarchingSquaresEdge(x0, y0, cellSize, tl, tr, br, bl, threshold);
+                        }
+                    }
+                }
+
+                ctx.stroke();
+            }
+        }
+
+        function drawMarchingSquaresCell(x0, y0, size, field, gx, gy, threshold) {
+            // Simplified marching squares fill
+            // For better quality, use linear interpolation
+        }
+
+        function drawMarchingSquaresEdge(x0, y0, size, tl, tr, br, bl, threshold) {
+            // Interpolate edge positions
+            function lerp(a, b, t) { return a + (b - a) * t; }
+            function getT(a, b) { return (threshold - a) / (b - a); }
+
+            const edges = [];
+
+            // Top edge
+            if ((tl >= threshold) !== (tr >= threshold)) {
+                const t = getT(tl, tr);
+                edges.push({ x: x0 + size * t, y: y0 });
+            }
+            // Right edge
+            if ((tr >= threshold) !== (br >= threshold)) {
+                const t = getT(tr, br);
+                edges.push({ x: x0 + size, y: y0 + size * t });
+            }
+            // Bottom edge
+            if ((br >= threshold) !== (bl >= threshold)) {
+                const t = getT(br, bl);
+                edges.push({ x: x0 + size * (1 - t), y: y0 + size });
+            }
+            // Left edge
+            if ((bl >= threshold) !== (tl >= threshold)) {
+                const t = getT(bl, tl);
+                edges.push({ x: x0, y: y0 + size * (1 - t) });
+            }
+
+            if (edges.length >= 2) {
+                ctx.moveTo(edges[0].x, edges[0].y);
+                ctx.lineTo(edges[1].x, edges[1].y);
+            }
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 0, g: 0, b: 0 };
+        }
+
+        // Input handling
+        function addBlobAt(x, y) {
+            metaballs.push(new Metaball(x, y, 40 + Math.random() * 40));
+        }
+
+        canvas.addEventListener('click', (e) => {
+            addBlobAt(e.clientX, e.clientY);
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length > 0) {
+                const touch = e.changedTouches[0];
+                addBlobAt(touch.clientX, touch.clientY);
+            }
+        });
+
+        // Control functions
+        window.reset = function() {
+            init();
+        };
+
+        window.addBlobs = function() {
+            for (let i = 0; i < 5; i++) {
+                metaballs.push(new Metaball());
+            }
+        };
+
+        window.toggleGradient = function() {
+            showGradient = !showGradient;
+            document.querySelectorAll('.control-btn')[2].classList.toggle('active', showGradient);
+        };
+
+        window.toggleOutline = function() {
+            showOutline = !showOutline;
+            document.querySelectorAll('.control-btn')[3].classList.toggle('active', showOutline);
+        };
+
+        window.toggleColors = function() {
+            colorScheme = (colorScheme + 1) % colorSchemes.length;
+        };
+
+        // Initialize active states
+        document.querySelectorAll('.control-btn')[2].classList.add('active');
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Update metaballs
+            for (const ball of metaballs) {
+                ball.update();
+            }
+
+            // Render
+            render();
+
+            // Update stats
+            document.getElementById('stats').textContent = `Blobs: ${metaballs.length}`;
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
