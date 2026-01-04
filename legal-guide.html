@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Guide - AI-Powered IP Protection | MobileCLI</title>
+    <meta name="description" content="Learn how to use AI to create legally strong intellectual property protection. Complete guide to terms of service, IP notices, evidence documentation, and more.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Legal Guide - AI-Powered IP Protection | MobileCLI">
+    <meta property="og:description" content="Learn how to use AI to create legally strong intellectual property protection for your projects.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mobilecli.com/legal-guide.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 20px;
+            color: #00ff88;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #fff;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 100px 24px 60px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 212, 255, 0.2));
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #00ff88;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: clamp(32px, 6vw, 48px);
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 48px;
+        }
+
+        .toc h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #00ff88;
+        }
+
+        .toc ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 8px;
+        }
+
+        .toc a {
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .toc a:hover {
+            color: #00ff88;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 48px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 24px 0 12px;
+            color: #00d4ff;
+        }
+
+        h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 16px 0 8px;
+            color: #a855f7;
+        }
+
+        p {
+            color: #a0a0a0;
+            margin-bottom: 16px;
+        }
+
+        /* Code blocks */
+        pre {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #00ff88;
+        }
+
+        pre code {
+            color: #e0e0e0;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+            color: #a0a0a0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Highlight boxes */
+        .highlight {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .highlight.warning {
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.1), rgba(255, 100, 0, 0.05));
+            border-color: rgba(255, 170, 0, 0.3);
+        }
+
+        .highlight.important {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(139, 92, 246, 0.05));
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .highlight h4 {
+            margin-top: 0;
+            color: #00ff88;
+        }
+
+        .highlight.warning h4 {
+            color: #ffaa00;
+        }
+
+        .highlight.important h4 {
+            color: #a855f7;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        td {
+            color: #a0a0a0;
+        }
+
+        /* Checklist */
+        .checklist {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .checklist li {
+            list-style: none;
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 12px;
+        }
+
+        .checklist li::before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #00ff88;
+        }
+
+        .copyright {
+            color: #333;
+            font-size: 12px;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+            }
+
+            main {
+                padding: 80px 16px 40px;
+            }
+
+            .toc ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">MobileCLI</a>
+        <div class="nav-links">
+            <a href="pricing.html">Pricing</a>
+            <a href="learn.html">Docs</a>
+            <a href="legal-guide.html" class="active">Legal</a>
+            <a href="research.html">Research</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="hero">
+            <span class="hero-badge">AI Legal Framework</span>
+            <h1>AI-Powered IP Protection</h1>
+            <p>Learn how to use AI to create legally strong intellectual property protection for your projects. Complete guide developed through real-world application.</p>
+        </div>
+
+        <nav class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#why-this-works">1. Why AI Legal Documentation Works</a></li>
+                <li><a href="#dual-license">2. The Dual-License Strategy</a></li>
+                <li><a href="#essential-documents">3. Essential Legal Documents</a></li>
+                <li><a href="#invention-docs">4. Invention Documentation</a></li>
+                <li><a href="#evidence">5. Evidence Collection</a></li>
+                <li><a href="#third-party">6. Third-Party Separation</a></li>
+                <li><a href="#business">7. Business Formation</a></li>
+                <li><a href="#arbitration">8. Arbitration Clauses</a></li>
+                <li><a href="#checklist">9. Complete Checklist</a></li>
+            </ul>
+        </nav>
+
+        <section id="why-this-works">
+            <h2>1. Why AI Legal Documentation Works</h2>
+
+            <p>AI assistants like Claude can help you create comprehensive legal documentation because they can:</p>
+
+            <ul>
+                <li><strong>Process complexity</strong> - Legal documents have many interconnected sections</li>
+                <li><strong>Maintain consistency</strong> - Same terminology throughout all documents</li>
+                <li><strong>Include all sections</strong> - Won't forget important provisions</li>
+                <li><strong>Generate quickly</strong> - Hours of work in minutes</li>
+                <li><strong>Adapt to context</strong> - Customize for your specific situation</li>
+            </ul>
+
+            <div class="highlight warning">
+                <h4>Important Disclaimer</h4>
+                <p>AI-generated legal documents are starting points, not final products. Always have a licensed attorney review documents for your specific jurisdiction and situation. AI cannot provide legal advice.</p>
+            </div>
+        </section>
+
+        <section id="dual-license">
+            <h2>2. The Dual-License Strategy</h2>
+
+            <p>The most powerful IP protection strategy for software inventions is <strong>dual-licensing</strong>:</p>
+
+            <div class="highlight">
+                <h4>The Formula</h4>
+                <pre><code>CODE = MIT License (open source)
+METHOD = All Rights Reserved (proprietary)</code></pre>
+            </div>
+
+            <h3>Why This Works</h3>
+
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Code (MIT)</th>
+                    <th>Method (Proprietary)</th>
+                </tr>
+                <tr>
+                    <td>Can others use it?</td>
+                    <td>Yes, freely</td>
+                    <td>Only with license</td>
+                </tr>
+                <tr>
+                    <td>Can others copy it?</td>
+                    <td>Yes</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td>Can others sell it?</td>
+                    <td>Yes (the code)</td>
+                    <td>No (the method)</td>
+                </tr>
+                <tr>
+                    <td>What's the value?</td>
+                    <td>Low (commodity)</td>
+                    <td>High (unique)</td>
+                </tr>
+            </table>
+
+            <h3>Example</h3>
+            <p>For MobileCLI:</p>
+            <ul>
+                <li><strong>MIT Licensed (Code)</strong>: HTML, CSS, JavaScript files, setup scripts</li>
+                <li><strong>Proprietary (Method)</strong>: The combination of Termux + Claude Code + autonomous sessions + CLAUDE.md knowledge compounding + dual-repo deployment</li>
+            </ul>
+
+            <p>Anyone can use our code. But the <em>method</em> of combining these technologies for mobile-first AI development? That's the protected invention.</p>
+        </section>
+
+        <section id="essential-documents">
+            <h2>3. Essential Legal Documents</h2>
+
+            <p>Every project needs these five documents:</p>
+
+            <h3>3.1 Terms of Service</h3>
+            <p>Governs the relationship between you and users. Must include:</p>
+            <ul class="checklist">
+                <li>Acceptance of Terms</li>
+                <li>License Grant (what users CAN do)</li>
+                <li>Intellectual Property Rights</li>
+                <li>Prohibited Uses</li>
+                <li>Binding Arbitration (Section 12)</li>
+                <li>Class Action Waiver (Section 13)</li>
+                <li>Limitation of Liability</li>
+                <li>Governing Law (Delaware recommended)</li>
+                <li>Severability clause</li>
+            </ul>
+
+            <h3>3.2 Privacy Policy</h3>
+            <p>Required by law if you collect ANY user data:</p>
+            <ul class="checklist">
+                <li>What data you collect</li>
+                <li>How you use it</li>
+                <li>Who you share it with</li>
+                <li>User rights (access, deletion)</li>
+                <li>GDPR compliance (EU users)</li>
+                <li>CCPA compliance (California users)</li>
+                <li>Cookie policy</li>
+            </ul>
+
+            <h3>3.3 Disclaimer</h3>
+            <p>Limits your liability:</p>
+            <ul class="checklist">
+                <li>"As Is" service provision</li>
+                <li>No warranty</li>
+                <li>Limitation of damages</li>
+                <li>Assumption of risk by user</li>
+                <li>Third-party links disclaimer</li>
+            </ul>
+
+            <h3>3.4 IP Notice</h3>
+            <p>Declares what you own:</p>
+            <ul class="checklist">
+                <li>Ownership statement</li>
+                <li>What IS protected (the method)</li>
+                <li>What is NOT protected (third-party tools)</li>
+                <li>Dual-license explanation</li>
+                <li>Statutory damages warning ($150,000)</li>
+                <li>Contact for commercial licensing</li>
+            </ul>
+
+            <h3>3.5 DMCA Policy</h3>
+            <p>Required for safe harbor protection:</p>
+            <ul class="checklist">
+                <li>Designated agent information</li>
+                <li>How to file takedown notice</li>
+                <li>Counter-notification process</li>
+                <li>Repeat infringer policy</li>
+            </ul>
+        </section>
+
+        <section id="invention-docs">
+            <h2>4. Invention Documentation</h2>
+
+            <p>Beyond legal pages, document your invention itself:</p>
+
+            <h3>GENESIS.md</h3>
+            <p>The origin story and technical specification of your invention:</p>
+
+            <pre><code># GENESIS.md - The Invention
+
+## What We Built
+- Date of Invention: [Date]
+- Inventor: [Name/Alias]
+- Method: [How it was created]
+
+## THE CORE INVENTION (Proprietary IP)
+
+### What IS the Invention:
+1. [First novel element]
+2. [Second novel element]
+3. [The unique combination]
+
+### What is NOT Part of the Invention:
+- Third-party tools used
+- General techniques available to all
+- Existing technologies
+
+### The Novel Contribution:
+The COMBINATION and METHOD is the proprietary IP.</code></pre>
+
+            <h3>IP_NOTICE.md</h3>
+            <p>A clear statement of rights for developers/contributors:</p>
+
+            <pre><code># Intellectual Property Notice
+
+## Ownership
+All rights to the METHOD are reserved by [Entity].
+
+## Dual License
+- Code: MIT License
+- Method: Proprietary - All Rights Reserved
+
+## Contact for Licensing
+[email/contact info]</code></pre>
+        </section>
+
+        <section id="evidence">
+            <h2>5. Evidence Collection</h2>
+
+            <p>Documentation proves your invention timeline. Collect:</p>
+
+            <h3>Digital Evidence</h3>
+            <table>
+                <tr>
+                    <th>Evidence Type</th>
+                    <th>How to Get It</th>
+                    <th>Why It Matters</th>
+                </tr>
+                <tr>
+                    <td>Screenshots</td>
+                    <td>Device screenshots with timestamps</td>
+                    <td>Shows work in progress</td>
+                </tr>
+                <tr>
+                    <td>Git commits</td>
+                    <td>Regular commits with messages</td>
+                    <td>Immutable timestamp trail</td>
+                </tr>
+                <tr>
+                    <td>GitHub API</td>
+                    <td><code>gh api repos/OWNER/REPO</code></td>
+                    <td>Official creation timestamps</td>
+                </tr>
+                <tr>
+                    <td>Wayback Machine</td>
+                    <td>Submit URLs to archive.org</td>
+                    <td>Third-party timestamp proof</td>
+                </tr>
+                <tr>
+                    <td>Email receipts</td>
+                    <td>Service signups, payments</td>
+                    <td>Shows when you started</td>
+                </tr>
+            </table>
+
+            <h3>EVIDENCE_TIMELINE.md</h3>
+            <p>Create a document cataloging all evidence:</p>
+
+            <pre><code># EVIDENCE_TIMELINE.md
+
+## Chronology
+| Date | Time | Evidence | Description |
+|------|------|----------|-------------|
+| Jan 1 | 2:12 PM | Screenshot | First Termux session |
+| Jan 1 | 2:55 PM | Screenshot | First app naming |
+| Jan 4 | 1:27 AM | GitHub API | Repo creation |
+
+## Key Evidence Files
+- Screenshot_20260101_141220_Termux.jpg
+- Screenshot_20260101_145515_Pismo_CLI.jpg</code></pre>
+
+            <div class="highlight">
+                <h4>Pro Tip: Archive Early</h4>
+                <p>Submit your URLs to the Wayback Machine immediately after launching. This creates a third-party timestamp that courts recognize as evidence.</p>
+                <pre><code>curl "https://web.archive.org/save/https://yoursite.com"</code></pre>
+            </div>
+        </section>
+
+        <section id="third-party">
+            <h2>6. Third-Party Separation</h2>
+
+            <p>If your invention uses existing tools, clearly separate what's yours from what's theirs:</p>
+
+            <div class="highlight important">
+                <h4>Why This Matters</h4>
+                <p>Without clear separation, someone could claim your invention is just "using their tool" and you have no unique contribution. Document the distinction explicitly.</p>
+            </div>
+
+            <h3>Template</h3>
+            <pre><code>## Third-Party Separation Statement
+
+### Tools Used (NOT our invention):
+- Tool A by Creator X - Used for [purpose]
+- Tool B by Creator Y - Used for [purpose]
+
+### Our Invention (Proprietary):
+- The METHOD of combining these tools
+- The specific workflow created
+- The novel application
+- The resulting platform
+
+### Relationship Status:
+- No collaboration occurred
+- No exchange of ideas
+- Independent invention
+- No response/acknowledgment from tool creators</code></pre>
+        </section>
+
+        <section id="business">
+            <h2>7. Business Formation</h2>
+
+            <p>An LLC protects your personal assets and holds your IP:</p>
+
+            <h3>California LLC Costs</h3>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Cost</th>
+                </tr>
+                <tr>
+                    <td>Articles of Organization</td>
+                    <td>$70</td>
+                </tr>
+                <tr>
+                    <td>Annual Franchise Tax (minimum)</td>
+                    <td>$800</td>
+                </tr>
+                <tr>
+                    <td>Local Business License</td>
+                    <td>~$50-200</td>
+                </tr>
+                <tr>
+                    <td>EIN (IRS)</td>
+                    <td>Free</td>
+                </tr>
+            </table>
+
+            <h3>Why Delaware?</h3>
+            <p>Consider forming in Delaware even if you're in California:</p>
+            <ul>
+                <li>Business-friendly laws</li>
+                <li>Privacy protection</li>
+                <li>Established case law</li>
+                <li>Used by most tech companies</li>
+                <li>Courts experienced with IP disputes</li>
+            </ul>
+        </section>
+
+        <section id="arbitration">
+            <h2>8. Arbitration & Class Action Waiver</h2>
+
+            <h3>Why Include Arbitration?</h3>
+            <ul>
+                <li><strong>Faster</strong> - Months vs. years in court</li>
+                <li><strong>Cheaper</strong> - No full trial costs</li>
+                <li><strong>Private</strong> - No public court record</li>
+                <li><strong>Enforceable</strong> - Courts uphold arbitration</li>
+            </ul>
+
+            <h3>Sample Clause</h3>
+            <pre><code>Section 12: Binding Arbitration
+
+Any dispute arising from these Terms shall be resolved
+through binding arbitration administered by JAMS under
+its Comprehensive Arbitration Rules. The arbitration
+shall take place in [State], and the arbitrator's
+decision shall be final and binding.</code></pre>
+
+            <h3>Class Action Waiver</h3>
+            <pre><code>Section 13: Class Action Waiver
+
+You agree that any dispute resolution proceedings will
+be conducted only on an individual basis and not in a
+class, consolidated, or representative action.</code></pre>
+
+            <div class="highlight warning">
+                <h4>Required: Opt-Out Provision</h4>
+                <p>For enforceability, you MUST include a 30-day opt-out period:</p>
+                <pre><code>You may opt out of this arbitration agreement within
+30 days by sending written notice to [address].</code></pre>
+            </div>
+        </section>
+
+        <section id="checklist">
+            <h2>9. Complete Checklist</h2>
+
+            <p>Use this checklist before launching any project:</p>
+
+            <div class="checklist">
+                <h3>Legal Documents</h3>
+                <ul>
+                    <li>Terms of Service with arbitration clause</li>
+                    <li>Privacy Policy with GDPR/CCPA compliance</li>
+                    <li>Disclaimer with liability limitations</li>
+                    <li>IP Notice with dual-license explanation</li>
+                    <li>DMCA Policy with designated agent</li>
+                </ul>
+            </div>
+
+            <div class="checklist">
+                <h3>Invention Documentation</h3>
+                <ul>
+                    <li>GENESIS.md - Invention origin and specification</li>
+                    <li>IP_NOTICE.md - Rights declaration for developers</li>
+                    <li>EVIDENCE_TIMELINE.md - Evidence catalog</li>
+                    <li>Third-party separation statement</li>
+                </ul>
+            </div>
+
+            <div class="checklist">
+                <h3>Evidence Collection</h3>
+                <ul>
+                    <li>Screenshots with timestamps preserved</li>
+                    <li>Git commit history established</li>
+                    <li>GitHub repo creation timestamps documented</li>
+                    <li>Wayback Machine archives submitted</li>
+                    <li>Payment/receipt records saved</li>
+                </ul>
+            </div>
+
+            <div class="checklist">
+                <h3>Website Integration</h3>
+                <ul>
+                    <li>Footer links on ALL pages</li>
+                    <li>Legal pages accessible</li>
+                    <li>Copyright notice current</li>
+                    <li>Contact information provided</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <h4>AI Prompt for Legal Docs</h4>
+                <p>Ask Claude Code to create legal documentation:</p>
+                <pre><code>Create legal documentation for this project including:
+1. Terms of Service with arbitration clause
+2. Privacy Policy with GDPR/CCPA compliance
+3. Disclaimer with liability limitations
+4. IP Notice with dual-license structure
+5. DMCA Policy
+6. GENESIS.md documenting the invention
+7. Evidence timeline structure</code></pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>Conclusion</h2>
+            <p>AI can help you create comprehensive legal protection in hours instead of weeks. The key principles:</p>
+            <ol>
+                <li><strong>Dual-license</strong> - Code open, method proprietary</li>
+                <li><strong>Document everything</strong> - Evidence matters</li>
+                <li><strong>Separate clearly</strong> - Your invention vs. tools used</li>
+                <li><strong>Archive early</strong> - Timestamps prove dates</li>
+                <li><strong>Review professionally</strong> - AI drafts, lawyers finalize</li>
+            </ol>
+
+            <p>This framework was developed through the creation of MobileCLI in January 2026. Every document, every process, every lesson learned - captured and shared so you can protect your own inventions.</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="disclaimer.html">Disclaimer</a>
+            <a href="ip.html">IP Notice</a>
+            <a href="dmca.html">DMCA</a>
+        </div>
+        <p class="copyright">&copy; 2026 MobileCLI. All rights reserved.</p>
+    </footer>
+</body>
+</html>
