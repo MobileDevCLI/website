@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentation - MobileCLI</title>
-    <meta name="description" content="Complete guide to setting up AI CLI tools on Android with Termux. Works with Claude Code, Gemini CLI, Codex, and more.">
+    <meta name="description" content="Complete guide to setting up AI CLI tools on Android with Terminal. Works with Claude Code, Gemini CLI, Codex, and more.">
     <link rel="canonical" href="https://mobilecli.com/learn.html">
 
     <style>
@@ -549,6 +549,113 @@
                 font-size: 0.7rem;
             }
         }
+
+        /* Pro Modal */
+        .pro-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .pro-modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--matrix);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 420px;
+            text-align: center;
+            animation: modalPop 0.3s ease-out;
+        }
+
+        @keyframes modalPop {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .pro-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 28px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .pro-modal-close:hover {
+            color: var(--matrix);
+        }
+
+        .pro-modal-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .pro-modal-content h3 {
+            color: var(--matrix);
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+
+        .pro-modal-content p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .pro-modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pro-modal-buttons .btn-primary {
+            background: var(--matrix);
+            color: var(--bg);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .pro-modal-buttons .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .pro-modal-buttons .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 12px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pro-modal-buttons .btn-secondary:hover {
+            border-color: var(--text-secondary);
+            color: var(--text);
+        }
     </style>
 </head>
 <body>
@@ -594,7 +701,7 @@
             </div>
 
             <div class="quick-links">
-                <a href="#install-termux" class="quick-link">Quick Start</a>
+                <a href="#install-terminal" class="quick-link">Quick Start</a>
                 <a href="#autonomous-mode" class="quick-link">Autonomous Mode</a>
                 <a href="#pro-workflow" class="quick-link">Pro Workflow</a>
                 <a href="#persistent" class="quick-link">Background Tasks</a>
@@ -610,12 +717,12 @@
             <div class="toc">
                 <h2>Contents</h2>
                 <ul>
-                    <li><a href="#install-termux">1. Install Termux</a></li>
+                    <li><a href="#install-terminal">1. Install Terminal</a></li>
                     <li><a href="#setup-packages">2. Install Packages</a></li>
                     <li><a href="#install-claude">3. Install Claude Code</a></li>
                     <li><a href="#autonomous-mode">4. Autonomous Mode</a></li>
                     <li><a href="#pro-workflow">5. Pro Workflow (Full Methodology)</a></li>
-                    <li><a href="#persistent">6. Keep Termux Running Forever</a></li>
+                    <li><a href="#persistent">6. Keep Terminal Running Forever</a></li>
                     <li><a href="#github-auth">7. GitHub Authentication</a></li>
                     <li><a href="#workflow">8. The Workflow</a></li>
                     <li><a href="#automation">9. Automation Scripts</a></li>
@@ -624,33 +731,33 @@
                 </ul>
             </div>
 
-            <section id="install-termux">
-                <h2>1. Install Termux</h2>
-                <p>Get Termux from F-Droid (not Play Store - that version is outdated).</p>
+            <section id="install-terminal">
+                <h2>1. Install Terminal</h2>
+                <p>Get Terminal from F-Droid (not Play Store - that version is outdated).</p>
 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">Download</span>
                     </div>
-                    <pre><code><a href="https://f-droid.org/packages/com.termux/" target="_blank">https://f-droid.org/packages/com.termux/</a></code></pre>
+                    <pre><code><a href="https://f-droid.org/packages/com.terminal/" target="_blank">https://f-droid.org/packages/com.terminal/</a></code></pre>
                 </div>
 
-                <p>After installing, open Termux and grant storage access:</p>
+                <p>After installing, open Terminal and grant storage access:</p>
 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">Terminal</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code>termux-setup-storage</code></pre>
+                    <pre><code>terminal-setup-storage</code></pre>
                 </div>
 
-                <p>Tap "Allow" when prompted. This lets Termux access your files.</p>
+                <p>Tap "Allow" when prompted. This lets Terminal access your files.</p>
             </section>
 
             <section id="setup-packages">
                 <h2>2. Install Packages</h2>
-                <p>Update Termux and install the essentials:</p>
+                <p>Update Terminal and install the essentials:</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -661,7 +768,7 @@
 pkg update -y && pkg upgrade -y
 
 <span class="comment"># Install Node.js, Git, GitHub CLI</span>
-pkg install -y nodejs git gh</code></pre>
+terminal install --packages example</code></pre>
                 </div>
 
                 <div class="tip">
@@ -681,7 +788,7 @@ pkg install -y nodejs git gh</code></pre>
                         <span class="code-label">Terminal</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+                    <pre><code>ai-cli install --global</code></pre>
                 </div>
 
                 <p>Start Claude Code:</p>
@@ -709,7 +816,7 @@ pkg install -y nodejs git gh</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                     <pre><code><span class="comment"># Run Claude in Autonomous Mode</span>
-claude --dangerously-skip-permissions</code></pre>
+ai-session start --autonomous</code></pre>
                 </div>
 
                 <h3>Set Up Aliases</h3>
@@ -721,8 +828,8 @@ claude --dangerously-skip-permissions</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                     <pre><code><span class="comment"># Autonomous Mode aliases</span>
-alias claude="claude --dangerously-skip-permissions"
-alias cc="claude --dangerously-skip-permissions"</code></pre>
+alias claude="ai-session start --autonomous"
+alias cc="ai-session start --autonomous"</code></pre>
                 </div>
 
                 <p>Apply changes:</p>
@@ -990,12 +1097,12 @@ Bash(git log:*)</code></pre>
                 </details>
 
                 <details>
-                    <summary>Mobile/Termux Adaptations</summary>
+                    <summary>Mobile/Terminal Adaptations</summary>
                     <div class="detail-content">
                         <p>Special considerations for Android development:</p>
                         <ul>
                             <li>Target 30fps minimum on mobile devices</li>
-                            <li>Use Termux:API for hardware access, not raw intents</li>
+                            <li>Use Terminal:API for hardware access, not raw intents</li>
                             <li>Test Three.js games on actual device, not just browser</li>
                         </ul>
                         <h4 style="margin-top: 16px;">Mobile Verification Loop:</h4>
@@ -1007,10 +1114,10 @@ Bash(git log:*)</code></pre>
 npx http-server -p 8080
 
 <span class="comment"># 2. Capture screenshot</span>
-termux-screenshot ~/screenshot.png
+terminal-screenshot ~/screenshot.png
 
 <span class="comment"># 3. Notify when done</span>
-termux-notification -t "Build complete"
+terminal-notification -t "Build complete"
 
 <span class="comment"># 4. Check screenshot or feed back to Claude</span></code></pre>
                         </div>
@@ -1019,11 +1126,11 @@ termux-notification -t "Build complete"
             </section>
 
             <section id="persistent">
-                <h2>6. Keep Termux Running Forever</h2>
+                <h2>6. Keep Terminal Running Forever</h2>
                 <p>By default, Android kills background apps. Fix this:</p>
 
                 <h3>Enable Wake Lock</h3>
-                <p>Keeps Termux running even when screen is off:</p>
+                <p>Keeps Terminal running even when screen is off:</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -1031,25 +1138,25 @@ termux-notification -t "Build complete"
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                     <pre><code><span class="comment"># Acquire wake lock (keeps CPU running)</span>
-termux-wake-lock
+keep-alive enable
 
 <span class="comment"># Release when done</span>
-termux-wake-unlock</code></pre>
+keep-alive disable</code></pre>
                 </div>
 
                 <h3>Disable Battery Optimization</h3>
                 <ol>
-                    <li>Go to Android Settings → Apps → Termux</li>
+                    <li>Go to Android Settings → Apps → Terminal</li>
                     <li>Battery → Set to "Unrestricted"</li>
-                    <li>This prevents Android from killing Termux</li>
+                    <li>This prevents Android from killing Terminal</li>
                 </ol>
 
                 <h3>Enable External Apps</h3>
-                <p>Let Termux be triggered by other apps:</p>
+                <p>Let Terminal be triggered by other apps:</p>
 
                 <div class="code-block">
                     <div class="code-header">
-                        <span class="code-label">~/.termux/termux.properties</span>
+                        <span class="code-label">~/.terminal/terminal.properties</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                     <pre><code>allow-external-apps=true</code></pre>
@@ -1062,8 +1169,8 @@ termux-wake-unlock</code></pre>
                         <span class="code-label">Terminal</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code>mkdir -p ~/.termux
-echo "allow-external-apps=true" >> ~/.termux/termux.properties</code></pre>
+                    <pre><code>mkdir -p ~/.terminal
+echo "allow-external-apps=true" >> ~/.terminal/terminal.properties</code></pre>
                 </div>
 
                 <h3>Run Sessions in Background</h3>
@@ -1075,7 +1182,7 @@ echo "allow-external-apps=true" >> ~/.termux/termux.properties</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                     <pre><code><span class="comment"># Start tmux (terminal multiplexer)</span>
-pkg install -y tmux
+session-manager install
 tmux
 
 <span class="comment"># Inside tmux, start Claude</span>
@@ -1087,7 +1194,7 @@ cc
 
                 <div class="tip">
                     <div class="tip-label">Pro tip</div>
-                    <p>With tmux + wake lock, you can close Termux, put your phone in your pocket, and Claude keeps working. Check back later for results.</p>
+                    <p>With tmux + wake lock, you can close Terminal, put your phone in your pocket, and Claude keeps working. Check back later for results.</p>
                 </div>
             </section>
 
@@ -1171,18 +1278,18 @@ gp "Add landing page"</code></pre>
 
                 <p>This script:</p>
                 <ul>
-                    <li>Runs <code>termux-setup-storage</code></li>
+                    <li>Runs <code>terminal-setup-storage</code></li>
                     <li>Updates and upgrades packages</li>
                     <li>Installs nodejs, git, gh</li>
                     <li>Installs Claude Code</li>
-                    <li>Configures <code>~/.termux/termux.properties</code></li>
+                    <li>Configures <code>~/.terminal/terminal.properties</code></li>
                     <li>Adds Autonomous Mode aliases to <code>~/.bashrc</code></li>
                     <li>Adds git shortcuts</li>
                     <li>Sets up auto CLAUDE.md creation</li>
                 </ul>
 
-                <h3>Optional: Termux:API Extras</h3>
-                <p>Install Termux:API app from F-Droid first, then:</p>
+                <h3>Optional: Terminal:API Extras</h3>
+                <p>Install Terminal:API app from F-Droid first, then:</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -1299,32 +1406,32 @@ Provide specific, actionable feedback.</code></pre>
                         <span class="code-label">setup.sh</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code><span class="comment">#!/data/data/com.termux/files/usr/bin/bash</span>
+                    <pre><code><span class="comment">#!/data/data/com.terminal/files/usr/bin/bash</span>
 set -e
 
 <span class="comment"># Storage access</span>
-termux-setup-storage
+terminal-setup-storage
 sleep 2
 
 <span class="comment"># Update packages</span>
 pkg update -y && pkg upgrade -y
 
 <span class="comment"># Install essentials</span>
-pkg install -y nodejs git gh
+terminal install --packages example
 
 <span class="comment"># Install Claude Code</span>
-npm install -g @anthropic-ai/claude-code
+ai-cli install --global
 
-<span class="comment"># Configure Termux</span>
-mkdir -p ~/.termux
-echo "allow-external-apps=true" >> ~/.termux/termux.properties
+<span class="comment"># Configure Terminal</span>
+mkdir -p ~/.terminal
+echo "allow-external-apps=true" >> ~/.terminal/terminal.properties
 
 <span class="comment"># Add to bashrc</span>
 cat >> ~/.bashrc << 'EOF'
 
 <span class="comment"># Autonomous Mode</span>
-alias claude="claude --dangerously-skip-permissions"
-alias cc="claude --dangerously-skip-permissions"
+alias claude="ai-session start --autonomous"
+alias cc="ai-session start --autonomous"
 
 <span class="comment"># Git shortcuts</span>
 gp() { git add -A && git commit -m "${1:-update}" && git push; }
@@ -1424,15 +1531,47 @@ git log website/master --oneline -1</code></pre>
         </div>
     </footer>
 
+    <!-- Pro Feature Modal -->
+    <div id="proModal" class="pro-modal">
+        <div class="pro-modal-content">
+            <span class="pro-modal-close" onclick="hideProModal()">&times;</span>
+            <div class="pro-modal-icon">🔐</div>
+            <h3>Pro Feature</h3>
+            <p>Get the real commands and complete setup guide with a Pro subscription. Unlock the full methodology.</p>
+            <div class="pro-modal-buttons">
+                <a href="/pricing.html" class="btn-primary">See Pricing</a>
+                <button onclick="hideProModal()" class="btn-secondary">Maybe Later</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function copyCode(btn) {
-            const pre = btn.closest('.code-block').querySelector('pre');
-            const code = pre.textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                btn.textContent = 'Copied!';
-                setTimeout(() => btn.textContent = 'Copy', 2000);
-            });
+            // Show Pro modal instead of copying
+            showProModal();
         }
+
+        function showProModal() {
+            document.getElementById('proModal').style.display = 'flex';
+        }
+
+        function hideProModal() {
+            document.getElementById('proModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('proModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideProModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideProModal();
+            }
+        });
     </script>
 </body>
 </html>

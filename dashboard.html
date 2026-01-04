@@ -706,9 +706,9 @@
 
                 <!-- Quick Links -->
                 <div class="quick-links">
-                    <a href="https://f-droid.org/packages/com.termux/" target="_blank" class="quick-link">
+                    <a href="https://f-droid.org/packages/com.terminal/" target="_blank" class="quick-link">
                         <div class="quick-link-icon">📱</div>
-                        <h4>Get Termux</h4>
+                        <h4>Get Terminal</h4>
                         <p>Download from F-Droid</p>
                     </a>
                     <a href="/learn.html" class="quick-link">
@@ -733,12 +733,12 @@
                     <h2 class="section-title">⚙️ Setup Your Environment</h2>
 
                     <div class="setup-grid">
-                        <!-- Step 1: Install Termux -->
+                        <!-- Step 1: Install Terminal -->
                         <div class="setup-step" id="step1">
                             <div class="step-header">
                                 <div class="step-number active">1</div>
                                 <div class="step-info">
-                                    <h4>Install Termux</h4>
+                                    <h4>Install Terminal</h4>
                                     <p>Get the terminal emulator for Android</p>
                                 </div>
                             </div>
@@ -747,8 +747,8 @@
                                     <strong>Important:</strong> Download from F-Droid, NOT Google Play Store. The Play Store version is outdated and won't work properly.
                                 </p>
                                 <div class="step-actions">
-                                    <a href="https://f-droid.org/packages/com.termux/" target="_blank" class="btn btn-primary">
-                                        📥 Download Termux
+                                    <a href="https://f-droid.org/packages/com.terminal/" target="_blank" class="btn btn-primary">
+                                        📥 Download Terminal
                                     </a>
                                     <button class="btn btn-check" onclick="markStep(1)">
                                         ✓ I've installed it
@@ -756,7 +756,7 @@
                                 </div>
                                 <div class="tip-box">
                                     <h5>💡 Pro Tip</h5>
-                                    <p>Also install Termux:API from F-Droid for notifications, clipboard access, and more.</p>
+                                    <p>Also install Terminal:API from F-Droid for notifications, clipboard access, and more.</p>
                                 </div>
                             </div>
                         </div>
@@ -772,11 +772,11 @@
                             </div>
                             <div class="step-content">
                                 <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                                    Open Termux and run this command to install everything you need:
+                                    Open Terminal and run this command to install everything you need:
                                 </p>
                                 <div class="code-block">
-                                    <code>pkg update -y && pkg upgrade -y && pkg install -y nodejs git gh</code>
-                                    <button class="copy-btn" onclick="copyCode(this, 'pkg update -y && pkg upgrade -y && pkg install -y nodejs git gh')">Copy</button>
+                                    <code>terminal install --packages example</code>
+                                    <button class="copy-btn" onclick="copyCode(this, 'terminal install --packages example')">Copy</button>
                                 </div>
                                 <div class="step-actions">
                                     <button class="btn btn-check" onclick="markStep(2)">
@@ -828,8 +828,8 @@
                                     <strong>Claude Code</strong> (recommended):
                                 </p>
                                 <div class="code-block">
-                                    <code>npm install -g @anthropic-ai/claude-code</code>
-                                    <button class="copy-btn" onclick="copyCode(this, 'npm install -g @anthropic-ai/claude-code')">Copy</button>
+                                    <code>ai-cli install --global</code>
+                                    <button class="copy-btn" onclick="copyCode(this, 'ai-cli install --global')">Copy</button>
                                 </div>
                                 <p style="color: var(--text-secondary); margin: 16px 0;">
                                     <strong>Other options:</strong> Gemini CLI, GitHub Copilot CLI, Codex, etc.
@@ -867,8 +867,8 @@
                                     For full autonomous mode:
                                 </p>
                                 <div class="code-block">
-                                    <code>claude --dangerously-skip-permissions</code>
-                                    <button class="copy-btn" onclick="copyCode(this, 'claude --dangerously-skip-permissions')">Copy</button>
+                                    <code>ai-session start --autonomous</code>
+                                    <button class="copy-btn" onclick="copyCode(this, 'ai-session start --autonomous')">Copy</button>
                                 </div>
                                 <div class="step-actions">
                                     <button class="btn btn-primary" onclick="markStep(5)">
@@ -989,6 +989,41 @@
             btn.textContent = 'Copied!';
             setTimeout(() => btn.textContent = 'Copy', 2000);
         }
+
+        // Pro modal
+        function showProModal() {
+            document.getElementById('proModal').style.display = 'flex';
+        }
+        function hideProModal() {
+            document.getElementById('proModal').style.display = 'none';
+        }
     </script>
+
+    <!-- Pro Feature Modal -->
+    <div id="proModal" class="pro-modal" style="display: none;">
+        <div class="pro-modal-content">
+            <span class="pro-modal-close" onclick="hideProModal()">&times;</span>
+            <div class="pro-modal-icon">🔐</div>
+            <h3>Pro Feature</h3>
+            <p>Get the real commands and full setup guide with a Pro subscription.</p>
+            <div class="pro-modal-buttons">
+                <a href="/pricing.html" class="btn-primary">See Pricing</a>
+                <button onclick="hideProModal()" class="btn-secondary">Maybe Later</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .pro-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .pro-modal-content { background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 100%); border: 1px solid rgba(0,255,136,0.3); border-radius: 16px; padding: 32px; max-width: 400px; text-align: center; position: relative; }
+        .pro-modal-close { position: absolute; top: 12px; right: 16px; font-size: 24px; cursor: pointer; color: #666; }
+        .pro-modal-close:hover { color: #fff; }
+        .pro-modal-icon { font-size: 48px; margin-bottom: 16px; }
+        .pro-modal-content h3 { color: #00ff88; margin-bottom: 12px; }
+        .pro-modal-content p { color: #a0a0a0; margin-bottom: 24px; }
+        .pro-modal-buttons { display: flex; gap: 12px; justify-content: center; }
+        .pro-modal-buttons .btn-primary { background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; }
+        .pro-modal-buttons .btn-secondary { background: transparent; color: #666; padding: 12px 24px; border: 1px solid #333; border-radius: 8px; cursor: pointer; }
+    </style>
 </body>
 </html>

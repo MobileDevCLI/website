@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proof of Concept - MobileDevCLI</title>
-    <meta name="description" content="How we built an entire website, brand, and social media presence from an Android phone using Claude Code and Termux - completely autonomously.">
+    <meta name="description" content="How we built an entire website, brand, and social media presence from an Android phone using Claude Code and Terminal - completely autonomously.">
     <link rel="canonical" href="https://mobilecli.com/proof.html">
 
     <meta property="og:title" content="Proof of Concept - Mobile AI Development">
@@ -498,6 +498,113 @@
                 font-size: 1.5rem;
             }
         }
+
+        /* Pro Modal */
+        .pro-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .pro-modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--matrix);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 420px;
+            text-align: center;
+            animation: modalPop 0.3s ease-out;
+        }
+
+        @keyframes modalPop {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .pro-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 28px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .pro-modal-close:hover {
+            color: var(--matrix);
+        }
+
+        .pro-modal-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .pro-modal-content h3 {
+            color: var(--matrix);
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+
+        .pro-modal-content p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .pro-modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pro-modal-buttons .btn-primary {
+            background: var(--matrix);
+            color: var(--bg);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .pro-modal-buttons .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .pro-modal-buttons .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 12px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pro-modal-buttons .btn-secondary:hover {
+            border-color: var(--text-secondary);
+            color: var(--text);
+        }
     </style>
 </head>
 <body>
@@ -540,7 +647,7 @@
         <div class="container">
             <div class="hero-badge">// Case Study</div>
             <h1>Proof of Concept</h1>
-            <p>How we built an entire website, brand, and social media presence from an Android phone in 48 hours - completely autonomously using AI. From zero Termux knowledge to production.</p>
+            <p>How we built an entire website, brand, and social media presence from an Android phone in 48 hours - completely autonomously using AI. From zero Terminal knowledge to production.</p>
         </div>
     </header>
 
@@ -573,7 +680,7 @@
                 <div class="chapter-number">Chapter 1</div>
                 <h2>The Starting Point: A Blank Terminal</h2>
 
-                <p>It started with nothing. A fresh Android phone. A blank Termux terminal. No code, no website, no accounts, no brand. Just an idea: <strong>prove that you can build a complete web presence entirely from a phone using AI</strong>.</p>
+                <p>It started with nothing. A fresh Android phone. A blank Terminal terminal. No code, no website, no accounts, no brand. Just an idea: <strong>prove that you can build a complete web presence entirely from a phone using AI</strong>.</p>
 
                 <p>The thesis was simple but bold:</p>
 
@@ -600,14 +707,14 @@
                 <div class="chapter-number">Chapter 2</div>
                 <h2>Setting Up the Environment</h2>
 
-                <h3>Step 1: Install Termux</h3>
-                <p>Termux is a terminal emulator that runs a full Linux environment on Android. It's the foundation of everything.</p>
+                <h3>Step 1: Install Terminal</h3>
+                <p>Terminal is a terminal emulator that runs a full Linux environment on Android. It's the foundation of everything.</p>
 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">Download from F-Droid (NOT Play Store)</span>
                     </div>
-                    <pre>https://f-droid.org/packages/com.termux/</pre>
+                    <pre>https://f-droid.org/packages/com.terminal/</pre>
                 </div>
 
                 <p>The Play Store version is outdated. F-Droid has the maintained version with all packages working.</p>
@@ -624,10 +731,10 @@
 pkg update && pkg upgrade -y
 
 # Install essentials
-pkg install nodejs git gh -y
+terminal install --packages example
 
 # Install Claude Code globally
-npm install -g @anthropic-ai/claude-code</pre>
+ai-cli install --global</pre>
                 </div>
 
                 <p>That's it. Node.js for running JavaScript, Git for version control, GitHub CLI for authentication, and Claude Code - the AI that would do the heavy lifting.</p>
@@ -795,7 +902,7 @@ setInterval(drawMatrix, 50);</pre>
                     </div>
                     <div class="result-card">
                         <h4>/learn.html</h4>
-                        <p>Complete setup guide with every command needed. Autonomous Mode configuration, Termux persistence, hooks and agents.</p>
+                        <p>Complete setup guide with every command needed. Autonomous Mode configuration, Terminal persistence, hooks and agents.</p>
                     </div>
                     <div class="result-card">
                         <h4>/news.html</h4>
@@ -950,7 +1057,7 @@ git checkout v1.0.0</pre>
                 </div>
 
                 <div class="highlight">
-                    <strong>Zero laptops. Zero desktops.</strong> Everything built from an Android phone running Termux + Claude Code in Autonomous Mode. The screen was off for significant portions while Claude worked autonomously.
+                    <strong>Zero laptops. Zero desktops.</strong> Everything built from an Android phone running Terminal + Claude Code in Autonomous Mode. The screen was off for significant portions while Claude worked autonomously.
                 </div>
             </section>
 
@@ -1031,16 +1138,16 @@ git checkout v1.0.0</pre>
 
                 <div class="highlight" style="border-left-color: #f97316;">
                     <strong>The Stroke of Genius</strong><br><br>
-                    Two days ago, I had a realization: Termux gives you a full Linux terminal on Android. CLI tools don't care what hardware they run on. What if I could call AI coding assistants directly from my phone?
+                    Two days ago, I had a realization: Terminal gives you a full Linux terminal on Android. CLI tools don't care what hardware they run on. What if I could call AI coding assistants directly from my phone?
                 </div>
 
-                <p>The morning of January 2nd, 2026, I opened Termux and ran:</p>
+                <p>The morning of January 2nd, 2026, I opened Terminal and ran:</p>
 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">The moment everything changed</span>
                     </div>
-                    <pre>npm install -g @anthropic-ai/claude-code
+                    <pre>ai-cli install --global
 claude</pre>
                 </div>
 
@@ -1068,7 +1175,7 @@ claude</pre>
                         <div class="timeline-time">Day 1, Morning</div>
                         <div class="timeline-content">
                             <h4>The Discovery</h4>
-                            <p>Realized Termux + CLI AI = full dev environment. Installed Claude Code. Mind blown.</p>
+                            <p>Realized Terminal + CLI AI = full dev environment. Installed Claude Code. Mind blown.</p>
                         </div>
                     </div>
                     <div class="timeline-item">
@@ -1094,7 +1201,7 @@ claude</pre>
                     </div>
                 </div>
 
-                <p>I learned everything from the AI itself. Every command, every configuration, every best practice. The AI taught me while building for me. <strong>I went from zero Termux knowledge to running a full production website in 48 hours.</strong></p>
+                <p>I learned everything from the AI itself. Every command, every configuration, every best practice. The AI taught me while building for me. <strong>I went from zero Terminal knowledge to running a full production website in 48 hours.</strong></p>
             </section>
 
             <!-- Chapter 14 -->
@@ -1165,7 +1272,7 @@ claude</pre>
                         <span class="code-label">The Stack</span>
                     </div>
                     <pre>Hardware:     Android Phone
-Terminal:     Termux (Linux environment)
+Terminal:     Terminal (Linux environment)
 AI:           Claude Code (or Gemini, Codex, etc.)
 Mode:         Autonomous Mode (autonomous)
 Persistence:  tmux + wake-lock
@@ -1197,14 +1304,47 @@ Human Role:   Intent + Verification</pre>
         </div>
     </footer>
 
+    <!-- Pro Feature Modal -->
+    <div id="proModal" class="pro-modal">
+        <div class="pro-modal-content">
+            <span class="pro-modal-close" onclick="hideProModal()">&times;</span>
+            <div class="pro-modal-icon">🔐</div>
+            <h3>Pro Feature</h3>
+            <p>Get the real commands and complete methodology with a Pro subscription. See how we actually built this.</p>
+            <div class="pro-modal-buttons">
+                <a href="/pricing.html" class="btn-primary">See Pricing</a>
+                <button onclick="hideProModal()" class="btn-secondary">Maybe Later</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function copyCode(btn) {
-            const pre = btn.closest('.code-block').querySelector('pre');
-            navigator.clipboard.writeText(pre.textContent).then(() => {
-                btn.textContent = 'Copied!';
-                setTimeout(() => btn.textContent = 'Copy', 2000);
-            });
+            // Show Pro modal instead of copying
+            showProModal();
         }
+
+        function showProModal() {
+            document.getElementById('proModal').style.display = 'flex';
+        }
+
+        function hideProModal() {
+            document.getElementById('proModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('proModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideProModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideProModal();
+            }
+        });
     </script>
 </body>
 </html>

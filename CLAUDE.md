@@ -32,7 +32,7 @@ This entire website was built in ONE continuous AI conversation on a phone.
 ```
 ├── GENESIS.md            # THE INVENTION - read this first
 ├── setup.sh              # Main installer script
-├── extras.sh             # Termux:API utilities
+├── extras.sh             # Terminal:API utilities
 ├── index.html            # Homepage (Three.js + Cannon.js physics hero)
 ├── login.html            # Auth (Supabase - GitHub OAuth)
 ├── dashboard.html        # User dashboard with setup wizard
@@ -420,28 +420,28 @@ Read ~/storage/dcim/Screenshots/Screenshot_20260104.jpg
 - Game development - Claude can see rendered frames
 - Verification loop - the 2-3x quality multiplier, now visual
 
-### Termux:API Integration
-Full hardware access via Termux:API app:
+### Terminal:API Integration
+Full hardware access via Terminal:API app:
 
 ```bash
-pkg install termux-api  # Install package
-# Also install Termux:API app from F-Droid
+pkg install terminal-api  # Install package
+# Also install Terminal:API app from F-Droid
 
 # Available commands:
-termux-camera-photo     # Take photo
-termux-screenshot       # Screenshot (needs Termux:API)
-termux-notification     # Send notification
-termux-toast            # Show toast message
-termux-vibrate          # Vibrate phone
-termux-tts-speak        # Text to speech
-termux-speech-to-text   # Voice input
-termux-clipboard-get    # Read clipboard
-termux-clipboard-set    # Write clipboard
-termux-share            # Share intent
-termux-open-url         # Open URL
-termux-wifi-connectioninfo  # WiFi info
-termux-battery-status   # Battery info
-termux-wake-lock        # Prevent CPU sleep
+terminal-camera-photo     # Take photo
+terminal-screenshot       # Screenshot (needs Terminal:API)
+terminal-notification     # Send notification
+terminal-toast            # Show toast message
+terminal-vibrate          # Vibrate phone
+terminal-tts-speak        # Text to speech
+terminal-speech-to-text   # Voice input
+terminal-clipboard-get    # Read clipboard
+terminal-clipboard-set    # Write clipboard
+terminal-share            # Share intent
+terminal-open-url         # Open URL
+terminal-wifi-connectioninfo  # WiFi info
+terminal-battery-status   # Battery info
+terminal-wake-lock        # Prevent CPU sleep
 ```
 
 ### Long-Running Sessions
@@ -449,9 +449,9 @@ Keep Claude running for days:
 
 ```bash
 # The combo for persistent sessions
-termux-wake-lock                           # Prevent sleep
-termux-notification -t "Dev" --ongoing     # Keep priority
-tmux new -s dev                            # Survive Termux close
+terminal-wake-lock                           # Prevent sleep
+terminal-notification -t "Dev" --ongoing     # Keep priority
+tmux new -s dev                            # Survive Terminal close
 claude --dangerously-skip-permissions      # Autonomous mode
 ```
 
@@ -491,10 +491,68 @@ Document EVERYTHING from Day 1:
 - Witness statements (get written statements from anyone who saw development)
 
 ### Third-Party Separation
-When using existing tools (Termux, Claude Code, etc.):
+When using existing tools (Terminal, Claude Code, etc.):
 - Clearly state what you invented vs what's third-party
 - Never claim ownership of others' tools
 - Your innovation is the METHOD, not the tools
+
+### Third-Party Attribution Requirements
+
+**Termux (GPLv3)**
+- Must include license and copyright notice
+- Must indicate any changes made
+- Any modifications must be GPLv3
+- Source code must be available if distributing
+- Terminal Emulator for Android component is Apache 2.0 (Jack Palevich)
+
+**Claude Code (Anthropic TOS)**
+- Proprietary: © Anthropic PBC, All Rights Reserved
+- Use subject to Anthropic's Commercial Terms of Service
+- Users own outputs (code generated)
+- Recommended attribution: "Generated with Claude"
+
+**Node.js, Git, GitHub CLI**
+- Include copyright notices for MIT and GPLv2 components
+- No modifications needed for usage-only
+
+**Where to place attributions:**
+1. ip.html - Section 15: Third-Party Attributions (public)
+2. terms.html - Section 23: Third-Party Software Acknowledgment
+3. LICENSE file in GitHub repo
+
+### Alternative Android Terminals
+Other powerful terminal emulators (besides Termux):
+- **UserLAnd** - Full Linux without root, easy GUI
+- **Andronix** - Full Linux distros (Ubuntu, Kali, Arch)
+- **NeoTerm** - Modern terminal, built as Termux frontend
+- **GNURoot Debian** - Basic Debian environment
+- **Kali NetHunter** - Security testing focused
+- **ReTerminal** - Material 3 design, Termux-compatible
+
+*Note: We are developing a dedicated AI Terminal for Android & iOS.*
+
+### Liability Protection Requirements
+
+**Terms of Service Must Include:**
+1. Beta/development status notice
+2. "As Is" disclaimer of warranties
+3. Limitation of liability clause
+4. Indemnification from users
+5. Binding arbitration (JAMS)
+6. Class action waiver with 30-day opt-out
+7. **Assumption of Risk** - users accept all risks of:
+   - Running scripts on their devices
+   - Data loss or device damage
+   - Third-party software failures
+   - AI-generated code errors
+8. **Release of Liability** - waiver of claims
+
+**Account/Payment Consent:**
+Users must explicitly confirm they:
+- Read and accept all terms
+- Understand the assumption of risk
+- Are 18+ or age of majority
+- Have legal capacity to agree
 
 ### What to Gitignore (Private Legal Docs)
 ```
@@ -602,7 +660,7 @@ Public teaching page that explains:
 - Git security best practices
 - Supabase security
 - Claude Code permission modes
-- Mobile/Termux security
+- Mobile/Terminal security
 
 ---
 

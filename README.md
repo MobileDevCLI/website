@@ -26,8 +26,8 @@ MobileDevCLI turns any Android phone into a complete AI-powered coding environme
 
 ## Quick Start
 
-### 1. Install Termux
-Download [Termux from F-Droid](https://f-droid.org/packages/com.termux/) (recommended) or Google Play Store.
+### 1. Install Terminal
+Download [Terminal from F-Droid](https://f-droid.org/packages/com.terminal/) (recommended) or Google Play Store.
 
 ### 2. Run the installer
 ```bash
@@ -71,13 +71,13 @@ That's it! You're ready to code.
 
 ### Extras (Optional)
 
-Install additional Termux:API utilities:
+Install additional Terminal:API utilities:
 
 ```bash
 curl -sL https://raw.githubusercontent.com/MobileDevCLI/setup/main/extras.sh | bash
 ```
 
-Requires [Termux:API app](https://f-droid.org/packages/com.termux.api/).
+Requires [Terminal:API app](https://f-droid.org/packages/com.terminal.api/).
 
 | Command | Description |
 |---------|-------------|
@@ -110,7 +110,7 @@ MobileDevCLI runs Claude Code in "Autonomous Mode" by default (`--dangerously-sk
 This is perfect for mobile development where typing confirmations is tedious. If you prefer the standard permission model, run `claude` without the alias:
 
 ```bash
-/data/data/com.termux/files/usr/bin/claude
+/data/data/com.terminal/files/usr/bin/claude
 ```
 
 ---
@@ -140,9 +140,9 @@ Edit it to customize Claude's behavior for each project:
 
 ### "Permission denied" errors
 ```bash
-termux-setup-storage
+terminal-setup-storage
 ```
-Then restart Termux.
+Then restart Terminal.
 
 ### Claude won't start
 Make sure you have an Anthropic API key or Claude subscription:
@@ -157,10 +157,10 @@ gh auth login
 # Select: GitHub.com > HTTPS > Yes > Login with web browser
 ```
 
-### Termux:API commands not working
-1. Install the [Termux:API app](https://f-droid.org/packages/com.termux.api/)
+### Terminal:API commands not working
+1. Install the [Terminal:API app](https://f-droid.org/packages/com.terminal.api/)
 2. Grant all permissions when prompted
-3. Run `termux-setup-storage` and restart Termux
+3. Run `terminal-setup-storage` and restart Terminal
 
 ### Package installation fails
 ```bash

@@ -238,7 +238,7 @@ Location: `/admin/analytics`
 
 ### Goal: Top 3-5 search results for:
 - "Claude Code Android"
-- "Termux AI development"
+- "Terminal AI development"
 - "Mobile coding CLI"
 - "AI development phone"
 - "Android development terminal"

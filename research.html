@@ -410,10 +410,10 @@
                     <div class="discovery-date">Jan 4, 2026</div>
                 </div>
 
-                <p>Major discovery: Claude Code running in Termux can directly access and analyze screenshots stored on the phone's filesystem.</p>
+                <p>Major discovery: Claude Code running in Terminal can directly access and analyze screenshots stored on the phone's filesystem.</p>
 
                 <h3>How It Works</h3>
-                <p>After running <code>termux-setup-storage</code>, Termux gets access to shared storage. Screenshots are stored at:</p>
+                <p>After running <code>terminal-setup-storage</code>, Terminal gets access to shared storage. Screenshots are stored at:</p>
                 <div class="code-block">
                     <code>~/storage/dcim/Screenshots/</code>
                 </div>
@@ -515,12 +515,12 @@
                 </div>
             </div>
 
-            <!-- Discovery 4: Termux Persistence -->
-            <div class="discovery" id="termux-persistence">
+            <!-- Discovery 4: Terminal Persistence -->
+            <div class="discovery" id="terminal-persistence">
                 <div class="discovery-header">
                     <div>
                         <span class="discovery-tag tag-integration">Integration</span>
-                        <h2>Making Termux Truly Persistent</h2>
+                        <h2>Making Terminal Truly Persistent</h2>
                     </div>
                     <div class="discovery-date">Jan 2, 2026</div>
                 </div>
@@ -529,13 +529,13 @@
 
                 <h3>The Triple Lock</h3>
                 <div class="code-block">
-                    <code># 1. Wake lock (prevents CPU sleep)<br>termux-wake-lock<br><br># 2. Notification (keeps process priority high)<br>termux-notification -t "Claude Running" --ongoing<br><br># 3. tmux (session survives Termux close)<br>tmux new -s dev</code>
+                    <code># 1. Wake lock (prevents CPU sleep)<br>terminal-wake-lock<br><br># 2. Notification (keeps process priority high)<br>terminal-notification -t "Claude Running" --ongoing<br><br># 3. tmux (session survives Terminal close)<br>tmux new -s dev</code>
                 </div>
 
                 <h3>The Combo Command</h3>
                 <p>We created a helper function:</p>
                 <div class="code-block">
-                    <code>stay-awake() {<br>  termux-wake-lock<br>  termux-notification -t "Dev Session" --ongoing<br>  echo "Device will stay awake"<br>}</code>
+                    <code>stay-awake() {<br>  terminal-wake-lock<br>  terminal-notification -t "Dev Session" --ongoing<br>  echo "Device will stay awake"<br>}</code>
                 </div>
 
                 <div class="insight">
@@ -569,14 +569,14 @@
 
                 <h3>The Stack</h3>
                 <div class="code-block">
-                    <code># Frontend: Vanilla HTML/CSS/JS, Three.js, Cannon.js<br># Hosting: Vercel (auto-deploy from GitHub)<br># Auth: Supabase (GitHub OAuth)<br># Payments: Stripe<br># Version Control: Git + GitHub<br># Development: Claude Code in Termux on Android</code>
+                    <code># Frontend: Vanilla HTML/CSS/JS, Three.js, Cannon.js<br># Hosting: Vercel (auto-deploy from GitHub)<br># Auth: Supabase (GitHub OAuth)<br># Payments: Stripe<br># Version Control: Git + GitHub<br># Development: Claude Code in Terminal on Android</code>
                 </div>
 
                 <h3>Timeline</h3>
                 <div class="timeline">
                     <div class="timeline-item">
                         <div class="timeline-date">Day 1</div>
-                        <div class="timeline-content">Set up Termux, installed Claude Code, created initial site structure</div>
+                        <div class="timeline-content">Set up Terminal, installed Claude Code, created initial site structure</div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-date">Day 2</div>
@@ -602,11 +602,11 @@
                 <h2 style="color: var(--accent);">Open Questions</h2>
                 <p>Things we're still investigating:</p>
                 <ul>
-                    <li><strong>Android AI CLI App:</strong> Can we ship a standalone app that runs Claude without Termux? (Currently Phase 3 of 6)</li>
+                    <li><strong>Android AI CLI App:</strong> Can we ship a standalone app that runs Claude without Terminal? (Currently Phase 3 of 6)</li>
                     <li><strong>Multi-device sync:</strong> How do we sync CLAUDE.md and sessions across multiple phones?</li>
-                    <li><strong>MCP on mobile:</strong> Can we run MCP servers for Slack, analytics in Termux?</li>
-                    <li><strong>Camera integration:</strong> Can Claude take photos via termux-camera and analyze them?</li>
-                    <li><strong>Voice control:</strong> Using termux-tts and termux-speech to control Claude hands-free</li>
+                    <li><strong>MCP on mobile:</strong> Can we run MCP servers for Slack, analytics in Terminal?</li>
+                    <li><strong>Camera integration:</strong> Can Claude take photos via terminal-camera and analyze them?</li>
+                    <li><strong>Voice control:</strong> Using terminal-tts and terminal-speech to control Claude hands-free</li>
                 </ul>
             </div>
 
