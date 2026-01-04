@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples & Resources - MobileDevCLI</title>
+    <meta name="description" content="Curated collection of 3D graphics, physics simulations, AI research, and web development examples. Three.js, Babylon.js, particle physics, and more.">
+    <link rel="canonical" href="https://mobilecli.com/examples.html">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-card: #111111;
+            --text: #e6e6e6;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --matrix: #00ff41;
+            --border: #1a1a1a;
+            --accent-blue: #00d4ff;
+            --accent-purple: #a855f7;
+            --accent-orange: #f97316;
+            --accent-pink: #ec4899;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--matrix);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--matrix);
+        }
+
+        /* Mobile Tabs */
+        .mobile-tabs {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            z-index: 999;
+            overflow-x: auto;
+        }
+
+        .mobile-tabs-inner {
+            display: flex;
+            min-width: max-content;
+        }
+
+        .mobile-tab {
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+        }
+
+        .mobile-tab.active {
+            color: var(--matrix);
+            border-bottom-color: var(--matrix);
+        }
+
+        /* Header */
+        .page-header {
+            padding: 120px 0 60px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Category Section */
+        .category {
+            padding: 60px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category:last-child {
+            border-bottom: none;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .category-icon.threejs { background: rgba(0, 212, 255, 0.15); }
+        .category-icon.babylon { background: rgba(168, 85, 247, 0.15); }
+        .category-icon.physics { background: rgba(249, 115, 22, 0.15); }
+        .category-icon.ai { background: rgba(236, 72, 153, 0.15); }
+        .category-icon.react { background: rgba(0, 212, 255, 0.15); }
+        .category-icon.tools { background: rgba(0, 255, 65, 0.15); }
+
+        .category-title h2 {
+            font-size: 1.75rem;
+            margin-bottom: 4px;
+        }
+
+        .category-title p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Example Grid */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .example-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .example-card:hover {
+            border-color: var(--matrix);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(0, 255, 65, 0.1);
+        }
+
+        .example-preview {
+            height: 160px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .example-content {
+            padding: 20px;
+        }
+
+        .example-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .example-content h3 a {
+            color: var(--text);
+            transition: color 0.2s;
+        }
+
+        .example-content h3 a:hover {
+            color: var(--matrix);
+        }
+
+        .example-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .example-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .example-link {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .example-link.demo {
+            background: var(--matrix);
+            color: var(--bg);
+        }
+
+        .example-link.demo:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+        }
+
+        .example-link.github {
+            background: var(--bg-secondary);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .example-link.github:hover {
+            border-color: var(--text-secondary);
+        }
+
+        /* Featured Banner */
+        .featured-banner {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.1), rgba(0, 212, 255, 0.1));
+            border: 1px solid var(--matrix);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .featured-icon {
+            font-size: 3rem;
+        }
+
+        .featured-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .featured-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .featured-content .example-link {
+            display: inline-block;
+        }
+
+        /* Footer */
+        footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            margin: 0 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .mobile-tabs {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .page-header {
+                padding-top: 140px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .page-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .category-title h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">&gt;_ MobileDevCLI</a>
+            <div class="nav-links">
+                <a href="/games.html">Games</a>
+                <a href="/learn.html">Learn</a>
+                <a href="/news.html">News</a>
+                <a href="/proof.html">Proof</a>
+                <a href="/examples.html">Examples</a>
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-tabs">
+        <div class="mobile-tabs-inner">
+            <a href="/" class="mobile-tab">Home</a>
+            <a href="/games.html" class="mobile-tab">Games</a>
+            <a href="/learn.html" class="mobile-tab">Learn</a>
+            <a href="/news.html" class="mobile-tab">News</a>
+            <a href="/proof.html" class="mobile-tab">Proof</a>
+            <a href="/examples.html" class="mobile-tab active">Examples</a>
+            <a href="https://github.com/MobileDevCLI" class="mobile-tab">GitHub</a>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Examples & Resources</h1>
+            <p>Curated collection of the best 3D graphics, physics simulations, AI research, and web development resources.</p>
+        </div>
+    </header>
+
+    <!-- Three.js -->
+    <section class="category">
+        <div class="container">
+            <div class="category-header">
+                <div class="category-icon threejs">🎨</div>
+                <div class="category-title">
+                    <h2>Three.js</h2>
+                    <p>3D graphics library for the web. WebGL made easy.</p>
+                </div>
+            </div>
+
+            <div class="featured-banner">
+                <div class="featured-icon">🏎️</div>
+                <div class="featured-content">
+                    <h3>Ferrari 488 - Interactive 3D Model</h3>
+                    <p>Stunning car model with realistic materials, environment mapping, and smooth controls. One of the most impressive Three.js demos.</p>
+                    <a href="https://threejs.org/examples/#webgl_materials_car" target="_blank" class="example-link demo">View Demo</a>
+                </div>
+            </div>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <div class="example-preview">🤖</div>
+                    <div class="example-content">
+                        <h3><a href="https://threejs.org/examples/#webgl_animation_skinning_morph" target="_blank">Robot Character</a></h3>
+                        <p>Animated robot with skeletal animation and morph targets. Great for learning character animation.</p>
+                        <div class="example-links">
+                            <a href="https://threejs.org/examples/#webgl_animation_skinning_morph" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_animation_skinning_morph.html" target="_blank" class="example-link github">Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🌊</div>
+                    <div class="example-content">
+                        <h3><a href="https://threejs.org/examples/#webgl_shaders_ocean" target="_blank">Ocean Shader</a></h3>
+                        <p>Realistic ocean simulation with waves, reflections, and sky. Beautiful water rendering.</p>
+                        <div class="example-links">
+                            <a href="https://threejs.org/examples/#webgl_shaders_ocean" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_shaders_ocean.html" target="_blank" class="example-link github">Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">💀</div>
+                    <div class="example-content">
+                        <h3><a href="https://threejs.org/examples/#webgl_loader_gltf" target="_blank">glTF Loader</a></h3>
+                        <p>Load any 3D model in glTF format. The standard for web 3D assets.</p>
+                        <div class="example-links">
+                            <a href="https://threejs.org/examples/#webgl_loader_gltf" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_loader_gltf.html" target="_blank" class="example-link github">Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">✨</div>
+                    <div class="example-content">
+                        <h3><a href="https://threejs.org/examples/#webgl_points_billboards" target="_blank">Particle System</a></h3>
+                        <p>GPU-accelerated particles. Create fire, smoke, stars, and magical effects.</p>
+                        <div class="example-links">
+                            <a href="https://threejs.org/examples/#webgl_points_billboards" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_points_billboards.html" target="_blank" class="example-link github">Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🎮</div>
+                    <div class="example-content">
+                        <h3><a href="https://jblaha.art/sketchbook/latest" target="_blank">Sketchbook</a></h3>
+                        <p>Complete character controller with vehicles, physics, and beautiful environments. Full game engine.</p>
+                        <div class="example-links">
+                            <a href="https://jblaha.art/sketchbook/latest" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://github.com/swift502/Sketchbook" target="_blank" class="example-link github">Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">📚</div>
+                    <div class="example-content">
+                        <h3><a href="https://threejs.org/examples/" target="_blank">All Examples</a></h3>
+                        <p>500+ official Three.js examples covering every feature. The complete reference.</p>
+                        <div class="example-links">
+                            <a href="https://threejs.org/examples/" target="_blank" class="example-link demo">Browse All</a>
+                            <a href="https://github.com/mrdoob/three.js" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Babylon.js -->
+    <section class="category">
+        <div class="container">
+            <div class="category-header">
+                <div class="category-icon babylon">🎭</div>
+                <div class="category-title">
+                    <h2>Babylon.js</h2>
+                    <p>Powerful 3D engine with built-in physics, animations, and VR support.</p>
+                </div>
+            </div>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <div class="example-preview">🏠</div>
+                    <div class="example-content">
+                        <h3><a href="https://playground.babylonjs.com/#KBS9I5#0" target="_blank">House Tutorial</a></h3>
+                        <p>Build a 3D house from scratch. Perfect introduction to Babylon.js basics.</p>
+                        <div class="example-links">
+                            <a href="https://playground.babylonjs.com/#KBS9I5#0" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://doc.babylonjs.com/features/featuresDeepDive/mesh/creation/set/box" target="_blank" class="example-link github">Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">💥</div>
+                    <div class="example-content">
+                        <h3><a href="https://playground.babylonjs.com/#7149G4" target="_blank">Physics Demo</a></h3>
+                        <p>Falling objects with realistic physics using Ammo.js. Collision detection and rigid bodies.</p>
+                        <div class="example-links">
+                            <a href="https://playground.babylonjs.com/#7149G4" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://doc.babylonjs.com/features/featuresDeepDive/physics" target="_blank" class="example-link github">Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🧙</div>
+                    <div class="example-content">
+                        <h3><a href="https://playground.babylonjs.com/#BCU1XR" target="_blank">Character Animation</a></h3>
+                        <p>Animated character with blend trees and state machines. Professional animation system.</p>
+                        <div class="example-links">
+                            <a href="https://playground.babylonjs.com/#BCU1XR" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://doc.babylonjs.com/features/featuresDeepDive/animation" target="_blank" class="example-link github">Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🌌</div>
+                    <div class="example-content">
+                        <h3><a href="https://playground.babylonjs.com/#E6OZX#3" target="_blank">PBR Materials</a></h3>
+                        <p>Physically-based rendering with metallic, roughness, and environment maps.</p>
+                        <div class="example-links">
+                            <a href="https://playground.babylonjs.com/#E6OZX#3" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://doc.babylonjs.com/features/featuresDeepDive/materials/using/masterPBR" target="_blank" class="example-link github">Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🥽</div>
+                    <div class="example-content">
+                        <h3><a href="https://playground.babylonjs.com/#F41V6N" target="_blank">WebXR VR</a></h3>
+                        <p>Virtual reality experience in the browser. Works with VR headsets.</p>
+                        <div class="example-links">
+                            <a href="https://playground.babylonjs.com/#F41V6N" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://doc.babylonjs.com/features/featuresDeepDive/webXR" target="_blank" class="example-link github">Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">📚</div>
+                    <div class="example-content">
+                        <h3><a href="https://playground.babylonjs.com/" target="_blank">Babylon Playground</a></h3>
+                        <p>Interactive editor with 1000+ examples. Try code instantly in browser.</p>
+                        <div class="example-links">
+                            <a href="https://playground.babylonjs.com/" target="_blank" class="example-link demo">Open</a>
+                            <a href="https://github.com/BabylonJS/Babylon.js" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Physics & Particles -->
+    <section class="category">
+        <div class="container">
+            <div class="category-header">
+                <div class="category-icon physics">⚛️</div>
+                <div class="category-title">
+                    <h2>Physics & Particle Simulations</h2>
+                    <p>Fluid dynamics, particle systems, and scientific visualizations.</p>
+                </div>
+            </div>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <div class="example-preview">💧</div>
+                    <div class="example-content">
+                        <h3><a href="https://paveldogreat.github.io/WebGL-Fluid-Simulation/" target="_blank">Fluid Simulation</a></h3>
+                        <p>Beautiful WebGL fluid dynamics. Touch/mouse interactive. Mesmerizing colors.</p>
+                        <div class="example-links">
+                            <a href="https://paveldogreat.github.io/WebGL-Fluid-Simulation/" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://github.com/PavelDoGreat/WebGL-Fluid-Simulation" target="_blank" class="example-link github">Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🔮</div>
+                    <div class="example-content">
+                        <h3><a href="https://particle-love.com/" target="_blank">Particle Love</a></h3>
+                        <p>Emergent particle behaviors creating organic patterns. AI-like emergence from simple rules.</p>
+                        <div class="example-links">
+                            <a href="https://particle-love.com/" target="_blank" class="example-link demo">Demo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🌀</div>
+                    <div class="example-content">
+                        <h3><a href="https://ncase.me/attractors/" target="_blank">Strange Attractors</a></h3>
+                        <p>Interactive chaos theory visualization. Lorenz, Rossler, and more attractors.</p>
+                        <div class="example-links">
+                            <a href="https://ncase.me/attractors/" target="_blank" class="example-link demo">Demo</a>
+                            <a href="https://github.com/ncase/attractors" target="_blank" class="example-link github">Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🧪</div>
+                    <div class="example-content">
+                        <h3><a href="https://ciechanow.ski/curves-and-surfaces/" target="_blank">Curves & Surfaces</a></h3>
+                        <p>Interactive math visualization. Bezier curves, NURBS, and 3D surfaces explained visually.</p>
+                        <div class="example-links">
+                            <a href="https://ciechanow.ski/curves-and-surfaces/" target="_blank" class="example-link demo">Read</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🕳️</div>
+                    <div class="example-content">
+                        <h3><a href="https://ciechanow.ski/gps/" target="_blank">GPS Explained</a></h3>
+                        <p>How GPS works with interactive 3D visualizations. Satellites, timing, and triangulation.</p>
+                        <div class="example-links">
+                            <a href="https://ciechanow.ski/gps/" target="_blank" class="example-link demo">Read</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">⚡</div>
+                    <div class="example-content">
+                        <h3><a href="https://sandspiel.club/" target="_blank">Sandspiel</a></h3>
+                        <p>Falling sand game with fire, water, plants, and more. Emergent physics simulation.</p>
+                        <div class="example-links">
+                            <a href="https://sandspiel.club/" target="_blank" class="example-link demo">Play</a>
+                            <a href="https://github.com/MaxBittker/sandspiel" target="_blank" class="example-link github">Code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Research -->
+    <section class="category">
+        <div class="container">
+            <div class="category-header">
+                <div class="category-icon ai">🧠</div>
+                <div class="category-title">
+                    <h2>AI & Research</h2>
+                    <p>Machine learning, computer vision, and AI research explained simply.</p>
+                </div>
+            </div>
+
+            <div class="featured-banner">
+                <div class="featured-icon">🎬</div>
+                <div class="featured-content">
+                    <h3>Two Minute Papers</h3>
+                    <p>The best AI research explained in short, accessible videos. Neural rendering, physics simulation, generative AI, and more. Essential watching for anyone interested in AI.</p>
+                    <a href="https://www.youtube.com/@TwoMinutePapers" target="_blank" class="example-link demo">YouTube Channel</a>
+                </div>
+            </div>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <div class="example-preview">🖼️</div>
+                    <div class="example-content">
+                        <h3><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">Neural Radiance Fields</a></h3>
+                        <p>NeRF explained - create 3D scenes from photos. Revolutionary for 3D capture.</p>
+                        <div class="example-links">
+                            <a href="https://www.matthewtancik.com/nerf" target="_blank" class="example-link demo">Project</a>
+                            <a href="https://github.com/bmild/nerf" target="_blank" class="example-link github">Code</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🎨</div>
+                    <div class="example-content">
+                        <h3><a href="https://openai.com/research/dall-e" target="_blank">DALL-E</a></h3>
+                        <p>Text to image generation. Create any image from a description.</p>
+                        <div class="example-links">
+                            <a href="https://openai.com/dall-e-3" target="_blank" class="example-link demo">Try It</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">📝</div>
+                    <div class="example-content">
+                        <h3><a href="https://www.anthropic.com" target="_blank">Claude</a></h3>
+                        <p>The AI powering this entire project. Coding, reasoning, and understanding.</p>
+                        <div class="example-links">
+                            <a href="https://claude.ai" target="_blank" class="example-link demo">Try It</a>
+                            <a href="https://docs.anthropic.com" target="_blank" class="example-link github">API Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🎭</div>
+                    <div class="example-content">
+                        <h3><a href="https://thispersondoesnotexist.com/" target="_blank">This Person Does Not Exist</a></h3>
+                        <p>AI-generated faces using StyleGAN. Each refresh creates a new person.</p>
+                        <div class="example-links">
+                            <a href="https://thispersondoesnotexist.com/" target="_blank" class="example-link demo">Demo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🔬</div>
+                    <div class="example-content">
+                        <h3><a href="https://distill.pub/" target="_blank">Distill.pub</a></h3>
+                        <p>Machine learning research with beautiful interactive explanations. Deep learning made visual.</p>
+                        <div class="example-links">
+                            <a href="https://distill.pub/" target="_blank" class="example-link demo">Read</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🎓</div>
+                    <div class="example-content">
+                        <h3><a href="https://www.3blue1brown.com/" target="_blank">3Blue1Brown</a></h3>
+                        <p>Math visualized beautifully. Neural networks, calculus, linear algebra explained.</p>
+                        <div class="example-links">
+                            <a href="https://www.youtube.com/@3blue1brown" target="_blank" class="example-link demo">YouTube</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- React & Web Dev -->
+    <section class="category">
+        <div class="container">
+            <div class="category-header">
+                <div class="category-icon react">⚛️</div>
+                <div class="category-title">
+                    <h2>React & Web Development</h2>
+                    <p>Modern web development tools, frameworks, and resources.</p>
+                </div>
+            </div>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <div class="example-preview">⚛️</div>
+                    <div class="example-content">
+                        <h3><a href="https://react.dev/" target="_blank">React</a></h3>
+                        <p>The library for building user interfaces. Official documentation and tutorials.</p>
+                        <div class="example-links">
+                            <a href="https://react.dev/" target="_blank" class="example-link demo">Docs</a>
+                            <a href="https://github.com/facebook/react" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">▲</div>
+                    <div class="example-content">
+                        <h3><a href="https://nextjs.org/" target="_blank">Next.js</a></h3>
+                        <p>The React framework for production. Server-side rendering, routing, and more.</p>
+                        <div class="example-links">
+                            <a href="https://nextjs.org/" target="_blank" class="example-link demo">Docs</a>
+                            <a href="https://github.com/vercel/next.js" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🎨</div>
+                    <div class="example-content">
+                        <h3><a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a></h3>
+                        <p>Utility-first CSS framework. Build designs rapidly without leaving HTML.</p>
+                        <div class="example-links">
+                            <a href="https://tailwindcss.com/" target="_blank" class="example-link demo">Docs</a>
+                            <a href="https://github.com/tailwindlabs/tailwindcss" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🗄️</div>
+                    <div class="example-content">
+                        <h3><a href="https://supabase.com/" target="_blank">Supabase</a></h3>
+                        <p>Open source Firebase alternative. PostgreSQL, auth, storage, real-time.</p>
+                        <div class="example-links">
+                            <a href="https://supabase.com/" target="_blank" class="example-link demo">Docs</a>
+                            <a href="https://github.com/supabase/supabase" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🔥</div>
+                    <div class="example-content">
+                        <h3><a href="https://firebase.google.com/" target="_blank">Firebase</a></h3>
+                        <p>Google's app development platform. Auth, database, hosting, analytics.</p>
+                        <div class="example-links">
+                            <a href="https://firebase.google.com/" target="_blank" class="example-link demo">Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">💳</div>
+                    <div class="example-content">
+                        <h3><a href="https://stripe.com/docs" target="_blank">Stripe</a></h3>
+                        <p>Payment processing APIs. Subscriptions, one-time payments, invoicing.</p>
+                        <div class="example-links">
+                            <a href="https://stripe.com/docs" target="_blank" class="example-link demo">Docs</a>
+                            <a href="https://github.com/stripe" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Developer Tools -->
+    <section class="category">
+        <div class="container">
+            <div class="category-header">
+                <div class="category-icon tools">🛠️</div>
+                <div class="category-title">
+                    <h2>Developer Tools</h2>
+                    <p>Essential tools for modern development workflows.</p>
+                </div>
+            </div>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <div class="example-preview">🤖</div>
+                    <div class="example-content">
+                        <h3><a href="https://github.com/anthropics/claude-code" target="_blank">Claude Code</a></h3>
+                        <p>AI coding assistant that reads, writes, and executes. The tool that built this site.</p>
+                        <div class="example-links">
+                            <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" class="example-link demo">Docs</a>
+                            <a href="https://github.com/anthropics/claude-code" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">📱</div>
+                    <div class="example-content">
+                        <h3><a href="https://termux.dev/" target="_blank">Termux</a></h3>
+                        <p>Linux terminal for Android. The foundation of mobile development.</p>
+                        <div class="example-links">
+                            <a href="https://f-droid.org/packages/com.termux/" target="_blank" class="example-link demo">F-Droid</a>
+                            <a href="https://github.com/termux/termux-app" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">🐙</div>
+                    <div class="example-content">
+                        <h3><a href="https://cli.github.com/" target="_blank">GitHub CLI</a></h3>
+                        <p>GitHub from the command line. Create repos, manage PRs, issues, and more.</p>
+                        <div class="example-links">
+                            <a href="https://cli.github.com/" target="_blank" class="example-link demo">Docs</a>
+                            <a href="https://github.com/cli/cli" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">▲</div>
+                    <div class="example-content">
+                        <h3><a href="https://vercel.com/" target="_blank">Vercel</a></h3>
+                        <p>Deploy web projects instantly. Git push = live site. Free tier available.</p>
+                        <div class="example-links">
+                            <a href="https://vercel.com/" target="_blank" class="example-link demo">Sign Up</a>
+                            <a href="https://vercel.com/docs" target="_blank" class="example-link github">Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">📦</div>
+                    <div class="example-content">
+                        <h3><a href="https://www.npmjs.com/" target="_blank">npm</a></h3>
+                        <p>JavaScript package manager. Millions of packages for any project.</p>
+                        <div class="example-links">
+                            <a href="https://www.npmjs.com/" target="_blank" class="example-link demo">Browse</a>
+                            <a href="https://docs.npmjs.com/" target="_blank" class="example-link github">Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-preview">📝</div>
+                    <div class="example-content">
+                        <h3><a href="https://code.visualstudio.com/" target="_blank">VS Code</a></h3>
+                        <p>The most popular code editor. Extensions for everything.</p>
+                        <div class="example-links">
+                            <a href="https://code.visualstudio.com/" target="_blank" class="example-link demo">Download</a>
+                            <a href="https://github.com/microsoft/vscode" target="_blank" class="example-link github">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>
+                <a href="/">Home</a>
+                <a href="/learn.html">Learn</a>
+                <a href="/proof.html">Proof</a>
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+            </p>
+            <p style="margin-top: 16px;">
+                <a href="/terms.html">Terms</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/disclaimer.html">Disclaimer</a>
+            </p>
+            <p style="margin-top: 16px;">&copy; 2026 MobileDevCLI. MIT License.</p>
+        </div>
+    </footer>
+</body>
+</html>
