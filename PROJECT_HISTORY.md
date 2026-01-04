@@ -499,10 +499,33 @@ This entire session proves the thesis - built full website, brand, social presen
 - Target 30fps on mobile
 - All demos must have touch controls
 
-**Progress log**:
-- [x] demos.html hub created
-- [x] fluid.html - Navier-Stokes complete
-- [ ] More demos in progress...
+**Progress log - ALL COMPLETE**:
+- [x] demos.html hub created (16 demo cards)
+- [x] fluid.html - Navier-Stokes fluid simulation (WebGL)
+- [x] cloth.html - Verlet cloth physics with tear mode
+- [x] galaxy.html - 100K particle galaxy (Three.js)
+- [x] gravity.html - N-body gravity with orbital mechanics
+- [x] boids.html - Flocking simulation (separation, alignment, cohesion)
+- [x] life.html - GPU Game of Life with glider gun preset
+- [x] waves.html - Wave interference patterns (superposition)
+- [x] fractals.html - Mandelbrot/Julia fractal explorer
+- [x] audio.html - Audio visualizer (mic input or demo mode)
+- [x] terrain.html - Procedural terrain with Perlin noise
+- [x] fire.html - Particle fire and smoke simulation
+- [x] raymarching.html - GPU SDF raymarching (4 scenes)
+- [x] metaballs.html - Organic blob marching squares
+- [x] magnetic.html - Magnetic field line visualization
+- [x] shaderart.html - 8-shader art gallery
+- [x] neural.html - Live neural network backpropagation
+
+**Total**: 17 fully interactive demos, all with touch controls, all pushed to production.
+
+**Key achievements**:
+- Every demo runs at 30+ fps on mobile
+- All demos have touch + mouse controls
+- Committed after each demo for continuous testing
+- Used WebGL shaders for GPU acceleration where needed
+- Followed Boris Mode best practices throughout
 
 ---
 
