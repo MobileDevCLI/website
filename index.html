@@ -12,7 +12,8 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mobilecli.com">
 
-    <!-- No external libraries needed for Matrix effect -->
+    <!-- Three.js for 3D graphics -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
@@ -903,11 +904,88 @@
                 justify-content: center;
             }
         }
+
+        /* Mode Toggle Button */
+        .mode-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .mode-toggle.play-mode {
+            background: var(--primary);
+            color: var(--bg);
+            animation: pulse-toggle 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-toggle {
+            0%, 100% { box-shadow: 0 4px 20px rgba(0, 255, 136, 0.5); }
+            50% { box-shadow: 0 4px 40px rgba(0, 255, 136, 0.8); }
+        }
+
+        .mode-hint {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .mode-hint.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Canvas interaction modes */
+        #hero-canvas.scroll-mode {
+            pointer-events: none;
+        }
+
+        #hero-canvas.play-mode {
+            pointer-events: auto;
+            cursor: crosshair;
+        }
     </style>
 </head>
 <body>
-    <!-- Matrix Rain Canvas -->
-    <canvas id="hero-canvas"></canvas>
+    <!-- 3D Hero Canvas -->
+    <canvas id="hero-canvas" class="scroll-mode"></canvas>
+
+    <!-- Mode Toggle Button -->
+    <button class="mode-toggle" id="modeToggle" title="Toggle Play Mode">
+        <span id="modeIcon">▶</span>
+    </button>
+    <div class="mode-hint" id="modeHint">Tap to interact with 3D scene</div>
 
     <!-- Navigation -->
     <nav>
@@ -1165,7 +1243,6 @@
             mobileMenuBtn.textContent = mobileMenu.classList.contains('open') ? 'Close' : 'Menu';
         });
 
-        // Logo dropdown for mobile (tap to toggle)
         logoWrapper.addEventListener('click', (e) => {
             if (window.innerWidth <= 768) {
                 e.preventDefault();
@@ -1173,7 +1250,6 @@
             }
         });
 
-        // Close menu when clicking outside
         document.addEventListener('click', (e) => {
             if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
                 mobileMenu.classList.remove('open');
@@ -1185,7 +1261,7 @@
         });
 
         // ============================================
-        // COPY COMMAND
+        // COPY COMMAND & SCROLL
         // ============================================
         function copyCommand() {
             const cmd = 'curl -sL mobilecli.com/setup | bash';
@@ -1195,146 +1271,553 @@
             setTimeout(() => btn.textContent = 'Copy', 2000);
         }
 
-        // ============================================
-        // SCROLL TO FEATURES
-        // ============================================
         function scrollToFeatures() {
             document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
         }
 
         // ============================================
-        // MATRIX RAIN EFFECT
+        // MODE TOGGLE (Scroll vs Play)
+        // ============================================
+        const modeToggle = document.getElementById('modeToggle');
+        const modeIcon = document.getElementById('modeIcon');
+        const modeHint = document.getElementById('modeHint');
+        const heroCanvas = document.getElementById('hero-canvas');
+        let isPlayMode = false;
+        let playModeTimeout = null;
+
+        // Show hint on load
+        setTimeout(() => {
+            modeHint.classList.add('visible');
+            setTimeout(() => modeHint.classList.remove('visible'), 3000);
+        }, 2000);
+
+        modeToggle.addEventListener('click', () => {
+            isPlayMode = !isPlayMode;
+            heroCanvas.className = isPlayMode ? 'play-mode' : 'scroll-mode';
+            modeToggle.className = isPlayMode ? 'mode-toggle play-mode' : 'mode-toggle';
+            modeIcon.textContent = isPlayMode ? '⏸' : '▶';
+            modeHint.textContent = isPlayMode ? 'Tap & drag to interact' : 'Tap to interact with 3D scene';
+
+            // Auto-return to scroll mode after 30s of inactivity
+            if (isPlayMode) {
+                resetPlayModeTimeout();
+            } else {
+                clearTimeout(playModeTimeout);
+            }
+        });
+
+        function resetPlayModeTimeout() {
+            clearTimeout(playModeTimeout);
+            playModeTimeout = setTimeout(() => {
+                if (isPlayMode) {
+                    isPlayMode = false;
+                    heroCanvas.className = 'scroll-mode';
+                    modeToggle.className = 'mode-toggle';
+                    modeIcon.textContent = '▶';
+                }
+            }, 30000);
+        }
+
+        // ============================================
+        // THREE.JS MIXED CHAOS SCENE
         // ============================================
         const canvas = document.getElementById('hero-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Set canvas size
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.015);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 8, 20);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas,
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance'
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setClearColor(0x000000, 1);
+
+        // ============================================
+        // WATER SURFACE
+        // ============================================
+        const waterGeometry = new THREE.PlaneGeometry(100, 100, 64, 64);
+        const waterMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uColor1: { value: new THREE.Color(0x001122) },
+                uColor2: { value: new THREE.Color(0x00ff88) },
+                uRipples: { value: [] }
+            },
+            vertexShader: `
+                uniform float uTime;
+                varying vec2 vUv;
+                varying float vElevation;
+
+                void main() {
+                    vUv = uv;
+                    vec3 pos = position;
+
+                    // Wave displacement
+                    float wave1 = sin(pos.x * 0.5 + uTime * 0.8) * 0.3;
+                    float wave2 = sin(pos.y * 0.3 + uTime * 0.6) * 0.4;
+                    float wave3 = sin((pos.x + pos.y) * 0.2 + uTime * 1.2) * 0.2;
+
+                    pos.z = wave1 + wave2 + wave3;
+                    vElevation = pos.z;
+
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 uColor1;
+                uniform vec3 uColor2;
+                uniform float uTime;
+                varying vec2 vUv;
+                varying float vElevation;
+
+                void main() {
+                    // Gradient based on elevation and UV
+                    float mixValue = (vElevation + 1.0) * 0.5;
+                    mixValue += sin(vUv.x * 20.0 + uTime) * 0.05;
+                    mixValue += sin(vUv.y * 15.0 + uTime * 0.7) * 0.05;
+
+                    vec3 color = mix(uColor1, uColor2, mixValue * 0.3);
+
+                    // Caustic-like patterns
+                    float caustic = sin(vUv.x * 30.0 + uTime * 2.0) * sin(vUv.y * 30.0 + uTime * 1.5);
+                    color += vec3(0.0, caustic * 0.1, caustic * 0.05);
+
+                    // Fresnel-like edge glow
+                    float fresnel = pow(1.0 - abs(vElevation), 2.0) * 0.3;
+                    color += vec3(0.0, fresnel * 0.5, fresnel * 0.3);
+
+                    gl_FragColor = vec4(color, 0.9);
+                }
+            `,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+
+        const water = new THREE.Mesh(waterGeometry, waterMaterial);
+        water.rotation.x = -Math.PI / 2;
+        water.position.y = -2;
+        scene.add(water);
+
+        // ============================================
+        // FLOATING PHYSICS OBJECTS
+        // ============================================
+        const floatingObjects = [];
+        const objectGeometries = [
+            new THREE.IcosahedronGeometry(0.8, 0),
+            new THREE.OctahedronGeometry(0.7),
+            new THREE.TetrahedronGeometry(0.9),
+            new THREE.BoxGeometry(0.8, 0.8, 0.8),
+            new THREE.DodecahedronGeometry(0.6)
+        ];
+
+        const colors = [0x00ff88, 0x00d4ff, 0xa855f7, 0xff6b6b, 0xffd93d];
+
+        for (let i = 0; i < 10; i++) {
+            const geom = objectGeometries[i % objectGeometries.length];
+            const color = colors[i % colors.length];
+
+            const material = new THREE.MeshPhongMaterial({
+                color: color,
+                emissive: color,
+                emissiveIntensity: 0.3,
+                transparent: true,
+                opacity: 0.85,
+                shininess: 100
+            });
+
+            const mesh = new THREE.Mesh(geom, material);
+            mesh.position.set(
+                (Math.random() - 0.5) * 30,
+                Math.random() * 2 - 1,
+                (Math.random() - 0.5) * 20
+            );
+
+            // Physics properties
+            mesh.userData = {
+                velocity: new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.02,
+                    0,
+                    (Math.random() - 0.5) * 0.02
+                ),
+                rotationSpeed: new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.02,
+                    (Math.random() - 0.5) * 0.02,
+                    (Math.random() - 0.5) * 0.02
+                ),
+                bobOffset: Math.random() * Math.PI * 2,
+                bobSpeed: 0.5 + Math.random() * 0.5
+            };
+
+            floatingObjects.push(mesh);
+            scene.add(mesh);
         }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-        
-        // Matrix characters (mix of katakana, latin, numbers)
-        const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*(){}[]|;:<>?';
-        const charArray = chars.split('');
 
-        // Hidden message easter egg - appears occasionally in the rain
-        const secretMessage = 'WELCOME TO THE FUTURE OF AI DEVELOPMENT';
-        let messageIndex = 0;
-        let messageTimer = 0;
-        let showingMessage = false;
-        let messageColumns = [];
-        
-        // Column setup
-        const fontSize = 16;
-        let columns = Math.floor(canvas.width / fontSize);
-        let drops = [];
-        
-        // Initialize drops
-        function initDrops() {
-            columns = Math.floor(canvas.width / fontSize);
-            drops = [];
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.random() * -100;
+        // ============================================
+        // FIRE PARTICLE SYSTEM
+        // ============================================
+        const fireParticleCount = 500;
+        const fireGeometry = new THREE.BufferGeometry();
+        const firePositions = new Float32Array(fireParticleCount * 3);
+        const fireVelocities = new Float32Array(fireParticleCount * 3);
+        const fireSizes = new Float32Array(fireParticleCount);
+        const fireLifes = new Float32Array(fireParticleCount);
+        const fireColors = new Float32Array(fireParticleCount * 3);
+
+        function resetFireParticle(i) {
+            const side = Math.random() > 0.5 ? 1 : -1;
+            const edge = Math.random();
+
+            if (edge > 0.5) {
+                firePositions[i * 3] = side * (20 + Math.random() * 5);
+                firePositions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+            } else {
+                firePositions[i * 3] = (Math.random() - 0.5) * 40;
+                firePositions[i * 3 + 2] = side * (10 + Math.random() * 5);
+            }
+            firePositions[i * 3 + 1] = -2 + Math.random() * 2;
+
+            fireVelocities[i * 3] = (Math.random() - 0.5) * 0.05;
+            fireVelocities[i * 3 + 1] = 0.05 + Math.random() * 0.1;
+            fireVelocities[i * 3 + 2] = (Math.random() - 0.5) * 0.05;
+
+            fireSizes[i] = 0.5 + Math.random() * 1.5;
+            fireLifes[i] = 1.0;
+
+            // Colors: orange, yellow, or green accent
+            const colorChoice = Math.random();
+            if (colorChoice > 0.7) {
+                fireColors[i * 3] = 0; fireColors[i * 3 + 1] = 1; fireColors[i * 3 + 2] = 0.53; // Green
+            } else if (colorChoice > 0.3) {
+                fireColors[i * 3] = 1; fireColors[i * 3 + 1] = 0.6; fireColors[i * 3 + 2] = 0; // Orange
+            } else {
+                fireColors[i * 3] = 1; fireColors[i * 3 + 1] = 0.9; fireColors[i * 3 + 2] = 0.2; // Yellow
             }
         }
-        initDrops();
-        window.addEventListener('resize', initDrops);
-        
-        // Animation
-        function drawMatrix() {
-            // Semi-transparent black to create fade effect
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Green text
-            ctx.fillStyle = '#00ff88';
-            ctx.font = fontSize + 'px JetBrains Mono, monospace';
-
-            // Hidden message logic - trigger every ~8 seconds
-            messageTimer++;
-            if (messageTimer > 480 && !showingMessage) {
-                showingMessage = true;
-                messageIndex = 0;
-                // Calculate columns for message (centered)
-                const startCol = Math.floor((columns - secretMessage.length) / 2);
-                messageColumns = [];
-                for (let i = 0; i < secretMessage.length; i++) {
-                    messageColumns.push({
-                        col: startCol + i,
-                        char: secretMessage[i],
-                        revealed: false,
-                        y: Math.floor(canvas.height / 2 / fontSize)
-                    });
-                }
-            }
-
-            // Reveal message letters progressively
-            if (showingMessage && messageTimer % 3 === 0 && messageIndex < messageColumns.length) {
-                messageColumns[messageIndex].revealed = true;
-                messageIndex++;
-                if (messageIndex >= messageColumns.length) {
-                    // Message fully revealed, reset after a delay
-                    setTimeout(() => {
-                        showingMessage = false;
-                        messageTimer = 0;
-                        messageColumns = [];
-                    }, 2000);
-                }
-            }
-
-            for (let i = 0; i < drops.length; i++) {
-                // Check if this column should show a message character
-                let char;
-                let isMessageChar = false;
-                const msgCol = messageColumns.find(m => m.col === i && m.revealed);
-
-                if (msgCol && Math.abs(drops[i] * fontSize - msgCol.y * fontSize) < fontSize * 2) {
-                    char = msgCol.char;
-                    isMessageChar = true;
-                } else {
-                    // Random character
-                    char = charArray[Math.floor(Math.random() * charArray.length)];
-                }
-
-                // Draw character
-                const x = i * fontSize;
-                const y = drops[i] * fontSize;
-
-                // Vary the green shade (message chars are brighter)
-                if (isMessageChar) {
-                    ctx.fillStyle = '#ffffff'; // White for message
-                    ctx.shadowColor = '#00ff88';
-                    ctx.shadowBlur = 10;
-                } else {
-                    ctx.shadowBlur = 0;
-                    const shade = Math.random();
-                    if (shade > 0.95) {
-                        ctx.fillStyle = '#ffffff'; // Occasional white flash
-                    } else if (shade > 0.8) {
-                        ctx.fillStyle = '#00ffcc'; // Cyan highlight
-                    } else {
-                        ctx.fillStyle = '#00ff88'; // Main green
-                    }
-                }
-
-                ctx.fillText(char, x, y);
-                ctx.shadowBlur = 0;
-
-                // Reset drop to top randomly or when it goes off screen
-                if (y > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-
-                drops[i]++;
-            }
-
-            requestAnimationFrame(drawMatrix);
+        for (let i = 0; i < fireParticleCount; i++) {
+            resetFireParticle(i);
+            fireLifes[i] = Math.random(); // Stagger initial lifetimes
         }
-        
-        drawMatrix();
+
+        fireGeometry.setAttribute('position', new THREE.BufferAttribute(firePositions, 3));
+        fireGeometry.setAttribute('size', new THREE.BufferAttribute(fireSizes, 1));
+        fireGeometry.setAttribute('color', new THREE.BufferAttribute(fireColors, 3));
+
+        const fireMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 }
+            },
+            vertexShader: `
+                attribute float size;
+                attribute vec3 color;
+                varying vec3 vColor;
+                varying float vSize;
+
+                void main() {
+                    vColor = color;
+                    vSize = size;
+                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    gl_PointSize = size * (300.0 / -mvPosition.z);
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vColor;
+                varying float vSize;
+
+                void main() {
+                    vec2 center = gl_PointCoord - 0.5;
+                    float dist = length(center);
+                    if (dist > 0.5) discard;
+
+                    float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
+                    alpha *= 0.7;
+
+                    gl_FragColor = vec4(vColor, alpha);
+                }
+            `,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        const fireParticles = new THREE.Points(fireGeometry, fireMaterial);
+        scene.add(fireParticles);
+
+        // ============================================
+        // AMBIENT PARTICLES (Dust/Sparks)
+        // ============================================
+        const ambientCount = 200;
+        const ambientGeometry = new THREE.BufferGeometry();
+        const ambientPositions = new Float32Array(ambientCount * 3);
+
+        for (let i = 0; i < ambientCount; i++) {
+            ambientPositions[i * 3] = (Math.random() - 0.5) * 60;
+            ambientPositions[i * 3 + 1] = Math.random() * 20 - 5;
+            ambientPositions[i * 3 + 2] = (Math.random() - 0.5) * 40;
+        }
+
+        ambientGeometry.setAttribute('position', new THREE.BufferAttribute(ambientPositions, 3));
+
+        const ambientMaterial = new THREE.PointsMaterial({
+            color: 0x00ff88,
+            size: 0.15,
+            transparent: true,
+            opacity: 0.4,
+            blending: THREE.AdditiveBlending
+        });
+
+        const ambientParticles = new THREE.Points(ambientGeometry, ambientMaterial);
+        scene.add(ambientParticles);
+
+        // ============================================
+        // LIGHTING
+        // ============================================
+        const ambientLight = new THREE.AmbientLight(0x222244, 0.5);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0x00ff88, 2, 50);
+        pointLight1.position.set(10, 10, 10);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0x00d4ff, 2, 50);
+        pointLight2.position.set(-10, 5, -10);
+        scene.add(pointLight2);
+
+        const pointLight3 = new THREE.PointLight(0xa855f7, 1.5, 30);
+        pointLight3.position.set(0, 15, 0);
+        scene.add(pointLight3);
+
+        // ============================================
+        // TOUCH/CLICK INTERACTIONS
+        // ============================================
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let touchStart = null;
+        let longPressTimer = null;
+
+        function handleInteraction(clientX, clientY, isClick = false) {
+            if (!isPlayMode) return;
+            resetPlayModeTimeout();
+
+            mouse.x = (clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(floatingObjects);
+
+            if (intersects.length > 0) {
+                const obj = intersects[0].object;
+                const force = new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.3,
+                    0.2,
+                    (Math.random() - 0.5) * 0.3
+                );
+                obj.userData.velocity.add(force);
+            }
+        }
+
+        function createExplosion(x, y) {
+            if (!isPlayMode) return;
+            resetPlayModeTimeout();
+
+            // Push all objects away from click point
+            mouse.x = (x / window.innerWidth) * 2 - 1;
+            mouse.y = -(y / window.innerHeight) * 2 + 1;
+
+            const worldPoint = new THREE.Vector3(mouse.x * 15, 0, -mouse.y * 10);
+
+            floatingObjects.forEach(obj => {
+                const dir = new THREE.Vector3().subVectors(obj.position, worldPoint);
+                const dist = dir.length();
+                if (dist < 20) {
+                    dir.normalize().multiplyScalar(0.5 / (dist * 0.1 + 1));
+                    dir.y = 0.3;
+                    obj.userData.velocity.add(dir);
+                }
+            });
+        }
+
+        function spawnFireBurst(x, y) {
+            if (!isPlayMode) return;
+            resetPlayModeTimeout();
+
+            // Spawn fire particles at touch location
+            mouse.x = (x / window.innerWidth) * 2 - 1;
+            mouse.y = -(y / window.innerHeight) * 2 + 1;
+
+            const worldX = mouse.x * 15;
+            const worldZ = -mouse.y * 10;
+
+            const positions = fireGeometry.attributes.position.array;
+            const velocities = fireVelocities;
+
+            // Reset 20 particles at touch location
+            for (let i = 0; i < 20; i++) {
+                const idx = Math.floor(Math.random() * fireParticleCount);
+                positions[idx * 3] = worldX + (Math.random() - 0.5) * 2;
+                positions[idx * 3 + 1] = 0;
+                positions[idx * 3 + 2] = worldZ + (Math.random() - 0.5) * 2;
+                velocities[idx * 3] = (Math.random() - 0.5) * 0.2;
+                velocities[idx * 3 + 1] = 0.1 + Math.random() * 0.2;
+                velocities[idx * 3 + 2] = (Math.random() - 0.5) * 0.2;
+                fireLifes[idx] = 1.0;
+            }
+            fireGeometry.attributes.position.needsUpdate = true;
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            touchStart = { x: e.clientX, y: e.clientY, time: Date.now() };
+            longPressTimer = setTimeout(() => spawnFireBurst(e.clientX, e.clientY), 500);
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            clearTimeout(longPressTimer);
+            if (touchStart) {
+                const duration = Date.now() - touchStart.time;
+                if (duration < 200) handleInteraction(e.clientX, e.clientY, true);
+            }
+            touchStart = null;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (touchStart && isPlayMode) {
+                handleInteraction(e.clientX, e.clientY);
+            }
+        });
+
+        canvas.addEventListener('dblclick', (e) => createExplosion(e.clientX, e.clientY));
+
+        // Touch events
+        canvas.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            touchStart = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+            longPressTimer = setTimeout(() => spawnFireBurst(touch.clientX, touch.clientY), 500);
+        }, { passive: true });
+
+        canvas.addEventListener('touchend', (e) => {
+            clearTimeout(longPressTimer);
+            if (touchStart) {
+                const duration = Date.now() - touchStart.time;
+                if (duration < 200) {
+                    handleInteraction(touchStart.x, touchStart.y, true);
+                }
+            }
+            touchStart = null;
+        }, { passive: true });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (touchStart && isPlayMode) {
+                const touch = e.touches[0];
+                handleInteraction(touch.clientX, touch.clientY);
+            }
+        }, { passive: true });
+
+        // ============================================
+        // ANIMATION LOOP
+        // ============================================
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = clock.getElapsedTime();
+            const delta = clock.getDelta();
+
+            // Update water
+            waterMaterial.uniforms.uTime.value = time;
+
+            // Update floating objects (buoyancy simulation)
+            floatingObjects.forEach(obj => {
+                const data = obj.userData;
+
+                // Apply velocity
+                obj.position.add(data.velocity);
+
+                // Buoyancy: bob on water surface
+                const waterY = Math.sin(obj.position.x * 0.5 + time * 0.8) * 0.3 +
+                               Math.sin(obj.position.z * 0.3 + time * 0.6) * 0.4 - 1;
+                const targetY = waterY + 0.5;
+                obj.position.y += (targetY - obj.position.y) * 0.02;
+
+                // Additional bobbing
+                obj.position.y += Math.sin(time * data.bobSpeed + data.bobOffset) * 0.01;
+
+                // Damping
+                data.velocity.multiplyScalar(0.98);
+
+                // Bounds
+                if (Math.abs(obj.position.x) > 20) {
+                    obj.position.x = Math.sign(obj.position.x) * -19;
+                }
+                if (Math.abs(obj.position.z) > 15) {
+                    obj.position.z = Math.sign(obj.position.z) * -14;
+                }
+
+                // Rotation
+                obj.rotation.x += data.rotationSpeed.x;
+                obj.rotation.y += data.rotationSpeed.y;
+                obj.rotation.z += data.rotationSpeed.z;
+            });
+
+            // Update fire particles
+            const firePos = fireGeometry.attributes.position.array;
+            for (let i = 0; i < fireParticleCount; i++) {
+                firePos[i * 3] += fireVelocities[i * 3];
+                firePos[i * 3 + 1] += fireVelocities[i * 3 + 1];
+                firePos[i * 3 + 2] += fireVelocities[i * 3 + 2];
+
+                fireLifes[i] -= 0.01;
+
+                // Add some turbulence
+                fireVelocities[i * 3] += (Math.random() - 0.5) * 0.005;
+                fireVelocities[i * 3 + 2] += (Math.random() - 0.5) * 0.005;
+
+                if (fireLifes[i] <= 0 || firePos[i * 3 + 1] > 15) {
+                    resetFireParticle(i);
+                }
+            }
+            fireGeometry.attributes.position.needsUpdate = true;
+
+            // Update ambient particles (slow drift)
+            const ambientPos = ambientGeometry.attributes.position.array;
+            for (let i = 0; i < ambientCount; i++) {
+                ambientPos[i * 3 + 1] += Math.sin(time + i) * 0.002;
+                ambientPos[i * 3] += Math.cos(time * 0.5 + i * 0.1) * 0.001;
+
+                // Wrap around
+                if (ambientPos[i * 3 + 1] > 15) ambientPos[i * 3 + 1] = -5;
+            }
+            ambientGeometry.attributes.position.needsUpdate = true;
+
+            // Gentle camera sway
+            camera.position.x = Math.sin(time * 0.1) * 2;
+            camera.position.y = 8 + Math.sin(time * 0.15) * 0.5;
+            camera.lookAt(0, 0, 0);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // ============================================
+        // RESIZE HANDLER
+        // ============================================
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        });
     </script>
 </body>
 </html>
