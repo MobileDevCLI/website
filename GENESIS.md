@@ -121,9 +121,21 @@ Everything you see at mobilecli.com was created this way:
 
 ### Step 1: Hardware Setup
 ```
-Device: Android smartphone (ARM64 architecture)
-Minimum: Android 7.0+, 4GB RAM, 10GB storage
-Tested on: Samsung Galaxy series
+ANDROID:
+  Device: Android smartphone (ARM64 architecture)
+  Minimum: Android 7.0+, 4GB RAM, 10GB storage
+  Tested on: Samsung Galaxy series
+  Environment: Termux (F-Droid)
+
+iOS (iPhone/iPad):
+  Device: Any iPhone or iPad
+  Minimum: iOS 14+
+  Environment: iSH (App Store) or a-Shell
+  Note: Same method, different Linux layer
+
+UNIVERSAL:
+  The invention is PLATFORM-AGNOSTIC
+  Any phone + Any Linux environment = Method applies
 ```
 
 ### Step 2: Terminal Environment Installation
