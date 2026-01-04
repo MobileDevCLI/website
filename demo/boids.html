@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Flocking Boids - MobileCLI Demos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0f;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .info {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            max-width: 280px;
+        }
+
+        .info h3 {
+            color: #00d4ff;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(0, 212, 255, 0.3);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        .stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #00d4ff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 600px) {
+            .info { display: none; }
+            .ui { top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <a href="/demos.html" class="back-btn">← Back to Demos</a>
+        <div class="info">
+            <h3>Flocking Boids</h3>
+            <p>Emergent flocking behavior from three simple rules: separation, alignment, and cohesion. Touch to attract or repel.</p>
+        </div>
+    </div>
+
+    <div class="stats" id="stats">Boids: 300</div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="reset()">Reset</button>
+        <button class="control-btn active" id="attractBtn" onclick="toggleMode()">Attract Mode</button>
+        <button class="control-btn" onclick="addBoids()">Add 50</button>
+        <button class="control-btn" onclick="addPredator()">Add Predator</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Configuration
+        const config = {
+            numBoids: 300,
+            maxSpeed: 4,
+            maxForce: 0.1,
+            perceptionRadius: 50,
+            separationRadius: 25,
+            alignWeight: 1.0,
+            cohesionWeight: 1.0,
+            separationWeight: 1.5,
+            attractMode: true,
+            mouseRadius: 150,
+            mouseForce: 0.5
+        };
+
+        // Boid class
+        class Boid {
+            constructor(x, y, isPredator = false) {
+                this.position = { x, y };
+                this.velocity = {
+                    x: (Math.random() - 0.5) * config.maxSpeed * 2,
+                    y: (Math.random() - 0.5) * config.maxSpeed * 2
+                };
+                this.acceleration = { x: 0, y: 0 };
+                this.isPredator = isPredator;
+                this.maxSpeed = isPredator ? config.maxSpeed * 1.2 : config.maxSpeed;
+                this.size = isPredator ? 8 : 4;
+                this.hue = isPredator ? 0 : 180 + Math.random() * 40; // Red for predator, cyan-ish for boids
+            }
+
+            // Separation: avoid crowding neighbors
+            separation(boids) {
+                let steering = { x: 0, y: 0 };
+                let count = 0;
+
+                for (const other of boids) {
+                    if (other === this || other.isPredator) continue;
+                    const d = this.distance(other);
+                    if (d < config.separationRadius && d > 0) {
+                        let diff = {
+                            x: this.position.x - other.position.x,
+                            y: this.position.y - other.position.y
+                        };
+                        diff.x /= d;
+                        diff.y /= d;
+                        steering.x += diff.x;
+                        steering.y += diff.y;
+                        count++;
+                    }
+                }
+
+                if (count > 0) {
+                    steering.x /= count;
+                    steering.y /= count;
+                    this.setMagnitude(steering, this.maxSpeed);
+                    steering.x -= this.velocity.x;
+                    steering.y -= this.velocity.y;
+                    this.limit(steering, config.maxForce);
+                }
+
+                return steering;
+            }
+
+            // Alignment: steer towards average heading of neighbors
+            alignment(boids) {
+                let steering = { x: 0, y: 0 };
+                let count = 0;
+
+                for (const other of boids) {
+                    if (other === this || other.isPredator) continue;
+                    const d = this.distance(other);
+                    if (d < config.perceptionRadius) {
+                        steering.x += other.velocity.x;
+                        steering.y += other.velocity.y;
+                        count++;
+                    }
+                }
+
+                if (count > 0) {
+                    steering.x /= count;
+                    steering.y /= count;
+                    this.setMagnitude(steering, this.maxSpeed);
+                    steering.x -= this.velocity.x;
+                    steering.y -= this.velocity.y;
+                    this.limit(steering, config.maxForce);
+                }
+
+                return steering;
+            }
+
+            // Cohesion: steer towards average position of neighbors
+            cohesion(boids) {
+                let steering = { x: 0, y: 0 };
+                let count = 0;
+
+                for (const other of boids) {
+                    if (other === this || other.isPredator) continue;
+                    const d = this.distance(other);
+                    if (d < config.perceptionRadius) {
+                        steering.x += other.position.x;
+                        steering.y += other.position.y;
+                        count++;
+                    }
+                }
+
+                if (count > 0) {
+                    steering.x /= count;
+                    steering.y /= count;
+                    steering.x -= this.position.x;
+                    steering.y -= this.position.y;
+                    this.setMagnitude(steering, this.maxSpeed);
+                    steering.x -= this.velocity.x;
+                    steering.y -= this.velocity.y;
+                    this.limit(steering, config.maxForce);
+                }
+
+                return steering;
+            }
+
+            // Flee from predators
+            flee(boids) {
+                let steering = { x: 0, y: 0 };
+
+                for (const other of boids) {
+                    if (!other.isPredator) continue;
+                    const d = this.distance(other);
+                    if (d < config.perceptionRadius * 2) {
+                        let diff = {
+                            x: this.position.x - other.position.x,
+                            y: this.position.y - other.position.y
+                        };
+                        diff.x /= d;
+                        diff.y /= d;
+                        steering.x += diff.x * 3;
+                        steering.y += diff.y * 3;
+                    }
+                }
+
+                return steering;
+            }
+
+            // Predator: chase nearest boid
+            chase(boids) {
+                let nearest = null;
+                let nearestDist = Infinity;
+
+                for (const other of boids) {
+                    if (other.isPredator) continue;
+                    const d = this.distance(other);
+                    if (d < nearestDist) {
+                        nearestDist = d;
+                        nearest = other;
+                    }
+                }
+
+                if (nearest && nearestDist < config.perceptionRadius * 3) {
+                    let steering = {
+                        x: nearest.position.x - this.position.x,
+                        y: nearest.position.y - this.position.y
+                    };
+                    this.setMagnitude(steering, this.maxSpeed);
+                    steering.x -= this.velocity.x;
+                    steering.y -= this.velocity.y;
+                    this.limit(steering, config.maxForce * 1.5);
+                    return steering;
+                }
+
+                return { x: 0, y: 0 };
+            }
+
+            flock(boids) {
+                this.acceleration = { x: 0, y: 0 };
+
+                if (this.isPredator) {
+                    const chase = this.chase(boids);
+                    this.acceleration.x += chase.x;
+                    this.acceleration.y += chase.y;
+                } else {
+                    const separation = this.separation(boids);
+                    const alignment = this.alignment(boids);
+                    const cohesion = this.cohesion(boids);
+                    const flee = this.flee(boids);
+
+                    this.acceleration.x += separation.x * config.separationWeight;
+                    this.acceleration.y += separation.y * config.separationWeight;
+                    this.acceleration.x += alignment.x * config.alignWeight;
+                    this.acceleration.y += alignment.y * config.alignWeight;
+                    this.acceleration.x += cohesion.x * config.cohesionWeight;
+                    this.acceleration.y += cohesion.y * config.cohesionWeight;
+                    this.acceleration.x += flee.x;
+                    this.acceleration.y += flee.y;
+                }
+            }
+
+            applyMouse(mx, my) {
+                const dx = mx - this.position.x;
+                const dy = my - this.position.y;
+                const d = Math.sqrt(dx * dx + dy * dy);
+
+                if (d < config.mouseRadius) {
+                    const force = (1 - d / config.mouseRadius) * config.mouseForce;
+                    if (config.attractMode) {
+                        this.acceleration.x += (dx / d) * force;
+                        this.acceleration.y += (dy / d) * force;
+                    } else {
+                        this.acceleration.x -= (dx / d) * force;
+                        this.acceleration.y -= (dy / d) * force;
+                    }
+                }
+            }
+
+            update() {
+                this.velocity.x += this.acceleration.x;
+                this.velocity.y += this.acceleration.y;
+                this.limit(this.velocity, this.maxSpeed);
+
+                this.position.x += this.velocity.x;
+                this.position.y += this.velocity.y;
+
+                // Wrap around edges
+                if (this.position.x > width) this.position.x = 0;
+                if (this.position.x < 0) this.position.x = width;
+                if (this.position.y > height) this.position.y = 0;
+                if (this.position.y < 0) this.position.y = height;
+            }
+
+            draw() {
+                const angle = Math.atan2(this.velocity.y, this.velocity.x);
+
+                ctx.save();
+                ctx.translate(this.position.x, this.position.y);
+                ctx.rotate(angle);
+
+                // Draw triangle
+                ctx.beginPath();
+                ctx.moveTo(this.size * 2, 0);
+                ctx.lineTo(-this.size, this.size);
+                ctx.lineTo(-this.size, -this.size);
+                ctx.closePath();
+
+                ctx.fillStyle = `hsl(${this.hue}, 80%, 60%)`;
+                ctx.fill();
+
+                // Glow effect
+                ctx.shadowColor = `hsl(${this.hue}, 80%, 60%)`;
+                ctx.shadowBlur = this.isPredator ? 15 : 5;
+
+                ctx.restore();
+            }
+
+            distance(other) {
+                const dx = other.position.x - this.position.x;
+                const dy = other.position.y - this.position.y;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            setMagnitude(vec, mag) {
+                const len = Math.sqrt(vec.x * vec.x + vec.y * vec.y);
+                if (len > 0) {
+                    vec.x = (vec.x / len) * mag;
+                    vec.y = (vec.y / len) * mag;
+                }
+            }
+
+            limit(vec, max) {
+                const len = Math.sqrt(vec.x * vec.x + vec.y * vec.y);
+                if (len > max) {
+                    vec.x = (vec.x / len) * max;
+                    vec.y = (vec.y / len) * max;
+                }
+            }
+        }
+
+        let boids = [];
+        let mouse = { x: -1000, y: -1000, active: false };
+
+        function init() {
+            boids = [];
+            for (let i = 0; i < config.numBoids; i++) {
+                boids.push(new Boid(
+                    Math.random() * width,
+                    Math.random() * height
+                ));
+            }
+        }
+
+        // Mouse/touch events
+        function updateMouse(e) {
+            const x = e.touches ? e.touches[0].clientX : e.clientX;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            mouse = { x, y, active: true };
+        }
+
+        canvas.addEventListener('mousedown', updateMouse);
+        canvas.addEventListener('mousemove', (e) => { if (mouse.active) updateMouse(e); });
+        canvas.addEventListener('mouseup', () => { mouse.active = false; });
+        canvas.addEventListener('mouseleave', () => { mouse.active = false; });
+
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); updateMouse(e); }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); updateMouse(e); }, { passive: false });
+        canvas.addEventListener('touchend', () => { mouse.active = false; });
+
+        // Control functions
+        window.reset = function() {
+            init();
+        };
+
+        window.toggleMode = function() {
+            config.attractMode = !config.attractMode;
+            const btn = document.getElementById('attractBtn');
+            btn.textContent = config.attractMode ? 'Attract Mode' : 'Repel Mode';
+            btn.classList.toggle('active', config.attractMode);
+        };
+
+        window.addBoids = function() {
+            for (let i = 0; i < 50; i++) {
+                boids.push(new Boid(
+                    Math.random() * width,
+                    Math.random() * height
+                ));
+            }
+        };
+
+        window.addPredator = function() {
+            boids.push(new Boid(
+                Math.random() * width,
+                Math.random() * height,
+                true
+            ));
+        };
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Clear with fade effect
+            ctx.fillStyle = 'rgba(10, 10, 15, 0.2)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Update and draw boids
+            for (const boid of boids) {
+                boid.flock(boids);
+                if (mouse.active) {
+                    boid.applyMouse(mouse.x, mouse.y);
+                }
+                boid.update();
+                boid.draw();
+            }
+
+            // Draw mouse influence area
+            if (mouse.active) {
+                ctx.beginPath();
+                ctx.arc(mouse.x, mouse.y, config.mouseRadius, 0, Math.PI * 2);
+                ctx.strokeStyle = config.attractMode ? 'rgba(0, 255, 136, 0.3)' : 'rgba(255, 100, 100, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // Update stats
+            document.getElementById('stats').textContent = `Boids: ${boids.length}`;
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
