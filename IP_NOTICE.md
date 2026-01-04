@@ -62,7 +62,7 @@ https://mobilecli.com
 ## Commercial Licensing
 
 For commercial use of the METHOD, contact:
-- Email: mobiledev.cli@gmail.com
+- Email: mobiledevcli@gmail.com
 - GitHub: @MobileDevCLI
 
 ## Enforcement

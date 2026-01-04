@@ -50,9 +50,13 @@ This entire website was built in ONE continuous AI conversation on a phone.
 ├── games.html            # Games arcade
 ├── news.html             # News feed
 ├── proof.html            # Case study
-├── terms.html            # Terms of service
-├── privacy.html          # Privacy policy
+├── terms.html            # Terms of service (includes Beta notice)
+├── privacy.html          # Privacy policy (GDPR + CCPA)
 ├── disclaimer.html       # Legal disclaimer
+├── ip.html               # Intellectual property notice
+├── dmca.html             # DMCA policy
+├── legal-guide.html      # Public guide: AI-powered IP protection
+├── security-guide.html   # Public guide: Security best practices
 ├── js/
 │   └── supabase-config.js  # Supabase auth config
 ├── games/
@@ -331,11 +335,13 @@ git push origin master && git push website master
 All pages should have consistent nav:
 ```html
 <nav>
-  Pricing | Docs | Quick Start | Research | Demos | Login/Get Started
+  Pricing | Docs | Quick Start | Research | Demos | Legal | Security | Login/Get Started
 </nav>
 ```
 
 Logo dropdown includes: GitHub, Discord, Twitter/X, YouTube, Contact
+
+Footer should include: Terms | Privacy | Disclaimer | IP Notice | DMCA | Legal Guide | Security Guide
 
 **Community Links:**
 - Discord: https://discord.gg/mobilecli
@@ -451,9 +457,160 @@ claude --dangerously-skip-permissions      # Autonomous mode
 
 ---
 
+## Legal Knowledge (IP Protection)
+
+### Dual-License Structure
+Every project should use dual licensing:
+- **Code (MIT License)**: HTML, CSS, JS, shell scripts - open source
+- **Method/Invention (All Rights Reserved)**: The unique process, workflow, or system
+
+### Essential Legal Documents
+1. **GENESIS.md** - Invention story with timestamps (first conception, development, launch)
+2. **IP_NOTICE.md** - Clear statement of what's protected
+3. **EVIDENCE_TIMELINE.md** - Chronological evidence catalog for lawyers
+4. **terms.html** - Terms of Service with arbitration clause
+5. **privacy.html** - Privacy policy (must have GDPR + CCPA sections)
+6. **disclaimer.html** - Liability limitations
+7. **ip.html** - Public IP notice
+8. **dmca.html** - DMCA takedown policy
+
+### Terms of Service Must Include
+- Beta/development status notice (limits liability)
+- Binding arbitration clause (JAMS recommended)
+- Class action waiver with 30-day opt-out
+- Governing law (Delaware recommended)
+- Indemnification clause
+- IP protection language
+
+### Evidence Collection
+Document EVERYTHING from Day 1:
+- Screenshots with timestamps (phone auto-adds metadata)
+- Git commit history (immutable timestamps)
+- GitHub API timestamps (verifiable via `gh api repos/org/repo`)
+- Third-party archives (Wayback Machine: `curl "https://web.archive.org/save/URL"`)
+- Witness statements (get written statements from anyone who saw development)
+
+### Third-Party Separation
+When using existing tools (Termux, Claude Code, etc.):
+- Clearly state what you invented vs what's third-party
+- Never claim ownership of others' tools
+- Your innovation is the METHOD, not the tools
+
+### What to Gitignore (Private Legal Docs)
+```
+PERSONAL_*.md
+ADDITIONAL_EVIDENCE.md
+LEGAL_STATUS_REPORT.md
+*_PRIVATE.md
+*_SECRET.*
+```
+
+---
+
+## Security Knowledge
+
+### Never Expose (CRITICAL)
+- Private API keys (sk-*, service keys)
+- Passwords or credentials
+- Database connection strings with passwords
+- JWT signing secrets
+- Personal names, addresses, phone numbers
+- Location data that identifies you
+- Witness names (in public repos)
+
+### Safe to Expose
+- Supabase ANON key (designed for client-side use)
+- Public OAuth client IDs
+- Supabase project URL
+- Public API endpoints
+- Alias/pseudonym (e.g., "Samblamz")
+
+### Git Security
+```bash
+# Before committing, check for secrets:
+grep -rn "api_key\|secret\|password\|sk-\|pk_" .
+
+# Check what you're about to commit:
+git diff --staged
+
+# If you accidentally commit secrets:
+# 1. IMMEDIATELY rotate the credential
+# 2. History rewrite is complex - assume secret is compromised
+```
+
+### .gitignore Template
+```
+# Private files
+PERSONAL_*.md
+*_PRIVATE.md
+*_SECRET.*
+.env
+.env.local
+credentials.json
+secrets.json
+
+# Build/IDE
+node_modules/
+.vscode/
+.idea/
+dist/
+build/
+```
+
+### Website Security Headers
+```html
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+```
+
+### Supabase Security
+- ANON key = safe in client code (use Row Level Security)
+- SERVICE key = NEVER in client code
+- Always enable RLS on tables:
+```sql
+ALTER TABLE your_table ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users see own data" ON your_table
+FOR SELECT USING (auth.uid() = user_id);
+```
+
+### Security Audit Checklist
+- [ ] No real names in public files
+- [ ] No API keys (except public anon keys)
+- [ ] No passwords or secrets
+- [ ] .env files gitignored
+- [ ] No private keys committed
+- [ ] No location data that identifies you
+- [ ] No witness/family names in public repos
+
+---
+
+## Legal & Security Pages
+
+### legal-guide.html
+Public teaching page that explains:
+- How to use AI for IP protection
+- Dual-licensing structure
+- Evidence documentation
+- Third-party separation
+- Arbitration and dispute resolution
+
+### security-guide.html
+Public teaching page that explains:
+- Protecting secrets and credentials
+- Personal data protection
+- Git security best practices
+- Supabase security
+- Claude Code permission modes
+- Mobile/Termux security
+
+---
+
 ## When in Doubt
 
 1. Check if both repos are synced: `git log origin/master --oneline -1` vs `git log website/master --oneline -1`
 2. Check Vercel deployment status
 3. Make repos public if Vercel stops deploying
 4. Read this file for solutions
+5. **Legal questions**: Check LEGAL_KNOWLEDGE.md in home directory
+6. **Security questions**: Check SECURITY_PRACTICES.md in home directory

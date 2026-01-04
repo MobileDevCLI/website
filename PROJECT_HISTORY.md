@@ -19,7 +19,7 @@ If you're an AI reading this in a new session, here's what you need to know:
 - GitHub: github.com/MobileDevCLI
 - Twitter: @MobileDevCLI
 - YouTube: @MobileDevCLI
-- Email: mobiledev.li@gmail.com
+- Email: mobiledevcli@gmail.com
 
 **Key repos**:
 - MobileDevCLI/setup - Main installer scripts
@@ -327,7 +327,7 @@ Mobile AI development is not a compromise. For many developers, especially those
 
 ### Public Identity
 - **Alias**: Samblamz / MobileDevCLI
-- **Email**: mobiledev.li@gmail.com (public contact)
+- **Email**: mobiledevcli@gmail.com (public contact)
 - **Social**: @MobileDevCLI on Twitter, YouTube, GitHub
 
 ### Private Information (NEVER SHARE)
@@ -569,7 +569,7 @@ curl -sL https://raw.githubusercontent.com/MobileDevCLI/setup/main/extras.sh | b
 - **GitHub**: https://github.com/MobileDevCLI
 - **Twitter**: https://twitter.com/MobileDevCLI
 - **YouTube**: https://youtube.com/@MobileDevCLI
-- **Email**: mobiledev.li@gmail.com
+- **Email**: mobiledevcli@gmail.com
 
 ---
 
