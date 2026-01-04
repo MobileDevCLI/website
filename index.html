@@ -613,6 +613,10 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            cursor: pointer;
         }
 
         .feature-card::before {
@@ -659,6 +663,20 @@
             color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.7;
+        }
+
+        .card-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .feature-card:hover .card-link {
+            opacity: 1;
         }
 
         /* Stats Section */
@@ -1077,36 +1095,42 @@
             <p class="section-desc">One command. Full development environment. No laptop required.</p>
 
             <div class="features-grid">
-                <div class="feature-card">
+                <a href="/learn.html#install-claude" class="feature-card">
                     <div class="feature-icon">🖥️</div>
                     <h3>CLI Not APIs</h3>
-                    <p>Direct CLI connection, not API keys. Claude Code bypasses rate limits. Better performance, no token management, just your login.</p>
-                </div>
-                <div class="feature-card">
+                    <p>Direct CLI connection, not API keys. Claude Code bypasses rate limits. Better performance, no token management.</p>
+                    <span class="card-link">Learn more →</span>
+                </a>
+                <a href="/learn.html#boris-mode" class="feature-card">
                     <div class="feature-icon">⚡</div>
                     <h3>Boris Mode</h3>
-                    <p>Named after Claude Code's creator. Full autonomous operation — Claude reads, writes, executes without asking. Sessions run 24+ hours.</p>
-                </div>
-                <div class="feature-card">
+                    <p>Full autonomous operation. Claude reads, writes, and executes without asking. Sessions run 24+ hours unattended.</p>
+                    <span class="card-link">Learn more →</span>
+                </a>
+                <a href="/learn.html#install-termux" class="feature-card">
                     <div class="feature-icon">📱</div>
                     <h3>Native Terminal</h3>
-                    <p>Not a wrapper. Real Linux running on Android via Termux. Git, Node.js, Python, npm — everything works natively on your phone.</p>
-                </div>
-                <div class="feature-card">
+                    <p>Real Linux running on Android via Termux. Git, Node.js, Python, npm — everything works natively on your phone.</p>
+                    <span class="card-link">Learn more →</span>
+                </a>
+                <a href="/learn.html#persistent" class="feature-card">
                     <div class="feature-icon">🔄</div>
                     <h3>Background Execution</h3>
-                    <p>Wake locks + tmux = unstoppable. Start a build, pocket your phone. Check back hours later. Claude never stops working.</p>
-                </div>
-                <div class="feature-card">
+                    <p>Wake locks + tmux keep Claude running indefinitely. Start a build, pocket your phone, check back hours later.</p>
+                    <span class="card-link">Learn more →</span>
+                </a>
+                <a href="/quickstart.html" class="feature-card">
                     <div class="feature-icon">🚀</div>
                     <h3>One Command Setup</h3>
-                    <p>curl | bash and you're done. Packages, aliases, permissions, CLAUDE.md templates — all configured automatically.</p>
-                </div>
-                <div class="feature-card">
+                    <p>Five minutes from install to coding. Packages, aliases, permissions — all configured automatically.</p>
+                    <span class="card-link">Quick start →</span>
+                </a>
+                <a href="/learn.html#boris-stack" class="feature-card">
                     <div class="feature-icon">📚</div>
-                    <h3>Compounding Knowledge</h3>
-                    <p>Every mistake becomes a rule in CLAUDE.md. Your AI gets smarter over time. This is how Boris Cherny builds Claude Code itself.</p>
-                </div>
+                    <h3>The Boris Stack</h3>
+                    <p>12 practices from Claude Code's creator. Parallel sessions, plan mode, verification loops, and more.</p>
+                    <span class="card-link">Full methodology →</span>
+                </a>
             </div>
         </div>
     </section>
