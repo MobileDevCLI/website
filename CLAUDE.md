@@ -98,7 +98,38 @@ git push website master
 
 ### Problem: Changes not showing on live site
 
-**Checklist:**
+**Root Cause Analysis (January 4, 2026):**
+Most "site not updating" issues are actually **browser cache** problems, not Vercel issues.
+
+**Diagnosis Steps:**
+1. Verify GitHub has the changes:
+   ```bash
+   # Check raw file directly from GitHub
+   curl -s https://raw.githubusercontent.com/MobileDevCLI/website/master/index.html | grep "hero-badge" -A 2
+   ```
+
+2. If GitHub shows new content but browser shows old → **Browser Cache**
+
+**Browser Cache Solution (Mobile):**
+
+Samsung Internet:
+1. Menu (three lines) → Privacy → Delete browsing data
+2. Check "Cached images and files"
+3. Tap "Delete"
+4. OR use Secret Mode (incognito) to test
+
+Chrome Mobile:
+1. Settings → Privacy → Clear browsing data
+2. Check "Cached images and files"
+3. Tap "Clear data"
+
+**Verification Command:**
+```bash
+# Fetch live site and check content
+curl -s https://mobilecli.com | grep -o 'hero-badge.*</span>' | head -1
+```
+
+**Full Checklist (if not browser cache):**
 1. Did you push to BOTH repos?
    ```bash
    git push origin master && git push website master
@@ -203,11 +234,17 @@ git push origin master && git push website master
 All pages should have consistent nav:
 ```html
 <nav>
-  Pricing | Docs | Examples | Dashboard | Login/Get Started
+  Pricing | Docs | Quick Start | Research | Demos | Login/Get Started
 </nav>
 ```
 
-Logo dropdown includes: GitHub, Twitter, YouTube, Email
+Logo dropdown includes: GitHub, Discord, Twitter/X, YouTube, Contact
+
+**Community Links:**
+- Discord: https://discord.gg/mobilecli
+- GitHub: https://github.com/MobileDevCLI
+- Twitter/X: https://twitter.com/MobileDevCLI
+- YouTube: https://youtube.com/@MobileDevCLI
 
 ---
 
