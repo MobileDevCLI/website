@@ -6780,6 +6780,258 @@
 
         // Initialize build presets when game starts
         game.buildPresets = new BuildPresets(game);
+
+        // ==========================================
+        // MOBILE TOUCH CONTROLS
+        // ==========================================
+        (function() {
+            // Only add touch controls on touch devices
+            if (!('ontouchstart' in window)) return;
+
+            // Create touch control overlay
+            const touchCSS = document.createElement('style');
+            touchCSS.textContent = `
+                #touch-controls {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 200px;
+                    pointer-events: none;
+                    z-index: 1000;
+                }
+                .touch-joystick {
+                    position: absolute;
+                    width: 120px;
+                    height: 120px;
+                    background: rgba(255,255,255,0.15);
+                    border: 2px solid rgba(255,255,255,0.3);
+                    border-radius: 50%;
+                    pointer-events: auto;
+                    touch-action: none;
+                }
+                .touch-joystick-inner {
+                    position: absolute;
+                    width: 50px;
+                    height: 50px;
+                    background: rgba(255,255,255,0.4);
+                    border-radius: 50%;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+                #joystick-left { bottom: 20px; left: 20px; }
+                #joystick-right { bottom: 20px; right: 20px; }
+                .touch-btn {
+                    position: absolute;
+                    width: 60px;
+                    height: 60px;
+                    background: rgba(255,255,255,0.2);
+                    border: 2px solid rgba(255,255,255,0.4);
+                    border-radius: 12px;
+                    pointer-events: auto;
+                    touch-action: none;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 24px;
+                    color: white;
+                    text-shadow: 1px 1px 2px black;
+                }
+                .touch-btn:active { background: rgba(255,255,255,0.4); }
+                #btn-jump { bottom: 150px; right: 30px; }
+                #btn-place { bottom: 150px; right: 100px; }
+                #btn-delete { bottom: 80px; right: 150px; font-size: 18px; }
+                #touch-look {
+                    position: fixed;
+                    top: 60px;
+                    left: 0;
+                    right: 0;
+                    bottom: 200px;
+                    pointer-events: auto;
+                    touch-action: none;
+                    z-index: 999;
+                }
+                #tap-to-start {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0,0,0,0.8);
+                    color: white;
+                    padding: 20px 40px;
+                    border-radius: 10px;
+                    font-size: 18px;
+                    z-index: 2000;
+                    pointer-events: auto;
+                }
+            `;
+            document.head.appendChild(touchCSS);
+
+            // Create touch elements
+            const touchHTML = `
+                <div id="touch-controls">
+                    <div id="joystick-left" class="touch-joystick">
+                        <div class="touch-joystick-inner" id="stick-left"></div>
+                    </div>
+                    <div id="joystick-right" class="touch-joystick">
+                        <div class="touch-joystick-inner" id="stick-right"></div>
+                    </div>
+                    <div id="btn-jump" class="touch-btn">⬆</div>
+                    <div id="btn-place" class="touch-btn">🧱</div>
+                    <div id="btn-delete" class="touch-btn">🗑</div>
+                </div>
+                <div id="touch-look"></div>
+                <div id="tap-to-start">Tap to Start</div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', touchHTML);
+
+            const player = game.player;
+            let gameStarted = false;
+
+            // Tap to start
+            document.getElementById('tap-to-start').addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                document.getElementById('tap-to-start').style.display = 'none';
+                gameStarted = true;
+            });
+
+            // Left joystick - movement
+            const leftJoystick = document.getElementById('joystick-left');
+            const leftStick = document.getElementById('stick-left');
+            let leftTouch = null;
+            let leftCenter = { x: 0, y: 0 };
+
+            leftJoystick.addEventListener('touchstart', (e) => {
+                if (!gameStarted) return;
+                e.preventDefault();
+                leftTouch = e.touches[0];
+                const rect = leftJoystick.getBoundingClientRect();
+                leftCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
+            });
+
+            leftJoystick.addEventListener('touchmove', (e) => {
+                if (!leftTouch || !gameStarted) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const dx = touch.clientX - leftCenter.x;
+                const dy = touch.clientY - leftCenter.y;
+                const dist = Math.min(Math.sqrt(dx*dx + dy*dy), 35);
+                const angle = Math.atan2(dy, dx);
+
+                leftStick.style.transform = `translate(calc(-50% + ${Math.cos(angle)*dist}px), calc(-50% + ${Math.sin(angle)*dist}px))`;
+
+                // Set movement keys
+                const threshold = 15;
+                player.keys['KeyW'] = dy < -threshold;
+                player.keys['KeyS'] = dy > threshold;
+                player.keys['KeyA'] = dx < -threshold;
+                player.keys['KeyD'] = dx > threshold;
+                player.keys['ShiftLeft'] = dist > 30; // Sprint
+            });
+
+            leftJoystick.addEventListener('touchend', () => {
+                leftTouch = null;
+                leftStick.style.transform = 'translate(-50%, -50%)';
+                player.keys['KeyW'] = false;
+                player.keys['KeyS'] = false;
+                player.keys['KeyA'] = false;
+                player.keys['KeyD'] = false;
+                player.keys['ShiftLeft'] = false;
+            });
+
+            // Right joystick - camera
+            const rightJoystick = document.getElementById('joystick-right');
+            const rightStick = document.getElementById('stick-right');
+            let rightTouch = null;
+            let rightCenter = { x: 0, y: 0 };
+
+            rightJoystick.addEventListener('touchstart', (e) => {
+                if (!gameStarted) return;
+                e.preventDefault();
+                rightTouch = e.touches[0];
+                const rect = rightJoystick.getBoundingClientRect();
+                rightCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
+            });
+
+            rightJoystick.addEventListener('touchmove', (e) => {
+                if (!rightTouch || !gameStarted) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const dx = touch.clientX - rightCenter.x;
+                const dy = touch.clientY - rightCenter.y;
+                const dist = Math.min(Math.sqrt(dx*dx + dy*dy), 35);
+                const angle = Math.atan2(dy, dx);
+
+                rightStick.style.transform = `translate(calc(-50% + ${Math.cos(angle)*dist}px), calc(-50% + ${Math.sin(angle)*dist}px))`;
+
+                // Camera movement
+                player.euler.y -= dx * 0.002;
+                player.euler.x -= dy * 0.002;
+                player.euler.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, player.euler.x));
+                player.camera.quaternion.setFromEuler(player.euler);
+            });
+
+            rightJoystick.addEventListener('touchend', () => {
+                rightTouch = null;
+                rightStick.style.transform = 'translate(-50%, -50%)';
+            });
+
+            // Touch look area (swipe to look)
+            const touchLook = document.getElementById('touch-look');
+            let lookTouch = null;
+            let lastLookPos = { x: 0, y: 0 };
+
+            touchLook.addEventListener('touchstart', (e) => {
+                if (!gameStarted) return;
+                e.preventDefault();
+                lookTouch = e.touches[0];
+                lastLookPos = { x: lookTouch.clientX, y: lookTouch.clientY };
+            });
+
+            touchLook.addEventListener('touchmove', (e) => {
+                if (!lookTouch || !gameStarted) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const dx = touch.clientX - lastLookPos.x;
+                const dy = touch.clientY - lastLookPos.y;
+
+                player.euler.y -= dx * 0.003;
+                player.euler.x -= dy * 0.003;
+                player.euler.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, player.euler.x));
+                player.camera.quaternion.setFromEuler(player.euler);
+
+                lastLookPos = { x: touch.clientX, y: touch.clientY };
+            });
+
+            touchLook.addEventListener('touchend', () => { lookTouch = null; });
+
+            // Action buttons
+            document.getElementById('btn-jump').addEventListener('touchstart', (e) => {
+                if (!gameStarted) return;
+                e.preventDefault();
+                player.keys['Space'] = true;
+            });
+            document.getElementById('btn-jump').addEventListener('touchend', () => {
+                player.keys['Space'] = false;
+            });
+
+            document.getElementById('btn-place').addEventListener('touchstart', (e) => {
+                if (!gameStarted) return;
+                e.preventDefault();
+                player.selectedTool = 'block';
+                player.handleBlockInteraction('block');
+            });
+
+            document.getElementById('btn-delete').addEventListener('touchstart', (e) => {
+                if (!gameStarted) return;
+                e.preventDefault();
+                player.selectedTool = 'delete';
+                player.handleBlockInteraction('delete');
+            });
+
+            console.log('Mobile touch controls initialized');
+        })();
     </script>
 </body>
 </html> 
