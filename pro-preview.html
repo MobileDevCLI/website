@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Dashboard | MobileCLI</title>
+    <title>Pro Dashboard — Complete Documentation | MobileCLI</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -12,6 +12,7 @@
             --bg: #000000;
             --bg-secondary: #050505;
             --bg-card: #0a0a0a;
+            --bg-card-hover: #111111;
             --text: #ffffff;
             --text-secondary: #a0a0a0;
             --text-muted: #555555;
@@ -23,6 +24,7 @@
             --border: #1a1a1a;
             --border-light: #2a2a2a;
             --warning: #ff6b6b;
+            --success: #00ff88;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,17 +33,18 @@
             font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.6;
+            line-height: 1.7;
             min-height: 100vh;
         }
 
         /* Admin Banner */
         .admin-banner {
             background: linear-gradient(90deg, var(--accent), var(--primary));
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             font-weight: 600;
             font-size: 0.9rem;
+            color: #000;
         }
 
         /* Navigation */
@@ -59,7 +62,7 @@
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             width: 100%;
             display: flex;
@@ -97,21 +100,6 @@
             background: rgba(255,255,255,0.05);
         }
 
-        .nav-links a.active {
-            color: var(--primary);
-            background: rgba(0, 255, 136, 0.1);
-        }
-
-        .pro-badge-nav {
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            color: var(--bg);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-left: 8px;
-        }
-
         .mobile-menu-btn {
             display: none;
             background: transparent;
@@ -123,118 +111,72 @@
             font-size: 0.9rem;
         }
 
-        /* Mobile Menu Dropdown */
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 104px; /* Below admin banner + nav */
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.98);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 16px;
-            z-index: 999;
-            max-height: calc(100vh - 104px);
-            overflow-y: auto;
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 48px 24px;
         }
 
-        .mobile-menu.open {
-            display: block;
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
         }
 
-        .mobile-menu-section {
-            margin-bottom: 20px;
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .mobile-menu-section h4 {
-            color: var(--primary);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 10px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .mobile-menu a {
-            display: block;
+        .page-header p {
+            font-size: 1.1rem;
             color: var(--text-secondary);
-            text-decoration: none;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-
-        .mobile-menu a:hover,
-        .mobile-menu a:active {
-            background: rgba(0, 255, 136, 0.1);
-            color: var(--text);
-        }
-
-        .mobile-menu a.active {
-            background: rgba(0, 255, 136, 0.15);
-            color: var(--primary);
-        }
-
-        .mobile-menu .pro-badge-mobile {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            color: var(--bg);
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            margin-left: 8px;
-            vertical-align: middle;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
         /* Tab Navigation */
         .tab-nav {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-            overflow-x: auto;
-        }
-
-        .tab-nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
             display: flex;
             gap: 4px;
+            padding: 8px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 32px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            padding: 16px 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
             font-size: 0.9rem;
             font-weight: 500;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
             white-space: nowrap;
-            font-family: inherit;
+            transition: all 0.2s;
         }
 
         .tab-btn:hover {
             color: var(--text);
+            background: rgba(255,255,255,0.05);
         }
 
         .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
+            background: var(--primary);
+            color: #000;
+            font-weight: 600;
         }
 
-        /* Main Content */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 24px;
-        }
-
+        /* Tab Content */
         .tab-content {
             display: none;
         }
@@ -244,61 +186,74 @@
         }
 
         /* Typography */
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1, h2, h3, h4 {
+            color: var(--text);
+            line-height: 1.3;
         }
 
         h2 {
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin: 48px 0 20px;
+            font-size: 1.75rem;
+            margin: 48px 0 24px 0;
             padding-bottom: 12px;
             border-bottom: 1px solid var(--border);
         }
 
+        h2:first-child {
+            margin-top: 0;
+        }
+
         h3 {
-            font-size: 1.15rem;
+            font-size: 1.3rem;
+            margin: 32px 0 16px 0;
+            color: var(--primary);
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            margin: 24px 0 12px 0;
             color: var(--secondary);
-            margin: 32px 0 12px;
         }
 
         p {
+            margin: 16px 0;
             color: var(--text-secondary);
-            margin-bottom: 16px;
         }
 
-        /* Cards */
-        .welcome-card {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(168, 85, 247, 0.1));
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 40px;
+        strong {
+            color: var(--text);
+            font-weight: 600;
         }
 
-        .welcome-card h2 {
-            margin: 0 0 12px;
-            padding: 0;
-            border: none;
-            font-size: 1.3rem;
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 28px;
         }
 
-        .warning-box {
-            background: rgba(255, 107, 107, 0.1);
-            border: 1px solid var(--warning);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 24px 0;
+        li {
+            margin: 8px 0;
+            color: var(--text-secondary);
         }
 
-        .warning-box h4 {
-            color: var(--warning);
-            margin-bottom: 8px;
+        li strong {
+            color: var(--primary);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         /* Code Blocks */
@@ -311,255 +266,100 @@
         }
 
         .code-header {
-            background: rgba(0, 255, 136, 0.1);
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
         }
 
         .code-label {
-            color: var(--primary);
             font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         .copy-btn {
-            background: var(--primary);
-            color: var(--bg);
-            border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 0.75rem;
             transition: all 0.2s;
         }
 
         .copy-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px var(--primary-glow);
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
         }
 
-        pre {
+        .code-block pre {
             padding: 20px;
             overflow-x: auto;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text);
-            line-height: 1.8;
-        }
-
-        /* Steps */
-        .step {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px;
-            margin: 24px 0;
-        }
-
-        .step-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .step-number {
-            width: 36px;
-            height: 36px;
-            background: var(--primary);
-            color: var(--bg);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        .step h3 {
-            margin: 0;
-            color: var(--text);
-        }
-
-        /* Lists */
-        ul {
-            margin: 16px 0;
-            padding-left: 24px;
-        }
-
-        li {
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-        }
-
-        li strong {
-            color: var(--text);
-        }
-
-        /* Quick Links Grid */
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin: 24px 0;
-        }
-
-        .quick-link {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .quick-link:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .quick-link-icon {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-        }
-
-        .quick-link-title {
-            color: var(--text);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .quick-link-desc {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-top: 4px;
-        }
-
-        /* Research Cards */
-        .research-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px;
-            margin: 20px 0;
-        }
-
-        .research-tag {
-            display: inline-block;
-            background: rgba(168, 85, 247, 0.2);
-            color: var(--accent);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .research-card h3 {
-            margin: 0 0 12px;
-            color: var(--text);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            padding: 60px 24px 40px;
-            margin-top: 80px;
-        }
-
-        .footer-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr repeat(3, 1fr);
-            gap: 48px;
-        }
-
-        .footer-brand .logo {
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
-        .footer-brand p {
             font-size: 0.9rem;
-            max-width: 280px;
-        }
-
-        .footer-column h4 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 16px;
+            line-height: 1.6;
             color: var(--text);
-        }
-
-        .footer-column ul {
-            list-style: none;
-            padding: 0;
             margin: 0;
         }
 
-        .footer-column li {
-            margin-bottom: 10px;
-        }
-
-        .footer-column a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: color 0.2s;
-        }
-
-        .footer-column a:hover {
-            color: var(--primary);
-        }
-
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 40px auto 0;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
+        .code-block .comment {
             color: var(--text-muted);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .mobile-menu-btn { display: block; }
-            h1 { font-size: 1.75rem; }
-            .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-            .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-            .tab-btn { padding: 14px 16px; font-size: 0.85rem; }
+        /* Info Boxes */
+        .info-box {
+            background: var(--bg-card);
+            border-left: 4px solid var(--primary);
+            padding: 20px 24px;
+            border-radius: 0 12px 12px 0;
+            margin: 24px 0;
         }
 
-        @media (max-width: 480px) {
-            .footer-grid { grid-template-columns: 1fr; }
-            .quick-links { grid-template-columns: 1fr; }
+        .info-box.warning {
+            border-left-color: var(--warning);
         }
 
-        /* Workflow Details Expandables */
-        .workflow-details {
+        .info-box.tip {
+            border-left-color: var(--secondary);
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-box.warning .info-box-title {
+            color: var(--warning);
+        }
+
+        .info-box.tip .info-box-title {
+            color: var(--secondary);
+        }
+
+        .info-box p {
+            margin: 0;
+        }
+
+        /* Expandable Sections */
+        .expandable {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            margin-bottom: 12px;
+            margin: 16px 0;
             overflow: hidden;
         }
 
-        .workflow-details summary {
-            padding: 16px 20px;
+        .expandable summary {
+            padding: 18px 24px;
             cursor: pointer;
             font-weight: 600;
             color: var(--text);
@@ -570,476 +370,721 @@
             list-style: none;
         }
 
-        .workflow-details summary::-webkit-details-marker {
+        .expandable summary::-webkit-details-marker {
             display: none;
         }
 
-        .workflow-details summary::before {
+        .expandable summary::before {
             content: '▶';
             font-size: 0.7rem;
             color: var(--primary);
             transition: transform 0.2s;
         }
 
-        .workflow-details[open] summary::before {
+        .expandable[open] summary::before {
             transform: rotate(90deg);
         }
 
-        .workflow-details summary:hover {
+        .expandable summary:hover {
             background: rgba(255, 255, 255, 0.03);
         }
 
-        .workflow-details .detail-content {
-            padding: 0 20px 20px 20px;
+        .expandable-content {
+            padding: 0 24px 24px 24px;
             border-top: 1px solid var(--border);
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.2);
         }
 
-        .workflow-details .detail-content p {
-            margin: 16px 0 0 0;
+        /* Step Cards */
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
         }
 
-        .workflow-details .detail-content ul,
-        .workflow-details .detail-content ol {
-            margin: 12px 0;
-            padding-left: 24px;
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: #000;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-right: 12px;
         }
 
-        .workflow-details .detail-content li {
-            margin: 8px 0;
-            color: var(--text-secondary);
+        .step-title {
+            display: inline;
+            font-size: 1.2rem;
+            font-weight: 600;
         }
 
-        .workflow-details .detail-content .code-block {
-            margin: 16px 0;
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
         }
 
-        .workflow-details .detail-content h4 {
-            color: var(--primary);
-            margin-top: 16px;
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s;
         }
 
-        .workflow-details .detail-content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 16px 0;
+        .feature-card:hover {
+            border-color: var(--primary-dim);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .feature-card h4 {
+            margin: 0 0 8px 0;
+            color: var(--text);
+        }
+
+        .feature-card p {
+            margin: 0;
             font-size: 0.9rem;
         }
 
-        .workflow-details .detail-content table th,
-        .workflow-details .detail-content table td {
-            padding: 10px 12px;
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 14px 16px;
             text-align: left;
             border-bottom: 1px solid var(--border);
         }
 
-        .workflow-details .detail-content table th {
+        th {
             color: var(--primary);
             font-weight: 600;
+            background: var(--bg-card);
         }
 
-        .workflow-details .detail-content table td {
+        td {
             color: var(--text-secondary);
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* Research Cards */
+        .research-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .research-tag {
+            display: inline-block;
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .research-card h3 {
+            margin: 0 0 12px 0;
+        }
+
+        /* Quick Links */
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .quick-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .quick-link:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+            text-decoration: none;
+        }
+
+        .quick-link-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 48px 24px 32px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .page-header h1 { font-size: 1.75rem; }
+            .tab-btn { padding: 10px 14px; font-size: 0.8rem; }
+            h2 { font-size: 1.4rem; }
+            h3 { font-size: 1.15rem; }
+            .container { padding: 32px 16px; }
+        }
+
+        @media (max-width: 480px) {
+            .quick-links { grid-template-columns: 1fr; }
+            .feature-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <!-- Admin Banner -->
     <div class="admin-banner">
-        ADMIN PREVIEW — This is what Pro subscribers see
+        PRO SUBSCRIBER ACCESS — Complete Documentation & Secret Sauce
     </div>
 
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="/" class="logo">>_ MobileCLI</a>
+            <a href="/" class="logo">>_ MobileCLI Pro</a>
             <div class="nav-links">
                 <a href="/pricing.html">Pricing</a>
                 <a href="/learn.html">Docs</a>
                 <a href="/demos.html">Demos</a>
                 <a href="/games.html">Games</a>
-                <a href="/legal-guide.html">Legal</a>
-                <a href="/security-guide.html">Security</a>
-                <a href="#" class="active">Pro Dashboard</a>
-                <span class="pro-badge-nav">PRO</span>
+                <a href="/dashboard.html">Dashboard</a>
             </div>
-            <button class="mobile-menu-btn" id="mobileMenuBtn">Menu</button>
+            <button class="mobile-menu-btn" onclick="alert('Menu')">Menu</button>
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-section">
-            <h4>Pro Dashboard</h4>
-            <a href="#" class="active">Dashboard Home <span class="pro-badge-mobile">PRO</span></a>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Pro Documentation</h1>
+            <p>Complete, professor-level documentation for AI-powered mobile development. Every feature. Every technique. Every secret.</p>
         </div>
-        <div class="mobile-menu-section">
-            <h4>Product</h4>
-            <a href="/pricing.html">Pricing</a>
-            <a href="/learn.html">Documentation</a>
-            <a href="/quickstart.html">Quick Start</a>
-            <a href="/examples.html">Examples</a>
-        </div>
-        <div class="mobile-menu-section">
-            <h4>Interactive</h4>
-            <a href="/demos.html">Demos</a>
-            <a href="/games.html">Games</a>
-            <a href="/labs.html">Labs</a>
-        </div>
-        <div class="mobile-menu-section">
-            <h4>Resources</h4>
-            <a href="/research.html">Research</a>
-            <a href="/proof.html">The Story</a>
-            <a href="/news.html">News</a>
-        </div>
-        <div class="mobile-menu-section">
-            <h4>Guides</h4>
-            <a href="/legal-guide.html">Legal Guide</a>
-            <a href="/security-guide.html">Security Guide</a>
-        </div>
-        <div class="mobile-menu-section">
-            <h4>Community</h4>
-            <a href="https://discord.gg/mobilecli" target="_blank">Discord</a>
-            <a href="https://github.com/MobileDevCLI" target="_blank">GitHub</a>
-            <a href="https://twitter.com/MobileDevCLI" target="_blank">Twitter / X</a>
-            <a href="https://youtube.com/@MobileDevCLI" target="_blank">YouTube</a>
-        </div>
-        <div class="mobile-menu-section">
-            <h4>Legal</h4>
-            <a href="/terms.html">Terms of Service</a>
-            <a href="/privacy.html">Privacy Policy</a>
-            <a href="/ip.html">IP Notice</a>
-            <a href="/dmca.html">DMCA</a>
-            <a href="/disclaimer.html">Disclaimer</a>
-        </div>
-        <div class="mobile-menu-section">
-            <h4>Account</h4>
-            <a href="/dashboard.html">My Dashboard</a>
-            <a href="/login.html">Login / Sign Up</a>
-        </div>
-    </div>
 
-    <!-- Tab Navigation -->
-    <div class="tab-nav">
-        <div class="tab-nav-inner">
-            <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
-            <button class="tab-btn" onclick="showTab('setup')">Full Setup Guide</button>
-            <button class="tab-btn" onclick="showTab('commands')">Commands & API</button>
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="showTab('quickstart')">Quick Start</button>
+            <button class="tab-btn" onclick="showTab('complete')">Complete Guide</button>
+            <button class="tab-btn" onclick="showTab('workflow')">Workflow Mastery</button>
             <button class="tab-btn" onclick="showTab('research')">Research Lab</button>
-            <button class="tab-btn" onclick="showTab('story')">The Story</button>
+            <button class="tab-btn" onclick="showTab('resources')">Resources</button>
             <button class="tab-btn" onclick="showTab('troubleshoot')">Troubleshooting</button>
         </div>
-    </div>
 
-    <!-- Tab: Overview -->
-    <div id="overview" class="tab-content active">
-        <div class="container">
-            <h1>Welcome to Pro</h1>
-            <p style="font-size: 1.1rem; margin-bottom: 32px;">You have full access to the complete methodology, real commands, and secret sauce.</p>
+        <!-- ============================================ -->
+        <!-- TAB 1: QUICK START -->
+        <!-- ============================================ -->
+        <div id="quickstart" class="tab-content active">
+            <h2>5-Minute Setup</h2>
+            <p>Get from zero to fully autonomous AI development in 5 minutes. This is the fast path — the Complete Guide tab has the deep explanations.</p>
 
-            <div class="welcome-card">
-                <h2>What's Unlocked</h2>
-                <p>As a Pro member, you have access to everything:</p>
-                <ul>
-                    <li><strong>Full Setup Guide</strong> — Exact tools, packages, and installation commands</li>
-                    <li><strong>Real Commands</strong> — The actual CLI commands we use (no fake placeholders)</li>
-                    <li><strong>Autonomous Mode</strong> — How to run 24+ hour sessions</li>
-                    <li><strong>Research Discoveries</strong> — Technical insights from building this platform</li>
-                    <li><strong>The Complete Story</strong> — How we built this entirely from a phone</li>
-                    <li><strong>All Demos & Games</strong> — Same as free tier, they're for everyone</li>
-                </ul>
-            </div>
-
-            <h2>Quick Access</h2>
-            <div class="quick-links">
-                <a href="/demos.html" class="quick-link">
-                    <div class="quick-link-icon">🎮</div>
-                    <div class="quick-link-title">Interactive Demos</div>
-                    <div class="quick-link-desc">Physics, fluids, particles</div>
-                </a>
-                <a href="/games.html" class="quick-link">
-                    <div class="quick-link-icon">🕹️</div>
-                    <div class="quick-link-title">Games Arcade</div>
-                    <div class="quick-link-desc">Play browser games</div>
-                </a>
-                <a href="/learn.html" class="quick-link">
-                    <div class="quick-link-icon">📚</div>
-                    <div class="quick-link-title">Documentation</div>
-                    <div class="quick-link-desc">Full reference docs</div>
-                </a>
-                <a href="https://github.com/MobileDevCLI" class="quick-link" target="_blank">
-                    <div class="quick-link-icon">💻</div>
-                    <div class="quick-link-title">GitHub</div>
-                    <div class="quick-link-desc">Source code & issues</div>
-                </a>
-            </div>
-
-            <div class="warning-box">
-                <h4>Confidential Content</h4>
-                <p>The methodology, commands, and techniques in your Pro dashboard are proprietary. Please don't share publicly — this is what makes your subscription valuable.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tab: Full Setup Guide -->
-    <div id="setup" class="tab-content">
-        <div class="container">
-            <h1>Complete Setup Guide</h1>
-            <p style="font-size: 1.1rem; margin-bottom: 32px;">The exact steps to set up your mobile development environment. Real commands, no placeholders.</p>
-
-            <h2>The Stack</h2>
-            <p>Here's exactly what we use:</p>
-            <ul>
-                <li><strong>Termux</strong> — Linux terminal emulator for Android (F-Droid version only)</li>
-                <li><strong>Termux:API</strong> — Hardware access (camera, notifications, clipboard)</li>
-                <li><strong>Claude Code</strong> — Anthropic's AI coding CLI (npm package)</li>
-                <li><strong>tmux</strong> — Terminal multiplexer for persistent sessions</li>
-                <li><strong>Node.js LTS</strong> — JavaScript runtime</li>
-                <li><strong>Git + GitHub CLI</strong> — Version control and GitHub integration</li>
-            </ul>
-
-            <h2>Step-by-Step Installation</h2>
-
-            <div class="step">
-                <div class="step-header">
-                    <span class="step-number">1</span>
-                    <h3>Install Termux</h3>
+            <div class="step-card">
+                <span class="step-number">1</span>
+                <span class="step-title">Install Termux (from F-Droid)</span>
+                <p style="margin-top: 16px;"><strong>Critical:</strong> The Google Play Store version is outdated and broken. You MUST use F-Droid.</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Download Link</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>https://f-droid.org/packages/com.termux/</pre>
                 </div>
-                <p>Download Termux from F-Droid (NOT Google Play — that version is outdated):</p>
-                <p><a href="https://f-droid.org/packages/com.termux/" target="_blank" style="color: var(--secondary);">https://f-droid.org/packages/com.termux/</a></p>
-                <p>Also install <strong>Termux:API</strong> from F-Droid for hardware access.</p>
+                <p>Also install <strong>Termux:API</strong> from F-Droid for hardware access (camera, notifications, clipboard, etc.).</p>
             </div>
 
-            <div class="step">
-                <div class="step-header">
-                    <span class="step-number">2</span>
-                    <h3>Update and Install Dependencies</h3>
-                </div>
+            <div class="step-card">
+                <span class="step-number">2</span>
+                <span class="step-title">Update Packages</span>
+                <p style="margin-top: 16px;">Open Termux and run:</p>
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">Bash</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre># Update packages
-pkg update -y && pkg upgrade -y
-
-# Install core dependencies
-pkg install nodejs-lts git gh openssh -y
-
-# Install Termux:API package (after installing Termux:API app)
-pkg install termux-api -y</pre>
+                    <pre>pkg update -y && pkg upgrade -y</pre>
                 </div>
             </div>
 
-            <div class="step">
-                <div class="step-header">
-                    <span class="step-number">3</span>
-                    <h3>Install Claude Code</h3>
-                </div>
+            <div class="step-card">
+                <span class="step-number">3</span>
+                <span class="step-title">Install Core Packages</span>
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">Bash</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre># Install Claude Code globally
-npm install -g @anthropic-ai/claude-code
-
-# Verify installation
-claude --version</pre>
+                    <pre>pkg install -y nodejs git gh openssh termux-api</pre>
                 </div>
-                <p>You'll need an Anthropic account. Claude Code will prompt you to authenticate via browser on first run.</p>
             </div>
 
-            <div class="step">
-                <div class="step-header">
-                    <span class="step-number">4</span>
-                    <h3>Setup GitHub Authentication</h3>
-                </div>
+            <div class="step-card">
+                <span class="step-number">4</span>
+                <span class="step-title">Install Claude Code</span>
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">Bash</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre># Login to GitHub CLI
-gh auth login
-
-# Choose:
-# - GitHub.com
-# - HTTPS
-# - Login with a web browser
-# - Follow the prompts</pre>
+                    <pre>npm install -g @anthropic-ai/claude-code</pre>
                 </div>
             </div>
 
-            <div class="step">
-                <div class="step-header">
-                    <span class="step-number">5</span>
-                    <h3>Install tmux for Persistent Sessions</h3>
-                </div>
+            <div class="step-card">
+                <span class="step-number">5</span>
+                <span class="step-title">Authenticate</span>
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">Bash</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre># Install tmux
-pkg install tmux -y
+                    <pre><span class="comment"># Authenticate with Claude (opens browser)</span>
+claude
 
-# Create a new session named 'dev'
+<span class="comment"># Authenticate with GitHub</span>
+gh auth login</pre>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">6</span>
+                <span class="step-title">Enable Autonomous Mode</span>
+                <p style="margin-top: 16px;"><strong>This is the secret sauce.</strong> Autonomous mode lets Claude work without asking for permission on every action.</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Bash — THE POWER COMMAND</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>claude --dangerously-skip-permissions</pre>
+                </div>
+                <div class="info-box warning">
+                    <div class="info-box-title">Use Responsibly</div>
+                    <p>This flag gives Claude full system access. Only use in sandboxed environments or when you trust what you're building.</p>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">7</span>
+                <span class="step-title">Keep It Running Forever</span>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Bash — Prevent Android from Killing Termux</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Acquire wake lock (keeps CPU active)</span>
+termux-wake-lock
+
+<span class="comment"># Install tmux for persistent sessions</span>
+pkg install -y tmux
+
+<span class="comment"># Start a named session</span>
 tmux new -s dev
 
-# To detach: press Ctrl+B then D
-# To reattach later:
-tmux attach -t dev</pre>
+<span class="comment"># Now run Claude inside tmux</span>
+claude --dangerously-skip-permissions</pre>
                 </div>
             </div>
 
-            <div class="step">
-                <div class="step-header">
-                    <span class="step-number">6</span>
-                    <h3>Grant Storage Access</h3>
-                </div>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span class="code-label">Bash</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre># Grant access to phone storage
-termux-setup-storage
-
-# Now you can access:
-~/storage/shared/       # Internal storage
-~/storage/dcim/         # Camera/Screenshots
-~/storage/downloads/    # Downloads folder</pre>
-                </div>
+            <div class="info-box">
+                <div class="info-box-title">You're Done</div>
+                <p>That's it. You now have a fully autonomous AI development environment running on your phone. Claude can read files, write code, run commands, and deploy to production — all while you sleep.</p>
             </div>
+
+            <h3>Quick Reference</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Add to ~/.bashrc for convenience</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Autonomous Mode aliases</span>
+alias cc="claude --dangerously-skip-permissions"
+alias claude-auto="claude --dangerously-skip-permissions"
+
+<span class="comment"># Quick git push to both repos</span>
+alias gpp="git push origin master && git push website master"
+
+<span class="comment"># Keep terminal alive</span>
+alias wake="termux-wake-lock"
+
+<span class="comment"># Reattach to dev session</span>
+alias dev="tmux attach -t dev || tmux new -s dev"</pre>
+            </div>
+            <p>Then run <code>source ~/.bashrc</code> and you can just type <code>cc</code> to start Claude in autonomous mode.</p>
         </div>
-    </div>
 
-    <!-- Tab: Commands & API -->
-    <div id="commands" class="tab-content">
-        <div class="container">
-            <h1>Commands & API Reference</h1>
-            <p style="font-size: 1.1rem; margin-bottom: 32px;">All the real commands. Copy, paste, run.</p>
+        <!-- ============================================ -->
+        <!-- TAB 2: COMPLETE GUIDE -->
+        <!-- ============================================ -->
+        <div id="complete" class="tab-content">
+            <h2>Understanding the Architecture</h2>
+            <p>Before diving into commands, it's essential to understand what we're building and why it works. This section explains the underlying architecture that makes AI-powered mobile development possible.</p>
 
-            <h2>Running Claude Code</h2>
+            <h3>The Stack</h3>
+            <p>The MobileCLI development environment consists of four layers:</p>
 
-            <h3>Standard Mode</h3>
+            <table>
+                <tr>
+                    <th>Layer</th>
+                    <th>Component</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td><strong>Hardware</strong></td>
+                    <td>Android Phone (ARM64)</td>
+                    <td>Physical compute device. Any Android 7.0+ with 4GB+ RAM.</td>
+                </tr>
+                <tr>
+                    <td><strong>Linux Environment</strong></td>
+                    <td>Termux</td>
+                    <td>Full Linux terminal emulator. Provides bash, package management, filesystem access.</td>
+                </tr>
+                <tr>
+                    <td><strong>Runtime</strong></td>
+                    <td>Node.js + Git + GitHub CLI</td>
+                    <td>JavaScript runtime, version control, GitHub integration.</td>
+                </tr>
+                <tr>
+                    <td><strong>AI Interface</strong></td>
+                    <td>Claude Code</td>
+                    <td>AI CLI that reads, writes, and executes. The brain of the operation.</td>
+                </tr>
+            </table>
+
+            <h3>Why This Works</h3>
+            <p>The key insight is that <strong>the command line is the great equalizer</strong>. On CLI, a $200 Android phone has functionally the same capabilities as a $3000 MacBook Pro. You have:</p>
+            <ul>
+                <li>Full filesystem access (read/write any file)</li>
+                <li>Process execution (run any command)</li>
+                <li>Network access (git push, API calls, deployments)</li>
+                <li>Package management (install any npm/apt package)</li>
+            </ul>
+            <p>The AI doesn't care about screen size or touch vs keyboard. It operates through the terminal — and the terminal works identically on every platform.</p>
+
+            <h2>Termux Deep Dive</h2>
+            <p>Termux is an Android terminal emulator and Linux environment app. It provides a full Linux system without requiring root access.</p>
+
+            <h3>Why F-Droid, Not Play Store?</h3>
+            <p>The Play Store version of Termux was abandoned in 2020 due to Google's API restrictions. It's broken on modern Android. The F-Droid version is actively maintained and works correctly.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Download Links</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Main Termux app</span>
+https://f-droid.org/packages/com.termux/
+
+<span class="comment"># Termux:API (for hardware access)</span>
+https://f-droid.org/packages/com.termux.api/
+
+<span class="comment"># Termux:Styling (for themes)</span>
+https://f-droid.org/packages/com.termux.styling/</pre>
+            </div>
+
+            <h3>Storage Access</h3>
+            <p>By default, Termux is sandboxed. To access shared storage (Downloads, Screenshots, etc.):</p>
             <div class="code-block">
                 <div class="code-header">
                     <span class="code-label">Bash</span>
                     <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                 </div>
-                <pre># Run Claude in your project directory
-cd ~/your-project
+                <pre><span class="comment"># Grant storage permissions (run once)</span>
+termux-setup-storage
+
+<span class="comment"># This creates symlinks in ~/storage/</span>
+ls ~/storage/
+<span class="comment"># dcim/  downloads/  movies/  music/  pictures/  shared/</span>
+
+<span class="comment"># Access screenshots</span>
+ls ~/storage/dcim/Screenshots/</pre>
+            </div>
+
+            <h3>Package Management</h3>
+            <p>Termux uses <code>pkg</code> (a wrapper around apt) for package management:</p>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Package Commands</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Update package lists</span>
+pkg update
+
+<span class="comment"># Upgrade all packages</span>
+pkg upgrade
+
+<span class="comment"># Install a package</span>
+pkg install nodejs
+
+<span class="comment"># Search for packages</span>
+pkg search python
+
+<span class="comment"># List installed packages</span>
+pkg list-installed</pre>
+            </div>
+
+            <h3>Essential Packages</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Install Everything You Need</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Core development tools</span>
+pkg install -y nodejs git gh openssh
+
+<span class="comment"># Session management</span>
+pkg install -y tmux
+
+<span class="comment"># Hardware API access</span>
+pkg install -y termux-api
+
+<span class="comment"># Optional but useful</span>
+pkg install -y python vim curl wget jq</pre>
+            </div>
+
+            <h2>Claude Code Installation</h2>
+            <p>Claude Code is Anthropic's official CLI for Claude. It's the interface between you and the AI.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Install globally via npm</span>
+npm install -g @anthropic-ai/claude-code
+
+<span class="comment"># Verify installation</span>
+claude --version
+
+<span class="comment"># First run (opens browser for OAuth)</span>
 claude</pre>
             </div>
 
-            <h3>Autonomous Mode (The Power Move)</h3>
+            <h3>Authentication Flow</h3>
+            <p>When you first run <code>claude</code>, it opens a browser window for OAuth authentication with Anthropic. You'll log in with your Anthropic account (the one with your Claude subscription).</p>
+
+            <p>The CLI receives three OAuth grants:</p>
+            <ul>
+                <li><code>user:inference</code> — Run Claude models</li>
+                <li><code>user:profile</code> — Access your account info</li>
+                <li><code>user:sessions:claude_code</code> — Manage Claude Code sessions</li>
+            </ul>
+
+            <h2>Autonomous Mode Explained</h2>
+            <p>By default, Claude Code asks for permission before every file write, command execution, or significant action. This is safe but slow.</p>
+
+            <p><strong>Autonomous Mode</strong> (the <code>--dangerously-skip-permissions</code> flag) removes all permission checks. Claude acts immediately without confirmation.</p>
+
+            <h3>Why It's Called "Dangerous"</h3>
+            <p>With this flag, Claude can:</p>
+            <ul>
+                <li>Delete any file</li>
+                <li>Execute any shell command</li>
+                <li>Push to any git remote</li>
+                <li>Make API calls</li>
+                <li>Modify system configuration</li>
+            </ul>
+
+            <p>In a sandboxed environment (like Termux on your phone), this is fine. On a production server with real data, be careful.</p>
+
+            <h3>Permission Modes</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Different Permission Levels</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Full autonomous (no prompts at all)</span>
+claude --dangerously-skip-permissions
+
+<span class="comment"># Alternative: permission mode that doesn't ask</span>
+claude --permission-mode=dontAsk
+
+<span class="comment"># Default: asks for each action</span>
+claude</pre>
+            </div>
+
+            <h2>Session Persistence</h2>
+            <p>Android aggressively kills background apps to save battery. Without proper configuration, Termux will be killed when you lock your phone.</p>
+
+            <h3>Wake Lock</h3>
+            <p>The wake lock keeps the CPU active even when the screen is off:</p>
             <div class="code-block">
                 <div class="code-header">
                     <span class="code-label">Bash</span>
                     <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                 </div>
-                <pre># Run Claude without permission prompts
-claude --dangerously-skip-permissions
-
-# This allows Claude to:
-# - Read/write files without asking
-# - Run bash commands without asking
-# - Work autonomously for hours</pre>
-            </div>
-
-            <div class="warning-box">
-                <h4>Use Autonomous Mode Carefully</h4>
-                <p>Only use <code>--dangerously-skip-permissions</code> in projects where you trust what Claude might do. It can read, write, and execute anything.</p>
-            </div>
-
-            <h2>24+ Hour Sessions</h2>
-            <p>The magic combo for sessions that run for days:</p>
-
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Bash — The Full Setup</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre># 1. Prevent CPU sleep
+                <pre><span class="comment"># Acquire wake lock (shows notification)</span>
 termux-wake-lock
 
-# 2. Keep Termux priority (prevents Android killing it)
-termux-notification -t "Dev Session" --ongoing -c "Claude running..."
-
-# 3. Start tmux session (survives Termux close)
-tmux new -s dev
-
-# 4. Run Claude autonomously
-claude --dangerously-skip-permissions
-
-# Now you can:
-# - Close the Termux app (session keeps running)
-# - Lock your phone (session keeps running)
-# - Come back hours later and it's still going</pre>
+<span class="comment"># Release wake lock</span>
+termux-wake-unlock</pre>
             </div>
 
-            <h3>Reattach to Running Session</h3>
+            <h3>tmux for Session Survival</h3>
+            <p>tmux is a terminal multiplexer. It keeps sessions alive even if the terminal window closes.</p>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — tmux Commands</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Install tmux</span>
+pkg install -y tmux
+
+<span class="comment"># Create a new named session</span>
+tmux new -s dev
+
+<span class="comment"># Detach from session (keeps it running)</span>
+<span class="comment"># Press: Ctrl+b, then d</span>
+
+<span class="comment"># List running sessions</span>
+tmux ls
+
+<span class="comment"># Reattach to a session</span>
+tmux attach -t dev
+
+<span class="comment"># Kill a session</span>
+tmux kill-session -t dev</pre>
+            </div>
+
+            <h3>Disable Battery Optimization</h3>
+            <p>Go to Android Settings → Apps → Termux → Battery → Set to "Unrestricted" or "Don't optimize".</p>
+
+            <h3>Enable External Apps</h3>
+            <p>To allow other apps to open Termux:</p>
             <div class="code-block">
                 <div class="code-header">
                     <span class="code-label">Bash</span>
                     <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                 </div>
-                <pre># Open Termux and reattach
-tmux attach -t dev
+                <pre><span class="comment"># Create termux.properties if it doesn't exist</span>
+mkdir -p ~/.termux
 
-# List all sessions
-tmux ls</pre>
+<span class="comment"># Enable external apps</span>
+echo "allow-external-apps=true" >> ~/.termux/termux.properties
+
+<span class="comment"># Reload settings</span>
+termux-reload-settings</pre>
             </div>
 
-            <h2>Termux:API — Hardware Access</h2>
-            <p>Full hardware access from the terminal:</p>
+            <h2>Termux:API Hardware Access</h2>
+            <p>Termux:API provides access to Android hardware and system features:</p>
 
             <div class="code-block">
                 <div class="code-header">
-                    <span class="code-label">Bash — Hardware Commands</span>
+                    <span class="code-label">Bash — Termux:API Commands</span>
                     <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                 </div>
-                <pre># Camera
-termux-camera-photo ~/photo.jpg
-
-# Screenshot (requires Termux:API app)
-termux-screenshot ~/screenshot.png
-
-# Notifications
-termux-notification -t "Title" -c "Content"
-termux-notification -t "Dev" --ongoing  # Persistent notification
-
-# Clipboard
-termux-clipboard-get
-termux-clipboard-set "text to copy"
-
-# Text to speech
-termux-tts-speak "Hello world"
-
-# Battery status
+                <pre><span class="comment"># Battery status</span>
 termux-battery-status
 
-# WiFi info
+<span class="comment"># Take a photo</span>
+termux-camera-photo ~/photo.jpg
+
+<span class="comment"># Take a screenshot</span>
+termux-screenshot ~/screenshot.png
+
+<span class="comment"># Send notification</span>
+termux-notification -t "Title" -c "Content"
+
+<span class="comment"># Text to speech</span>
+termux-tts-speak "Hello world"
+
+<span class="comment"># Clipboard operations</span>
+termux-clipboard-get
+echo "text" | termux-clipboard-set
+
+<span class="comment"># Open URL in browser</span>
+termux-open-url "https://example.com"
+
+<span class="comment"># Share content</span>
+termux-share -a send ~/file.txt
+
+<span class="comment"># WiFi info</span>
 termux-wifi-connectioninfo
 
-# Vibrate
+<span class="comment"># Vibrate</span>
 termux-vibrate
 
-# Toast message
-termux-toast "Quick message"
-
-# Open URL in browser
-termux-open-url "https://google.com"
-
-# Share intent
-termux-share -a send ~/file.txt</pre>
+<span class="comment"># Turn on flashlight</span>
+termux-torch on</pre>
             </div>
 
             <h2>CLAUDE.md — Knowledge Compounding</h2>
-            <p>This is the secret weapon. Create a CLAUDE.md file in your project root:</p>
+            <p>This is perhaps the most powerful technique in AI-assisted development. CLAUDE.md is a file that Claude reads at the start of every session.</p>
 
+            <h3>How It Works</h3>
+            <ol>
+                <li>Create a file called <code>CLAUDE.md</code> in your project root</li>
+                <li>Write project context, rules, and preferences</li>
+                <li>Every time Claude makes a mistake, add a rule to prevent it</li>
+                <li>Over time, the file becomes a highly tuned instruction set</li>
+                <li>Claude reads this at session start and "knows" all your preferences</li>
+            </ol>
+
+            <h3>Template</h3>
             <div class="code-block">
                 <div class="code-header">
                     <span class="code-label">CLAUDE.md Template</span>
@@ -1048,88 +1093,218 @@ termux-share -a send ~/file.txt</pre>
                 <pre># Project Instructions
 
 ## Quick Context
-What this project is and what you're building.
+This is [project name]. We're building [description].
+Owner: [your alias]
+Website: [url]
+GitHub: [org/repo]
 
 ## Tech Stack
-- List your technologies
-- Any specific versions
+- Vanilla HTML/CSS/JS (no frameworks)
+- Three.js for 3D graphics
+- Supabase for auth and database
+- Vercel for hosting
 
 ## Important Rules
-- Never do X
-- Always do Y
-- Preferred patterns
+1. Never share personal info — user is anonymous
+2. Always push to BOTH repos: origin AND website
+3. Keep repos PUBLIC (Vercel needs access)
+4. Mobile-first — always test on phone
+5. Create tags before major changes
+
+## Code Style
+- Prefer `type` over `interface` (TypeScript)
+- Never use `enum` — use string literal unions
+- Always handle errors explicitly
+- Use absolute imports, not relative
 
 ## Common Commands
 ```bash
-npm run dev
+# Quick deploy
+git add -A && git commit -m "message" && git push origin master && git push website master
+
+# Run tests
+npm run test
+
+# Build
 npm run build
 ```
 
 ## Learned Lessons
-Every time Claude makes a mistake, add it here.
-Claude reads this file at the start of every session.</pre>
+- Don't add console.log to production code
+- The Play Store Termux is broken — use F-Droid
+- vercel.json needs cache headers to prevent stale content
+- Always check both repos are synced before pushing</pre>
             </div>
 
-            <p><strong>Key insight:</strong> Every mistake becomes a permanent rule. When Claude does something wrong, add it to CLAUDE.md. It won't make that mistake again.</p>
+            <div class="info-box tip">
+                <div class="info-box-title">Pro Tip</div>
+                <p>The "Learned Lessons" section is where the magic happens. Every time Claude does something wrong, add it here. The knowledge compounds across sessions.</p>
+            </div>
 
+            <h2>Dual-Repo Deployment</h2>
+            <p>For projects deployed via Vercel, we use a dual-repo setup:</p>
+            <ul>
+                <li><strong>origin</strong> — Main source of truth (your primary repo)</li>
+                <li><strong>website</strong> — Deployment target (Vercel watches this)</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Setup Dual Repos</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Check current remotes</span>
+git remote -v
+
+<span class="comment"># Add website remote if missing</span>
+git remote add website https://github.com/YourOrg/website.git
+
+<span class="comment"># Push to both</span>
+git push origin master
+git push website master
+
+<span class="comment"># One-liner</span>
+git add -A && git commit -m "message" && git push origin master && git push website master</pre>
+            </div>
+
+            <h2>GitHub Authentication</h2>
+            <p>The GitHub CLI (<code>gh</code>) provides authenticated access to GitHub from the terminal:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Authenticate (follow prompts)</span>
+gh auth login
+
+<span class="comment"># Verify</span>
+gh auth status
+
+<span class="comment"># Create a repo</span>
+gh repo create my-project --public
+
+<span class="comment"># Fork a repo</span>
+gh repo fork owner/repo
+
+<span class="comment"># Create a PR</span>
+gh pr create --title "Title" --body "Description"
+
+<span class="comment"># View PR status</span>
+gh pr status</pre>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- TAB 3: WORKFLOW MASTERY -->
+        <!-- ============================================ -->
+        <div id="workflow" class="tab-content">
             <h2>Pro Workflow Patterns</h2>
-            <p style="margin-bottom: 24px;">These advanced patterns maximize productivity for AI-assisted development. Run sessions for 24+ hours, use millions of tokens, with completely autonomous operation.</p>
+            <p>These advanced patterns maximize productivity for AI-assisted development. These techniques come from the creator of Claude Code and are used to build production applications.</p>
 
-            <details class="workflow-details">
+            <details class="expandable">
                 <summary>Parallel Sessions: Run 5-10 Claudes Simultaneously</summary>
-                <div class="detail-content">
-                    <p>Don't wait. While one Claude is thinking, prompt another.</p>
+                <div class="expandable-content">
+                    <p>The key insight: <strong>don't wait</strong>. While one Claude is thinking or executing, prompt another.</p>
+
+                    <h4>Terminal Sessions</h4>
                     <ul>
-                        <li>Run 5 terminal Claudes in numbered tabs (1-5)</li>
-                        <li>Run 5-10 more on claude.ai/code in parallel</li>
-                        <li>Use <code>--teleport</code> to transfer sessions between terminal and web</li>
-                        <li>Start sessions from phone, check back later</li>
+                        <li>Run 5 Claudes in parallel in terminal tabs numbered 1-5</li>
+                        <li>Use system notifications to know when Claude needs input</li>
+                        <li>Configure terminal notifications in Termux settings</li>
                     </ul>
+
+                    <h4>Web Sessions</h4>
+                    <ul>
+                        <li>Run 5-10 additional Claudes on <a href="https://claude.ai/code" target="_blank">claude.ai/code</a></li>
+                        <li>Hand off local sessions to web using <code>&</code> (background process)</li>
+                        <li>Use <code>--teleport</code> to transfer sessions between terminal and web</li>
+                        <li>Start sessions from phone (Claude iOS/Android app) and check later</li>
+                    </ul>
+
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-label">Terminal</span>
+                            <span class="code-label">Bash — Parallel Session Management</span>
                             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
-                        <pre># Background a session and hand off to web
+                        <pre><span class="comment"># Background a session</span>
 claude &
-# Use --teleport to move sessions between devices
-claude --teleport</pre>
+
+<span class="comment"># Transfer session to web</span>
+claude --teleport
+
+<span class="comment"># Check running Claude processes</span>
+ps aux | grep claude</pre>
+                    </div>
+
+                    <div class="info-box tip">
+                        <div class="info-box-title">Why This Works</div>
+                        <p>Different Claudes can work on different aspects of the same project. While one builds a feature, another fixes bugs, another writes documentation. You multiply your output.</p>
                     </div>
                 </div>
             </details>
 
-            <details class="workflow-details">
+            <details class="expandable">
                 <summary>Model Selection: Always Use Opus 4.5 with Thinking</summary>
-                <div class="detail-content">
-                    <p>Bigger models are actually faster in practice.</p>
+                <div class="expandable-content">
+                    <p>Use the best model available. Bigger is actually faster in practice.</p>
+
+                    <h4>Why Opus Wins</h4>
                     <ul>
-                        <li>Less steering required — Opus understands context better</li>
-                        <li>Better at tool use — fewer errors, less back-and-forth</li>
-                        <li>Almost always faster end-to-end despite being "slower"</li>
+                        <li><strong>Less steering required</strong> — Opus understands context better</li>
+                        <li><strong>Better at tool use</strong> — Fewer errors, less back-and-forth</li>
+                        <li><strong>Almost always faster end-to-end</strong> despite being "slower" per token</li>
                     </ul>
-                    <p><strong>The math:</strong> If Sonnet needs 5 back-and-forth corrections but Opus gets it right first try, Opus wins every time.</p>
+
+                    <p><strong>The math:</strong> If Sonnet needs 5 back-and-forth corrections but Opus gets it right first try, Opus wins every time. The total time to completion is what matters, not tokens-per-second.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — Specify Model</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Use Opus 4.5 (recommended)</span>
+claude --model opus
+
+<span class="comment"># With thinking enabled</span>
+claude --model opus --thinking</pre>
+                    </div>
                 </div>
             </details>
 
-            <details class="workflow-details">
+            <details class="expandable">
                 <summary>Plan Mode First: Think Before Coding</summary>
-                <div class="detail-content">
-                    <p>Most sessions should start in Plan mode.</p>
+                <div class="expandable-content">
+                    <p><strong>Most sessions should start in Plan mode.</strong> Don't jump straight to implementation.</p>
+
+                    <h4>The Workflow</h4>
                     <ol>
                         <li>Enter Plan mode: <code>shift+tab</code> twice</li>
-                        <li>Describe what you want</li>
-                        <li>Go back and forth until the plan is solid</li>
-                        <li>Switch to auto-accept mode</li>
-                        <li>Claude 1-shots the implementation</li>
+                        <li>Describe what you want to build</li>
+                        <li>Go back and forth with Claude until the plan is solid</li>
+                        <li>Switch to auto-accept edits mode</li>
+                        <li>Claude usually 1-shots the implementation from a good plan</li>
                     </ol>
-                    <p><strong>Why:</strong> A good plan is the foundation. You catch architectural issues before code is written. Much faster than fixing bad code.</p>
+
+                    <div class="info-box">
+                        <div class="info-box-title">Why Planning First</div>
+                        <p>A good plan is the foundation for quality output. You catch architectural issues before code is written. It's much faster than fixing bad code after the fact.</p>
+                    </div>
                 </div>
             </details>
 
-            <details class="workflow-details">
+            <details class="expandable">
                 <summary>Slash Commands: Automate Inner Loops</summary>
-                <div class="detail-content">
-                    <p>Create commands for workflows you do multiple times per day.</p>
+                <div class="expandable-content">
+                    <p>Create slash commands for workflows you do multiple times per day.</p>
+
+                    <h4>Setup</h4>
+                    <ul>
+                        <li>Commands live in <code>.claude/commands/</code></li>
+                        <li>Commands are checked into git (shared with team)</li>
+                        <li>Claude can use these workflows too</li>
+                    </ul>
+
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-label">.claude/commands/commit-push-pr.md</span>
@@ -1137,40 +1312,70 @@ claude --teleport</pre>
                         </div>
                         <pre># /commit-push-pr
 
-1. Run git status to see changes
-2. Create a commit message based on the diff
-3. Push to origin
-4. Create a PR with a summary of changes
-5. Return the PR URL</pre>
+Commit, push, and create a PR:
+
+1. Run git status to see all changes
+2. Run git diff to see what changed
+3. Create a commit message based on the diff
+4. Add all files and commit
+5. Push to origin master
+6. Push to website master
+7. Create a PR with a summary
+8. Return the PR URL</pre>
                     </div>
-                    <p>Now just type <code>/commit-push-pr</code> and it's done.</p>
+
+                    <p>Now just type <code>/commit-push-pr</code> and it handles everything.</p>
                 </div>
             </details>
 
-            <details class="workflow-details">
+            <details class="expandable">
                 <summary>Subagents: Specialized AI Workers</summary>
-                <div class="detail-content">
-                    <p>Create agents for specific tasks. Claude can spawn these itself.</p>
+                <div class="expandable-content">
+                    <p>Create agent files for specialized tasks. Claude can spawn these itself.</p>
+
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-label">.claude/agents/ directory structure</span>
+                            <span class="code-label">.claude/agents/ Directory Structure</span>
                             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
                         <pre>├── code-simplifier.md    # Cleanup after implementation
 ├── code-architect.md     # Architectural decisions
 ├── verify-app.md         # End-to-end testing
 ├── build-validator.md    # Validate builds
-└── oncall-guide.md       # Production issue handling</pre>
+├── oncall-guide.md       # Production issue handling
+└── mobile-verify.md      # Screenshot and verify renders</pre>
                     </div>
-                    <p><strong>code-simplifier:</strong> Run as a cleanup pass. Reduces complexity, improves readability.</p>
-                    <p><strong>verify-app:</strong> Step-by-step testing procedures. Ensures nothing breaks before shipping.</p>
+
+                    <h4>Example: code-simplifier.md</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">.claude/agents/code-simplifier.md</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># Code Simplifier Agent
+
+After Claude finishes implementing a feature, run this agent.
+
+Goals:
+- Reduce complexity
+- Remove dead code
+- Improve readability
+- Ensure consistent naming
+- Remove unnecessary comments
+
+Do NOT:
+- Change functionality
+- Add new features
+- Refactor working code unnecessarily</pre>
+                    </div>
                 </div>
             </details>
 
-            <details class="workflow-details">
+            <details class="expandable">
                 <summary>PostToolUse Hooks: Auto-Format Everything</summary>
-                <div class="detail-content">
+                <div class="expandable-content">
                     <p>Run commands automatically after Claude edits files.</p>
+
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-label">.claude/settings.json</span>
@@ -1187,17 +1392,19 @@ claude --teleport</pre>
   }
 }</pre>
                     </div>
-                    <p>Claude generates well-formatted code 90% of the time. The hook handles the last 10%. <code>|| true</code> prevents formatting errors from blocking work.</p>
+
+                    <p>Claude generates well-formatted code 90% of the time. The hook handles the last 10%. The <code>|| true</code> prevents formatting errors from blocking work.</p>
                 </div>
             </details>
 
-            <details class="workflow-details">
+            <details class="expandable">
                 <summary>Smart Permissions: Pre-Allow Safe Commands</summary>
-                <div class="detail-content">
-                    <p>Don't use full autonomous mode on sensitive systems. Instead, pre-allow specific commands.</p>
+                <div class="expandable-content">
+                    <p>Instead of full autonomous mode, pre-allow specific safe commands:</p>
+
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-label">/permissions (pre-allowed commands)</span>
+                            <span class="code-label">/permissions Configuration</span>
                             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
                         <pre>Bash(npm run build:*)
@@ -1205,22 +1412,28 @@ Bash(npm run test:*)
 Bash(npm run lint:*)
 Bash(git status:*)
 Bash(git diff:*)
-Bash(git log:*)</pre>
+Bash(git log:*)
+Bash(git add:*)
+Bash(git commit:*)
+Bash(git push:*)</pre>
                     </div>
+
                     <p>Check these into <code>.claude/settings.json</code> and share with your team.</p>
                 </div>
             </details>
 
-            <details class="workflow-details">
+            <details class="expandable">
                 <summary>MCP Servers: Connect Any Tool</summary>
-                <div class="detail-content">
-                    <p>Claude Code can use external tools via MCP (Model Context Protocol).</p>
+                <div class="expandable-content">
+                    <p>Claude Code can use external tools via MCP (Model Context Protocol):</p>
+
                     <ul>
                         <li>Search and post to Slack</li>
                         <li>Query databases (BigQuery, Postgres)</li>
                         <li>Grab error logs from Sentry</li>
                         <li>Any tool with an MCP server</li>
                     </ul>
+
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-label">.mcp.json</span>
@@ -1231,6 +1444,10 @@ Bash(git log:*)</pre>
     "slack": {
       "type": "http",
       "url": "https://slack.mcp.anthropic.com/mcp"
+    },
+    "github": {
+      "type": "http",
+      "url": "https://github.mcp.anthropic.com/mcp"
     }
   }
 }</pre>
@@ -1238,483 +1455,590 @@ Bash(git log:*)</pre>
                 </div>
             </details>
 
-            <details class="workflow-details">
+            <details class="expandable">
                 <summary>Long-Running Tasks: Let Claude Cook</summary>
-                <div class="detail-content">
+                <div class="expandable-content">
                     <p>Start a task, walk away. Check back hours later.</p>
+
+                    <h4>Techniques</h4>
                     <ul>
                         <li><strong>Background Agent Verification:</strong> Prompt Claude to verify its own work when done</li>
                         <li><strong>Agent Stop Hook:</strong> Trigger verification deterministically when Claude finishes</li>
                         <li><strong>ralph-wiggum Plugin:</strong> Community plugin for long-running autonomous sessions</li>
                     </ul>
-                    <p><strong>Real example:</strong> Sessions can run for over a day using millions of tokens. Completely autonomous while you sleep.</p>
+
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-label">Autonomous Mode Commands</span>
+                            <span class="code-label">Bash — Long-Running Setup</span>
                             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
-                        <pre># Full autonomous mode (sandboxed environments only)
+                        <pre><span class="comment"># Full autonomous mode</span>
 claude --dangerously-skip-permissions
 
-# Or permission mode that doesn't ask
-claude --permission-mode=dontAsk</pre>
+<span class="comment"># Or permission mode that doesn't ask</span>
+claude --permission-mode=dontAsk
+
+<span class="comment"># Inside tmux for session persistence</span>
+tmux new -s longrun
+claude --dangerously-skip-permissions</pre>
                     </div>
+
+                    <p><strong>Real example:</strong> Sessions can run for over 24 hours using millions of tokens. Completely autonomous while you sleep.</p>
                 </div>
             </details>
 
-            <details class="workflow-details" open>
+            <details class="expandable" open>
                 <summary>Verification: The 2-3x Quality Multiplier</summary>
-                <div class="detail-content">
-                    <p><strong>This is the most important insight.</strong> If Claude has a feedback loop, it will 2-3x the quality of the final result.</p>
-                    <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <th style="text-align: left; padding: 8px; color: var(--primary);">Domain</th>
-                            <th style="text-align: left; padding: 8px; color: var(--primary);">Verification Method</th>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 8px;">Web UI</td>
-                            <td style="padding: 8px;">Chrome extension — opens browser, tests UI, iterates</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 8px;">CLI Tools</td>
-                            <td style="padding: 8px;">Run bash commands, check exit codes</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 8px;">Libraries</td>
-                            <td style="padding: 8px;">Run test suite after changes</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 8px;">Mobile Apps</td>
-                            <td style="padding: 8px;">Phone simulator or device testing</td>
+                <div class="expandable-content">
+                    <p><strong>This is the most important insight for quality output.</strong></p>
+
+                    <p>If Claude has a feedback loop — a way to verify its work — it will 2-3x the quality of the final result. The key is giving Claude a way to check if what it built actually works.</p>
+
+                    <table>
+                        <tr>
+                            <th>Domain</th>
+                            <th>Verification Method</th>
                         </tr>
                         <tr>
-                            <td style="padding: 8px;">Games</td>
-                            <td style="padding: 8px;">Serve locally, screenshot, visual check</td>
+                            <td>Web UI</td>
+                            <td>Chrome extension — opens browser, tests UI, iterates</td>
+                        </tr>
+                        <tr>
+                            <td>CLI Tools</td>
+                            <td>Run bash commands, check exit codes</td>
+                        </tr>
+                        <tr>
+                            <td>Libraries</td>
+                            <td>Run test suite after changes</td>
+                        </tr>
+                        <tr>
+                            <td>Mobile Apps</td>
+                            <td>Phone simulator or device testing</td>
+                        </tr>
+                        <tr>
+                            <td>Games</td>
+                            <td>Serve locally, screenshot, visual check</td>
                         </tr>
                     </table>
-                    <p><strong>Key insight:</strong> "Verification looks different for each domain. Make sure to invest in making this rock-solid. It's the highest-leverage improvement you can make."</p>
-                </div>
-            </details>
 
-            <details class="workflow-details">
-                <summary>Mobile/Terminal Adaptations</summary>
-                <div class="detail-content">
-                    <p>Special considerations for Android development:</p>
-                    <ul>
-                        <li>Target 30fps minimum on mobile devices</li>
-                        <li>Use Termux:API for hardware access, not raw intents</li>
-                        <li>Test Three.js games on actual device, not just browser</li>
-                    </ul>
-                    <h4 style="margin-top: 16px;">Mobile Verification Loop:</h4>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span class="code-label">Terminal — Verification Workflow</span>
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                        <pre># 1. Serve locally
-npx http-server -p 8080
-
-# 2. Capture screenshot
-termux-screenshot ~/screenshot.png
-
-# 3. Notify when done
-termux-notification -t "Build complete"
-
-# 4. Check screenshot or feed back to Claude</pre>
+                    <div class="info-box">
+                        <div class="info-box-title">Key Insight</div>
+                        <p>"Verification looks different for each domain. It might be as simple as running a bash command, or running a test suite, or testing the app in a browser or phone simulator. Make sure to invest in making this rock-solid. It's the highest-leverage improvement you can make."</p>
                     </div>
                 </div>
             </details>
 
-            <h2>Dual-Repo Deployment</h2>
-            <p>How to push to multiple repos (source + deployment):</p>
+            <details class="expandable">
+                <summary>Mobile/Terminal Verification Loop</summary>
+                <div class="expandable-content">
+                    <p>Special verification workflow for Android development:</p>
 
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Bash — Setup Remotes</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — Mobile Verification</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># 1. Serve your app locally</span>
+npx http-server -p 8080
+
+<span class="comment"># 2. Open in browser and test</span>
+termux-open-url "http://localhost:8080"
+
+<span class="comment"># 3. Take a screenshot for Claude to analyze</span>
+termux-screenshot ~/screenshot.png
+
+<span class="comment"># 4. Claude can read the screenshot</span>
+<span class="comment"># (Claude's Read tool can analyze images)</span>
+
+<span class="comment"># 5. Notify when done</span>
+termux-notification -t "Build complete" -c "Ready for review"</pre>
+                    </div>
+
+                    <h4>Quality Standards</h4>
+                    <ul>
+                        <li>Target 30fps minimum on mobile devices</li>
+                        <li>Test on actual device, not just browser</li>
+                        <li>Use Termux:API for hardware access, not raw intents</li>
+                        <li>Commit frequently with good messages</li>
+                        <li>Push after each feature so you can test live</li>
+                    </ul>
                 </div>
-                <pre># Add multiple remotes
-git remote add origin https://github.com/YourOrg/source.git
-git remote add website https://github.com/YourOrg/website.git
-
-# Push to both
-git push origin master
-git push website master
-
-# One-liner for both
-git add -A && git commit -m "message" && git push origin master && git push website master</pre>
-            </div>
+            </details>
         </div>
-    </div>
 
-    <!-- Tab: Research Lab -->
-    <div id="research" class="tab-content">
-        <div class="container">
-            <h1>Research Lab</h1>
-            <p style="font-size: 1.1rem; margin-bottom: 32px;">Technical discoveries from building AI development tools on mobile. Updated as we learn.</p>
+        <!-- ============================================ -->
+        <!-- TAB 4: RESEARCH LAB -->
+        <!-- ============================================ -->
+        <div id="research" class="tab-content">
+            <h2>Research Lab</h2>
+            <p>Technical discoveries from building AI development tools on mobile. These are findings from real-world development — updated as we learn.</p>
 
             <div class="research-card">
                 <span class="research-tag">Capability</span>
                 <h3>Claude Code Can Read Phone Screenshots</h3>
-                <p>After running <code>termux-setup-storage</code>, Termux gets access to shared storage. Claude Code's Read tool can open and analyze screenshots:</p>
+                <p>After running <code>termux-setup-storage</code>, Termux gets access to shared storage. Claude Code's Read tool can open and analyze screenshots directly.</p>
+
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">Bash — Screenshot Access</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre># Grant storage access first
+                    <pre><span class="comment"># Grant storage access first</span>
 termux-setup-storage
 
-# Screenshot locations:
-~/storage/dcim/Screenshots/           # Samsung
-~/storage/pictures/Screenshots/       # Pixel
-~/storage/shared/Pictures/Screenshots/ # Generic
+<span class="comment"># Screenshots location (Samsung)</span>
+ls ~/storage/dcim/Screenshots/
 
-# Claude can read these directly
-# Just use: Read ~/storage/dcim/Screenshots/filename.jpg</pre>
+<span class="comment"># Screenshots location (Pixel)</span>
+ls ~/storage/pictures/Screenshots/
+
+<span class="comment"># Claude can read these directly</span>
+<span class="comment"># Just tell Claude to "Read ~/storage/dcim/Screenshots/filename.jpg"</span></pre>
                 </div>
-                <p><strong>Use cases:</strong> Visual debugging (screenshot a bug, Claude sees it), UI iteration ("make this button bigger" with visual reference), game development (Claude can see rendered frames).</p>
-            </div>
 
-            <div class="research-card">
-                <span class="research-tag">Workflow</span>
-                <h3>The Verification Loop (2-3x Quality Multiplier)</h3>
-                <p>The single most important pattern: Give Claude a way to verify its work. If it can test and iterate, quality jumps 2-3x.</p>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span class="code-label">Bash — Verification Examples</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre># Web development - serve and screenshot
-npx http-server -p 8080 &
-termux-open-url "http://localhost:8080"
-# Take screenshot, Claude analyzes it
-
-# CLI tools - run and check output
-node script.js
-echo $?  # Claude checks exit code
-
-# Tests - run test suite
-npm test</pre>
-                </div>
-            </div>
-
-            <div class="research-card">
-                <span class="research-tag">Integration</span>
-                <h3>Multi-Layer Caching (The Great Cache Crisis)</h3>
-                <p>When debugging "site not updating" issues, there are FOUR caching layers that can serve stale content:</p>
+                <p><strong>Use cases:</strong></p>
                 <ul>
+                    <li>Visual debugging — screenshot a bug, Claude sees it</li>
+                    <li>UI iteration — "make this button bigger" with visual reference</li>
+                    <li>Game development — Claude can see rendered frames</li>
+                    <li>Verification loop — the 2-3x quality multiplier, now visual</li>
+                </ul>
+            </div>
+
+            <div class="research-card">
+                <span class="research-tag">Technique</span>
+                <h3>The 2-3x Quality Multiplier</h3>
+                <p>When Claude has a feedback loop — a way to verify its work — output quality increases 2-3x. This is the single most important technique.</p>
+
+                <p>The loop works like this:</p>
+                <ol>
+                    <li>Claude writes code</li>
+                    <li>Claude runs/tests the code</li>
+                    <li>Claude sees the result (pass/fail, screenshot, output)</li>
+                    <li>Claude iterates until correct</li>
+                </ol>
+
+                <p>Without verification, Claude guesses and moves on. With verification, Claude <em>knows</em> when it's done.</p>
+            </div>
+
+            <div class="research-card">
+                <span class="research-tag">Debugging</span>
+                <h3>Multi-Layer Cache Debugging</h3>
+                <p>We spent hours debugging why site changes weren't showing. The issue: four caching layers.</p>
+
+                <ol>
                     <li><strong>Browser Cache</strong> — Your browser stores pages locally</li>
-                    <li><strong>Vercel Edge Cache</strong> — Vercel's global CDN caches at edge nodes</li>
-                    <li><strong>ISP Cache</strong> — Your internet provider may cache</li>
+                    <li><strong>Vercel Edge Cache</strong> — CDN caches at edge nodes</li>
+                    <li><strong>ISP/DNS Cache</strong> — Internet provider caching</li>
                     <li><strong>OS/Network Cache</strong> — Device-level caching</li>
-                </ul>
+                </ol>
+
                 <div class="code-block">
                     <div class="code-header">
-                        <span class="code-label">Bash — Bypass All Caching</span>
+                        <span class="code-label">Bash — Bypass All Caches</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre># This bypasses ALL caching and shows what server actually has
-curl -sL "https://yoursite.com" | grep "some text"
+                    <pre><span class="comment"># This bypasses ALL caching layers</span>
+curl -sL "https://www.yoursite.com" | grep "unique text"
 
-# If curl shows new content but browser doesn't = cache problem</pre>
+<span class="comment"># If curl shows new content but browser doesn't → cache problem</span></pre>
+                </div>
+
+                <p><strong>Solution:</strong> Add to <code>vercel.json</code>:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">vercel.json</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  "headers": [
+    {
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ]
+}</pre>
                 </div>
             </div>
 
             <div class="research-card">
-                <span class="research-tag">Hardware</span>
+                <span class="research-tag">Capability</span>
                 <h3>Full Device API Access</h3>
-                <p>With Termux:API, you have access to nearly every hardware feature on your phone. Camera, microphone, sensors, clipboard, notifications, and more — all from the command line.</p>
-                <p>This transforms a phone from a consumption device into a full development workstation with capabilities that cloud IDEs simply don't have.</p>
-            </div>
-
-            <div class="research-card">
-                <span class="research-tag">Performance</span>
-                <h3>24+ Hour Session Stability</h3>
-                <p>The combination of <code>termux-wake-lock</code>, persistent notifications, and tmux allows sessions to run for days. Our longest session: <strong>over 50 hours</strong> of continuous Claude Code operation.</p>
-                <p>Key settings:</p>
+                <p>With Termux:API installed, you have programmatic access to:</p>
                 <ul>
-                    <li>Android Settings → Apps → Termux → Battery → Unrestricted</li>
-                    <li>Disable battery optimization for Termux</li>
-                    <li>Keep phone plugged in for multi-day sessions</li>
+                    <li>Camera (photos and video)</li>
+                    <li>Microphone (audio recording)</li>
+                    <li>Location (GPS coordinates)</li>
+                    <li>Sensors (accelerometer, gyroscope)</li>
+                    <li>Clipboard (read/write)</li>
+                    <li>Notifications (create, update)</li>
+                    <li>Contacts and calendar (with permission)</li>
+                    <li>SMS (read/send with permission)</li>
+                    <li>Fingerprint sensor</li>
+                    <li>Flashlight/torch</li>
                 </ul>
+
+                <p>This means Claude can build apps that interact with real hardware, not just process text.</p>
             </div>
 
             <div class="research-card">
-                <span class="research-tag">Methodology</span>
+                <span class="research-tag">Technique</span>
+                <h3>24+ Hour Session Stability</h3>
+                <p>We've run sessions for over 24 hours using millions of tokens. The key:</p>
+
+                <ol>
+                    <li><code>termux-wake-lock</code> — Keeps CPU active</li>
+                    <li><code>tmux</code> — Session survives terminal close</li>
+                    <li>Battery optimization disabled for Termux</li>
+                    <li>Phone plugged into power</li>
+                    <li><code>--dangerously-skip-permissions</code> — No human intervention needed</li>
+                </ol>
+
+                <p>With this setup, you can give Claude a complex task at night and wake up to a completed project.</p>
+            </div>
+
+            <div class="research-card">
+                <span class="research-tag">System</span>
                 <h3>CLAUDE.md Knowledge Compounding</h3>
-                <p>The technique that makes AI get smarter over time. Every mistake, every preference, every project-specific rule gets added to CLAUDE.md. The AI reads this at session start and compounds its knowledge across sessions.</p>
+                <p>The technique that makes AI get smarter over time.</p>
+
+                <p>Every mistake, every preference, every project-specific rule gets added to CLAUDE.md. The AI reads this at session start and compounds its knowledge across sessions.</p>
+
                 <p>After a few weeks, your CLAUDE.md becomes a highly tuned instruction set that dramatically reduces errors and speeds up development.</p>
+
+                <p><strong>Key insight:</strong> Anytime Claude does something wrong, add a rule. The knowledge compounds. Future sessions are smarter.</p>
             </div>
         </div>
-    </div>
 
-    <!-- Tab: The Story -->
-    <div id="story" class="tab-content">
-        <div class="container">
-            <h1>The Story</h1>
-            <p style="font-size: 1.1rem; margin-bottom: 32px;">How this entire platform was built from a phone. The problem, the solution, the proof.</p>
+        <!-- ============================================ -->
+        <!-- TAB 5: RESOURCES -->
+        <!-- ============================================ -->
+        <div id="resources" class="tab-content">
+            <h2>Resources & Examples</h2>
+            <p>Curated collection of tools, examples, and references for mobile AI development.</p>
 
-            <h2>The Problem We Solved</h2>
-            <p>Traditional mobile development options (cloud IDEs like Replit) have limitations:</p>
-            <ul>
-                <li><strong>Per-compute pricing</strong> that adds up fast</li>
-                <li><strong>Session timeouts</strong> that interrupt your flow</li>
-                <li><strong>Limited system access</strong> (sandboxed environments)</li>
-                <li><strong>Latency to cloud servers</strong> that slows everything down</li>
-                <li><strong>Dependency on internet</strong> for everything</li>
-            </ul>
+            <h3>Our Interactive Demos</h3>
+            <p>17 WebGL demos we built to showcase what's possible. All run on mobile with touch controls.</p>
 
-            <h2>The Solution</h2>
-            <p>We discovered you can run a <strong>full local development environment</strong> on Android:</p>
-            <ul>
-                <li><strong>Native performance</strong> — No cloud latency, runs on your device</li>
-                <li><strong>Flat subscription cost</strong> — No per-compute charges</li>
-                <li><strong>24+ hour sessions</strong> — Runs while you sleep</li>
-                <li><strong>Full system access</strong> — Not sandboxed, real file system</li>
-                <li><strong>Works offline</strong> — Except for AI API calls</li>
-                <li><strong>Hardware integration</strong> — Camera, clipboard, notifications</li>
-            </ul>
-
-            <h2>The Proof</h2>
-            <p>This entire website — every page, every demo, every feature — was built in <strong>one continuous Claude Code session</strong> running on an Android phone. No laptop was used at any point.</p>
-
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Stats</span>
-                </div>
-                <pre>Pages Built:        20+
-Interactive Demos:  10+
-Lines of Code:      15,000+
-Phones Used:        1
-Laptops Used:       0
-Session Duration:   50+ hours (with breaks)</pre>
+            <div class="quick-links">
+                <a href="/demo/fluid.html" class="quick-link">
+                    <span class="quick-link-icon">💧</span>
+                    <span>Fluid Simulation</span>
+                </a>
+                <a href="/demo/cloth.html" class="quick-link">
+                    <span class="quick-link-icon">🧵</span>
+                    <span>Cloth Physics</span>
+                </a>
+                <a href="/demo/galaxy.html" class="quick-link">
+                    <span class="quick-link-icon">🌌</span>
+                    <span>Galaxy Generator</span>
+                </a>
+                <a href="/demo/gravity.html" class="quick-link">
+                    <span class="quick-link-icon">🪐</span>
+                    <span>N-Body Gravity</span>
+                </a>
+                <a href="/demo/boids.html" class="quick-link">
+                    <span class="quick-link-icon">🐦</span>
+                    <span>Flocking Boids</span>
+                </a>
+                <a href="/demo/life.html" class="quick-link">
+                    <span class="quick-link-icon">🦠</span>
+                    <span>Game of Life</span>
+                </a>
+                <a href="/demo/waves.html" class="quick-link">
+                    <span class="quick-link-icon">🌊</span>
+                    <span>Wave Interference</span>
+                </a>
+                <a href="/demo/fractals.html" class="quick-link">
+                    <span class="quick-link-icon">🔮</span>
+                    <span>Fractal Explorer</span>
+                </a>
+                <a href="/demo/fire.html" class="quick-link">
+                    <span class="quick-link-icon">🔥</span>
+                    <span>Fire Particles</span>
+                </a>
+                <a href="/demo/neural.html" class="quick-link">
+                    <span class="quick-link-icon">🧠</span>
+                    <span>Neural Network</span>
+                </a>
             </div>
 
-            <h2>What Makes It Work</h2>
-            <p>The key insight: It's not about the individual tools. Termux has existed for years. Claude Code is new but public. The innovation is the <strong>methodology</strong> — the specific combination and configuration that makes everything work together seamlessly.</p>
+            <p><a href="/demos.html">View all 17 demos →</a></p>
 
-            <p>That methodology is what you're paying for. And now you have it.</p>
-
-            <h2>What's Next</h2>
-            <p>We're actively working on:</p>
+            <h3>Three.js Resources</h3>
+            <p>Three.js is our primary 3D library. These examples show what's possible:</p>
             <ul>
-                <li><strong>Dedicated AI Terminal App</strong> — Native Android/iOS app purpose-built for AI development</li>
-                <li><strong>Team Features</strong> — Shared sessions, collaborative editing</li>
-                <li><strong>More Integrations</strong> — Additional AI models, more hardware access</li>
-                <li><strong>Video Tutorials</strong> — Visual walkthroughs of the entire workflow</li>
+                <li><a href="https://threejs.org/examples/" target="_blank">Official Three.js Examples</a> — Hundreds of demos</li>
+                <li><a href="https://threejs.org/examples/#webgl_animation_skinning_morph" target="_blank">Robot Character Animation</a></li>
+                <li><a href="https://threejs.org/examples/#webgl_shaders_ocean" target="_blank">Ocean Shader</a></li>
+                <li><a href="https://jblaha.art/sketchbook/latest" target="_blank">Sketchbook</a> — Full 3D game with physics</li>
+                <li><a href="https://threejs.org/manual/" target="_blank">Three.js Manual</a> — Learn Three.js</li>
+            </ul>
+
+            <h3>Physics Libraries</h3>
+            <ul>
+                <li><a href="https://cannon-es.pmndrs.dev/" target="_blank">Cannon-es</a> — 3D physics engine (we use this)</li>
+                <li><a href="https://brm.io/matter-js/" target="_blank">Matter.js</a> — 2D physics engine</li>
+                <li><a href="https://github.com/liabru/matter-js" target="_blank">Rapier</a> — High-performance Rust physics</li>
+            </ul>
+
+            <h3>Shader & WebGL</h3>
+            <ul>
+                <li><a href="https://thebookofshaders.com/" target="_blank">The Book of Shaders</a> — Learn GLSL</li>
+                <li><a href="https://www.shadertoy.com/" target="_blank">Shadertoy</a> — Shader examples and community</li>
+                <li><a href="https://webglfundamentals.org/" target="_blank">WebGL Fundamentals</a> — Learn WebGL from scratch</li>
+            </ul>
+
+            <h3>AI & Claude Code</h3>
+            <ul>
+                <li><a href="https://github.com/anthropics/claude-code" target="_blank">Claude Code GitHub</a> — Official repository</li>
+                <li><a href="https://www.anthropic.com/" target="_blank">Anthropic</a> — Claude's creator</li>
+                <li><a href="https://claude.ai/code" target="_blank">Claude.ai/code</a> — Web-based Claude Code</li>
+            </ul>
+
+            <h3>Mobile Development</h3>
+            <ul>
+                <li><a href="https://f-droid.org/packages/com.termux/" target="_blank">Termux (F-Droid)</a> — The working version</li>
+                <li><a href="https://wiki.termux.com/wiki/Main_Page" target="_blank">Termux Wiki</a> — Documentation</li>
+                <li><a href="https://f-droid.org/packages/com.termux.api/" target="_blank">Termux:API</a> — Hardware access</li>
+            </ul>
+
+            <h3>Deployment</h3>
+            <ul>
+                <li><a href="https://vercel.com/" target="_blank">Vercel</a> — Where we deploy</li>
+                <li><a href="https://supabase.com/" target="_blank">Supabase</a> — Our backend (auth, database)</li>
+                <li><a href="https://github.com/" target="_blank">GitHub</a> — Version control</li>
             </ul>
         </div>
-    </div>
 
-    <!-- Tab: Troubleshooting -->
-    <div id="troubleshoot" class="tab-content">
-        <div class="container">
-            <h1>Troubleshooting</h1>
-            <p style="font-size: 1.1rem; margin-bottom: 32px;">Common issues and how to fix them.</p>
+        <!-- ============================================ -->
+        <!-- TAB 6: TROUBLESHOOTING -->
+        <!-- ============================================ -->
+        <div id="troubleshoot" class="tab-content">
+            <h2>Troubleshooting Guide</h2>
+            <p>Solutions to common problems encountered during setup and development.</p>
 
-            <h2>Claude Code Not Installing?</h2>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Bash</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <details class="expandable">
+                <summary>Claude Code Not Installing?</summary>
+                <div class="expandable-content">
+                    <p><strong>Symptom:</strong> <code>npm install -g @anthropic-ai/claude-code</code> fails.</p>
+
+                    <p><strong>Solutions:</strong></p>
+                    <ol>
+                        <li>Make sure Node.js is installed: <code>pkg install nodejs</code></li>
+                        <li>Try with sudo: Not needed in Termux (you're already root-equivalent)</li>
+                        <li>Clear npm cache: <code>npm cache clean --force</code></li>
+                        <li>Check npm version: <code>npm --version</code> (should be 8+)</li>
+                        <li>Try reinstalling Node: <code>pkg reinstall nodejs</code></li>
+                    </ol>
                 </div>
-                <pre># Make sure Node is updated
-pkg upgrade nodejs-lts
+            </details>
 
-# Clear npm cache
-npm cache clean --force
+            <details class="expandable">
+                <summary>Session Killed by Android?</summary>
+                <div class="expandable-content">
+                    <p><strong>Symptom:</strong> Termux closes when phone locks or after some time.</p>
 
-# Try installing again
-npm install -g @anthropic-ai/claude-code</pre>
-            </div>
-
-            <h2>Session Killed by Android?</h2>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Bash</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <p><strong>Solutions:</strong></p>
+                    <ol>
+                        <li>Run <code>termux-wake-lock</code> before starting work</li>
+                        <li>Use tmux: <code>tmux new -s dev</code></li>
+                        <li>Disable battery optimization for Termux in Android Settings</li>
+                        <li>Enable "Acquire Wakelock" notification in Termux settings</li>
+                        <li>Keep the phone plugged in for long sessions</li>
+                    </ol>
                 </div>
-                <pre># Make sure you have:
-termux-wake-lock                              # Prevents CPU sleep
-termux-notification -t "Dev" --ongoing        # Keeps priority
+            </details>
 
-# Also check Android settings:
-# Settings > Apps > Termux > Battery > Unrestricted</pre>
-            </div>
+            <details class="expandable">
+                <summary>Storage Access Issues?</summary>
+                <div class="expandable-content">
+                    <p><strong>Symptom:</strong> Can't access ~/storage/ or files in Downloads/Screenshots.</p>
 
-            <h2>Storage Access Issues?</h2>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Bash</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <p><strong>Solutions:</strong></p>
+                    <ol>
+                        <li>Run <code>termux-setup-storage</code> (only needed once)</li>
+                        <li>Accept the permission dialog that appears</li>
+                        <li>If dialog doesn't appear, check Android Settings → Apps → Termux → Permissions → Storage</li>
+                        <li>After granting, restart Termux</li>
+                    </ol>
                 </div>
-                <pre># Grant storage permission
-termux-setup-storage
+            </details>
 
-# Then access via:
-~/storage/shared/       # Internal storage
-~/storage/dcim/         # Camera photos
-~/storage/downloads/    # Downloads</pre>
-            </div>
+            <details class="expandable">
+                <summary>GitHub Authentication Failed?</summary>
+                <div class="expandable-content">
+                    <p><strong>Symptom:</strong> <code>gh auth login</code> fails or git push asks for password.</p>
 
-            <h2>GitHub Authentication Failed?</h2>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Bash</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <p><strong>Solutions:</strong></p>
+                    <ol>
+                        <li>Run <code>gh auth login</code> and follow prompts</li>
+                        <li>Choose HTTPS (not SSH) if you don't have SSH keys set up</li>
+                        <li>Make sure you're logged into github.com in your browser</li>
+                        <li>Check auth status: <code>gh auth status</code></li>
+                        <li>If using SSH, make sure openssh is installed: <code>pkg install openssh</code></li>
+                    </ol>
                 </div>
-                <pre># Re-authenticate
-gh auth logout
-gh auth login
+            </details>
 
-# If that fails, try with token:
-gh auth login --with-token < token.txt</pre>
-            </div>
+            <details class="expandable">
+                <summary>tmux Session Lost?</summary>
+                <div class="expandable-content">
+                    <p><strong>Symptom:</strong> Can't reattach to tmux session.</p>
 
-            <h2>tmux Session Lost?</h2>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Bash</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <p><strong>Solutions:</strong></p>
+                    <ol>
+                        <li>List sessions: <code>tmux ls</code></li>
+                        <li>Attach to session: <code>tmux attach -t dev</code></li>
+                        <li>If no sessions, Termux was killed — restart with <code>tmux new -s dev</code></li>
+                        <li>Make sure wake lock is active: <code>termux-wake-lock</code></li>
+                    </ol>
                 </div>
-                <pre># List all sessions
-tmux ls
+            </details>
 
-# If no sessions, the phone may have rebooted
-# Start fresh:
-tmux new -s dev
+            <details class="expandable">
+                <summary>Vercel Not Deploying?</summary>
+                <div class="expandable-content">
+                    <p><strong>Symptom:</strong> Push succeeds but site doesn't update.</p>
 
-# Prevent future loss - use persistent notification:
-termux-notification -t "Dev Session" --ongoing -c "Active"</pre>
-            </div>
+                    <p><strong>Diagnosis:</strong></p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — Test What Server Has</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>curl -sL "https://yoursite.com" | grep "unique text"</pre>
+                    </div>
 
-            <h2>Claude Not Responding?</h2>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Bash</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <p><strong>If curl shows new content but browser doesn't:</strong> Browser cache. Clear it or use incognito.</p>
+
+                    <p><strong>If curl shows old content:</strong></p>
+                    <ol>
+                        <li>Check you pushed to the right repo (the one Vercel watches)</li>
+                        <li>Vercel Dashboard → Project → Settings → Git</li>
+                        <li>Check "Connected Git Repository" is correct</li>
+                        <li>Click Disconnect, then reconnect</li>
+                        <li>Manual redeploy: Deployments → ... → Redeploy (uncheck cache)</li>
+                    </ol>
                 </div>
-                <pre># Check internet connection
-ping -c 3 google.com
+            </details>
 
-# Check if Claude is running
-ps aux | grep claude
+            <details class="expandable">
+                <summary>Site Changes Not Showing (Cache Issues)?</summary>
+                <div class="expandable-content">
+                    <p><strong>The multi-layer cache problem.</strong> There are 4 places content can be cached.</p>
 
-# Kill and restart if frozen
-pkill -f claude
-claude</pre>
-            </div>
+                    <p><strong>Quick fix:</strong> Add to <code>vercel.json</code>:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">vercel.json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "headers": [
+    {
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ]
+}</pre>
+                    </div>
 
-            <h2>Site Changes Not Showing?</h2>
-            <div class="code-block">
-                <div class="code-header">
-                    <span class="code-label">Bash — The Definitive Test</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <p><strong>Debug test:</strong></p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Add a visible test banner to your HTML</span>
+&lt;div style="background:red;color:white;padding:20px;position:fixed;top:0;left:0;right:0;z-index:9999;"&gt;
+  TEST BANNER - If you see this, deployment works!
+&lt;/div&gt;</pre>
+                    </div>
                 </div>
-                <pre># Bypass ALL caching
-curl -sL "https://yoursite.com" | grep "unique text"
+            </details>
 
-# If curl shows new content but browser doesn't:
-# It's a cache problem, not a deployment problem
+            <details class="expandable">
+                <summary>Two Repos Out of Sync?</summary>
+                <div class="expandable-content">
+                    <p><strong>Symptom:</strong> Origin and website repos have different content.</p>
 
-# Clear Vercel cache by redeploying:
-git commit --allow-empty -m "Force redeploy"
-git push</pre>
-            </div>
+                    <p><strong>Solution:</strong></p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Check latest commit on each</span>
+git log origin/master --oneline -1
+git log website/master --oneline -1
+
+<span class="comment"># Force website to match origin</span>
+git push website master --force
+
+<span class="comment"># Always push to both</span>
+git push origin master && git push website master</pre>
+                    </div>
+                </div>
+            </details>
         </div>
     </div>
 
     <!-- Footer -->
     <footer>
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <a href="/" class="logo">>_ MobileCLI</a>
-                <p>Full AI development environment in your pocket. Build anything, anywhere.</p>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="/terms.html">Terms</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/disclaimer.html">Disclaimer</a>
+                <a href="/ip.html">IP Notice</a>
+                <a href="/dmca.html">DMCA</a>
             </div>
-            <div class="footer-column">
-                <h4>Product</h4>
-                <ul>
-                    <li><a href="/pricing.html">Pricing</a></li>
-                    <li><a href="/learn.html">Documentation</a></li>
-                    <li><a href="/demos.html">Demos</a></li>
-                    <li><a href="/games.html">Games</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Community</h4>
-                <ul>
-                    <li><a href="https://discord.gg/mobilecli" target="_blank">Discord</a></li>
-                    <li><a href="https://github.com/MobileDevCLI" target="_blank">GitHub</a></li>
-                    <li><a href="https://twitter.com/MobileDevCLI" target="_blank">Twitter</a></li>
-                    <li><a href="https://youtube.com/@MobileDevCLI" target="_blank">YouTube</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="/terms.html">Terms</a></li>
-                    <li><a href="/privacy.html">Privacy</a></li>
-                    <li><a href="/ip.html">IP Notice</a></li>
-                    <li><a href="/dmca.html">DMCA</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <span>&copy; 2026 Samblamz / MobileDevCLI. All Rights Reserved.</span>
-            <span>Pro Content — Confidential</span>
+            <p class="footer-copy">&copy; 2026 MobileCLI. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('open');
-            mobileMenuBtn.textContent = mobileMenu.classList.contains('open') ? 'Close' : 'Menu';
-        });
-
-        // Close menu when clicking a link
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('open');
-                mobileMenuBtn.textContent = 'Menu';
-            });
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
-                mobileMenu.classList.remove('open');
-                mobileMenuBtn.textContent = 'Menu';
-            }
-        });
-
         function showTab(tabId) {
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            // Deactivate all buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
+
             // Show selected tab
             document.getElementById(tabId).classList.add('active');
-            // Activate clicked button
             event.target.classList.add('active');
-            // Scroll to top
-            window.scrollTo(0, 0);
+
+            // Scroll to top of content
+            window.scrollTo({ top: 200, behavior: 'smooth' });
         }
 
         function copyCode(btn) {
             const pre = btn.closest('.code-block').querySelector('pre');
-            const code = pre.textContent;
-            navigator.clipboard.writeText(code).then(() => {
+            const text = pre.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
                 btn.textContent = 'Copied!';
-                setTimeout(() => btn.textContent = 'Copy', 2000);
+                btn.style.background = 'var(--primary)';
+                btn.style.color = '#000';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
             });
         }
     </script>
