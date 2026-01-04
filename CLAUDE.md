@@ -8,8 +8,25 @@ This is MobileCLI - a brand/website/SaaS that turns Android phones into AI devel
 **GitHub**: github.com/MobileDevCLI
 **Supabase**: mwxlguqukyfberyhtkmg.supabase.co
 
+## The Invention
+
+**Read GENESIS.md** - This project isn't just a website. It's an invention.
+
+We built an autonomous development platform that outperforms Replit:
+- Runs locally on a phone (not cloud)
+- Costs less (subscription vs per-compute)
+- Uses less data (local execution)
+- Runs forever (24+ hour sessions)
+- Full system access (not sandboxed)
+- Smarter (Opus 4.5 with thinking)
+
+This entire website was built in ONE continuous AI conversation on a phone.
+
+---
+
 ## Project Structure
 ```
+├── GENESIS.md            # THE INVENTION - read this first
 ├── setup.sh              # Main installer script
 ├── extras.sh             # Termux:API utilities
 ├── index.html            # Homepage (Three.js + Cannon.js physics hero)
