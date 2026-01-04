@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Magnetic Fields - MobileCLI Demos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(100, 150, 255, 0.2);
+            border-color: rgba(100, 150, 255, 0.3);
+        }
+
+        .info {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            max-width: 280px;
+        }
+
+        .info h3 {
+            color: #6496ff;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(100, 150, 255, 0.2);
+            border-color: rgba(100, 150, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(100, 150, 255, 0.3);
+            border-color: #6496ff;
+            color: #6496ff;
+        }
+
+        .stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #6496ff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 600px) {
+            .info { display: none; }
+            .ui { top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <a href="/demos.html" class="back-btn">← Back to Demos</a>
+        <div class="info">
+            <h3>Magnetic Fields</h3>
+            <p>Drag the magnets to see field lines respond. Tap to add new magnets. Double-tap to flip polarity.</p>
+        </div>
+    </div>
+
+    <div class="stats" id="stats">Magnets: 2</div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="resetMagnets()">Reset</button>
+        <button class="control-btn" onclick="addMagnet(true)">Add N</button>
+        <button class="control-btn" onclick="addMagnet(false)">Add S</button>
+        <button class="control-btn" onclick="toggleParticles()">Particles</button>
+        <button class="control-btn" onclick="toggleDensity()">Density</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Magnet class
+        class Magnet {
+            constructor(x, y, north = true, strength = 500) {
+                this.x = x;
+                this.y = y;
+                this.north = north; // true = north, false = south
+                this.strength = strength;
+                this.radius = 30;
+            }
+
+            // Get field contribution at point
+            getField(px, py) {
+                const dx = px - this.x;
+                const dy = py - this.y;
+                const distSq = dx * dx + dy * dy;
+                const dist = Math.sqrt(distSq);
+
+                if (dist < 1) return { x: 0, y: 0 };
+
+                const strength = this.strength / distSq;
+                const sign = this.north ? 1 : -1;
+
+                return {
+                    x: sign * strength * dx / dist,
+                    y: sign * strength * dy / dist
+                };
+            }
+
+            draw() {
+                // Draw magnet body
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+
+                const gradient = ctx.createRadialGradient(
+                    this.x - 10, this.y - 10, 0,
+                    this.x, this.y, this.radius
+                );
+
+                if (this.north) {
+                    gradient.addColorStop(0, '#ff6666');
+                    gradient.addColorStop(1, '#cc3333');
+                } else {
+                    gradient.addColorStop(0, '#6666ff');
+                    gradient.addColorStop(1, '#3333cc');
+                }
+
+                ctx.fillStyle = gradient;
+                ctx.fill();
+
+                // Draw label
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 20px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.north ? 'N' : 'S', this.x, this.y);
+            }
+        }
+
+        // Particle for field visualization
+        class FieldParticle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.life = 1;
+                this.maxLife = 100 + Math.random() * 100;
+            }
+
+            update(field) {
+                const len = Math.sqrt(field.x * field.x + field.y * field.y);
+                if (len > 0.01) {
+                    const speed = Math.min(len * 0.5, 5);
+                    this.x += (field.x / len) * speed;
+                    this.y += (field.y / len) * speed;
+                }
+
+                this.life++;
+
+                if (this.life > this.maxLife || this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                const alpha = Math.min(1, this.life / 20) * Math.min(1, (this.maxLife - this.life) / 20);
+                ctx.fillStyle = `rgba(100, 150, 255, ${alpha * 0.8})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        let magnets = [];
+        let particles = [];
+        let showParticles = true;
+        let fieldDensity = 15; // Grid spacing
+
+        // Initialize
+        function init() {
+            magnets = [
+                new Magnet(width / 3, height / 2, true),
+                new Magnet(2 * width / 3, height / 2, false)
+            ];
+
+            particles = [];
+            for (let i = 0; i < 500; i++) {
+                particles.push(new FieldParticle());
+            }
+        }
+
+        // Get total field at point
+        function getTotalField(x, y) {
+            let fx = 0, fy = 0;
+            for (const magnet of magnets) {
+                const field = magnet.getField(x, y);
+                fx += field.x;
+                fy += field.y;
+            }
+            return { x: fx, y: fy };
+        }
+
+        // Draw field lines
+        function drawFieldLines() {
+            ctx.strokeStyle = 'rgba(100, 150, 255, 0.3)';
+            ctx.lineWidth = 1;
+
+            for (let x = 0; x < width; x += fieldDensity) {
+                for (let y = 0; y < height; y += fieldDensity) {
+                    const field = getTotalField(x, y);
+                    const len = Math.sqrt(field.x * field.x + field.y * field.y);
+
+                    if (len > 0.01) {
+                        const arrowLen = Math.min(12, len * 2);
+                        const nx = field.x / len;
+                        const ny = field.y / len;
+
+                        // Draw arrow
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x + nx * arrowLen, y + ny * arrowLen);
+                        ctx.stroke();
+
+                        // Arrow head
+                        const headSize = 3;
+                        const angle = Math.atan2(ny, nx);
+                        ctx.beginPath();
+                        ctx.moveTo(x + nx * arrowLen, y + ny * arrowLen);
+                        ctx.lineTo(
+                            x + nx * arrowLen - headSize * Math.cos(angle - 0.5),
+                            y + ny * arrowLen - headSize * Math.sin(angle - 0.5)
+                        );
+                        ctx.lineTo(
+                            x + nx * arrowLen - headSize * Math.cos(angle + 0.5),
+                            y + ny * arrowLen - headSize * Math.sin(angle + 0.5)
+                        );
+                        ctx.closePath();
+                        ctx.fillStyle = 'rgba(100, 150, 255, 0.4)';
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+
+        // Draw field streamlines
+        function drawStreamlines() {
+            ctx.strokeStyle = 'rgba(100, 150, 255, 0.15)';
+            ctx.lineWidth = 1;
+
+            // Start streamlines from around each magnet
+            for (const magnet of magnets) {
+                const numLines = 16;
+                for (let i = 0; i < numLines; i++) {
+                    const angle = (i / numLines) * Math.PI * 2;
+                    const startX = magnet.x + Math.cos(angle) * (magnet.radius + 5);
+                    const startY = magnet.y + Math.sin(angle) * (magnet.radius + 5);
+
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+
+                    let x = startX, y = startY;
+                    const direction = magnet.north ? 1 : -1;
+
+                    for (let step = 0; step < 200; step++) {
+                        const field = getTotalField(x, y);
+                        const len = Math.sqrt(field.x * field.x + field.y * field.y);
+
+                        if (len < 0.01) break;
+
+                        x += direction * (field.x / len) * 3;
+                        y += direction * (field.y / len) * 3;
+
+                        ctx.lineTo(x, y);
+
+                        // Stop if we hit a magnet or go off screen
+                        if (x < 0 || x > width || y < 0 || y > height) break;
+
+                        let hitMagnet = false;
+                        for (const m of magnets) {
+                            const dx = x - m.x;
+                            const dy = y - m.y;
+                            if (dx * dx + dy * dy < m.radius * m.radius) {
+                                hitMagnet = true;
+                                break;
+                            }
+                        }
+                        if (hitMagnet) break;
+                    }
+
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Input handling
+        let dragging = null;
+        let lastTap = 0;
+        let lastTapPos = { x: 0, y: 0 };
+
+        function getPos(e) {
+            return {
+                x: e.touches ? e.touches[0].clientX : e.clientX,
+                y: e.touches ? e.touches[0].clientY : e.clientY
+            };
+        }
+
+        function getMagnetAt(x, y) {
+            for (const magnet of magnets) {
+                const dx = x - magnet.x;
+                const dy = y - magnet.y;
+                if (dx * dx + dy * dy < magnet.radius * magnet.radius) {
+                    return magnet;
+                }
+            }
+            return null;
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            const pos = getPos(e);
+            dragging = getMagnetAt(pos.x, pos.y);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!dragging) return;
+            const pos = getPos(e);
+            dragging.x = pos.x;
+            dragging.y = pos.y;
+        });
+
+        canvas.addEventListener('mouseup', () => { dragging = null; });
+        canvas.addEventListener('mouseleave', () => { dragging = null; });
+
+        canvas.addEventListener('click', (e) => {
+            const now = Date.now();
+            const pos = getPos(e);
+
+            if (now - lastTap < 300 &&
+                Math.abs(pos.x - lastTapPos.x) < 30 &&
+                Math.abs(pos.y - lastTapPos.y) < 30) {
+                // Double click - flip polarity
+                const magnet = getMagnetAt(pos.x, pos.y);
+                if (magnet) {
+                    magnet.north = !magnet.north;
+                }
+            }
+
+            lastTap = now;
+            lastTapPos = pos;
+        });
+
+        canvas.addEventListener('touchstart', (e) => {
+            const pos = getPos(e);
+            dragging = getMagnetAt(pos.x, pos.y);
+        }, { passive: true });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (!dragging) return;
+            const pos = getPos(e);
+            dragging.x = pos.x;
+            dragging.y = pos.y;
+        }, { passive: true });
+
+        canvas.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length === 0) return;
+            const touch = e.changedTouches[0];
+            const now = Date.now();
+
+            if (now - lastTap < 300 &&
+                Math.abs(touch.clientX - lastTapPos.x) < 30 &&
+                Math.abs(touch.clientY - lastTapPos.y) < 30) {
+                const magnet = getMagnetAt(touch.clientX, touch.clientY);
+                if (magnet) {
+                    magnet.north = !magnet.north;
+                }
+            }
+
+            lastTap = now;
+            lastTapPos = { x: touch.clientX, y: touch.clientY };
+            dragging = null;
+        });
+
+        // Control functions
+        window.resetMagnets = function() {
+            init();
+        };
+
+        window.addMagnet = function(north) {
+            magnets.push(new Magnet(
+                width / 2 + (Math.random() - 0.5) * 200,
+                height / 2 + (Math.random() - 0.5) * 200,
+                north
+            ));
+        };
+
+        window.toggleParticles = function() {
+            showParticles = !showParticles;
+            document.querySelectorAll('.control-btn')[3].classList.toggle('active', showParticles);
+        };
+
+        window.toggleDensity = function() {
+            fieldDensity = fieldDensity === 15 ? 25 : fieldDensity === 25 ? 10 : 15;
+        };
+
+        // Initialize active state
+        document.querySelectorAll('.control-btn')[3].classList.add('active');
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Clear
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw streamlines
+            drawStreamlines();
+
+            // Draw field vectors
+            drawFieldLines();
+
+            // Update and draw particles
+            if (showParticles) {
+                for (const particle of particles) {
+                    const field = getTotalField(particle.x, particle.y);
+                    particle.update(field);
+                    particle.draw();
+                }
+            }
+
+            // Draw magnets on top
+            for (const magnet of magnets) {
+                magnet.draw();
+            }
+
+            // Update stats
+            document.getElementById('stats').textContent = `Magnets: ${magnets.length}`;
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
