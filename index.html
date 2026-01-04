@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>MobileCLI - AI Command Line in Your Pocket</title>
     <meta name="description" content="Full AI CLI development on your phone. Claude, Gemini, Codex + Termux = code anywhere.">
     <link rel="canonical" href="https://mobilecli.com">
@@ -12,8 +12,9 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mobilecli.com">
 
-    <!-- Three.js -->
+    <!-- Three.js + Cannon.js for Physics -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
@@ -63,7 +64,30 @@
             width: 100%;
             height: 100%;
             z-index: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Touch hint overlay */
+        .touch-hint {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 100px;
+            padding: 10px 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.5s ease;
             pointer-events: none;
+        }
+
+        .touch-hint.visible {
+            opacity: 1;
         }
 
         /* Navigation */
@@ -109,6 +133,7 @@
             background-clip: text;
             cursor: pointer;
             transition: opacity 0.2s;
+            text-decoration: none;
         }
 
         .logo:hover {
@@ -132,7 +157,8 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
-        .logo-wrapper:hover .logo-dropdown {
+        .logo-wrapper:hover .logo-dropdown,
+        .logo-wrapper.active .logo-dropdown {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
@@ -147,6 +173,7 @@
             font-size: 0.9rem;
             border-radius: 8px;
             transition: all 0.2s;
+            text-decoration: none;
         }
 
         .logo-dropdown a:hover {
@@ -187,6 +214,79 @@
             box-shadow: 0 0 30px var(--primary-glow);
         }
 
+        /* Mobile Navigation */
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            z-index: 999;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 16px 20px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .mobile-menu .btn-primary {
+            background: var(--primary);
+            color: var(--bg);
+            font-weight: 600;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
         /* Hero Section */
         .hero {
             position: relative;
@@ -202,6 +302,7 @@
             text-align: center;
             max-width: 900px;
             position: relative;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         .hero-badge {
@@ -363,6 +464,7 @@
             color: var(--text-muted);
             font-size: 0.8rem;
             animation: float 2s ease-in-out infinite;
+            cursor: pointer;
         }
 
         @keyframes float {
@@ -716,10 +818,6 @@
                 padding: 0 20px;
             }
 
-            .nav-links {
-                display: none;
-            }
-
             .hero {
                 padding: 120px 20px 60px;
             }
@@ -768,6 +866,10 @@
                 gap: 20px;
                 text-align: center;
             }
+
+            .touch-hint {
+                bottom: 100px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -785,38 +887,24 @@
                 justify-content: center;
             }
         }
-
-        /* Mobile Navigation */
-        .mobile-menu-btn {
-            display: none;
-            background: transparent;
-            border: 1px solid var(--border-light);
-            color: var(--text);
-            padding: 10px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-            }
-        }
     </style>
 </head>
 <body>
     <!-- Three.js Canvas -->
     <canvas id="hero-canvas"></canvas>
 
+    <!-- Touch hint -->
+    <div class="touch-hint" id="touchHint">Tap and drag to interact with physics</div>
+
     <!-- Navigation -->
     <nav>
         <div class="container">
-            <div class="logo-wrapper">
+            <div class="logo-wrapper" id="logoWrapper">
                 <a href="/" class="logo">&gt;_ MobileCLI</a>
                 <div class="logo-dropdown">
-                    <a href="https://github.com/MobileDevCLI">GitHub</a>
-                    <a href="https://twitter.com/MobileDevCLI">Twitter / X</a>
-                    <a href="https://youtube.com/@MobileDevCLI">YouTube</a>
+                    <a href="https://github.com/MobileDevCLI" target="_blank">GitHub</a>
+                    <a href="https://twitter.com/MobileDevCLI" target="_blank">Twitter / X</a>
+                    <a href="https://youtube.com/@MobileDevCLI" target="_blank">YouTube</a>
                     <a href="mailto:mobiledev.li@gmail.com">Contact</a>
                 </div>
             </div>
@@ -827,13 +915,25 @@
                 <a href="/dashboard.html">Dashboard</a>
                 <a href="/login.html" class="btn-primary">Get Started</a>
             </div>
-            <button class="mobile-menu-btn">Menu</button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">Menu</button>
         </div>
     </nav>
 
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="/pricing.html">Pricing</a>
+        <a href="/learn.html">Docs</a>
+        <a href="/examples.html">Examples</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/games.html">Games</a>
+        <a href="/news.html">News</a>
+        <a href="/proof.html">Proof</a>
+        <a href="/login.html" class="btn-primary">Get Started</a>
+    </div>
+
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
+    <section class="hero" id="heroSection">
+        <div class="hero-content" id="heroContent">
             <div class="hero-badge">
                 <span>AI-Powered Development</span>
             </div>
@@ -860,14 +960,14 @@
             </div>
         </div>
 
-        <div class="scroll-indicator">
+        <div class="scroll-indicator" onclick="scrollToFeatures()">
             <span>Scroll</span>
             <div class="arrow"></div>
         </div>
     </section>
 
     <!-- Features -->
-    <section class="features">
+    <section class="features" id="features">
         <div class="container">
             <div class="section-label">// Features</div>
             <h2 class="section-title">Everything You Need</h2>
@@ -996,9 +1096,9 @@
                 <div class="footer-column">
                     <h4>Community</h4>
                     <ul>
-                        <li><a href="https://github.com/MobileDevCLI">GitHub</a></li>
-                        <li><a href="https://twitter.com/MobileDevCLI">Twitter</a></li>
-                        <li><a href="https://youtube.com/@MobileDevCLI">YouTube</a></li>
+                        <li><a href="https://github.com/MobileDevCLI" target="_blank">GitHub</a></li>
+                        <li><a href="https://twitter.com/MobileDevCLI" target="_blank">Twitter</a></li>
+                        <li><a href="https://youtube.com/@MobileDevCLI" target="_blank">YouTube</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -1013,16 +1113,49 @@
             <div class="footer-bottom">
                 <p class="copyright">&copy; 2026 MobileCLI. All rights reserved.</p>
                 <div class="social-links">
-                    <a href="https://github.com/MobileDevCLI">GitHub</a>
-                    <a href="https://twitter.com/MobileDevCLI">Twitter</a>
-                    <a href="https://youtube.com/@MobileDevCLI">YouTube</a>
+                    <a href="https://github.com/MobileDevCLI" target="_blank">GitHub</a>
+                    <a href="https://twitter.com/MobileDevCLI" target="_blank">Twitter</a>
+                    <a href="https://youtube.com/@MobileDevCLI" target="_blank">YouTube</a>
                 </div>
             </div>
         </div>
     </footer>
 
     <script>
-        // Copy command
+        // ============================================
+        // MOBILE MENU FUNCTIONALITY
+        // ============================================
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const logoWrapper = document.getElementById('logoWrapper');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+            mobileMenuBtn.textContent = mobileMenu.classList.contains('open') ? 'Close' : 'Menu';
+        });
+
+        // Logo dropdown for mobile (tap to toggle)
+        logoWrapper.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                logoWrapper.classList.toggle('active');
+            }
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+                mobileMenuBtn.textContent = 'Menu';
+            }
+            if (!logoWrapper.contains(e.target)) {
+                logoWrapper.classList.remove('active');
+            }
+        });
+
+        // ============================================
+        // COPY COMMAND
+        // ============================================
         function copyCommand() {
             const cmd = 'curl -sL mobilecli.com/setup | bash';
             navigator.clipboard.writeText(cmd);
@@ -1031,8 +1164,21 @@
             setTimeout(() => btn.textContent = 'Copy', 2000);
         }
 
-        // Three.js Scene
+        // ============================================
+        // SCROLL TO FEATURES
+        // ============================================
+        function scrollToFeatures() {
+            document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ============================================
+        // THREE.JS PHYSICS SCENE WITH CANNON.JS
+        // ============================================
         const canvas = document.getElementById('hero-canvas');
+        const heroContent = document.getElementById('heroContent');
+        const touchHint = document.getElementById('touchHint');
+
+        // Renderer
         const renderer = new THREE.WebGLRenderer({
             canvas,
             alpha: true,
@@ -1041,106 +1187,242 @@
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+        // Scene
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 30;
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        // Camera
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 5, 30);
+
+        // Cannon.js Physics World
+        const world = new CANNON.World();
+        world.gravity.set(0, -20, 0);
+        world.broadphase = new CANNON.NaiveBroadphase();
+        world.solver.iterations = 10;
+
+        // Materials for physics
+        const physicsMaterial = new CANNON.Material('physics');
+        const contactMaterial = new CANNON.ContactMaterial(physicsMaterial, physicsMaterial, {
+            friction: 0.3,
+            restitution: 0.6
+        });
+        world.addContactMaterial(contactMaterial);
+
+        // ============================================
+        // LIGHTING
+        // ============================================
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
         scene.add(ambientLight);
 
-        const pointLight1 = new THREE.PointLight(0x00ff88, 2, 100);
-        pointLight1.position.set(20, 20, 20);
-        scene.add(pointLight1);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(10, 20, 10);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 1024;
+        directionalLight.shadow.mapSize.height = 1024;
+        scene.add(directionalLight);
 
-        const pointLight2 = new THREE.PointLight(0x00d4ff, 2, 100);
-        pointLight2.position.set(-20, -20, 20);
-        scene.add(pointLight2);
-
-        const pointLight3 = new THREE.PointLight(0xa855f7, 1.5, 100);
-        pointLight3.position.set(0, 30, -20);
-        scene.add(pointLight3);
-
-        // Create floating geometric shapes
-        const shapes = [];
-        const geometries = [
-            new THREE.IcosahedronGeometry(2, 0),
-            new THREE.OctahedronGeometry(2, 0),
-            new THREE.TetrahedronGeometry(2, 0),
-            new THREE.TorusGeometry(1.5, 0.5, 8, 16),
-            new THREE.TorusKnotGeometry(1.2, 0.4, 64, 8),
+        // Dynamic colored lights
+        const lights = [
+            { light: new THREE.PointLight(0x00ff88, 3, 50), pos: [15, 10, 10] },
+            { light: new THREE.PointLight(0x00d4ff, 3, 50), pos: [-15, 10, 10] },
+            { light: new THREE.PointLight(0xa855f7, 2, 50), pos: [0, 15, -10] },
+            { light: new THREE.PointLight(0xff6b6b, 2, 40), pos: [10, -5, 15] }
         ];
 
-        const material = new THREE.MeshPhysicalMaterial({
+        lights.forEach(({ light, pos }) => {
+            light.position.set(...pos);
+            scene.add(light);
+        });
+
+        // ============================================
+        // PHYSICS OBJECTS
+        // ============================================
+        const physicsObjects = [];
+
+        // Materials
+        const glassMaterial = new THREE.MeshPhysicalMaterial({
             color: 0x111111,
-            metalness: 0.9,
-            roughness: 0.1,
+            metalness: 0.1,
+            roughness: 0.05,
+            transmission: 0.9,
+            thickness: 0.5,
+            transparent: true,
+            opacity: 0.7,
             clearcoat: 1.0,
             clearcoatRoughness: 0.1,
-            envMapIntensity: 1.5,
-            transparent: true,
-            opacity: 0.8,
         });
 
-        // Create wireframe material for glowing edges
-        const wireMaterial = new THREE.LineBasicMaterial({
+        const metalMaterial = new THREE.MeshPhysicalMaterial({
             color: 0x00ff88,
-            transparent: true,
-            opacity: 0.3,
+            metalness: 0.95,
+            roughness: 0.1,
+            envMapIntensity: 1.0,
         });
 
-        for (let i = 0; i < 15; i++) {
-            const geo = geometries[Math.floor(Math.random() * geometries.length)];
-            const mesh = new THREE.Mesh(geo, material.clone());
+        const accentMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x00d4ff,
+            metalness: 0.8,
+            roughness: 0.2,
+            emissive: 0x003344,
+            emissiveIntensity: 0.3,
+        });
 
-            // Random position
-            mesh.position.x = (Math.random() - 0.5) * 60;
-            mesh.position.y = (Math.random() - 0.5) * 60;
-            mesh.position.z = (Math.random() - 0.5) * 30 - 10;
+        const purpleMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xa855f7,
+            metalness: 0.7,
+            roughness: 0.3,
+            emissive: 0x220033,
+            emissiveIntensity: 0.2,
+        });
 
-            // Random rotation
-            mesh.rotation.x = Math.random() * Math.PI;
-            mesh.rotation.y = Math.random() * Math.PI;
+        const materials = [glassMaterial, metalMaterial, accentMaterial, purpleMaterial];
 
-            // Random scale
-            const scale = 0.5 + Math.random() * 1.5;
-            mesh.scale.set(scale, scale, scale);
-
-            // Add wireframe
-            const wireGeo = new THREE.WireframeGeometry(geo);
-            const wireframe = new THREE.LineSegments(wireGeo, wireMaterial.clone());
-            mesh.add(wireframe);
-
-            // Store velocity for physics-like motion
-            mesh.userData.velocity = {
-                x: (Math.random() - 0.5) * 0.02,
-                y: (Math.random() - 0.5) * 0.02,
-                z: (Math.random() - 0.5) * 0.01,
-                rotX: (Math.random() - 0.5) * 0.01,
-                rotY: (Math.random() - 0.5) * 0.01,
-            };
-
-            shapes.push(mesh);
+        // Create physics cubes
+        function createPhysicsBox(size, position, material) {
+            // Three.js mesh
+            const geometry = new THREE.BoxGeometry(size, size, size);
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.copy(position);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
             scene.add(mesh);
+
+            // Cannon.js body
+            const shape = new CANNON.Box(new CANNON.Vec3(size / 2, size / 2, size / 2));
+            const body = new CANNON.Body({
+                mass: size * 2,
+                material: physicsMaterial
+            });
+            body.addShape(shape);
+            body.position.copy(position);
+            body.angularDamping = 0.3;
+            body.linearDamping = 0.1;
+            world.addBody(body);
+
+            physicsObjects.push({ mesh, body, type: 'box' });
+            return { mesh, body };
         }
 
-        // Particle system
-        const particleCount = 500;
+        // Create physics spheres
+        function createPhysicsSphere(radius, position, material) {
+            const geometry = new THREE.SphereGeometry(radius, 32, 32);
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.copy(position);
+            mesh.castShadow = true;
+            scene.add(mesh);
+
+            const shape = new CANNON.Sphere(radius);
+            const body = new CANNON.Body({
+                mass: radius * 3,
+                material: physicsMaterial
+            });
+            body.addShape(shape);
+            body.position.copy(position);
+            body.angularDamping = 0.2;
+            world.addBody(body);
+
+            physicsObjects.push({ mesh, body, type: 'sphere' });
+            return { mesh, body };
+        }
+
+        // Create physics icosahedron (approximated as sphere in physics)
+        function createPhysicsIcosahedron(radius, position, material) {
+            const geometry = new THREE.IcosahedronGeometry(radius, 0);
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.copy(position);
+            mesh.castShadow = true;
+            scene.add(mesh);
+
+            const shape = new CANNON.Sphere(radius * 0.9);
+            const body = new CANNON.Body({
+                mass: radius * 4,
+                material: physicsMaterial
+            });
+            body.addShape(shape);
+            body.position.copy(position);
+            body.angularDamping = 0.3;
+            world.addBody(body);
+
+            physicsObjects.push({ mesh, body, type: 'icosahedron' });
+            return { mesh, body };
+        }
+
+        // Invisible floor
+        const floorBody = new CANNON.Body({
+            mass: 0,
+            material: physicsMaterial
+        });
+        floorBody.addShape(new CANNON.Plane());
+        floorBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+        floorBody.position.set(0, -15, 0);
+        world.addBody(floorBody);
+
+        // Invisible walls
+        const wallPositions = [
+            { pos: [-25, 0, 0], rot: [0, Math.PI / 2, 0] },
+            { pos: [25, 0, 0], rot: [0, -Math.PI / 2, 0] },
+            { pos: [0, 0, -20], rot: [0, 0, 0] },
+            { pos: [0, 0, 20], rot: [0, Math.PI, 0] },
+            { pos: [0, 20, 0], rot: [Math.PI / 2, 0, 0] }
+        ];
+
+        wallPositions.forEach(({ pos, rot }) => {
+            const wallBody = new CANNON.Body({ mass: 0, material: physicsMaterial });
+            wallBody.addShape(new CANNON.Plane());
+            wallBody.position.set(...pos);
+            wallBody.quaternion.setFromEuler(...rot);
+            world.addBody(wallBody);
+        });
+
+        // Spawn initial objects
+        function spawnObjects() {
+            for (let i = 0; i < 12; i++) {
+                const x = (Math.random() - 0.5) * 30;
+                const y = Math.random() * 20 + 5;
+                const z = (Math.random() - 0.5) * 20 - 5;
+                const position = new THREE.Vector3(x, y, z);
+                const material = materials[Math.floor(Math.random() * materials.length)].clone();
+                const type = Math.floor(Math.random() * 3);
+
+                if (type === 0) {
+                    createPhysicsBox(1.5 + Math.random() * 1.5, position, material);
+                } else if (type === 1) {
+                    createPhysicsSphere(0.8 + Math.random() * 0.8, position, material);
+                } else {
+                    createPhysicsIcosahedron(1 + Math.random(), position, material);
+                }
+            }
+        }
+
+        spawnObjects();
+
+        // ============================================
+        // PARTICLE SYSTEM
+        // ============================================
+        const particleCount = 300;
         const particleGeometry = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const colors = new Float32Array(particleCount * 3);
+        const velocities = [];
 
-        for (let i = 0; i < particleCount * 3; i += 3) {
-            positions[i] = (Math.random() - 0.5) * 100;
-            positions[i + 1] = (Math.random() - 0.5) * 100;
-            positions[i + 2] = (Math.random() - 0.5) * 50 - 20;
+        for (let i = 0; i < particleCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 80;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 60;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 40 - 10;
 
-            // Green to cyan gradient
             const t = Math.random();
-            colors[i] = 0;
-            colors[i + 1] = 0.7 + t * 0.3;
-            colors[i + 2] = 0.5 + t * 0.5;
+            colors[i * 3] = t * 0.2;
+            colors[i * 3 + 1] = 0.6 + t * 0.4;
+            colors[i * 3 + 2] = 0.5 + t * 0.5;
+
+            velocities.push({
+                x: (Math.random() - 0.5) * 0.02,
+                y: Math.random() * 0.03 + 0.01,
+                z: (Math.random() - 0.5) * 0.01
+            });
         }
 
         particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -1157,81 +1439,301 @@
         const particles = new THREE.Points(particleGeometry, particleMaterial);
         scene.add(particles);
 
-        // Mouse interaction
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
+        // ============================================
+        // TOUCH AND MOUSE INTERACTION
+        // ============================================
+        let isInteracting = false;
+        let interactionStart = { x: 0, y: 0 };
+        let lastInteraction = { x: 0, y: 0 };
+        let selectedBody = null;
+        let interactionPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
 
-        document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        // Convert screen coords to normalized device coords
+        function getPointerPos(e) {
+            const x = e.touches ? e.touches[0].clientX : e.clientX;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (x / window.innerWidth) * 2 - 1,
+                y: -(y / window.innerHeight) * 2 + 1,
+                screenX: x,
+                screenY: y
+            };
+        }
+
+        // Find physics object under pointer
+        function getObjectUnderPointer(pos) {
+            mouse.set(pos.x, pos.y);
+            raycaster.setFromCamera(mouse, camera);
+
+            const meshes = physicsObjects.map(obj => obj.mesh);
+            const intersects = raycaster.intersectObjects(meshes);
+
+            if (intersects.length > 0) {
+                const mesh = intersects[0].object;
+                return physicsObjects.find(obj => obj.mesh === mesh);
+            }
+            return null;
+        }
+
+        // Pointer down
+        function onPointerDown(e) {
+            // Only interact in hero section
+            const scrollY = window.scrollY;
+            if (scrollY > window.innerHeight * 0.5) return;
+
+            const pos = getPointerPos(e);
+            interactionStart = { x: pos.screenX, y: pos.screenY };
+            lastInteraction = { x: pos.screenX, y: pos.screenY };
+
+            const obj = getObjectUnderPointer(pos);
+            if (obj) {
+                isInteracting = true;
+                selectedBody = obj.body;
+                canvas.style.cursor = 'grabbing';
+
+                // Reduce gravity effect on grabbed object
+                selectedBody.linearDamping = 0.95;
+
+                if (e.touches) {
+                    e.preventDefault();
+                }
+            }
+        }
+
+        // Pointer move
+        function onPointerMove(e) {
+            if (!isInteracting || !selectedBody) return;
+
+            const pos = getPointerPos(e);
+            const deltaX = (pos.screenX - lastInteraction.x) * 0.5;
+            const deltaY = (pos.screenY - lastInteraction.y) * 0.5;
+
+            // Apply force to object
+            const force = new CANNON.Vec3(deltaX * 20, -deltaY * 20, 0);
+            selectedBody.applyImpulse(force, selectedBody.position);
+
+            lastInteraction = { x: pos.screenX, y: pos.screenY };
+
+            if (e.touches) {
+                e.preventDefault();
+            }
+        }
+
+        // Pointer up
+        function onPointerUp(e) {
+            if (selectedBody) {
+                // Throw velocity based on last movement
+                const pos = e.changedTouches ?
+                    { screenX: e.changedTouches[0].clientX, screenY: e.changedTouches[0].clientY } :
+                    { screenX: e.clientX, screenY: e.clientY };
+
+                const velocityX = (pos.screenX - lastInteraction.x) * 2;
+                const velocityY = (pos.screenY - lastInteraction.y) * 2;
+
+                selectedBody.velocity.x += velocityX;
+                selectedBody.velocity.y -= velocityY;
+                selectedBody.linearDamping = 0.1;
+            }
+
+            isInteracting = false;
+            selectedBody = null;
+            canvas.style.cursor = 'default';
+        }
+
+        // Add event listeners
+        canvas.addEventListener('mousedown', onPointerDown);
+        canvas.addEventListener('mousemove', onPointerMove);
+        canvas.addEventListener('mouseup', onPointerUp);
+        canvas.addEventListener('mouseleave', onPointerUp);
+
+        canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+        canvas.addEventListener('touchmove', onPointerMove, { passive: false });
+        canvas.addEventListener('touchend', onPointerUp);
+
+        // Smart touch handling - enable canvas pointer events only in hero area
+        function updateCanvasInteractivity() {
+            const scrollY = window.scrollY;
+            const heroHeight = window.innerHeight;
+
+            if (scrollY < heroHeight * 0.5) {
+                canvas.style.pointerEvents = 'auto';
+            } else {
+                canvas.style.pointerEvents = 'none';
+            }
+        }
+
+        // ============================================
+        // EXPLOSION / DESTRUCTION EFFECT
+        // ============================================
+        function createExplosion(position, force = 30) {
+            physicsObjects.forEach(obj => {
+                const direction = new CANNON.Vec3(
+                    obj.body.position.x - position.x,
+                    obj.body.position.y - position.y,
+                    obj.body.position.z - position.z
+                );
+                const distance = direction.length();
+                if (distance < 15) {
+                    direction.normalize();
+                    const strength = (1 - distance / 15) * force;
+                    direction.scale(strength, direction);
+                    obj.body.applyImpulse(direction, obj.body.position);
+
+                    // Add spin
+                    obj.body.angularVelocity.set(
+                        (Math.random() - 0.5) * 10,
+                        (Math.random() - 0.5) * 10,
+                        (Math.random() - 0.5) * 10
+                    );
+                }
+            });
+        }
+
+        // Double tap/click for explosion
+        let lastTapTime = 0;
+        function onDoubleTap(e) {
+            const now = Date.now();
+            if (now - lastTapTime < 300) {
+                const pos = getPointerPos(e);
+                mouse.set(pos.x, pos.y);
+                raycaster.setFromCamera(mouse, camera);
+
+                const point = new THREE.Vector3();
+                raycaster.ray.at(20, point);
+
+                createExplosion(point, 40);
+
+                // Spawn new objects occasionally
+                if (physicsObjects.length < 25 && Math.random() > 0.5) {
+                    const material = materials[Math.floor(Math.random() * materials.length)].clone();
+                    createPhysicsSphere(1 + Math.random(), new THREE.Vector3(point.x, point.y + 10, point.z), material);
+                }
+            }
+            lastTapTime = now;
+        }
+
+        canvas.addEventListener('click', onDoubleTap);
+        canvas.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length === 1) {
+                onDoubleTap({ clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY });
+            }
         });
 
-        // Animation
+        // ============================================
+        // SCROLL EFFECTS
+        // ============================================
+        let ticking = false;
+
+        function onScroll() {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    const heroHeight = window.innerHeight;
+                    const scrollPercent = Math.min(scrollY / heroHeight, 1);
+
+                    // Fade out canvas
+                    canvas.style.opacity = Math.max(0, 1 - scrollPercent * 1.5);
+
+                    // Fade and move hero content
+                    heroContent.style.opacity = Math.max(0, 1 - scrollPercent * 2);
+                    heroContent.style.transform = `translateY(${scrollPercent * -50}px)`;
+
+                    // Update canvas interactivity
+                    updateCanvasInteractivity();
+
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // ============================================
+        // ANIMATION LOOP
+        // ============================================
+        const clock = new THREE.Clock();
+        let showedHint = false;
+
         function animate() {
             requestAnimationFrame(animate);
 
-            // Smooth camera movement
-            targetX += (mouseX * 5 - targetX) * 0.05;
-            targetY += (mouseY * 5 - targetY) * 0.05;
-            camera.position.x = targetX;
-            camera.position.y = targetY;
-            camera.lookAt(scene.position);
+            const delta = Math.min(clock.getDelta(), 0.05);
 
-            // Animate shapes
-            shapes.forEach((shape, i) => {
-                // Apply velocity
-                shape.position.x += shape.userData.velocity.x;
-                shape.position.y += shape.userData.velocity.y;
-                shape.position.z += shape.userData.velocity.z;
+            // Update physics
+            world.step(1 / 60, delta, 3);
 
-                // Rotation
-                shape.rotation.x += shape.userData.velocity.rotX;
-                shape.rotation.y += shape.userData.velocity.rotY;
+            // Sync Three.js meshes with Cannon.js bodies
+            physicsObjects.forEach(obj => {
+                obj.mesh.position.copy(obj.body.position);
+                obj.mesh.quaternion.copy(obj.body.quaternion);
 
-                // Bounds check - wrap around
-                if (Math.abs(shape.position.x) > 35) shape.userData.velocity.x *= -1;
-                if (Math.abs(shape.position.y) > 35) shape.userData.velocity.y *= -1;
-                if (shape.position.z > 10 || shape.position.z < -40) shape.userData.velocity.z *= -1;
+                // Reset objects that fall too far
+                if (obj.body.position.y < -20) {
+                    obj.body.position.set(
+                        (Math.random() - 0.5) * 20,
+                        25 + Math.random() * 10,
+                        (Math.random() - 0.5) * 15
+                    );
+                    obj.body.velocity.set(0, 0, 0);
+                    obj.body.angularVelocity.set(0, 0, 0);
+                }
             });
 
             // Animate particles
-            const positions = particles.geometry.attributes.position.array;
-            for (let i = 0; i < positions.length; i += 3) {
-                positions[i + 1] += 0.01;
-                if (positions[i + 1] > 50) positions[i + 1] = -50;
+            const particlePositions = particles.geometry.attributes.position.array;
+            for (let i = 0; i < particleCount; i++) {
+                particlePositions[i * 3] += velocities[i].x;
+                particlePositions[i * 3 + 1] += velocities[i].y;
+                particlePositions[i * 3 + 2] += velocities[i].z;
+
+                if (particlePositions[i * 3 + 1] > 35) {
+                    particlePositions[i * 3 + 1] = -35;
+                }
+                if (Math.abs(particlePositions[i * 3]) > 45) {
+                    velocities[i].x *= -1;
+                }
             }
             particles.geometry.attributes.position.needsUpdate = true;
-            particles.rotation.y += 0.0002;
 
             // Animate lights
             const time = Date.now() * 0.001;
-            pointLight1.position.x = Math.sin(time * 0.5) * 25;
-            pointLight1.position.y = Math.cos(time * 0.3) * 25;
-            pointLight2.position.x = Math.cos(time * 0.4) * 25;
-            pointLight2.position.z = Math.sin(time * 0.5) * 20;
+            lights[0].light.position.x = Math.sin(time * 0.5) * 20;
+            lights[0].light.position.y = 10 + Math.cos(time * 0.3) * 5;
+            lights[1].light.position.x = Math.cos(time * 0.4) * 20;
+            lights[1].light.position.z = Math.sin(time * 0.5) * 15;
+            lights[2].light.position.y = 15 + Math.sin(time * 0.6) * 8;
+
+            // Camera sway
+            camera.position.x = Math.sin(time * 0.2) * 2;
+            camera.position.y = 5 + Math.cos(time * 0.15) * 1;
+            camera.lookAt(0, 0, -5);
 
             renderer.render(scene, camera);
+
+            // Show touch hint after 2 seconds
+            if (!showedHint && clock.elapsedTime > 2) {
+                touchHint.classList.add('visible');
+                showedHint = true;
+                setTimeout(() => touchHint.classList.remove('visible'), 4000);
+            }
         }
 
         animate();
 
-        // Handle resize
+        // ============================================
+        // RESIZE HANDLER
+        // ============================================
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // Scroll effect - fade out hero canvas
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const heroHeight = window.innerHeight;
-            const opacity = Math.max(0, 1 - scrollY / heroHeight);
-            canvas.style.opacity = opacity;
-        });
+        // Initial state
+        updateCanvasInteractivity();
     </script>
 </body>
 </html>
-
