@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Shader Art Gallery - MobileCLI Demos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 100, 200, 0.2);
+            border-color: rgba(255, 100, 200, 0.3);
+        }
+
+        .info {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            max-width: 280px;
+        }
+
+        .info h3 {
+            color: #ff64c8;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 100, 200, 0.2);
+            border-color: rgba(255, 100, 200, 0.3);
+        }
+
+        .shader-name {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ff64c8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 600px) {
+            .info { display: none; }
+            .ui { top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <a href="/demos.html" class="back-btn">← Back to Demos</a>
+        <div class="info">
+            <h3>Shader Art Gallery</h3>
+            <p>Beautiful fragment shaders running on your GPU. Swipe or tap arrows to browse. Touch to interact!</p>
+        </div>
+    </div>
+
+    <div class="shader-name" id="shaderName">Plasma</div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="prevShader()">← Prev</button>
+        <button class="control-btn" onclick="nextShader()">Next →</button>
+        <button class="control-btn" onclick="togglePause()">Pause</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+        let width, height;
+        function resize() {
+            const scale = window.devicePixelRatio > 1 ? 0.6 : 0.8;
+            width = canvas.width = Math.floor(window.innerWidth * scale);
+            height = canvas.height = Math.floor(window.innerHeight * scale);
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            gl.viewport(0, 0, width, height);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Vertex shader (shared)
+        const vertexShaderSource = `
+            attribute vec2 a_position;
+            void main() {
+                gl_Position = vec4(a_position, 0.0, 1.0);
+            }
+        `;
+
+        // Fragment shaders collection
+        const shaders = [
+            {
+                name: 'Plasma',
+                source: `
+                    precision highp float;
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                        float t = u_time;
+
+                        float v1 = sin(uv.x * 10.0 + t);
+                        float v2 = sin(uv.y * 10.0 + t);
+                        float v3 = sin((uv.x + uv.y) * 10.0 + t);
+                        float v4 = sin(sqrt(uv.x * uv.x + uv.y * uv.y) * 10.0 + t);
+
+                        float v = (v1 + v2 + v3 + v4) / 4.0;
+
+                        vec3 col = vec3(
+                            sin(v * 3.14159 + 0.0) * 0.5 + 0.5,
+                            sin(v * 3.14159 + 2.094) * 0.5 + 0.5,
+                            sin(v * 3.14159 + 4.188) * 0.5 + 0.5
+                        );
+
+                        gl_FragColor = vec4(col, 1.0);
+                    }
+                `
+            },
+            {
+                name: 'Warp Tunnel',
+                source: `
+                    precision highp float;
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+
+                    void main() {
+                        vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+                        float t = u_time;
+
+                        float angle = atan(uv.y, uv.x);
+                        float dist = length(uv);
+
+                        float tunnel = sin(angle * 5.0 + t * 2.0) * 0.5 + 0.5;
+                        tunnel *= sin(1.0 / dist * 3.0 - t * 3.0);
+
+                        vec3 col = vec3(tunnel * 0.3, tunnel * 0.6, tunnel);
+                        col += vec3(0.1, 0.0, 0.2);
+
+                        gl_FragColor = vec4(col, 1.0);
+                    }
+                `
+            },
+            {
+                name: 'Voronoi',
+                source: `
+                    precision highp float;
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+
+                    vec2 hash2(vec2 p) {
+                        p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+                        return fract(sin(p) * 43758.5453);
+                    }
+
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / u_resolution.y;
+                        float t = u_time * 0.5;
+
+                        vec2 n = floor(uv * 8.0);
+                        vec2 f = fract(uv * 8.0);
+
+                        float minDist = 1.0;
+                        vec2 minPoint;
+
+                        for (int y = -1; y <= 1; y++) {
+                            for (int x = -1; x <= 1; x++) {
+                                vec2 neighbor = vec2(float(x), float(y));
+                                vec2 point = hash2(n + neighbor);
+                                point = 0.5 + 0.5 * sin(t + 6.2831 * point);
+                                vec2 diff = neighbor + point - f;
+                                float dist = length(diff);
+                                if (dist < minDist) {
+                                    minDist = dist;
+                                    minPoint = point;
+                                }
+                            }
+                        }
+
+                        vec3 col = 0.5 + 0.5 * cos(6.2831 * minPoint.x + vec3(0.0, 1.0, 2.0));
+                        col *= 1.0 - minDist;
+
+                        gl_FragColor = vec4(col, 1.0);
+                    }
+                `
+            },
+            {
+                name: 'Kaleidoscope',
+                source: `
+                    precision highp float;
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+
+                    void main() {
+                        vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+                        float t = u_time;
+
+                        float angle = atan(uv.y, uv.x);
+                        float dist = length(uv);
+
+                        // Create kaleidoscope effect
+                        float segments = 8.0;
+                        angle = mod(angle, 3.14159 / segments);
+                        angle = abs(angle - 3.14159 / segments / 2.0);
+
+                        vec2 newUv = vec2(cos(angle), sin(angle)) * dist;
+
+                        float pattern = sin(newUv.x * 20.0 + t) * sin(newUv.y * 20.0 + t);
+                        pattern += sin(dist * 10.0 - t * 2.0);
+
+                        vec3 col = vec3(
+                            sin(pattern + t) * 0.5 + 0.5,
+                            sin(pattern + t + 2.0) * 0.5 + 0.5,
+                            sin(pattern + t + 4.0) * 0.5 + 0.5
+                        );
+
+                        gl_FragColor = vec4(col, 1.0);
+                    }
+                `
+            },
+            {
+                name: 'Neon Grid',
+                source: `
+                    precision highp float;
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                        float t = u_time;
+
+                        // Perspective grid
+                        vec2 p = uv - 0.5;
+                        p.y -= 0.2;
+
+                        float z = 0.5 / abs(p.y);
+                        float x = p.x * z;
+
+                        // Grid lines
+                        float gridX = abs(sin(x * 10.0 + t * 2.0));
+                        float gridZ = abs(sin(z * 2.0 - t * 5.0));
+
+                        float grid = pow(gridX, 50.0) + pow(gridZ, 30.0);
+                        grid *= smoothstep(0.0, 0.3, abs(p.y));
+
+                        // Color
+                        vec3 col = vec3(0.0);
+                        col += vec3(1.0, 0.2, 0.5) * grid;
+                        col += vec3(0.0, 0.5, 1.0) * grid * 0.5;
+
+                        // Horizon glow
+                        float glow = smoothstep(0.3, 0.0, abs(p.y)) * 0.3;
+                        col += vec3(1.0, 0.5, 0.8) * glow;
+
+                        gl_FragColor = vec4(col, 1.0);
+                    }
+                `
+            },
+            {
+                name: 'Liquid Metal',
+                source: `
+                    precision highp float;
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                        float t = u_time;
+
+                        vec2 p = uv * 2.0 - 1.0;
+                        p.x *= u_resolution.x / u_resolution.y;
+
+                        float d = length(p);
+
+                        // Multiple layers of distortion
+                        float n = 0.0;
+                        for (float i = 1.0; i < 5.0; i++) {
+                            float angle = t * 0.5 / i;
+                            mat2 rot = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+                            p = rot * p;
+                            n += sin(p.x * i * 3.0 + t) * sin(p.y * i * 3.0 + t) / i;
+                        }
+
+                        n = n * 0.5 + 0.5;
+
+                        // Metallic color
+                        vec3 col = vec3(0.7, 0.8, 0.9);
+                        col = mix(col, vec3(0.2, 0.3, 0.5), n);
+                        col += vec3(1.0, 0.9, 0.8) * pow(n, 3.0) * 0.5;
+
+                        gl_FragColor = vec4(col, 1.0);
+                    }
+                `
+            },
+            {
+                name: 'Aurora',
+                source: `
+                    precision highp float;
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+
+                    float noise(vec2 p) {
+                        return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+                    }
+
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                        float t = u_time * 0.3;
+
+                        // Create flowing aurora effect
+                        float aurora = 0.0;
+                        for (float i = 0.0; i < 5.0; i++) {
+                            float freq = 3.0 + i * 0.5;
+                            float amp = 0.1 / (i + 1.0);
+                            aurora += sin(uv.x * freq + t + i) * amp;
+                        }
+
+                        float y = uv.y - 0.5 + aurora;
+                        float band = exp(-y * y * 20.0);
+
+                        vec3 col = vec3(0.0, 0.02, 0.05); // Dark sky
+
+                        // Aurora colors
+                        vec3 green = vec3(0.2, 1.0, 0.4);
+                        vec3 purple = vec3(0.8, 0.2, 0.8);
+                        vec3 blue = vec3(0.2, 0.5, 1.0);
+
+                        vec3 auroraColor = mix(green, purple, sin(uv.x * 5.0 + t) * 0.5 + 0.5);
+                        auroraColor = mix(auroraColor, blue, sin(uv.x * 3.0 - t * 0.5) * 0.5 + 0.5);
+
+                        col += auroraColor * band * 0.8;
+
+                        // Stars
+                        float star = noise(floor(uv * 200.0));
+                        star = step(0.99, star) * star;
+                        col += vec3(star);
+
+                        gl_FragColor = vec4(col, 1.0);
+                    }
+                `
+            },
+            {
+                name: 'Electric',
+                source: `
+                    precision highp float;
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+
+                    float random(vec2 st) {
+                        return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453);
+                    }
+
+                    void main() {
+                        vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+                        float t = u_time;
+
+                        // Create electric arc effect
+                        vec2 mouse = u_mouse - 0.5;
+                        mouse.x *= u_resolution.x / u_resolution.y;
+
+                        float dist = length(uv - mouse * 0.5);
+
+                        float bolt = 0.0;
+                        for (float i = 0.0; i < 8.0; i++) {
+                            float angle = t * (0.5 + i * 0.1) + i * 0.785;
+                            vec2 dir = vec2(cos(angle), sin(angle));
+                            float d = abs(dot(uv - mouse * 0.5, vec2(-dir.y, dir.x)));
+                            d += random(floor(uv * 50.0 + t * 10.0)) * 0.02;
+                            bolt += 0.01 / (d + 0.01);
+                        }
+
+                        vec3 col = vec3(0.0);
+                        col += vec3(0.3, 0.6, 1.0) * bolt;
+                        col += vec3(0.8, 0.9, 1.0) * bolt * bolt * 0.1;
+
+                        // Central glow
+                        col += vec3(0.2, 0.4, 0.8) * 0.1 / (dist + 0.1);
+
+                        gl_FragColor = vec4(col, 1.0);
+                    }
+                `
+            }
+        ];
+
+        let currentShader = 0;
+        let program = null;
+        let paused = false;
+        let pausedTime = 0;
+        let timeOffset = 0;
+
+        // Compile shader
+        function createShader(type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        }
+
+        // Create program
+        function createProgram(fragmentSource) {
+            const vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderSource);
+            const fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentSource);
+
+            const prog = gl.createProgram();
+            gl.attachShader(prog, vertexShader);
+            gl.attachShader(prog, fragmentShader);
+            gl.linkProgram(prog);
+
+            if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+                console.error(gl.getProgramInfoLog(prog));
+                return null;
+            }
+
+            return prog;
+        }
+
+        // Switch shader
+        function switchShader(index) {
+            if (program) {
+                gl.deleteProgram(program);
+            }
+
+            currentShader = index;
+            program = createProgram(shaders[index].source);
+            gl.useProgram(program);
+
+            // Setup attributes
+            const positionLocation = gl.getAttribLocation(program, 'a_position');
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+            // Update name
+            document.getElementById('shaderName').textContent = shaders[index].name;
+        }
+
+        // Create quad
+        const quadBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1,  1, -1,  -1, 1,
+            -1, 1,   1, -1,   1, 1
+        ]), gl.STATIC_DRAW);
+
+        // Mouse position
+        let mouse = { x: 0.5, y: 0.5 };
+
+        document.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX / window.innerWidth;
+            mouse.y = 1 - e.clientY / window.innerHeight;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            mouse.x = e.touches[0].clientX / window.innerWidth;
+            mouse.y = 1 - e.touches[0].clientY / window.innerHeight;
+        }, { passive: true });
+
+        // Controls
+        window.nextShader = function() {
+            switchShader((currentShader + 1) % shaders.length);
+        };
+
+        window.prevShader = function() {
+            switchShader((currentShader - 1 + shaders.length) % shaders.length);
+        };
+
+        window.togglePause = function() {
+            paused = !paused;
+            if (paused) {
+                pausedTime = performance.now() * 0.001 - timeOffset;
+            } else {
+                timeOffset = performance.now() * 0.001 - pausedTime;
+            }
+        };
+
+        // Swipe detection
+        let touchStartX = 0;
+        canvas.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        canvas.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchEndX - touchStartX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    prevShader();
+                } else {
+                    nextShader();
+                }
+            }
+        });
+
+        // Initialize
+        switchShader(0);
+
+        // Animation loop
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            const t = paused ? pausedTime : time * 0.001 - timeOffset;
+
+            const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+            const timeLocation = gl.getUniformLocation(program, 'u_time');
+            const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
+
+            gl.uniform2f(resolutionLocation, width, height);
+            gl.uniform1f(timeLocation, t);
+            gl.uniform2f(mouseLocation, mouse.x, mouse.y);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>
