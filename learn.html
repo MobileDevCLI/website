@@ -334,6 +334,10 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
             .mobile-tabs {
                 display: block;
             }
@@ -347,15 +351,77 @@
             }
 
             .hero h1 {
-                font-size: 2rem;
+                font-size: 1.75rem;
+                word-break: break-word;
+            }
+
+            .hero p {
+                font-size: 1rem;
             }
 
             h2 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
             }
 
             pre {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+                padding: 16px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            pre code {
+                white-space: pre;
+            }
+
+            .code-block {
+                margin: 16px 0;
+            }
+
+            .toc {
+                padding: 16px;
+            }
+
+            .toc ol {
+                padding-left: 20px;
+            }
+
+            .tip, .warning {
+                padding: 16px;
+                font-size: 0.9rem;
+            }
+
+            section {
+                margin-bottom: 48px;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 400px) {
+            .container {
+                padding: 0 12px;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+
+            pre {
+                font-size: 0.65rem;
+                padding: 12px;
+            }
+
+            .copy-btn {
+                padding: 4px 8px;
+                font-size: 0.7rem;
             }
         }
     </style>

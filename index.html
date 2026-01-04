@@ -461,6 +461,10 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
             .mobile-tabs {
                 display: block;
             }
@@ -471,28 +475,65 @@
 
             .hero {
                 padding-top: 120px;
+                min-height: auto;
+                padding-bottom: 60px;
             }
 
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
+                word-break: break-word;
             }
 
             .hero h1 .line2 {
-                font-size: 0.6em;
+                font-size: 0.55em;
             }
 
             .hero-tagline {
-                font-size: 1.1rem;
+                font-size: 1rem;
+                padding: 0 8px;
             }
 
             .hero-code {
                 flex-direction: column;
-                padding: 16px 20px;
-                font-size: 0.8rem;
+                padding: 16px;
+                font-size: 0.7rem;
+                max-width: 100%;
+                overflow-x: auto;
+                word-break: break-all;
+            }
+
+            .hero-code code {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
             }
 
             .section-title {
-                font-size: 2rem;
+                font-size: 1.75rem;
+            }
+
+            .section-desc {
+                font-size: 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .links-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .footer-grid {
@@ -504,6 +545,34 @@
                 flex-direction: column;
                 gap: 16px;
                 text-align: center;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 400px) {
+            .container {
+                padding: 0 12px;
+            }
+
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+
+            .hero-code {
+                font-size: 0.6rem;
+                padding: 12px;
+            }
+
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-card {
+                padding: 20px;
             }
         }
     </style>
@@ -677,9 +746,17 @@
                         <li><a href="https://twitter.com/bcherny">Boris Cherny</a></li>
                     </ul>
                 </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/terms.html">Terms of Service</a></li>
+                        <li><a href="/privacy.html">Privacy Policy</a></li>
+                        <li><a href="/disclaimer.html">Disclaimer</a></li>
+                    </ul>
+                </div>
             </div>
             <div class="footer-bottom">
-                <p class="copyright">&copy; 2025 MobileDevCLI. MIT License.</p>
+                <p class="copyright">&copy; 2026 MobileDevCLI. MIT License.</p>
                 <div class="social-links">
                     <a href="https://github.com/MobileDevCLI">GitHub</a>
                     <a href="https://twitter.com/MobileDevCLI">Twitter</a>
