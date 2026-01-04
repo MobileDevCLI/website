@@ -525,6 +525,7 @@
                     <li><a href="#workflow">7. The Workflow</a></li>
                     <li><a href="#automation">8. Automation Scripts</a></li>
                     <li><a href="#advanced">9. Advanced: Hooks & Agents</a></li>
+                    <li><a href="#troubleshooting">10. Troubleshooting</a></li>
                 </ul>
             </div>
 
@@ -961,6 +962,67 @@ alias gs="git status"
 EOF
 
 echo "Done. Run: source ~/.bashrc && gh auth login"</code></pre>
+                </div>
+            </section>
+
+            <section id="troubleshooting">
+                <h2>Troubleshooting</h2>
+                <p>Common issues and solutions when deploying with GitHub + Vercel.</p>
+
+                <h3>Vercel Stops Deploying After Making Repo Private</h3>
+                <p>When you change a GitHub repo from public to private, Vercel loses access and stops auto-deploying.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Solution: Make repo public again</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Make repos public</span>
+gh repo edit YOUR_USERNAME/YOUR_REPO --visibility public --accept-visibility-change-consequences
+
+<span class="comment"># Trigger fresh deploy</span>
+git commit --allow-empty -m "Trigger deploy"
+git push</code></pre>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-label">Keep repos private?</div>
+                    <p>Go to Vercel → Project Settings → Git → Disconnect, then reconnect and click "Configure GitHub App" to grant private repo access.</p>
+                </div>
+
+                <h3>Changes Not Showing on Live Site</h3>
+                <p>If your changes aren't appearing after pushing:</p>
+                <ul>
+                    <li><strong>Check Vercel dashboard</strong> - Look at Deployments tab for latest commit</li>
+                    <li><strong>Hard refresh browser</strong> - Ctrl+Shift+R or clear cache</li>
+                    <li><strong>Use incognito mode</strong> - Rules out browser caching</li>
+                    <li><strong>Force push</strong> - <code>git push origin main --force</code></li>
+                </ul>
+
+                <h3>GitHub OAuth Not Working</h3>
+                <p>If login with GitHub fails:</p>
+                <ul>
+                    <li>Check Supabase Auth settings (Authentication → Providers → GitHub)</li>
+                    <li>Verify callback URL matches your Supabase project</li>
+                    <li>Check GitHub OAuth App at github.com/settings/developers</li>
+                    <li>Ensure Client ID and Secret are correct</li>
+                </ul>
+
+                <h3>Two Repos Out of Sync</h3>
+                <p>If you have separate repos for code and deployment:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Sync both repos</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Push to both remotes</span>
+git push origin master
+git push website master --force
+
+<span class="comment"># Check what's on each remote</span>
+git log origin/master --oneline -1
+git log website/master --oneline -1</code></pre>
                 </div>
             </section>
 
