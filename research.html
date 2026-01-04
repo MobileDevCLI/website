@@ -3,71 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research Log - MobileCLI</title>
-    <meta name="description" content="Technical discoveries, learnings, and research from building AI development tools on Android. A living document.">
-    <link rel="canonical" href="https://mobilecli.com/research.html">
-
+    <title>Research Lab | MobileCLI</title>
+    <meta name="description" content="Technical discoveries from building AI development tools on mobile. Exclusive research and insights for Pro members.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
-            --bg: #000000;
-            --bg-card: #0a0a0a;
-            --bg-code: #0d1117;
-            --text: #e6e6e6;
-            --text-secondary: #888888;
-            --text-muted: #555555;
-            --matrix: #00ff41;
-            --accent: #00d4ff;
+            --bg: #000;
+            --text: #fff;
+            --text-secondary: #a0a0a0;
+            --matrix: #00ff88;
             --purple: #a855f7;
-            --warning: #ff6b35;
+            --cyan: #00d4ff;
             --border: #1a1a1a;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.8;
+            line-height: 1.6;
+            min-height: 100vh;
         }
 
-        a { color: var(--matrix); text-decoration: none; }
-        a:hover { text-decoration: underline; }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* Navigation */
         nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             height: 60px;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            z-index: 1000;
             display: flex;
             align-items: center;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
         }
 
         nav .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            max-width: 1200px;
         }
 
         .logo {
-            font-size: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
             font-weight: 700;
             color: var(--matrix);
-            font-family: 'Courier New', monospace;
+            text-decoration: none;
         }
 
         .nav-links {
@@ -77,236 +69,140 @@
 
         .nav-links a {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
         }
 
-        /* Main Content */
+        .nav-links a:hover { color: var(--text); }
+
         main {
-            padding-top: 100px;
-            padding-bottom: 80px;
+            padding: 120px 24px 80px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(0, 212, 255, 0.2));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--purple);
+            margin-bottom: 24px;
+            text-transform: uppercase;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
             margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--purple), var(--accent));
+            background: linear-gradient(135deg, var(--purple), var(--cyan));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .subtitle {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: var(--text-secondary);
-            margin-bottom: 24px;
+            margin-bottom: 48px;
+            max-width: 600px;
         }
 
-        .meta {
-            display: flex;
+        .research-grid {
+            display: grid;
             gap: 24px;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
+            margin-bottom: 48px;
         }
 
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Discovery Cards */
-        .discovery {
-            background: var(--bg-card);
+        .research-card {
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 28px;
-            margin-bottom: 28px;
+            padding: 32px;
+            transition: all 0.3s;
         }
 
-        .discovery-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 12px;
+        .research-card:hover {
+            border-color: var(--purple);
+            transform: translateY(-2px);
         }
 
-        .discovery h2 {
-            font-size: 1.4rem;
-            color: var(--text);
-        }
-
-        .discovery-date {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-family: 'Courier New', monospace;
-        }
-
-        .discovery-tag {
+        .research-tag {
             display: inline-block;
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--purple);
             padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
+            margin-bottom: 16px;
         }
 
-        .tag-capability {
-            background: rgba(0, 255, 65, 0.15);
-            color: var(--matrix);
-            border: 1px solid var(--matrix);
+        .research-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: var(--text);
         }
 
-        .tag-workflow {
-            background: rgba(0, 212, 255, 0.15);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-
-        .tag-architecture {
-            background: rgba(168, 85, 247, 0.15);
-            color: var(--purple);
-            border: 1px solid var(--purple);
-        }
-
-        .tag-integration {
-            background: rgba(255, 107, 53, 0.15);
-            color: var(--warning);
-            border: 1px solid var(--warning);
-        }
-
-        .discovery p {
+        .research-card p {
             color: var(--text-secondary);
             margin-bottom: 16px;
         }
 
-        .discovery h3 {
-            font-size: 1rem;
-            color: var(--accent);
-            margin: 20px 0 12px 0;
+        .locked-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--purple);
+            font-size: 13px;
+            font-weight: 500;
         }
 
-        .discovery ul {
-            margin-left: 20px;
+        .cta-section {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 255, 136, 0.1));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 20px;
+            padding: 48px;
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .cta-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
             color: var(--text-secondary);
+            margin-bottom: 24px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .discovery li {
-            margin-bottom: 8px;
-        }
-
-        /* Code Blocks */
-        .code-block {
-            background: var(--bg-code);
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 16px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            overflow-x: auto;
-            margin: 12px 0;
-        }
-
-        .code-block code {
-            color: var(--matrix);
-        }
-
-        /* Key Insight Box */
-        .insight {
-            background: rgba(0, 255, 65, 0.05);
-            border-left: 3px solid var(--matrix);
-            padding: 16px 20px;
-            margin: 16px 0;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .insight-label {
-            font-size: 0.75rem;
-            color: var(--matrix);
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .insight p {
-            color: var(--text);
-            margin: 0;
-            font-size: 0.95rem;
-        }
-
-        /* Timeline */
-        .timeline {
-            border-left: 2px solid var(--border);
-            padding-left: 24px;
-            margin: 24px 0;
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 20px;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -29px;
-            top: 6px;
-            width: 10px;
-            height: 10px;
+        .btn-primary {
+            display: inline-block;
             background: var(--matrix);
-            border-radius: 50%;
+            color: var(--bg);
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
         }
 
-        .timeline-date {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-family: 'Courier New', monospace;
-        }
-
-        .timeline-content {
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 40px 0;
-            text-align: center;
-            color: var(--text-muted);
-        }
-
-        /* Section Divider */
-        .section-divider {
-            text-align: center;
-            margin: 48px 0;
-            color: var(--text-muted);
-        }
-
-        .section-divider span {
-            padding: 0 16px;
-            background: var(--bg);
-            position: relative;
-        }
-
-        .section-divider::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 50%;
-            height: 1px;
-            background: var(--border);
-            z-index: -1;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 1.8rem; }
             .nav-links { display: none; }
-            .discovery { padding: 20px; }
+            .cta-section { padding: 32px 24px; }
         }
     </style>
 </head>
@@ -315,321 +211,68 @@
         <div class="container">
             <a href="/" class="logo">>_ MobileCLI</a>
             <div class="nav-links">
+                <a href="/pricing.html">Pricing</a>
                 <a href="/learn.html">Docs</a>
-                <a href="/quickstart.html">Quick Start</a>
-                <a href="/research.html" style="color: var(--purple);">Research</a>
                 <a href="/demos.html">Demos</a>
+                <a href="/games.html">Games</a>
             </div>
         </div>
     </nav>
 
     <main>
-        <div class="container">
-            <h1>Research Log</h1>
-            <p class="subtitle">Technical discoveries from building AI development tools on Android. A living document updated as we learn.</p>
+        <span class="hero-badge">Pro Research Lab</span>
+        <h1>Technical Discoveries</h1>
+        <p class="subtitle">Exclusive insights from building AI development tools on mobile. A living research log updated with every breakthrough.</p>
 
-            <div class="meta">
-                <div class="meta-item">Started: January 2, 2026</div>
-                <div class="meta-item">Last updated: January 4, 2026</div>
-                <div class="meta-item">Session: One continuous Claude Code conversation</div>
+        <div class="research-grid">
+            <div class="research-card">
+                <span class="research-tag">Capability</span>
+                <h3>Visual AI Debugging</h3>
+                <p>Discover how Claude Code can directly analyze screenshots from your phone's camera roll — enabling visual debugging, UI iteration, and verification loops that multiply output quality.</p>
+                <span class="locked-badge">🔒 Pro Access Required</span>
             </div>
 
-            <!-- Discovery 0: The Great Cache Crisis -->
-            <div class="discovery" id="cache-crisis" style="border-color: #ff6b35;">
-                <div class="discovery-header">
-                    <div>
-                        <span class="discovery-tag tag-integration">Integration</span>
-                        <h2>The Great Cache Crisis of January 4th</h2>
-                    </div>
-                    <div class="discovery-date">Jan 4, 2026</div>
-                </div>
-
-                <p>We spent hours debugging why the website wasn't updating. Multiple phones, multiple browsers, different locations (even had mom check from her house). All showed old content. The solution taught us everything about web caching.</p>
-
-                <h3>The Symptoms</h3>
-                <ul>
-                    <li>Git push succeeded to both repos</li>
-                    <li>GitHub showed the new code</li>
-                    <li>Vercel showed the correct commit deployed</li>
-                    <li>But browsers showed OLD content everywhere</li>
-                    <li>Multiple devices, multiple browsers, multiple locations - all cached</li>
-                </ul>
-
-                <h3>The Breakthrough</h3>
-                <p>The key was using <code>curl</code> to bypass ALL caching layers:</p>
-                <div class="code-block">
-                    <code>curl -sL "https://mobilecli.com" | grep "new content"</code>
-                </div>
-                <p>If curl shows new content but browsers don't → It's cache, not deployment.</p>
-
-                <h3>The Four Layers of Cache Hell</h3>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-date">Layer 1</div>
-                        <div class="timeline-content"><strong>Browser Cache:</strong> Your browser stores pages locally. Even incognito can miss this.</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Layer 2</div>
-                        <div class="timeline-content"><strong>Vercel Edge Cache:</strong> Vercel's 100+ global CDN nodes all cache your content.</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Layer 3</div>
-                        <div class="timeline-content"><strong>ISP Cache:</strong> Your internet provider may cache popular sites.</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Layer 4</div>
-                        <div class="timeline-content"><strong>OS/Network Cache:</strong> Android, routers, DNS all have caching layers.</div>
-                    </div>
-                </div>
-
-                <h3>The Solution</h3>
-                <p>We added <code>vercel.json</code> with aggressive cache-control headers:</p>
-                <div class="code-block">
-                    <code>{<br>  "headers": [{<br>    "source": "/(.*).html",<br>    "headers": [{<br>      "key": "Cache-Control",<br>      "value": "public, max-age=0, must-revalidate"<br>    }]<br>  }]<br>}</code>
-                </div>
-
-                <h3>The Nuclear Test</h3>
-                <p>When truly desperate, add an impossible-to-miss visual element:</p>
-                <div class="code-block">
-                    <code>&lt;div style="background: #ff0000; color: white; padding: 15px;<br>     position: fixed; top: 0; left: 0; right: 0; z-index: 9999;"&gt;<br>  SITE UPDATED: [timestamp] - If you see this, it works!<br>&lt;/div&gt;</code>
-                </div>
-
-                <div class="insight">
-                    <div class="insight-label">Key Lesson</div>
-                    <p>When debugging "site not updating" issues, ALWAYS test with curl first. It bypasses every cache layer and shows exactly what the server is returning. If curl shows new content, the problem is cached somewhere between the server and your eyeballs.</p>
-                </div>
+            <div class="research-card">
+                <span class="research-tag">Workflow</span>
+                <h3>The 2-3x Quality Multiplier</h3>
+                <p>Learn the single most important pattern for AI-assisted development: verification loops. When AI can test its own work, quality jumps dramatically.</p>
+                <span class="locked-badge">🔒 Pro Access Required</span>
             </div>
 
-            <!-- Discovery 1: Screenshot Access -->
-            <div class="discovery" id="screenshot-access">
-                <div class="discovery-header">
-                    <div>
-                        <span class="discovery-tag tag-capability">Capability</span>
-                        <h2>Claude Code Can Read Phone Screenshots</h2>
-                    </div>
-                    <div class="discovery-date">Jan 4, 2026</div>
-                </div>
-
-                <p>Major discovery: Claude Code running in Terminal can directly access and analyze screenshots stored on the phone's filesystem.</p>
-
-                <h3>How It Works</h3>
-                <p>After running <code>terminal-setup-storage</code>, Terminal gets access to shared storage. Screenshots are stored at:</p>
-                <div class="code-block">
-                    <code>~/storage/dcim/Screenshots/</code>
-                </div>
-
-                <p>Claude Code's Read tool can open these image files and analyze them visually:</p>
-                <div class="code-block">
-                    <code>Read ~/storage/dcim/Screenshots/Screenshot_20260104_082817.jpg</code>
-                </div>
-
-                <div class="insight">
-                    <div class="insight-label">Key Insight</div>
-                    <p>This creates a visual verification loop. Take a screenshot of your app, and Claude can analyze the UI without you describing it. The AI literally sees what you see.</p>
-                </div>
-
-                <h3>Implications</h3>
-                <ul>
-                    <li><strong>Visual debugging</strong> - Screenshot a bug, Claude sees it directly</li>
-                    <li><strong>UI iteration</strong> - "Make this button bigger" with visual reference</li>
-                    <li><strong>Verification loop</strong> - The 2-3x quality multiplier, now visual</li>
-                    <li><strong>Game development</strong> - Claude can see rendered frames and iterate</li>
-                </ul>
-
-                <h3>Screenshot Paths by Android</h3>
-                <div class="code-block">
-                    <code># Samsung devices<br>~/storage/dcim/Screenshots/<br><br># Pixel devices<br>~/storage/pictures/Screenshots/<br><br># Generic path<br>~/storage/shared/Pictures/Screenshots/</code>
-                </div>
+            <div class="research-card">
+                <span class="research-tag">Integration</span>
+                <h3>Multi-Layer Cache Debugging</h3>
+                <p>Master the four layers of web caching that can make changes appear broken. Essential knowledge for deploying from mobile to production.</p>
+                <span class="locked-badge">🔒 Pro Access Required</span>
             </div>
 
-            <!-- Discovery 2: Pro Workflow -->
-            <div class="discovery" id="pro-workflow">
-                <div class="discovery-header">
-                    <div>
-                        <span class="discovery-tag tag-workflow">Workflow</span>
-                        <h2>Pro Workflow for Mobile Development</h2>
-                    </div>
-                    <div class="discovery-date">Jan 3, 2026</div>
-                </div>
-
-                <p>Advanced productivity techniques adapted for mobile AI development. These patterns maximize efficiency when coding on a phone.</p>
-
-                <h3>The Core Practices</h3>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-date">Practice 1</div>
-                        <div class="timeline-content"><strong>Parallel Sessions:</strong> Run 5+ Claude instances simultaneously. While one thinks, prompt another.</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Practice 2</div>
-                        <div class="timeline-content"><strong>Always Opus 4.5:</strong> The "big slow model" needs less steering, better tool use. Faster overall.</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Practice 3</div>
-                        <div class="timeline-content"><strong>CLAUDE.md Compounding:</strong> Every time Claude does something wrong, add it to CLAUDE.md. Knowledge accumulates.</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Practice 4</div>
-                        <div class="timeline-content"><strong>Plan Mode First:</strong> Use Shift+Tab twice. Get the plan right before coding.</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Practice 5</div>
-                        <div class="timeline-content"><strong>Verification is Everything:</strong> Give Claude a way to verify its work = 2-3x quality multiplier.</div>
-                    </div>
-                </div>
-
-                <div class="insight">
-                    <div class="insight-label">Mobile Adaptation</div>
-                    <p>On mobile, we can't run multiple terminals easily. Instead: use tmux windows within a single session, and leverage the phone's always-on capability for overnight autonomous tasks.</p>
-                </div>
+            <div class="research-card">
+                <span class="research-tag">Hardware</span>
+                <h3>Full Device API Access</h3>
+                <p>Access camera, clipboard, notifications, text-to-speech, and more from the command line. Transform your phone into a complete development workstation.</p>
+                <span class="locked-badge">🔒 Pro Access Required</span>
             </div>
 
-            <!-- Discovery 3: CLI vs API -->
-            <div class="discovery" id="cli-vs-api">
-                <div class="discovery-header">
-                    <div>
-                        <span class="discovery-tag tag-architecture">Architecture</span>
-                        <h2>CLI Beats API for Development</h2>
-                    </div>
-                    <div class="discovery-date">Jan 2, 2026</div>
-                </div>
-
-                <p>We're not building around the Anthropic API. We're using Claude Code CLI directly.</p>
-
-                <h3>Why CLI Over API</h3>
-                <ul>
-                    <li><strong>Better rates:</strong> CLI subscription vs per-token API billing</li>
-                    <li><strong>No key management:</strong> OAuth login instead of API keys</li>
-                    <li><strong>Full tooling:</strong> File editing, shell commands, git integration built-in</li>
-                    <li><strong>Conversation context:</strong> Maintains full session state automatically</li>
-                    <li><strong>Autonomy:</strong> Can run overnight with --dangerously-skip-permissions</li>
-                </ul>
-
-                <div class="code-block">
-                    <code># API approach (old way)<br>curl -X POST https://api.anthropic.com/v1/messages \<br>  -H "x-api-key: $ANTHROPIC_API_KEY" \<br>  -d '{"model":"claude-3-opus", "messages":[...]}'<br><br># CLI approach (our way)<br>claude "build me a website"</code>
-                </div>
-
-                <div class="insight">
-                    <div class="insight-label">Key Insight</div>
-                    <p>The CLI is the product, not a wrapper around an API. It's a complete development environment that happens to use Claude under the hood.</p>
-                </div>
+            <div class="research-card">
+                <span class="research-tag">Performance</span>
+                <h3>24+ Hour Session Techniques</h3>
+                <p>Specific configurations to keep AI sessions running indefinitely. Wake locks, process priority, and terminal multiplexing strategies.</p>
+                <span class="locked-badge">🔒 Pro Access Required</span>
             </div>
 
-            <!-- Discovery 4: Terminal Persistence -->
-            <div class="discovery" id="terminal-persistence">
-                <div class="discovery-header">
-                    <div>
-                        <span class="discovery-tag tag-integration">Integration</span>
-                        <h2>Making Terminal Truly Persistent</h2>
-                    </div>
-                    <div class="discovery-date">Jan 2, 2026</div>
-                </div>
-
-                <p>Android aggressively kills background apps. Here's how we keep Claude running for hours/days.</p>
-
-                <h3>The Triple Lock</h3>
-                <div class="code-block">
-                    <code># 1. Wake lock (prevents CPU sleep)<br>terminal-wake-lock<br><br># 2. Notification (keeps process priority high)<br>terminal-notification -t "Claude Running" --ongoing<br><br># 3. tmux (session survives Terminal close)<br>tmux new -s dev</code>
-                </div>
-
-                <h3>The Combo Command</h3>
-                <p>We created a helper function:</p>
-                <div class="code-block">
-                    <code>stay-awake() {<br>  terminal-wake-lock<br>  terminal-notification -t "Dev Session" --ongoing<br>  echo "Device will stay awake"<br>}</code>
-                </div>
-
-                <div class="insight">
-                    <div class="insight-label">Result</div>
-                    <p>Claude ran autonomously for over 24 hours straight, making 2.4 million token interactions, building multiple features while the phone sat in a pocket.</p>
-                </div>
+            <div class="research-card">
+                <span class="research-tag">Methodology</span>
+                <h3>CLAUDE.md Knowledge Compounding</h3>
+                <p>The technique that makes AI get smarter over time. How to structure project instructions so every mistake becomes a permanent rule.</p>
+                <span class="locked-badge">🔒 Pro Access Required</span>
             </div>
+        </div>
 
-            <!-- Discovery 5: Full Stack from Phone -->
-            <div class="discovery" id="full-stack">
-                <div class="discovery-header">
-                    <div>
-                        <span class="discovery-tag tag-workflow">Workflow</span>
-                        <h2>Complete SaaS from a Phone</h2>
-                    </div>
-                    <div class="discovery-date">Jan 2-4, 2026</div>
-                </div>
-
-                <p>Everything on mobilecli.com was built in a single continuous Claude Code session running on an Android phone.</p>
-
-                <h3>What We Built</h3>
-                <ul>
-                    <li>17+ interactive physics demos (Three.js, WebGL)</li>
-                    <li>Full documentation site with expandable sections</li>
-                    <li>Auth system with GitHub OAuth (Supabase)</li>
-                    <li>Pricing page with Stripe integration</li>
-                    <li>Labs page for experimental APKs</li>
-                    <li>Multiple games (Sketchbook, Vibe Jam)</li>
-                    <li>This research log you're reading now</li>
-                </ul>
-
-                <h3>The Stack</h3>
-                <div class="code-block">
-                    <code># Frontend: Vanilla HTML/CSS/JS, Three.js, Cannon.js<br># Hosting: Vercel (auto-deploy from GitHub)<br># Auth: Supabase (GitHub OAuth)<br># Payments: Stripe<br># Version Control: Git + GitHub<br># Development: Claude Code in Terminal on Android</code>
-                </div>
-
-                <h3>Timeline</h3>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-date">Day 1</div>
-                        <div class="timeline-content">Set up Terminal, installed Claude Code, created initial site structure</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Day 2</div>
-                        <div class="timeline-content">Built 17 physics demos, games, examples page, Three.js integration</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Day 3</div>
-                        <div class="timeline-content">Auth, dashboard, pricing, FAQ, hero page with physics, labs page</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Day 4</div>
-                        <div class="timeline-content">Documentation overhaul, pro workflow docs, quickstart, research log</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Future Research -->
-            <div class="section-divider" style="position: relative;">
-                <span>Future Research</span>
-            </div>
-
-            <div class="discovery" style="border-color: var(--accent);">
-                <h2 style="color: var(--accent);">Open Questions</h2>
-                <p>Things we're still investigating:</p>
-                <ul>
-                    <li><strong>Android AI CLI App:</strong> Can we ship a standalone app that runs Claude without Terminal? (Currently Phase 3 of 6)</li>
-                    <li><strong>Multi-device sync:</strong> How do we sync CLAUDE.md and sessions across multiple phones?</li>
-                    <li><strong>MCP on mobile:</strong> Can we run MCP servers for Slack, analytics in Terminal?</li>
-                    <li><strong>Camera integration:</strong> Can Claude take photos via terminal-camera and analyze them?</li>
-                    <li><strong>Voice control:</strong> Using terminal-tts and terminal-speech to control Claude hands-free</li>
-                </ul>
-            </div>
-
-            <!-- Contributing -->
-            <div style="text-align: center; margin-top: 48px; padding: 32px; background: var(--bg-card); border-radius: 12px;">
-                <h3 style="color: var(--text); margin-bottom: 12px;">Found Something New?</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">This is a living document. If you discover something, let us know.</p>
-                <a href="https://github.com/MobileDevCLI/setup/issues" style="display: inline-block; padding: 12px 32px; background: var(--purple); color: #fff; font-weight: 600; border-radius: 8px; text-decoration: none;">Open an Issue</a>
-            </div>
+        <div class="cta-section">
+            <h2>Unlock the Research Lab</h2>
+            <p>Get full access to all technical discoveries, exact commands, and the complete methodology. New research added regularly.</p>
+            <a href="/pricing.html" class="btn-primary">Get Pro Access</a>
         </div>
     </main>
-
-    <footer>
-        <div class="container">
-            <p style="margin-bottom: 12px;">
-                <a href="/terms.html">Terms</a> ·
-                <a href="/privacy.html">Privacy</a> ·
-                <a href="/disclaimer.html">Disclaimer</a> ·
-                <a href="/ip.html">IP Notice</a> ·
-                <a href="/dmca.html">DMCA</a>
-            </p>
-            <p>&copy; 2026 Samblamz / MobileDevCLI. All Rights Reserved.</p>
-        </div>
-    </footer>
 </body>
 </html>

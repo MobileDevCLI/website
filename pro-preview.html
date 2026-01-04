@@ -499,6 +499,93 @@ git push website master
 git add -A && git commit -m "message" && git push origin master && git push website master</pre>
         </div>
 
+        <h2>Research Discoveries</h2>
+        <p>Technical discoveries from building this platform. Updated as we learn.</p>
+
+        <h3>Claude Code Can Read Phone Screenshots</h3>
+        <p>After running <code>termux-setup-storage</code>, Termux gets access to shared storage. Claude Code's Read tool can open and analyze screenshots:</p>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash - Screenshot Access</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Grant storage access first
+termux-setup-storage
+
+# Screenshot locations:
+~/storage/dcim/Screenshots/           # Samsung
+~/storage/pictures/Screenshots/       # Pixel
+~/storage/shared/Pictures/Screenshots/ # Generic
+
+# Claude can read these directly
+# Just use: Read ~/storage/dcim/Screenshots/filename.jpg</pre>
+        </div>
+        <p><strong>Use cases:</strong> Visual debugging (screenshot a bug, Claude sees it), UI iteration ("make this button bigger" with visual reference), game development (Claude can see rendered frames).</p>
+
+        <h3>The Verification Loop (2-3x Quality Multiplier)</h3>
+        <p>The single most important pattern: Give Claude a way to verify its work. If it can test and iterate, quality jumps 2-3x.</p>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash - Verification Examples</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Web development - serve and screenshot
+npx http-server -p 8080 &
+termux-open-url "http://localhost:8080"
+# Take screenshot, Claude analyzes it
+
+# CLI tools - run and check output
+node script.js
+echo $?  # Claude checks exit code
+
+# Tests - run test suite
+npm test</pre>
+        </div>
+
+        <h3>Multi-Layer Caching (The Great Cache Crisis)</h3>
+        <p>When debugging "site not updating" issues, there are FOUR caching layers that can serve stale content:</p>
+        <ul>
+            <li><strong>Browser Cache</strong> - Your browser stores pages locally</li>
+            <li><strong>Vercel Edge Cache</strong> - Vercel's global CDN caches at edge nodes</li>
+            <li><strong>ISP Cache</strong> - Your internet provider may cache</li>
+            <li><strong>OS/Network Cache</strong> - Device-level caching</li>
+        </ul>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash - Bypass All Caching</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># This bypasses ALL caching and shows what server actually has
+curl -sL "https://yoursite.com" | grep "some text"
+
+# If curl shows new content but browser doesn't = cache problem</pre>
+        </div>
+
+        <h2>The Story</h2>
+        <p>How this platform was built — entirely from a phone.</p>
+
+        <h3>The Problem We Solved</h3>
+        <p>Traditional mobile development options (cloud IDEs like Replit) have limitations:</p>
+        <ul>
+            <li>Per-compute pricing that adds up</li>
+            <li>Session timeouts</li>
+            <li>Limited system access (sandboxed)</li>
+            <li>Latency to cloud servers</li>
+        </ul>
+
+        <h3>The Solution</h3>
+        <p>We discovered you can run a <strong>full local development environment</strong> on Android:</p>
+        <ul>
+            <li>Native performance (no cloud latency)</li>
+            <li>Flat subscription cost (no per-compute charges)</li>
+            <li>24+ hour sessions (runs while you sleep)</li>
+            <li>Full system access (not sandboxed)</li>
+            <li>Works offline (except AI calls)</li>
+        </ul>
+
+        <h3>What We Built</h3>
+        <p>This entire website — every page, every demo, every feature — was built in <strong>one continuous Claude Code session</strong> running on an Android phone. No laptop was used at any point.</p>
+
         <h2>Troubleshooting</h2>
 
         <h3>Claude Code not installing?</h3>
