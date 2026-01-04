@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn - AI Development Environments | MobileDevCLI</title>
-    <meta name="description" content="Compare AI development environments: Phone CLI, PC CLI, Web apps, and Android apps. Find the best tool for your workflow.">
+    <title>Setup Guide - MobileDevCLI</title>
+    <meta name="description" content="Complete guide to setting up Claude Code on Android with Termux. Commands, configuration, and automation.">
     <link rel="canonical" href="https://mobilecli.com/learn">
 
     <style>
@@ -15,38 +15,34 @@
         }
 
         :root {
-            --bg: #0a0a0a;
-            --bg-secondary: #0f0f0f;
-            --bg-tertiary: #1a1a1a;
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-code: #0d1117;
             --bg-card: #111111;
-            --text: #ffffff;
+            --text: #e6e6e6;
             --text-secondary: #888888;
             --text-muted: #555555;
-            --accent-1: #00ff88;
-            --accent-2: #00d4ff;
-            --accent-3: #ff6b6b;
-            --accent-4: #ffd93d;
-            --gradient: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-            --border: #222222;
+            --matrix: #00ff41;
+            --border: #1a1a1a;
+            --code-border: #30363d;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
+            line-height: 1.7;
         }
 
         a {
-            color: var(--accent-1);
+            color: var(--matrix);
             text-decoration: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
         }
 
         /* Navigation */
@@ -55,523 +51,311 @@
             top: 0;
             left: 0;
             right: 0;
-            padding: 16px 0;
-            background: rgba(10, 10, 10, 0.95);
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             z-index: 1000;
+            display: flex;
+            align-items: center;
         }
 
         nav .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
+            max-width: 1200px;
         }
 
         .logo {
             font-size: 1.25rem;
             font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
         }
 
         .nav-links {
             display: flex;
-            gap: 32px;
+            gap: 28px;
         }
 
         .nav-links a {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            font-weight: 500;
         }
 
         .nav-links a:hover, .nav-links a.active {
-            color: var(--text);
+            color: var(--matrix);
         }
 
-        /* Hero */
-        .hero {
-            padding: 140px 0 60px;
-            text-align: center;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            background: var(--gradient);
-            border-radius: 100px;
-            font-size: 0.85rem;
-            color: var(--bg);
-            font-weight: 600;
-            margin-bottom: 24px;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .hero .tagline {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        /* Section */
-        section {
-            padding: 60px 0;
-        }
-
-        .section-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--accent-1);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .section-desc {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 40px;
-        }
-
-        /* Environment Cards */
-        .env-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-            margin-bottom: 60px;
-        }
-
-        .env-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 32px;
-            transition: all 0.3s;
-        }
-
-        .env-card:hover {
-            border-color: var(--accent-1);
-        }
-
-        .env-card.winner {
-            border-color: var(--accent-1);
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.1);
-        }
-
-        .env-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .env-icon {
-            width: 56px;
-            height: 56px;
-            background: var(--bg-tertiary);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-        }
-
-        .env-title h3 {
-            font-size: 1.3rem;
-            margin-bottom: 4px;
-        }
-
-        .env-title span {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .env-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            background: var(--accent-1);
-            color: var(--bg);
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 100px;
-            margin-left: auto;
-        }
-
-        .env-desc {
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            font-size: 0.95rem;
-        }
-
-        .env-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat {
-            text-align: center;
-            padding: 16px;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-1);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        .env-pros-cons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .pros, .cons {
-            padding: 16px;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-        }
-
-        .pros h4, .cons h4 {
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .pros h4 { color: var(--accent-1); }
-        .cons h4 { color: var(--accent-3); }
-
-        .pros ul, .cons ul {
-            list-style: none;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .pros li, .cons li {
-            margin-bottom: 6px;
-            padding-left: 16px;
-            position: relative;
-        }
-
-        .pros li::before {
-            content: "+";
-            position: absolute;
-            left: 0;
-            color: var(--accent-1);
-        }
-
-        .cons li::before {
-            content: "-";
-            position: absolute;
-            left: 0;
-            color: var(--accent-3);
-        }
-
-        /* Comparison Table */
-        .comparison-table {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 60px;
-        }
-
-        .comparison-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .comparison-table th,
-        .comparison-table td {
-            padding: 20px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .comparison-table th {
-            background: var(--bg-tertiary);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .comparison-table td {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .comparison-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .comparison-table .check {
-            color: var(--accent-1);
-            font-size: 1.2rem;
-        }
-
-        .comparison-table .cross {
-            color: var(--accent-3);
-            font-size: 1.2rem;
-        }
-
-        .comparison-table .partial {
-            color: var(--accent-4);
-            font-size: 1.2rem;
-        }
-
-        /* Winner Section */
-        .winner-section {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
-            border: 1px solid var(--accent-1);
-            border-radius: 20px;
-            padding: 48px;
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .winner-section h2 {
-            font-size: 2rem;
-            margin-bottom: 16px;
-        }
-
-        .winner-section p {
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 32px;
-            font-size: 1.1rem;
-        }
-
-        .winner-badges {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .winner-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            font-size: 0.95rem;
-        }
-
-        .winner-badge .icon {
-            font-size: 1.2rem;
-        }
-
-        /* Use Cases */
-        .use-cases {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        .use-case {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px;
-        }
-
-        .use-case h3 {
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .use-case p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 16px;
-        }
-
-        .use-case .recommendation {
-            padding: 12px;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            font-size: 0.85rem;
-        }
-
-        .use-case .recommendation strong {
-            color: var(--accent-1);
-        }
-
-        /* CTA */
-        .cta-section {
-            text-align: center;
-            padding: 60px;
-            background: var(--bg-secondary);
-            border-radius: 20px;
-        }
-
-        .cta-section h2 {
-            font-size: 2rem;
-            margin-bottom: 16px;
-        }
-
-        .cta-section p {
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 16px 32px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--text);
-            color: var(--bg);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
-        }
-
-        /* Footer */
-        footer {
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-            margin-top: 60px;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 24px;
-        }
-
-        .footer-links a {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .copyright {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        /* Mobile Tab Bar */
+        /* Mobile Tabs */
         .mobile-tabs {
             display: none;
             position: fixed;
-            top: 57px;
+            top: 60px;
             left: 0;
             right: 0;
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
             z-index: 999;
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .mobile-tabs::-webkit-scrollbar {
-            display: none;
         }
 
         .mobile-tabs-inner {
             display: flex;
-            padding: 0 8px;
             min-width: max-content;
         }
 
         .mobile-tab {
-            flex: 0 0 auto;
-            padding: 14px 18px;
+            padding: 12px 16px;
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-size: 0.85rem;
             white-space: nowrap;
             border-bottom: 2px solid transparent;
+        }
+
+        .mobile-tab.active {
+            color: var(--matrix);
+            border-bottom-color: var(--matrix);
+        }
+
+        /* Content */
+        .content {
+            padding: 100px 0 60px;
+        }
+
+        .hero {
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+            color: var(--matrix);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 48px;
+        }
+
+        .toc h2 {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 8px;
+        }
+
+        .toc a {
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .toc a:hover {
+            color: var(--matrix);
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 64px;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin: 32px 0 16px;
+            color: var(--text);
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--code-border);
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--code-border);
+        }
+
+        .code-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--code-border);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
             transition: all 0.2s;
         }
 
-        .mobile-tab:hover, .mobile-tab.active {
+        .copy-btn:hover {
+            background: var(--matrix);
+            color: var(--bg);
+            border-color: var(--matrix);
+        }
+
+        pre {
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        code {
             color: var(--text);
-            border-bottom-color: var(--accent-1);
+        }
+
+        .comment {
+            color: var(--text-muted);
+        }
+
+        .cmd {
+            color: var(--matrix);
+        }
+
+        .string {
+            color: #a5d6ff;
+        }
+
+        /* Inline code */
+        p code, li code {
+            background: var(--bg-code);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--matrix);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Tips */
+        .tip {
+            background: rgba(0, 255, 65, 0.05);
+            border-left: 3px solid var(--matrix);
+            padding: 16px 20px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tip-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--matrix);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .tip p {
+            margin: 0;
+            color: var(--text);
+        }
+
+        /* Warning */
+        .warning {
+            background: rgba(255, 200, 0, 0.05);
+            border-left: 3px solid #ffc800;
+            padding: 16px 20px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning .tip-label {
+            color: #ffc800;
+        }
+
+        /* Footer */
+        footer {
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
         }
 
         /* Responsive */
-        @media (max-width: 968px) {
-            .env-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         @media (max-width: 768px) {
             .mobile-tabs {
                 display: block;
-            }
-
-            .hero {
-                padding-top: 160px;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
             }
 
             .nav-links {
                 display: none;
             }
 
-            .env-stats {
-                grid-template-columns: 1fr;
+            .content {
+                padding-top: 130px;
             }
 
-            .env-pros-cons {
-                grid-template-columns: 1fr;
+            .hero h1 {
+                font-size: 2rem;
             }
 
-            .comparison-table {
-                overflow-x: auto;
+            h2 {
+                font-size: 1.5rem;
             }
 
-            .winner-section {
-                padding: 32px 24px;
+            pre {
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -579,393 +363,503 @@
 <body>
     <nav>
         <div class="container">
-            <a href="/" class="logo">MobileDevCLI</a>
+            <a href="/" class="logo">>_ MobileDevCLI</a>
             <div class="nav-links">
-                <a href="/">Home</a>
                 <a href="/games.html">Games</a>
                 <a href="/learn.html" class="active">Learn</a>
-                <a href="https://github.com/MobileDevCLI">GitHub</a>
+                <a href="https://youtube.com/@MobileDevCLI">YouTube</a>
                 <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
             </div>
         </div>
     </nav>
 
-    <!-- Mobile Tab Bar -->
     <div class="mobile-tabs">
         <div class="mobile-tabs-inner">
             <a href="/" class="mobile-tab">Home</a>
             <a href="/games.html" class="mobile-tab">Games</a>
             <a href="/learn.html" class="mobile-tab active">Learn</a>
-            <a href="https://github.com/MobileDevCLI" class="mobile-tab">GitHub</a>
+            <a href="https://youtube.com/@MobileDevCLI" class="mobile-tab">YouTube</a>
             <a href="https://twitter.com/MobileDevCLI" class="mobile-tab">Twitter</a>
         </div>
     </div>
 
-    <section class="hero">
+    <div class="content">
         <div class="container">
-            <div class="hero-badge">Complete Guide</div>
-            <h1>AI Development Environments</h1>
-            <p class="tagline">Compare every way to code with AI. Phone CLI, PC CLI, web interfaces, and mobile apps. Find what works best for you.</p>
+            <div class="hero">
+                <h1>Setup Guide</h1>
+                <p>Everything you need to run Claude Code on Android. Commands, configuration, automation.</p>
+            </div>
+
+            <div class="toc">
+                <h2>Contents</h2>
+                <ul>
+                    <li><a href="#install-termux">1. Install Termux</a></li>
+                    <li><a href="#setup-packages">2. Install Packages</a></li>
+                    <li><a href="#install-claude">3. Install Claude Code</a></li>
+                    <li><a href="#boris-mode">4. Boris Mode (Autonomous)</a></li>
+                    <li><a href="#persistent">5. Keep Termux Running Forever</a></li>
+                    <li><a href="#github-auth">6. GitHub Authentication</a></li>
+                    <li><a href="#workflow">7. The Workflow</a></li>
+                    <li><a href="#automation">8. Automation Scripts</a></li>
+                    <li><a href="#advanced">9. Advanced: Hooks & Agents</a></li>
+                </ul>
+            </div>
+
+            <section id="install-termux">
+                <h2>1. Install Termux</h2>
+                <p>Get Termux from F-Droid (not Play Store - that version is outdated).</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Download</span>
+                    </div>
+                    <pre><code><a href="https://f-droid.org/packages/com.termux/" target="_blank">https://f-droid.org/packages/com.termux/</a></code></pre>
+                </div>
+
+                <p>After installing, open Termux and grant storage access:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>termux-setup-storage</code></pre>
+                </div>
+
+                <p>Tap "Allow" when prompted. This lets Termux access your files.</p>
+            </section>
+
+            <section id="setup-packages">
+                <h2>2. Install Packages</h2>
+                <p>Update Termux and install the essentials:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Update package lists</span>
+pkg update -y && pkg upgrade -y
+
+<span class="comment"># Install Node.js, Git, GitHub CLI</span>
+pkg install -y nodejs git gh</code></pre>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-label">Why these packages?</div>
+                    <p><strong>nodejs</strong> - Claude Code runs on Node.js<br>
+                    <strong>git</strong> - Version control, push/pull repos<br>
+                    <strong>gh</strong> - GitHub CLI for auth and repo management</p>
+                </div>
+            </section>
+
+            <section id="install-claude">
+                <h2>3. Install Claude Code</h2>
+                <p>Install Claude Code globally via npm:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+                </div>
+
+                <p>Start Claude Code:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>claude</code></pre>
+                </div>
+
+                <p>First run will ask you to authenticate. Follow the prompts to log in with your Anthropic account.</p>
+            </section>
+
+            <section id="boris-mode">
+                <h2>4. Boris Mode (Autonomous)</h2>
+                <p>By default, Claude asks permission before reading files, writing files, and running commands. On mobile, this is tedious.</p>
+
+                <p><strong>Boris Mode</strong> (named after Boris Cherny, creator of Claude Code) runs with <code>--dangerously-skip-permissions</code>, letting Claude work autonomously.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Run Claude in Boris Mode</span>
+claude --dangerously-skip-permissions</code></pre>
+                </div>
+
+                <h3>Set Up Aliases</h3>
+                <p>Add these to your <code>~/.bashrc</code> so you don't have to type the full command:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">~/.bashrc</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Boris Mode aliases</span>
+alias claude="claude --dangerously-skip-permissions"
+alias cc="claude --dangerously-skip-permissions"</code></pre>
+                </div>
+
+                <p>Apply changes:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>source ~/.bashrc</code></pre>
+                </div>
+
+                <p>Now just type <code>cc</code> to start Claude in Boris Mode.</p>
+
+                <div class="warning">
+                    <div class="tip-label">Warning</div>
+                    <p>Boris Mode gives Claude full access to your system. Only use in environments you trust. Great for personal projects, careful with sensitive data.</p>
+                </div>
+            </section>
+
+            <section id="persistent">
+                <h2>5. Keep Termux Running Forever</h2>
+                <p>By default, Android kills background apps. Fix this:</p>
+
+                <h3>Enable Wake Lock</h3>
+                <p>Keeps Termux running even when screen is off:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Acquire wake lock (keeps CPU running)</span>
+termux-wake-lock
+
+<span class="comment"># Release when done</span>
+termux-wake-unlock</code></pre>
+                </div>
+
+                <h3>Disable Battery Optimization</h3>
+                <ol>
+                    <li>Go to Android Settings → Apps → Termux</li>
+                    <li>Battery → Set to "Unrestricted"</li>
+                    <li>This prevents Android from killing Termux</li>
+                </ol>
+
+                <h3>Enable External Apps</h3>
+                <p>Let Termux be triggered by other apps:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">~/.termux/termux.properties</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>allow-external-apps=true</code></pre>
+                </div>
+
+                <p>Create the file if it doesn't exist:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>mkdir -p ~/.termux
+echo "allow-external-apps=true" >> ~/.termux/termux.properties</code></pre>
+                </div>
+
+                <h3>Run Sessions in Background</h3>
+                <p>Start a long-running Claude session that survives closing the app:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Start tmux (terminal multiplexer)</span>
+pkg install -y tmux
+tmux
+
+<span class="comment"># Inside tmux, start Claude</span>
+cc
+
+<span class="comment"># Detach with Ctrl+B, then D</span>
+<span class="comment"># Reattach later with: tmux attach</span></code></pre>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-label">Pro tip</div>
+                    <p>With tmux + wake lock, you can close Termux, put your phone in your pocket, and Claude keeps working. Check back later for results.</p>
+                </div>
+            </section>
+
+            <section id="github-auth">
+                <h2>6. GitHub Authentication</h2>
+                <p>Connect to GitHub so Claude can push code:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>gh auth login</code></pre>
+                </div>
+
+                <p>Choose:</p>
+                <ul>
+                    <li>GitHub.com</li>
+                    <li>HTTPS</li>
+                    <li>Yes (authenticate with credentials)</li>
+                    <li>Login with a web browser</li>
+                </ul>
+
+                <p>Add quick git shortcuts to <code>~/.bashrc</code>:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">~/.bashrc</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># Quick git push</span>
+gp() {
+    git add -A && git commit -m "${1:-update}" && git push
+}
+
+<span class="comment"># Git status</span>
+alias gs="git status"</code></pre>
+                </div>
+
+                <p>Now <code>gp "your message"</code> stages, commits, and pushes in one command.</p>
+            </section>
+
+            <section id="workflow">
+                <h2>7. The Workflow</h2>
+                <p>Here's how you actually use this:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment"># 1. Start Claude in Boris Mode</span>
+cc
+
+<span class="comment"># 2. Tell Claude what you want</span>
+<span class="comment"># "Build me a landing page with a contact form"</span>
+<span class="comment"># "Fix the bug in auth.js"</span>
+<span class="comment"># "Add dark mode to the app"</span>
+
+<span class="comment"># 3. Claude reads files, writes code, runs commands</span>
+<span class="comment"># You watch or do something else</span>
+
+<span class="comment"># 4. Push when ready</span>
+gp "Add landing page"</code></pre>
+                </div>
+
+                <p>That's it. Describe what you want, let Claude work, push the result.</p>
+            </section>
+
+            <section id="automation">
+                <h2>8. Automation Scripts</h2>
+                <p>Our setup script does everything above automatically:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">One-Command Setup</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -sL https://raw.githubusercontent.com/MobileDevCLI/setup/main/setup.sh | bash</code></pre>
+                </div>
+
+                <p>This script:</p>
+                <ul>
+                    <li>Runs <code>termux-setup-storage</code></li>
+                    <li>Updates and upgrades packages</li>
+                    <li>Installs nodejs, git, gh</li>
+                    <li>Installs Claude Code</li>
+                    <li>Configures <code>~/.termux/termux.properties</code></li>
+                    <li>Adds Boris Mode aliases to <code>~/.bashrc</code></li>
+                    <li>Adds git shortcuts</li>
+                    <li>Sets up auto CLAUDE.md creation</li>
+                </ul>
+
+                <h3>Optional: Termux:API Extras</h3>
+                <p>Install Termux:API app from F-Droid first, then:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>curl -sL https://raw.githubusercontent.com/MobileDevCLI/setup/main/extras.sh | bash</code></pre>
+                </div>
+
+                <p>Adds commands: <code>notify</code>, <code>toast</code>, <code>vibrate</code>, <code>torch</code>, <code>battery</code>, <code>photo</code>, <code>speak</code>, <code>listen</code>, <code>clip-copy</code>, <code>clip-paste</code>, <code>share</code>, <code>open</code>, <code>stay-awake</code>, <code>stay-sleep</code></p>
+            </section>
+
+            <section id="advanced">
+                <h2>9. Advanced: Hooks & Agents</h2>
+                <p>For power users who want more control.</p>
+
+                <h3>Hooks</h3>
+                <p>Claude Code supports hooks that run before/after tool calls. Configure in <code>.claude/settings.json</code>:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">.claude/settings.json</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "command": "npm run format || true"
+      }
+    ]
+  }
+}</code></pre>
+                </div>
+
+                <p>This auto-formats code after every write/edit.</p>
+
+                <h3>Subagents</h3>
+                <p>Create specialized agents in <code>.claude/agents/</code>:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">.claude/agents/code-reviewer.md</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Code Reviewer Agent
+
+Review the code for:
+- Security vulnerabilities
+- Performance issues
+- Code style consistency
+- Missing error handling
+
+Provide specific, actionable feedback.</code></pre>
+                </div>
+
+                <h3>Slash Commands</h3>
+                <p>Create custom commands in <code>.claude/commands/</code>:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">.claude/commands/deploy.md</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># /deploy
+
+1. Run tests: npm test
+2. Build: npm run build
+3. Commit with message "Deploy: [current date]"
+4. Push to main
+5. Verify deployment succeeded</code></pre>
+                </div>
+
+                <p>Run with <code>/deploy</code> in Claude.</p>
+
+                <h3>CLAUDE.md</h3>
+                <p>Create a <code>CLAUDE.md</code> in your project root. Claude reads this for context:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">CLAUDE.md</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Project Guidelines
+
+## Commands
+- Build: npm run build
+- Test: npm test
+- Lint: npm run lint
+
+## Rules
+- Use TypeScript
+- No console.log in production
+- Always handle errors
+
+## Notes
+- API keys are in .env
+- Deploy triggers on push to main</code></pre>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-label">Key insight</div>
+                    <p>Every time Claude makes a mistake, add a rule to CLAUDE.md. The knowledge compounds. Future sessions get smarter.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Full Setup Script</h2>
+                <p>Everything in one file. Save this or use our hosted version:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">setup.sh</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code><span class="comment">#!/data/data/com.termux/files/usr/bin/bash</span>
+set -e
+
+<span class="comment"># Storage access</span>
+termux-setup-storage
+sleep 2
+
+<span class="comment"># Update packages</span>
+pkg update -y && pkg upgrade -y
+
+<span class="comment"># Install essentials</span>
+pkg install -y nodejs git gh
+
+<span class="comment"># Install Claude Code</span>
+npm install -g @anthropic-ai/claude-code
+
+<span class="comment"># Configure Termux</span>
+mkdir -p ~/.termux
+echo "allow-external-apps=true" >> ~/.termux/termux.properties
+
+<span class="comment"># Add to bashrc</span>
+cat >> ~/.bashrc << 'EOF'
+
+<span class="comment"># Boris Mode</span>
+alias claude="claude --dangerously-skip-permissions"
+alias cc="claude --dangerously-skip-permissions"
+
+<span class="comment"># Git shortcuts</span>
+gp() { git add -A && git commit -m "${1:-update}" && git push; }
+alias gs="git status"
+EOF
+
+echo "Done. Run: source ~/.bashrc && gh auth login"</code></pre>
+                </div>
+            </section>
+
         </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <div class="section-label">The Four Options</div>
-            <h2 class="section-title">Pick Your Environment</h2>
-            <p class="section-desc">Each environment has strengths. Here's the honest breakdown.</p>
-
-            <div class="env-grid">
-                <!-- Phone CLI -->
-                <div class="env-card winner">
-                    <div class="env-header">
-                        <div class="env-icon">📱</div>
-                        <div class="env-title">
-                            <h3>Phone CLI</h3>
-                            <span>Termux + Claude Code</span>
-                        </div>
-                        <span class="env-badge">Winner</span>
-                    </div>
-                    <p class="env-desc">Full Linux terminal on your Android phone with Claude Code. Complete development environment that fits in your pocket.</p>
-                    <div class="env-stats">
-                        <div class="stat">
-                            <div class="stat-value">100%</div>
-                            <div class="stat-label">Portable</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">Full</div>
-                            <div class="stat-label">Autonomy</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">$0</div>
-                            <div class="stat-label">Hardware</div>
-                        </div>
-                    </div>
-                    <div class="env-pros-cons">
-                        <div class="pros">
-                            <h4>Strengths</h4>
-                            <ul>
-                                <li>Code from anywhere</li>
-                                <li>Full file system access</li>
-                                <li>Run any CLI tool</li>
-                                <li>No monthly fees</li>
-                                <li>Boris Mode available</li>
-                            </ul>
-                        </div>
-                        <div class="cons">
-                            <h4>Limitations</h4>
-                            <ul>
-                                <li>Small screen</li>
-                                <li>Touch typing slower</li>
-                                <li>Battery drain</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PC CLI -->
-                <div class="env-card winner">
-                    <div class="env-header">
-                        <div class="env-icon">💻</div>
-                        <div class="env-title">
-                            <h3>PC CLI</h3>
-                            <span>Terminal + Claude Code</span>
-                        </div>
-                        <span class="env-badge">Winner</span>
-                    </div>
-                    <p class="env-desc">Claude Code on your desktop/laptop. Maximum screen real estate and keyboard speed for serious development.</p>
-                    <div class="env-stats">
-                        <div class="stat">
-                            <div class="stat-value">Max</div>
-                            <div class="stat-label">Power</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">Full</div>
-                            <div class="stat-label">Autonomy</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">Best</div>
-                            <div class="stat-label">Typing</div>
-                        </div>
-                    </div>
-                    <div class="env-pros-cons">
-                        <div class="pros">
-                            <h4>Strengths</h4>
-                            <ul>
-                                <li>Large screen</li>
-                                <li>Fast keyboard input</li>
-                                <li>Full system access</li>
-                                <li>Boris Mode available</li>
-                                <li>Multi-monitor support</li>
-                            </ul>
-                        </div>
-                        <div class="cons">
-                            <h4>Limitations</h4>
-                            <ul>
-                                <li>Not portable</li>
-                                <li>Requires computer</li>
-                                <li>Power dependent</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Web Interface -->
-                <div class="env-card">
-                    <div class="env-header">
-                        <div class="env-icon">🌐</div>
-                        <div class="env-title">
-                            <h3>Web Interface</h3>
-                            <span>claude.ai / ChatGPT</span>
-                        </div>
-                    </div>
-                    <p class="env-desc">Browser-based AI chat. Good for quick questions and code snippets, but limited for real development.</p>
-                    <div class="env-stats">
-                        <div class="stat">
-                            <div class="stat-value">Easy</div>
-                            <div class="stat-label">Access</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">None</div>
-                            <div class="stat-label">Autonomy</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">$$</div>
-                            <div class="stat-label">Monthly</div>
-                        </div>
-                    </div>
-                    <div class="env-pros-cons">
-                        <div class="pros">
-                            <h4>Strengths</h4>
-                            <ul>
-                                <li>No setup required</li>
-                                <li>Works on any device</li>
-                                <li>Good for learning</li>
-                            </ul>
-                        </div>
-                        <div class="cons">
-                            <h4>Limitations</h4>
-                            <ul>
-                                <li>No file access</li>
-                                <li>Can't run commands</li>
-                                <li>Copy-paste workflow</li>
-                                <li>Monthly subscription</li>
-                                <li>Context limits</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mobile Apps -->
-                <div class="env-card">
-                    <div class="env-header">
-                        <div class="env-icon">📲</div>
-                        <div class="env-title">
-                            <h3>Mobile Apps</h3>
-                            <span>Claude App / ChatGPT App</span>
-                        </div>
-                    </div>
-                    <p class="env-desc">Official mobile apps from Anthropic and OpenAI. Convenient for chat, but not designed for coding.</p>
-                    <div class="env-stats">
-                        <div class="stat">
-                            <div class="stat-value">Good</div>
-                            <div class="stat-label">UX</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">None</div>
-                            <div class="stat-label">Autonomy</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">$$</div>
-                            <div class="stat-label">Monthly</div>
-                        </div>
-                    </div>
-                    <div class="env-pros-cons">
-                        <div class="pros">
-                            <h4>Strengths</h4>
-                            <ul>
-                                <li>Native mobile UX</li>
-                                <li>Voice input</li>
-                                <li>Push notifications</li>
-                            </ul>
-                        </div>
-                        <div class="cons">
-                            <h4>Limitations</h4>
-                            <ul>
-                                <li>No file access</li>
-                                <li>No command execution</li>
-                                <li>Can't write to disk</li>
-                                <li>Chat-only interface</li>
-                                <li>Subscription required</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Comparison Table -->
-            <div class="comparison-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Feature</th>
-                            <th>Phone CLI</th>
-                            <th>PC CLI</th>
-                            <th>Web</th>
-                            <th>Mobile App</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Read/Write Files</td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="cross">✗</span></td>
-                            <td><span class="cross">✗</span></td>
-                        </tr>
-                        <tr>
-                            <td>Run Shell Commands</td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="cross">✗</span></td>
-                            <td><span class="cross">✗</span></td>
-                        </tr>
-                        <tr>
-                            <td>Git Integration</td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="cross">✗</span></td>
-                            <td><span class="cross">✗</span></td>
-                        </tr>
-                        <tr>
-                            <td>Boris Mode (Autonomous)</td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="cross">✗</span></td>
-                            <td><span class="cross">✗</span></td>
-                        </tr>
-                        <tr>
-                            <td>Portable</td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="cross">✗</span></td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="check">✓</span></td>
-                        </tr>
-                        <tr>
-                            <td>Offline Capable</td>
-                            <td><span class="partial">~</span></td>
-                            <td><span class="partial">~</span></td>
-                            <td><span class="cross">✗</span></td>
-                            <td><span class="cross">✗</span></td>
-                        </tr>
-                        <tr>
-                            <td>Free to Use</td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="check">✓</span></td>
-                            <td><span class="partial">~</span></td>
-                            <td><span class="partial">~</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Winner Section -->
-            <div class="winner-section">
-                <h2>The Verdict: CLI Wins</h2>
-                <p>Whether on phone or PC, the command-line interface gives you full power. AI can read your code, write files, run tests, commit to git, and build entire projects autonomously. Web and app interfaces are just chat windows.</p>
-                <div class="winner-badges">
-                    <div class="winner-badge">
-                        <span class="icon">📱</span>
-                        <span>Phone CLI for mobility</span>
-                    </div>
-                    <div class="winner-badge">
-                        <span class="icon">💻</span>
-                        <span>PC CLI for power</span>
-                    </div>
-                    <div class="winner-badge">
-                        <span class="icon">🤝</span>
-                        <span>Use both together</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Use Cases -->
-            <div class="section-label">When to Use What</div>
-            <h2 class="section-title">Real-World Scenarios</h2>
-            <p class="section-desc">Match the environment to your situation.</p>
-
-            <div class="use-cases">
-                <div class="use-case">
-                    <h3>🚇 Commuting</h3>
-                    <p>You're on the train with an idea. Need to prototype quickly before you forget.</p>
-                    <div class="recommendation">
-                        <strong>Use: Phone CLI</strong> - Full dev environment in your pocket
-                    </div>
-                </div>
-
-                <div class="use-case">
-                    <h3>🏢 At Your Desk</h3>
-                    <p>Serious coding session. Building features, debugging, writing tests.</p>
-                    <div class="recommendation">
-                        <strong>Use: PC CLI</strong> - Maximum screen and keyboard speed
-                    </div>
-                </div>
-
-                <div class="use-case">
-                    <h3>☕ Coffee Shop</h3>
-                    <p>Working remotely. Need to push some commits and review PRs.</p>
-                    <div class="recommendation">
-                        <strong>Use: Phone CLI</strong> - No laptop needed
-                    </div>
-                </div>
-
-                <div class="use-case">
-                    <h3>💬 Quick Question</h3>
-                    <p>Just need to ask "how do I do X in Python" - no coding needed.</p>
-                    <div class="recommendation">
-                        <strong>Use: Mobile App</strong> - Good enough for chat
-                    </div>
-                </div>
-
-                <div class="use-case">
-                    <h3>🎓 Learning</h3>
-                    <p>Following a tutorial, experimenting with new concepts.</p>
-                    <div class="recommendation">
-                        <strong>Use: PC CLI or Phone CLI</strong> - Hands-on is best
-                    </div>
-                </div>
-
-                <div class="use-case">
-                    <h3>🚀 Shipping Fast</h3>
-                    <p>Need to build and deploy something by end of day.</p>
-                    <div class="recommendation">
-                        <strong>Use: PC CLI + Boris Mode</strong> - Let AI cook
-                    </div>
-                </div>
-            </div>
-
-            <!-- CTA -->
-            <div class="cta-section">
-                <h2>Ready to Start?</h2>
-                <p>Set up your Phone CLI environment in 5 minutes.</p>
-                <a href="/" class="btn btn-primary">Get Started</a>
-            </div>
-        </div>
-    </section>
+    </div>
 
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="/">Home</a>
-                    <a href="/games.html">Games</a>
-                    <a href="/learn.html">Learn</a>
-                    <a href="https://github.com/MobileDevCLI">GitHub</a>
-                    <a href="https://twitter.com/MobileDevCLI">Twitter</a>
-                </div>
-                <p class="copyright">&copy; 2025 MobileDevCLI</p>
-            </div>
+            <p><a href="/">MobileDevCLI</a> · <a href="https://github.com/MobileDevCLI">GitHub</a> · <a href="https://twitter.com/MobileDevCLI">Twitter</a></p>
         </div>
     </footer>
+
+    <script>
+        function copyCode(btn) {
+            const pre = btn.closest('.code-block').querySelector('pre');
+            const code = pre.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+    </script>
 </body>
 </html>
