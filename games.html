@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games - MobileDevCLI</title>
+    <meta name="description" content="Play free browser games. Stickman, racing, puzzles and more. All playable on mobile.">
+    <link rel="canonical" href="https://mobilecli.com/games">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #0f0f0f;
+            --bg-tertiary: #1a1a1a;
+            --bg-card: #111111;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --accent-1: #00ff88;
+            --accent-2: #00d4ff;
+            --accent-3: #ff6b6b;
+            --accent-4: #ffd93d;
+            --gradient: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            --border: #222222;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        a {
+            color: var(--accent-1);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 140px 0 60px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--accent-3), var(--accent-4));
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--bg);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero .tagline {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Section */
+        section {
+            padding: 60px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .section-link {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            border-color: var(--accent-1);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.15);
+        }
+
+        .game-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+        }
+
+        .game-thumbnail::after {
+            content: "▶";
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover .game-thumbnail::after {
+            opacity: 1;
+        }
+
+        .game-info {
+            padding: 20px;
+        }
+
+        .game-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .game-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .game-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .game-tag {
+            padding: 4px 10px;
+            background: var(--bg-tertiary);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .game-tag.featured {
+            background: var(--accent-1);
+            color: var(--bg);
+        }
+
+        /* Featured Game */
+        .featured-game {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .featured-game:hover {
+            border-color: var(--accent-1);
+        }
+
+        .featured-preview {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+        }
+
+        .featured-content h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .featured-content p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+            margin-left: 12px;
+        }
+
+        /* Categories */
+        .categories {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            border-color: var(--accent-1);
+            color: var(--text);
+        }
+
+        /* Coming Soon */
+        .coming-soon {
+            text-align: center;
+            padding: 60px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            margin-top: 60px;
+        }
+
+        .coming-soon h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+
+        .coming-soon p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .featured-game {
+                grid-template-columns: 1fr;
+                padding: 24px;
+            }
+
+            .featured-preview {
+                height: 200px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">MobileDevCLI</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/games" class="active">Games</a>
+                <a href="/learn">Learn</a>
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+                <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">Play Instantly</div>
+            <h1>Games Arcade</h1>
+            <p class="tagline">Free browser games. Play on any device. No downloads required.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <!-- Featured Game -->
+            <div class="featured-game">
+                <div class="featured-preview">🎨</div>
+                <div class="featured-content">
+                    <h2>Sketchbook</h2>
+                    <p>Draw, create, and share. A simple but powerful drawing app that runs right in your browser. Works great on touchscreens.</p>
+                    <a href="/games/sketchbook" class="btn btn-primary">Play Now</a>
+                    <a href="https://github.com/MobileDevCLI/sketchbook" class="btn btn-secondary">View Code</a>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="categories">
+                <button class="category-btn active">All Games</button>
+                <button class="category-btn">Action</button>
+                <button class="category-btn">Puzzle</button>
+                <button class="category-btn">Creative</button>
+                <button class="category-btn">Classic</button>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="games-grid">
+                <div class="game-card" onclick="location.href='/games/sketchbook'">
+                    <div class="game-thumbnail">🎨</div>
+                    <div class="game-info">
+                        <h3>Sketchbook</h3>
+                        <p>Draw and create art right in your browser</p>
+                        <div class="game-tags">
+                            <span class="game-tag featured">Featured</span>
+                            <span class="game-tag">Creative</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-card" onclick="location.href='/games/stickman-fighter'">
+                    <div class="game-thumbnail">🥷</div>
+                    <div class="game-info">
+                        <h3>Stickman Fighter</h3>
+                        <p>Fast-paced stickman combat action</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Action</span>
+                            <span class="game-tag">Fighting</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-card" onclick="location.href='/games/moto-x'">
+                    <div class="game-thumbnail">🏍️</div>
+                    <div class="game-info">
+                        <h3>Moto X</h3>
+                        <p>Dirt bike racing with crazy stunts</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Racing</span>
+                            <span class="game-tag">Classic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-card" onclick="location.href='/games/snake'">
+                    <div class="game-thumbnail">🐍</div>
+                    <div class="game-info">
+                        <h3>Snake</h3>
+                        <p>The classic snake game, reimagined</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Classic</span>
+                            <span class="game-tag">Arcade</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-card" onclick="location.href='/games/tetris'">
+                    <div class="game-thumbnail">🧱</div>
+                    <div class="game-info">
+                        <h3>Block Drop</h3>
+                        <p>Stack blocks, clear lines, beat your score</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Puzzle</span>
+                            <span class="game-tag">Classic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-card" onclick="location.href='/games/flappy'">
+                    <div class="game-thumbnail">🐦</div>
+                    <div class="game-info">
+                        <h3>Flappy Clone</h3>
+                        <p>Tap to fly through the pipes</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Arcade</span>
+                            <span class="game-tag">Casual</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-card" onclick="location.href='/games/2048'">
+                    <div class="game-thumbnail">🔢</div>
+                    <div class="game-info">
+                        <h3>2048</h3>
+                        <p>Slide and merge to reach 2048</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Puzzle</span>
+                            <span class="game-tag">Math</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-card" onclick="location.href='/games/pong'">
+                    <div class="game-thumbnail">🏓</div>
+                    <div class="game-info">
+                        <h3>Pong</h3>
+                        <p>The original arcade classic</p>
+                        <div class="game-tags">
+                            <span class="game-tag">Classic</span>
+                            <span class="game-tag">2-Player</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coming Soon -->
+            <div class="coming-soon">
+                <h3>More Games Coming Soon</h3>
+                <p>We're building more games. Want to contribute? Check out our GitHub.</p>
+                <a href="https://github.com/MobileDevCLI" class="btn btn-primary">Contribute on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="/">Home</a>
+                    <a href="/games">Games</a>
+                    <a href="/learn">Learn</a>
+                    <a href="https://github.com/MobileDevCLI">GitHub</a>
+                    <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+                </div>
+                <p class="copyright">&copy; 2025 MobileDevCLI</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
