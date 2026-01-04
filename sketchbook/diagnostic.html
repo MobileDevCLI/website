@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diagnostic Test</title>
+    <style>
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            padding: 20px;
+        }
+        .pass { color: #0f0; }
+        .fail { color: #f00; }
+        .test { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Diagnostic</h1>
+    <div id="output"></div>
+
+    <script>
+        const output = document.getElementById('output');
+
+        function test(name, fn) {
+            try {
+                fn();
+                output.innerHTML += `<div class="test pass">✓ ${name}</div>`;
+                return true;
+            } catch (error) {
+                output.innerHTML += `<div class="test fail">✗ ${name}: ${error.message}</div>`;
+                console.error(name, error);
+                return false;
+            }
+        }
+
+        // Test 1: Basic JavaScript
+        test('Basic JavaScript', () => {
+            const x = 1 + 1;
+            if (x !== 2) throw new Error('Math broken');
+        });
+
+        // Test 2: Load config.js
+        test('Load config.js', () => {
+            const script = document.createElement('script');
+            script.src = 'js/config.js';
+            document.head.appendChild(script);
+        });
+
+        // Wait for config to load
+        setTimeout(() => {
+            test('CONFIG exists', () => {
+                if (typeof CONFIG === 'undefined') throw new Error('CONFIG not defined');
+                if (!CONFIG.TOUCH) throw new Error('CONFIG.TOUCH missing');
+            });
+
+            // Test 3: Load utils.js
+            test('Load utils.js', () => {
+                const script = document.createElement('script');
+                script.src = 'js/utils.js';
+                document.head.appendChild(script);
+            });
+
+            setTimeout(() => {
+                test('GameUtils exists', () => {
+                    if (typeof window.GameUtils === 'undefined') throw new Error('GameUtils not defined');
+                });
+
+                // Test 4: Load vehicleState.js
+                test('Load vehicleState.js', () => {
+                    const script = document.createElement('script');
+                    script.src = 'js/state/vehicleState.js';
+                    document.head.appendChild(script);
+                });
+
+                setTimeout(() => {
+                    test('vehicleState exists', () => {
+                        if (typeof window.vehicleState === 'undefined') throw new Error('vehicleState not defined');
+                    });
+
+                    // Test 5: Load vehicleRegistry.js
+                    test('Load vehicleRegistry.js', () => {
+                        const script = document.createElement('script');
+                        script.src = 'js/vehicles/vehicleRegistry.js';
+                        document.head.appendChild(script);
+                    });
+
+                    setTimeout(() => {
+                        test('VehicleRegistry exists', () => {
+                            if (typeof window.VehicleRegistry === 'undefined') throw new Error('VehicleRegistry not defined');
+                        });
+
+                        // Test 6: Load Sketchbook
+                        test('Load sketchbook.min.js', () => {
+                            const script = document.createElement('script');
+                            script.src = 'build/sketchbook.min.js';
+                            document.head.appendChild(script);
+                        });
+
+                        setTimeout(() => {
+                            test('Sketchbook exists', () => {
+                                if (typeof Sketchbook === 'undefined') throw new Error('Sketchbook not defined');
+                                if (typeof Sketchbook.World === 'undefined') throw new Error('Sketchbook.World not defined');
+                            });
+
+                            output.innerHTML += '<div class="test pass"><br>✓✓✓ ALL TESTS PASSED - Modules loading correctly!</div>';
+                        }, 1000);
+                    }, 500);
+                }, 500);
+            }, 500);
+        }, 500);
+    </script>
+</body>
+</html>

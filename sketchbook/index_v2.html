@@ -1,0 +1,3058 @@
+<!DOCTYPE html>
+<html>
+<!-- 🔴 VERSION: 2025-11-16-v2 - A button bunny hop + trigger fixes + no console spam -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Prevent aggressive caching during development -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Sketchbook v2</title>
+	<link href="build/style.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* Mobile Icon Buttons */
+        .mobile-icon-button {
+            position: fixed;
+            top: 15px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .mobile-icon-button:active {
+            background-color: rgba(0, 0, 0, 0.9);
+            transform: scale(0.95);
+        }
+
+        .mobile-icon-button svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        #mobile-settings-icon {
+            left: 15px;
+        }
+
+        #player-editor-icon {
+            left: 75px;
+            display: none; /* Hidden by default */
+        }
+
+        #car-editor-icon {
+            left: 135px;
+            display: none; /* Hidden by default */
+        }
+
+        #plane-editor-icon {
+            left: 195px;
+            display: none; /* Hidden by default */
+        }
+
+        #helicopter-editor-icon {
+            left: 255px;
+            display: none; /* Hidden by default */
+        }
+
+        #console-log-icon {
+            left: 315px;
+            display: none; /* Hidden by default */
+        }
+
+        #licenses-icon {
+            left: 375px;
+            display: none; /* Hidden by default */
+        }
+
+        /* Show all GUI icons only when settings is clicked */
+        body.ui-visible #player-editor-icon,
+        body.ui-visible #car-editor-icon,
+        body.ui-visible #plane-editor-icon,
+        body.ui-visible #helicopter-editor-icon,
+        body.ui-visible #console-log-icon,
+        body.ui-visible #licenses-icon {
+            display: flex;
+        }
+
+        /* Player Editor GUI Panel */
+        #player-editor-panel {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            width: 280px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            touch-action: auto;
+        }
+
+        #player-editor-panel.visible {
+            display: block;
+        }
+
+        #player-editor-panel h3 {
+            margin: 0 0 15px 0;
+            color: white;
+            font-family: 'Solway', sans-serif;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .enter-vehicle-btn {
+            background: rgba(76, 175, 80, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-family: 'Solway', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.2s;
+        }
+
+        .enter-vehicle-btn:hover {
+            background: rgba(76, 175, 80, 1.0);
+        }
+
+        .enter-vehicle-btn:active {
+            background: rgba(56, 142, 60, 1.0);
+        }
+
+        .slider-container {
+            margin-bottom: 15px;
+            touch-action: auto;
+        }
+
+        .slider-container label {
+            color: white;
+            font-family: 'Solway', sans-serif;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .slider-container input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+            touch-action: auto;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .slider-container input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            color: #4CAF50;
+            font-family: 'Cutive Mono', monospace;
+            font-size: 12px;
+            float: right;
+        }
+
+        /* Enable touch on all interactive elements */
+        input, button, select, textarea {
+            touch-action: auto;
+        }
+
+        /* Car Editor GUI Panel */
+        #car-editor-panel {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            width: 280px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            touch-action: auto;
+        }
+
+        #car-editor-panel.visible {
+            display: block;
+        }
+
+        #car-editor-panel h3 {
+            margin: 0 0 15px 0;
+            color: white;
+            font-family: 'Solway', sans-serif;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* Plane Editor GUI Panel */
+        #plane-editor-panel {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            width: 280px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            touch-action: auto;
+        }
+
+        #plane-editor-panel.visible {
+            display: block;
+        }
+
+        #plane-editor-panel h3 {
+            margin: 0 0 15px 0;
+            color: white;
+            font-family: 'Solway', sans-serif;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* Helicopter Editor GUI Panel */
+        #helicopter-editor-panel {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            width: 280px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            touch-action: auto;
+        }
+
+        #helicopter-editor-panel.visible {
+            display: block;
+        }
+
+        #helicopter-editor-panel h3 {
+            margin: 0 0 15px 0;
+            color: white;
+            font-family: 'Solway', sans-serif;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* Console Log Panel */
+        #console-log-panel {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            background-color: rgba(0, 0, 0, 0.95);
+            border-radius: 8px;
+            padding: 10px;
+            width: calc(100% - 50px);
+            max-width: 500px;
+            height: calc(100vh - 100px);
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            font-family: 'Cutive Mono', monospace;
+            font-size: 11px;
+        }
+
+        #console-log-content {
+            height: calc(100% - 40px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #console-log-panel.visible {
+            display: block;
+        }
+
+        #console-log-panel h3 {
+            margin: 0 0 10px 0;
+            color: white;
+            font-family: 'Solway', sans-serif;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .console-log-entry {
+            padding: 5px;
+            margin-bottom: 5px;
+            border-left: 3px solid #4CAF50;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #4CAF50;
+            word-wrap: break-word;
+        }
+
+        /* Legal Notices Panel (MIT License Compliance - REQUIRED) */
+        #licenses-panel {
+            position: fixed;
+            top: 80px;
+            left: 15px;
+            background-color: rgba(0, 0, 0, 0.95);
+            border-radius: 8px;
+            padding: 15px;
+            width: calc(100% - 50px);
+            max-width: 550px;
+            height: calc(100vh - 100px);
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        #licenses-content {
+            height: calc(100% - 40px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            color: #cccccc;
+            font-family: 'Cutive Mono', monospace;
+            font-size: 10px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        #licenses-panel.visible {
+            display: block;
+        }
+
+        #licenses-panel h3 {
+            margin: 0 0 10px 0;
+            color: white;
+            font-family: 'Solway', sans-serif;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        /* FPS Counter */
+        #fps-counter {
+            position: fixed;
+            top: 15px;
+            right: 75px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #4CAF50;
+            font-family: 'Cutive Mono', monospace;
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        /* Vehicle Enter/Exit Button */
+        #vehicle-button {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10000;
+            transition: background-color 0.2s;
+        }
+
+        #vehicle-button:active {
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        #vehicle-button svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .vehicle-icon {
+            display: none;
+        }
+
+        .vehicle-icon.active {
+            display: block;
+        }
+
+        /* Hide UI panels by default on mobile */
+        .left-panel,
+        .dg.main {
+            display: none !important;
+        }
+
+        /* Show UI panels when toggled */
+        body.ui-visible .left-panel,
+        body.ui-visible .dg.main {
+            display: flex !important;
+        }
+
+        /* Make panels scrollable on mobile */
+        body.ui-visible .left-panel {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        body.ui-visible .dg.main {
+            background-color: rgba(0, 0, 0, 0.85);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Hide GitHub corner on mobile */
+        .github-corner {
+            display: none !important;
+        }
+
+        /* Hide overlay - no screen dimming needed */
+        #ui-overlay {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Settings Icon -->
+    <div id="mobile-settings-icon" class="mobile-icon-button">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+        </svg>
+    </div>
+
+    <!-- Player Editor Icon -->
+    <div id="player-editor-icon" class="mobile-icon-button">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+    </div>
+
+    <!-- Car Editor Icon -->
+    <div id="car-editor-icon" class="mobile-icon-button">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+        </svg>
+    </div>
+
+    <!-- Plane Editor Icon -->
+    <div id="plane-editor-icon" class="mobile-icon-button">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+        </svg>
+    </div>
+
+    <!-- Helicopter Editor Icon -->
+    <div id="helicopter-editor-icon" class="mobile-icon-button">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5,8h21V6h-21V8z M21,9h-4l-2,7h2l-3,4l-3-4h2l-2-7H7l-2,7h2l-3,4l-3-4h2L7,9H3C3,9,3,8,3,8h18V9z"/>
+            <rect x="10" y="2" width="4" height="3"/>
+        </svg>
+    </div>
+
+    <!-- Console Log Icon -->
+    <div id="console-log-icon" class="mobile-icon-button">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 19V7c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zM6 9h12v10H6V9zm6-4h2v2h-2V5zM9.5 11.5l-1 1 2.5 2.5-2.5 2.5 1 1 3.5-3.5-3.5-3.5z"/>
+        </svg>
+    </div>
+
+    <!-- Legal Notices Icon (MIT License Compliance - REQUIRED) -->
+    <div id="licenses-icon" class="mobile-icon-button">
+        <!-- Document/License icon -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+        </svg>
+    </div>
+
+    <!-- Player Editor Panel -->
+    <div id="player-editor-panel">
+        <h3>Player Editor</h3>
+        <div class="slider-container">
+            <label>Scale <span class="slider-value" id="scale-value">1.0</span></label>
+            <input type="range" id="scale-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Movement Speed <span class="slider-value" id="movespeed-value">4.0</span></label>
+            <input type="range" id="movespeed-slider" min="1.0" max="16.0" step="0.5" value="4.0">
+        </div>
+        <div class="slider-container">
+            <label>Jump Power <span class="slider-value" id="jumppower-value">8.0</span></label>
+            <input type="range" id="jumppower-slider" min="2.0" max="20.0" step="0.5" value="8.0">
+        </div>
+        <div class="slider-container">
+            <label>Gravity <span class="slider-value" id="gravity-value">-9.81</span></label>
+            <input type="range" id="gravity-slider" min="-20" max="-5" step="0.5" value="-9.81">
+        </div>
+    </div>
+
+    <!-- Car Editor Panel -->
+    <div id="car-editor-panel">
+        <h3>Car Editor <button id="enter-car-btn" class="enter-vehicle-btn">Enter</button></h3>
+        <div class="slider-container">
+            <label>Car Scale <span class="slider-value" id="car-scale-value">1.0</span></label>
+            <input type="range" id="car-scale-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Ride Height <span class="slider-value" id="ride-height-value">1.0</span></label>
+            <input type="range" id="ride-height-slider" min="0.5" max="2.0" step="0.05" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Track Width <span class="slider-value" id="track-width-value">1.0</span></label>
+            <input type="range" id="track-width-slider" min="0.5" max="2.0" step="0.05" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Track Length <span class="slider-value" id="track-length-value">1.0</span></label>
+            <input type="range" id="track-length-slider" min="0.5" max="2.0" step="0.05" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Tire Diameter <span class="slider-value" id="tire-diameter-value">1.0</span></label>
+            <input type="range" id="tire-diameter-slider" min="0.5" max="2.0" step="0.05" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Tire Width <span class="slider-value" id="tire-width-value">1.0</span></label>
+            <input type="range" id="tire-width-slider" min="0.5" max="2.0" step="0.05" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Torque <span class="slider-value" id="torque-value">1.0</span></label>
+            <input type="range" id="torque-slider" min="0.5" max="5.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Horsepower <span class="slider-value" id="horsepower-value">1.0</span></label>
+            <input type="range" id="horsepower-slider" min="0.5" max="5.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Top Speed <span class="slider-value" id="topspeed-value">1.0</span></label>
+            <input type="range" id="topspeed-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Traction Front <span class="slider-value" id="traction-front-value">1.0</span></label>
+            <input type="range" id="traction-front-slider" min="0.1" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Traction Rear <span class="slider-value" id="traction-rear-value">1.0</span></label>
+            <input type="range" id="traction-rear-slider" min="0.1" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Suspension Comp. <span class="slider-value" id="suspension-compression-value">1.0</span></label>
+            <input type="range" id="suspension-compression-slider" min="0.1" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Suspension Reb. <span class="slider-value" id="suspension-rebound-value">1.0</span></label>
+            <input type="range" id="suspension-rebound-slider" min="0.1" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Weight Front <span class="slider-value" id="weight-front-value">1.0</span></label>
+            <input type="range" id="weight-front-slider" min="0.5" max="2.0" step="0.05" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Weight Rear <span class="slider-value" id="weight-rear-value">1.0</span></label>
+            <input type="range" id="weight-rear-slider" min="0.5" max="2.0" step="0.05" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label style="display: block; margin-bottom: 8px;">Steering Mode</label>
+            <select id="steering-mode-select" style="width: 100%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; font-family: 'Solway', sans-serif;">
+                <option value="front">Front Wheel Steer</option>
+                <option value="4wheel">4 Wheel Steer (Opposite)</option>
+                <option value="crabwalk">Crab Walk (Same Direction)</option>
+            </select>
+        </div>
+        <div class="slider-container">
+            <label style="display: block; margin-bottom: 8px;">Drive Mode</label>
+            <select id="drive-mode-select" style="width: 100%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; font-family: 'Solway', sans-serif;">
+                <option value="fwd">Front Wheel Drive</option>
+                <option value="awd">4 Wheel Drive</option>
+                <option value="rwd">Rear Wheel Drive</option>
+            </select>
+        </div>
+        <div class="slider-container">
+            <label style="display: flex; align-items: center; cursor: pointer;">
+                <input type="checkbox" id="drift-mode-toggle" style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
+                <span>Drift Mode</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Plane Editor Panel -->
+    <div id="plane-editor-panel">
+        <h3>Plane Editor <button id="enter-plane-btn" class="enter-vehicle-btn">Enter</button></h3>
+        <div class="slider-container">
+            <label>Scale <span class="slider-value" id="plane-scale-value">1.0</span></label>
+            <input type="range" id="plane-scale-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Engine Power <span class="slider-value" id="plane-engine-value">1.0</span></label>
+            <input type="range" id="plane-engine-slider" min="0.5" max="5.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Max Speed <span class="slider-value" id="plane-maxspeed-value">1.0</span></label>
+            <input type="range" id="plane-maxspeed-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Roll Sensitivity <span class="slider-value" id="plane-roll-value">1.0</span></label>
+            <input type="range" id="plane-roll-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Pitch Sensitivity <span class="slider-value" id="plane-pitch-value">1.0</span></label>
+            <input type="range" id="plane-pitch-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Yaw Sensitivity <span class="slider-value" id="plane-yaw-value">1.0</span></label>
+            <input type="range" id="plane-yaw-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+    </div>
+
+    <!-- Helicopter Editor Panel -->
+    <div id="helicopter-editor-panel">
+        <h3>Helicopter Editor <button id="enter-heli-btn" class="enter-vehicle-btn">Enter</button></h3>
+        <div class="slider-container">
+            <label>Scale <span class="slider-value" id="heli-scale-value">1.0</span></label>
+            <input type="range" id="heli-scale-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Engine Power <span class="slider-value" id="heli-engine-value">1.0</span></label>
+            <input type="range" id="heli-engine-slider" min="0.5" max="5.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Max Speed <span class="slider-value" id="heli-maxspeed-value">1.0</span></label>
+            <input type="range" id="heli-maxspeed-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Roll Sensitivity <span class="slider-value" id="heli-roll-value">1.0</span></label>
+            <input type="range" id="heli-roll-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Pitch Sensitivity <span class="slider-value" id="heli-pitch-value">1.0</span></label>
+            <input type="range" id="heli-pitch-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Yaw Sensitivity <span class="slider-value" id="heli-yaw-value">1.0</span></label>
+            <input type="range" id="heli-yaw-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+        <div class="slider-container">
+            <label>Lift Force <span class="slider-value" id="heli-lift-value">1.0</span></label>
+            <input type="range" id="heli-lift-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+    </div>
+
+    <!-- Console Log Panel -->
+    <div id="console-log-panel">
+        <h3>Console Logs <button id="debug-errors-btn" style="float: right; padding: 2px 8px; font-size: 11px; background: rgba(255,100,100,0.3); border: 1px solid rgba(255,100,100,0.5); color: white; border-radius: 4px; cursor: pointer; margin-left: 5px;">Debug Errors</button><button id="copy-console-btn" style="float: right; padding: 2px 8px; font-size: 11px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 4px; cursor: pointer;">Copy</button></h3>
+        <div id="console-log-content"></div>
+    </div>
+
+    <!-- Legal Notices Panel (MIT License Compliance - REQUIRED) -->
+    <div id="licenses-panel">
+        <h3>Legal Notices</h3>
+        <div id="licenses-content">Loading licenses...</div>
+    </div>
+
+    <!-- Overlay for closing UI -->
+    <div id="ui-overlay"></div>
+
+    <!-- FPS Counter -->
+    <div id="fps-counter">FPS: 0</div>
+
+    <!-- Vehicle Enter/Exit Button -->
+    <div id="vehicle-button" class="mobile-icon-button">
+        <!-- Car icon (shown when NOT in vehicle - click to enter) -->
+        <svg class="vehicle-icon car-icon active" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+        </svg>
+        <!-- Character icon (shown when IN vehicle - click to exit) -->
+        <svg class="vehicle-icon character-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+    </div>
+
+    <div id="loading-screen">
+		<div id="loading-screen-background"></div>
+		<h1 id="main-title" class="sb-font">Sketchbook 0.4</h1>
+		<div class="cubeWrap">
+			<div class="cube">
+				<div class="faces1"></div>
+				<div class="faces2"></div>
+			</div>
+		</div>
+		<div id="loading-text">Loading...</div>
+    </div>
+
+    <div id="ui-container" style="display: none;">
+        <div class="github-corner"><a href="https://github.com/swift502/Sketchbook" target="_blank" title="Fork me on GitHub"><svg viewbox="0 0 100 100" fill="currentColor"><title>Fork me on GitHub</title><path d="M0 0v100h100V0H0zm60 70.2h.2c1 2.7.3 4.7 0 5.2 1.4 1.4 2 3 2 5.2 0 7.4-4.4 9-8.7 9.5.7.7 1.3 2 1.3 3.7V99c0 .5 1.4 1 1.4 1H44s1.2-.5 1.2-1v-3.8c-3.5 1.4-5.2-.8-5.2-.8-1.5-2-3-2-3-2-2-.5-.2-1-.2-1 2-.7 3.5.8 3.5.8 2 1.7 4 1 5 .3.2-1.2.7-2 1.2-2.4-4.3-.4-8.8-2-8.8-9.4 0-2 .7-4 2-5.2-.2-.5-1-2.5.2-5 0 0 1.5-.6 5.2 1.8 1.5-.4 3.2-.6 4.8-.6 1.6 0 3.3.2 4.8.7 2.8-2 4.4-2 5-2z"></path></svg></a></div>
+        <div class="left-panel">
+            <div id="controls" class="panel-segment flex-bottom">
+                <h4>Mobile Controls</h4>
+                <div style="font-size: 0.9em;">
+                    <strong>Left Joystick:</strong><br>
+                    Character: Move + Sprint<br>
+                    Car: Accelerate/Reverse + Steer<br>
+                    Plane/Heli: Pitch + Roll + Yaw<br><br>
+
+                    <strong>Right Side:</strong><br>
+                    Drag: Camera<br>
+                    Tap: Jump/Bunny hop<br><br>
+
+                    <strong>Aircraft Throttle Zones:</strong><br>
+                    Top 75%: Throttle up<br>
+                    Bottom 25%: Throttle down
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="build/sketchbook.min.js"></script>
+    <script>
+        // Console Log Capture
+        (function() {
+            const consoleLogContent = document.getElementById('console-log-content');
+            const originalLog = console.log;
+            const originalError = console.error;
+            const maxLogs = 50; // Keep last 50 logs
+            let showErrorsOnly = false;
+
+            console.log = function(...args) {
+                // Call original console.log
+                originalLog.apply(console, args);
+
+                // Add to visual console
+                const logEntry = document.createElement('div');
+                logEntry.className = 'console-log-entry';
+                logEntry.textContent = args.map(arg => {
+                    if (typeof arg === 'object') {
+                        try {
+                            return JSON.stringify(arg, null, 2);
+                        } catch(e) {
+                            return String(arg);
+                        }
+                    }
+                    return String(arg);
+                }).join(' ');
+
+                consoleLogContent.appendChild(logEntry);
+
+                // Limit number of logs
+                while (consoleLogContent.children.length > maxLogs) {
+                    consoleLogContent.removeChild(consoleLogContent.firstChild);
+                }
+
+                // Auto-scroll to bottom
+                consoleLogContent.scrollTop = consoleLogContent.scrollHeight;
+            };
+
+            console.error = function(...args) {
+                // Call original console.error
+                originalError.apply(console, args);
+
+                // Add to visual console with error styling
+                const logEntry = document.createElement('div');
+                logEntry.className = 'console-log-entry console-error-entry';
+                logEntry.style.color = '#ff6666';
+                logEntry.style.fontWeight = 'bold';
+                logEntry.textContent = '[ERROR] ' + args.map(arg => {
+                    if (typeof arg === 'object') {
+                        try {
+                            return JSON.stringify(arg, null, 2);
+                        } catch(e) {
+                            return String(arg);
+                        }
+                    }
+                    return String(arg);
+                }).join(' ');
+
+                consoleLogContent.appendChild(logEntry);
+
+                // Limit number of logs
+                while (consoleLogContent.children.length > maxLogs) {
+                    consoleLogContent.removeChild(consoleLogContent.firstChild);
+                }
+
+                // Auto-scroll to bottom
+                consoleLogContent.scrollTop = consoleLogContent.scrollHeight;
+            };
+
+            // Debug Errors Button
+            const debugErrorsBtn = document.getElementById('debug-errors-btn');
+            if (debugErrorsBtn) {
+                debugErrorsBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    showErrorsOnly = !showErrorsOnly;
+
+                    const allEntries = consoleLogContent.querySelectorAll('.console-log-entry');
+                    allEntries.forEach(entry => {
+                        if (showErrorsOnly) {
+                            // Show only errors
+                            if (entry.classList.contains('console-error-entry')) {
+                                entry.style.display = 'block';
+                            } else {
+                                entry.style.display = 'none';
+                            }
+                        } else {
+                            // Show all logs
+                            entry.style.display = 'block';
+                        }
+                    });
+
+                    // Update button text
+                    debugErrorsBtn.textContent = showErrorsOnly ? 'Show All' : 'Debug Errors';
+                    debugErrorsBtn.style.background = showErrorsOnly ? 'rgba(255,100,100,0.6)' : 'rgba(255,100,100,0.3)';
+                });
+            }
+
+            // Copy Console Logs Button
+            const copyConsoleBtn = document.getElementById('copy-console-btn');
+            if (copyConsoleBtn) {
+                copyConsoleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const logText = consoleLogContent.innerText || consoleLogContent.textContent;
+                    navigator.clipboard.writeText(logText).then(() => {
+                        copyConsoleBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyConsoleBtn.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.log('Failed to copy:', err);
+                    });
+                });
+            }
+        })();
+
+        let world = new Sketchbook.World('build/assets/world.glb');
+
+        // Disable pointer lock for mobile
+        world.params.Pointer_Lock = false;
+        world.inputManager.setPointerLock(false);
+
+        // GLOBAL keyboard event emulation - accessible by touch controls AND buttons
+        function dispatchKey(code, pressed) {
+            const event = new KeyboardEvent(pressed ? 'keydown' : 'keyup', {
+                code: code,
+                key: code,
+                bubbles: true,
+                cancelable: true
+            });
+
+            document.dispatchEvent(event);
+        }
+
+        // GLOBAL aircraft state - tracked in applyCustomSettings, used by touch controls
+        let isPlayerInAircraft = false;
+
+        // Mobile Touch Controls
+        (function() {
+            const touches = {};
+            let activeKeys = new Set();
+            let leftTouch = null;
+            let rightTouch = null;
+            let activeThrottleZone = null; // 'up' or 'down' for invisible zones
+            let cameraRotation = { x: 0, y: 0 };
+
+            // Vehicle bunny hop mechanics
+            let lastTapTime = 0;
+            let chargeStartTime = 0;
+            let isCharging = false;
+            const DOUBLE_TAP_THRESHOLD = 300; // ms between taps to count as double tap
+            const MIN_CHARGE_POWER = 5;       // Minimum jump power (quick tap)
+            const MAX_CHARGE_POWER = 25;      // Maximum jump power (full charge)
+            const MAX_CHARGE_TIME = 2000;     // Max charge time in ms (2 seconds)
+
+            function setKey(code, pressed) {
+                if (pressed && !activeKeys.has(code)) {
+                    activeKeys.add(code);
+                    dispatchKey(code, true);
+                } else if (!pressed && activeKeys.has(code)) {
+                    activeKeys.delete(code);
+                    dispatchKey(code, false);
+                }
+            }
+
+            function clearAllKeys() {
+                activeKeys.forEach(code => dispatchKey(code, false));
+                activeKeys.clear();
+            }
+
+            // Apply bunny hop to vehicle
+            function applyVehicleJump(power) {
+                if (world && world.characters && world.characters.length > 0) {
+                    const player = world.characters[0];
+                    if (player.occupyingSeat) {
+                        // Player is in a vehicle
+                        const vehicle = player.occupyingSeat.vehicle;
+                        if (vehicle && vehicle.rayCastVehicle && vehicle.rayCastVehicle.chassisBody) {
+                            const body = vehicle.rayCastVehicle.chassisBody;
+                            // Apply upward impulse for bunny hop
+                            body.velocity.y += power;
+                        }
+                    }
+                }
+            }
+
+            // PERFORMANCE FIX: Optimized camera rotation loop
+            // Only runs when touch is active, prevents battery drain
+            let cameraUpdateRunning = false;
+
+            function updateCamera() {
+                if (rightTouch !== null) {
+                    if (world && world.cameraOperator) {
+                        world.cameraOperator.move(cameraRotation.x, cameraRotation.y);
+                    }
+                    // Continue loop while touch is active
+                    requestAnimationFrame(updateCamera);
+                } else {
+                    // Stop loop when no active touch
+                    cameraUpdateRunning = false;
+                }
+            }
+
+            function startCameraUpdate() {
+                if (!cameraUpdateRunning) {
+                    cameraUpdateRunning = true;
+                    updateCamera();
+                }
+            }
+
+            document.addEventListener('touchstart', function(e) {
+                const target = e.target;
+                if (target && (target.closest('.swal2-container') || target.closest('#ui-container') || target.closest('.mobile-icon-button') || target.closest('#player-editor-panel') || target.closest('#car-editor-panel') || target.closest('#plane-editor-panel') || target.closest('#helicopter-editor-panel') || target.closest('#console-log-panel') || target.closest('#licenses-panel'))) {
+                    return;
+                }
+                e.preventDefault();
+
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const touch = e.changedTouches[i];
+                    const x = touch.clientX;
+                    const y = touch.clientY;
+                    const screenWidth = window.innerWidth;
+                    const side = x < screenWidth / 2 ? 'left' : 'right';
+
+                    touches[touch.identifier] = {
+                        startX: x,
+                        startY: y,
+                        currentX: x,
+                        currentY: y,
+                        startTime: Date.now(),
+                        side: side
+                    };
+
+                    if (side === 'left') {
+                        leftTouch = touch.identifier;
+                    } else if (side === 'right') {
+                        rightTouch = touch.identifier;
+
+                        // Check if in aircraft and activate throttle zone immediately
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicleType = player.occupyingSeat.vehicle._editorType;
+                                if (vehicleType === 'plane' || vehicleType === 'helicopter') {
+                                    const screenHeight = window.innerHeight;
+                                    const bottomThreshold = screenHeight * 0.75;
+
+                                    if (y < bottomThreshold) {
+                                        // TOP 75%: Throttle up
+                                        activeThrottleZone = 'up';
+                                        dispatchKey('ShiftLeft', true);
+                                    } else {
+                                        // BOTTOM 25%: Throttle down
+                                        activeThrottleZone = 'down';
+                                        dispatchKey('ControlLeft', true);
+                                    }
+                                }
+                            }
+                        }
+
+                        // PERFORMANCE FIX: Start camera update loop only when touch begins
+                        startCameraUpdate();
+                    }
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchmove', function(e) {
+                const target = e.target;
+                if (target && (target.closest('.swal2-container') || target.closest('#ui-container') || target.closest('.mobile-icon-button') || target.closest('#player-editor-panel') || target.closest('#car-editor-panel') || target.closest('#plane-editor-panel') || target.closest('#helicopter-editor-panel') || target.closest('#console-log-panel') || target.closest('#licenses-panel'))) {
+                    return;
+                }
+                e.preventDefault();
+
+                // No special throttle button handling - right joystick works independently
+
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const touch = e.changedTouches[i];
+                    const t = touches[touch.identifier];
+                    if (!t) continue;
+
+                    t.currentX = touch.clientX;
+                    t.currentY = touch.clientY;
+
+                    if (t.side === 'left' && touch.identifier === leftTouch) {
+                        // Left joystick control
+                        const dx = t.currentX - t.startX;
+                        const dy = t.currentY - t.startY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        const threshold = 30;
+                        const sprintThreshold = 100;
+
+                        // A/D always active (strafe for character, steer for car, roll for aircraft)
+                        const leftPressed = dx < -threshold;
+                        const rightPressed = dx > threshold;
+
+                        // DEBUG: Log steering inputs
+                        if (leftPressed || rightPressed) {
+                            console.log('🎮 STEERING INPUT:', {
+                                dx: dx.toFixed(1),
+                                leftPressed,
+                                rightPressed,
+                                inVehicle: world?.characters?.[0]?.occupyingSeat !== null
+                            });
+                        }
+
+                        setKey('KeyA', leftPressed);
+                        setKey('KeyD', rightPressed);
+                        // Q/E for yaw mixing (helicopter tail rotor, plane rudder) - send to all vehicles
+                        setKey('KeyQ', leftPressed);
+                        setKey('KeyE', rightPressed);
+
+                        // W/S always active (forward/back for character/car, pitch for aircraft)
+                        setKey('KeyW', dy < -threshold);
+                        setKey('KeyS', dy > threshold);
+
+                        // Sprint only for character on foot (not in vehicles)
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            const inVehicle = player.occupyingSeat !== null;
+                            if (!inVehicle) {
+                                setKey('ShiftLeft', distance > sprintThreshold);
+                            }
+                        }
+                    } else if (t.side === 'right' && touch.identifier === rightTouch) {
+                        // Right joystick: continuous camera rotation based on displacement from center
+                        const dx = t.currentX - t.startX;
+                        const dy = t.currentY - t.startY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        const deadzone = 20;
+
+                        // Activate throttle zones when touch moves beyond tap threshold (40px)
+                        if (distance > 40 && !activeThrottleZone) {
+                            const screenHeight = window.innerHeight;
+                            const bottomQuarterY = screenHeight * 0.75;
+
+                            if (t.currentY < bottomQuarterY) {
+                                // TOP 75%: Throttle up
+                                activeThrottleZone = 'up';
+                                dispatchKey('ShiftLeft', true);
+                            } else {
+                                // BOTTOM 25%: Throttle down
+                                activeThrottleZone = 'down';
+                                dispatchKey('ControlLeft', true);
+                            }
+                        }
+
+                        // Apply deadzone
+                        if (Math.abs(dx) > deadzone || Math.abs(dy) > deadzone) {
+                            // Rotation speed based on distance from center
+                            const sensitivity = 0.15;
+                            cameraRotation.x = dx * sensitivity;
+                            cameraRotation.y = dy * sensitivity;
+                        } else {
+                            cameraRotation.x = 0;
+                            cameraRotation.y = 0;
+                        }
+                    }
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchend', function(e) {
+                const target = e.target;
+                if (target && (target.closest('.swal2-container') || target.closest('#ui-container') || target.closest('.mobile-icon-button') || target.closest('#player-editor-panel') || target.closest('#car-editor-panel') || target.closest('#plane-editor-panel') || target.closest('#helicopter-editor-panel') || target.closest('#console-log-panel') || target.closest('#licenses-panel'))) {
+                    return;
+                }
+                e.preventDefault();
+
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const touch = e.changedTouches[i];
+                    const t = touches[touch.identifier];
+                    if (!t) continue;
+
+                    const duration = Date.now() - t.startTime;
+                    const dx = t.currentX - t.startX;
+                    const dy = t.currentY - t.startY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Right side tap handling (only if NOT in throttle zone)
+                    if (t.side === 'right' && distance < 40 && !activeThrottleZone) {
+                        const now = Date.now();
+                        const isInVehicle = world && world.characters && world.characters.length > 0 &&
+                                          world.characters[0].occupyingSeat !== null;
+
+                        if (isInVehicle) {
+                            // VEHICLE BUNNY HOP MECHANICS
+                            if (isCharging) {
+                                // Release charged jump
+                                const chargeTime = Math.min(now - chargeStartTime, MAX_CHARGE_TIME);
+                                const chargeRatio = chargeTime / MAX_CHARGE_TIME;
+                                const jumpPower = MIN_CHARGE_POWER + (chargeRatio * (MAX_CHARGE_POWER - MIN_CHARGE_POWER));
+                                applyVehicleJump(jumpPower);
+                                isCharging = false;
+                                chargeStartTime = 0;
+                            } else if (duration < 300) {
+                                // Quick tap - check for double tap
+                                if (now - lastTapTime < DOUBLE_TAP_THRESHOLD) {
+                                    // Double tap detected - start charging
+                                    isCharging = true;
+                                    chargeStartTime = now;
+                                } else {
+                                    // Single tap - quick bunny hop
+                                    applyVehicleJump(MIN_CHARGE_POWER);
+                                }
+                                lastTapTime = now;
+                            }
+                        } else {
+                            // CHARACTER JUMP (not in vehicle)
+                            if (duration < 300) {
+                                // Fire Space key (for grounded jump - boost system will amplify)
+                                dispatchKey('Space', true);
+                                setTimeout(() => dispatchKey('Space', false), 50);
+
+                                // ALSO enable double jump - directly set velocity for midair jumps
+                                if (world && world.characters && world.characters.length > 0) {
+                                    const player = world.characters[0];
+                                    if (player.characterCapsule && player.characterCapsule.body) {
+                                        const body = player.characterCapsule.body;
+                                        const currentVelY = body.velocity.y;
+
+                                        // Double jump: Allow jump if airborne (velocity.y != 0)
+                                        // Changed from > 0.5 to > 0.1 for more responsive double jump
+                                        // Grounded check: If velocity.y near 0, let game engine handle it
+                                        if (Math.abs(currentVelY) > 0.1) {
+                                            body.velocity.y = customJumpPower;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Release movement keys for left touch
+                    if (t.side === 'left' && touch.identifier === leftTouch) {
+                        setKey('KeyW', false);
+                        setKey('KeyS', false);
+                        setKey('KeyA', false);
+                        setKey('KeyD', false);
+                        setKey('KeyQ', false);
+                        setKey('KeyE', false);
+                        setKey('ShiftLeft', false);
+                        leftTouch = null;
+                    }
+
+                    if (t.side === 'right' && touch.identifier === rightTouch) {
+                        // Release throttle zone keys
+                        if (activeThrottleZone === 'up') {
+                            dispatchKey('ShiftLeft', false);
+                        } else if (activeThrottleZone === 'down') {
+                            dispatchKey('ControlLeft', false);
+                        }
+                        activeThrottleZone = null;
+
+                        cameraRotation.x = 0;
+                        cameraRotation.y = 0;
+                        rightTouch = null;
+                    }
+
+                    delete touches[touch.identifier];
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchcancel', function(e) {
+                clearAllKeys();
+                cameraRotation.x = 0;
+                cameraRotation.y = 0;
+                leftTouch = null;
+                rightTouch = null;
+                activeThrottleZone = null;
+                isCharging = false;
+                chargeStartTime = 0;
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    delete touches[e.changedTouches[i].identifier];
+                }
+            }, { passive: true });
+        })();
+
+        // Mobile UI Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const settingsIcon = document.getElementById('mobile-settings-icon');
+
+            function toggleUI() {
+                const isVisible = document.body.classList.contains('ui-visible');
+                document.body.classList.toggle('ui-visible');
+
+                // If hiding the UI, close all editor panels
+                if (isVisible) {
+                    closeAllPanels();
+                }
+            }
+
+            function hideUI() {
+                document.body.classList.remove('ui-visible');
+                closeAllPanels();
+            }
+
+            function closeAllPanels() {
+                const panels = document.querySelectorAll('#player-editor-panel, #car-editor-panel, #plane-editor-panel, #helicopter-editor-panel, #console-log-panel');
+                panels.forEach(panel => {
+                    if (panel) {
+                        panel.classList.remove('visible');
+                    }
+                });
+            }
+
+            if (settingsIcon) {
+                settingsIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleUI();
+                });
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && document.body.classList.contains('ui-visible')) {
+                    hideUI();
+                }
+            });
+
+            // Get all editor panels and icons
+            const playerEditorIcon = document.getElementById('player-editor-icon');
+            const playerEditorPanel = document.getElementById('player-editor-panel');
+            const consoleLogIcon = document.getElementById('console-log-icon');
+            const consoleLogPanel = document.getElementById('console-log-panel');
+            const licensesIcon = document.getElementById('licenses-icon');
+            const licensesPanel = document.getElementById('licenses-panel');
+            const carEditorIcon = document.getElementById('car-editor-icon');
+            const carEditorPanel = document.getElementById('car-editor-panel');
+            const planeEditorIcon = document.getElementById('plane-editor-icon');
+            const planeEditorPanel = document.getElementById('plane-editor-panel');
+            const helicopterEditorIcon = document.getElementById('helicopter-editor-icon');
+            const helicopterEditorPanel = document.getElementById('helicopter-editor-panel');
+
+            // Function to close all panels except the specified one
+            function closeAllPanelsExcept(exceptPanel) {
+                const panels = [playerEditorPanel, consoleLogPanel, licensesPanel, carEditorPanel, planeEditorPanel, helicopterEditorPanel];
+                panels.forEach(panel => {
+                    if (panel && panel !== exceptPanel) {
+                        panel.classList.remove('visible');
+                    }
+                });
+            }
+
+            // Add touch event blockers to all panels to prevent game controls
+            [playerEditorPanel, consoleLogPanel, licensesPanel, carEditorPanel, planeEditorPanel, helicopterEditorPanel].forEach(panel => {
+                if (panel) {
+                    panel.addEventListener('touchstart', function(e) {
+                        e.stopPropagation();
+                    }, { passive: true });
+                    panel.addEventListener('touchmove', function(e) {
+                        e.stopPropagation();
+                    }, { passive: true });
+                    panel.addEventListener('touchend', function(e) {
+                        e.stopPropagation();
+                    }, { passive: true });
+                    panel.addEventListener('touchcancel', function(e) {
+                        e.stopPropagation();
+                    }, { passive: true });
+                }
+            });
+
+            // Player Editor functionality
+            if (playerEditorIcon && playerEditorPanel) {
+                playerEditorIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = playerEditorPanel.classList.contains('visible');
+                    if (isOpen) {
+                        // Clicking same icon closes it
+                        playerEditorPanel.classList.remove('visible');
+                    } else {
+                        // Clicking new icon closes others and opens this
+                        closeAllPanelsExcept(playerEditorPanel);
+                        playerEditorPanel.classList.add('visible');
+                    }
+                });
+
+                // Close panel when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!playerEditorPanel.contains(e.target) && e.target !== playerEditorIcon && !playerEditorIcon.contains(e.target)) {
+                        playerEditorPanel.classList.remove('visible');
+                    }
+                });
+            }
+
+            // Console Log functionality
+            if (consoleLogIcon && consoleLogPanel) {
+                consoleLogIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = consoleLogPanel.classList.contains('visible');
+                    if (isOpen) {
+                        consoleLogPanel.classList.remove('visible');
+                    } else {
+                        closeAllPanelsExcept(consoleLogPanel);
+                        consoleLogPanel.classList.add('visible');
+                    }
+                });
+
+                // Close panel when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!consoleLogPanel.contains(e.target) && e.target !== consoleLogIcon && !consoleLogIcon.contains(e.target)) {
+                        consoleLogPanel.classList.remove('visible');
+                    }
+                });
+            }
+
+            // Legal Notices functionality (MIT License Compliance - REQUIRED)
+            if (licensesIcon && licensesPanel) {
+                // Embedded license text (fetch doesn't work with file:// protocol)
+                const LICENSE_TEXT = `================================================================================
+SKETCHBOOK MOBILE - THIRD PARTY LICENSES
+================================================================================
+
+This application uses the following open source software:
+
+================================================================================
+Sketchbook
+================================================================================
+
+MIT License
+
+Copyright (c) 2020 swift502 (Jan Bláha)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Original Repository: https://github.com/swift502/Sketchbook
+License: MIT
+Author: swift502 (Jan Bláha)
+Year: 2020
+
+================================================================================
+Three.js
+================================================================================
+
+The MIT License
+
+Copyright © 2010-2024 three.js authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+Website: https://threejs.org/
+License: MIT
+
+================================================================================
+Cannon.js
+================================================================================
+
+The MIT License (MIT)
+
+Copyright (c) 2015 Stefan Hedman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Repository: https://github.com/schteppe/cannon.js
+License: MIT
+
+================================================================================
+END OF THIRD PARTY LICENSES
+================================================================================`;
+
+                let licenseTextLoaded = false;
+
+                licensesIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = licensesPanel.classList.contains('visible');
+                    if (isOpen) {
+                        licensesPanel.classList.remove('visible');
+                    } else {
+                        closeAllPanelsExcept(licensesPanel);
+                        licensesPanel.classList.add('visible');
+
+                        // Load embedded license text on first open
+                        if (!licenseTextLoaded) {
+                            const licensesContent = document.getElementById('licenses-content');
+                            licensesContent.textContent = LICENSE_TEXT;
+                            licenseTextLoaded = true;
+                        }
+                    }
+                });
+
+                // Close panel when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!licensesPanel.contains(e.target) && e.target !== licensesIcon && !licensesIcon.contains(e.target)) {
+                        licensesPanel.classList.remove('visible');
+                    }
+                });
+            }
+
+            // Car Editor functionality
+            if (carEditorIcon && carEditorPanel) {
+                carEditorIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = carEditorPanel.classList.contains('visible');
+                    if (isOpen) {
+                        carEditorPanel.classList.remove('visible');
+                    } else {
+                        closeAllPanelsExcept(carEditorPanel);
+                        carEditorPanel.classList.add('visible');
+
+                        // Update steering mode dropdown to show current setting
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                const steeringSelect = document.getElementById('steering-mode-select');
+                                if (steeringSelect && vehicle.steeringMode) {
+                                    steeringSelect.value = vehicle.steeringMode;
+                                } else if (steeringSelect) {
+                                    steeringSelect.value = 'front'; // Default
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Close panel when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!carEditorPanel.contains(e.target) && e.target !== carEditorIcon && !carEditorIcon.contains(e.target)) {
+                        carEditorPanel.classList.remove('visible');
+                    }
+                });
+            }
+
+            // Plane Editor functionality
+            if (planeEditorIcon && planeEditorPanel) {
+                planeEditorIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = planeEditorPanel.classList.contains('visible');
+                    if (isOpen) {
+                        planeEditorPanel.classList.remove('visible');
+                    } else {
+                        closeAllPanelsExcept(planeEditorPanel);
+                        planeEditorPanel.classList.add('visible');
+                    }
+                });
+
+                // Close panel when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!planeEditorPanel.contains(e.target) && e.target !== planeEditorIcon && !planeEditorIcon.contains(e.target)) {
+                        planeEditorPanel.classList.remove('visible');
+                    }
+                });
+            }
+
+            // Helicopter Editor functionality
+            if (helicopterEditorIcon && helicopterEditorPanel) {
+                helicopterEditorIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = helicopterEditorPanel.classList.contains('visible');
+                    if (isOpen) {
+                        helicopterEditorPanel.classList.remove('visible');
+                    } else {
+                        closeAllPanelsExcept(helicopterEditorPanel);
+                        helicopterEditorPanel.classList.add('visible');
+                    }
+                });
+
+                // Close panel when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!helicopterEditorPanel.contains(e.target) && e.target !== helicopterEditorIcon && !helicopterEditorIcon.contains(e.target)) {
+                        helicopterEditorPanel.classList.remove('visible');
+                    }
+                });
+            }
+
+            if (playerEditorIcon && playerEditorPanel) {
+                // Vehicle Enter/Exit Button
+                const vehicleButton = document.getElementById('vehicle-button');
+                const carIcon = document.querySelector('.car-icon');
+                const characterIcon = document.querySelector('.character-icon');
+
+                vehicleButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+
+                    // Check if player is in a vehicle
+                    if (world && world.characters && world.characters.length > 0) {
+                        const player = world.characters[0];
+                        if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                            const vehicle = player.occupyingSeat.vehicle;
+
+                            // Auto-brake before exiting to ensure reliable exit
+                            // Game engine prevents high-speed exits for safety
+                            if (vehicle.rayCastVehicle && vehicle.rayCastVehicle.chassisBody) {
+                                const body = vehicle.rayCastVehicle.chassisBody;
+                                const speed = body.velocity.length();
+
+                                if (speed > 2) {
+                                    // Apply brakes automatically
+                                    dispatchKey('Space', true);
+
+                                    // Wait for slowdown, then exit
+                                    setTimeout(() => {
+                                        dispatchKey('Space', false);
+                                        dispatchKey('KeyF', true);
+                                        setTimeout(() => dispatchKey('KeyF', false), 50);
+                                    }, 200);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    // Normal exit (not in vehicle or already slow enough)
+                    dispatchKey('KeyF', true);
+                    setTimeout(() => dispatchKey('KeyF', false), 50);
+                });
+
+                // Store base physics values for scale calculations
+                const basePhysicsProps = {
+                    capsuleHeight: 0.5,
+                    capsuleRadius: 0.25,
+                    raycastLength: 0.57
+                };
+
+                // Custom jump power value
+                let customJumpPower = 8.0;  // Default vertical jump velocity (2x game default)
+
+                // Custom gravity value - continuously enforced
+                let customGravity = -9.81;  // Default gravity
+
+                // Jump boost tracking
+                let lastBoostTime = 0;
+                let previousVelocityY = 0;
+
+                // FPS tracking
+                let lastFrameTime = performance.now();
+                let frameCount = 0;
+                let fps = 0;
+                const fpsCounter = document.getElementById('fps-counter');
+
+                // Slider handlers - SIMPLE DIRECT ASSIGNMENTS
+                const sliders = {
+                    scale: {
+                        slider: document.getElementById('scale-slider'),
+                        value: document.getElementById('scale-value'),
+                        apply: (val) => {
+                            if (world && world.characters && world.characters.length > 0) {
+                                world.characters.forEach(char => {
+                                    // Apply visual scale
+                                    char.scale.set(val, val, val);
+
+                                    // Scale physics capsule proportionally
+                                    if (char.characterCapsule && char.characterCapsule.body) {
+                                        const scaledHeight = basePhysicsProps.capsuleHeight * val;
+                                        const scaledRadius = basePhysicsProps.capsuleRadius * val;
+
+                                        // Update capsule shapes (cylinder + 2 spheres)
+                                        char.characterCapsule.body.shapes.forEach((shape, index) => {
+                                            if (index === 0) {
+                                                shape.height = scaledHeight;
+                                                shape.radius = scaledRadius;
+                                            } else {
+                                                shape.radius = scaledRadius;
+                                            }
+                                        });
+
+                                        // Update shape offsets for top/bottom spheres
+                                        const halfHeight = scaledHeight / 2;
+                                        if (char.characterCapsule.body.shapeOffsets[1]) {
+                                            char.characterCapsule.body.shapeOffsets[1].y = halfHeight;
+                                        }
+                                        if (char.characterCapsule.body.shapeOffsets[2]) {
+                                            char.characterCapsule.body.shapeOffsets[2].y = -halfHeight;
+                                        }
+
+                                        // Update AABB
+                                        char.characterCapsule.body.updateBoundingRadius();
+                                        char.characterCapsule.body.aabbNeedsUpdate = true;
+                                    }
+
+                                    // Scale raycast length for ground detection
+                                    char.rayCastLength = basePhysicsProps.raycastLength * val;
+                                });
+                            }
+                        }
+                    },
+                    movespeed: {
+                        slider: document.getElementById('movespeed-slider'),
+                        value: document.getElementById('movespeed-value'),
+                        apply: (val) => {
+                            if (world && world.characters && world.characters.length > 0) {
+                                world.characters.forEach(char => {
+                                    // DIRECT assignment to moveSpeed (movement multiplier)
+                                    char.moveSpeed = val;
+                                });
+                            }
+                        }
+                    },
+                    jumppower: {
+                        slider: document.getElementById('jumppower-slider'),
+                        value: document.getElementById('jumppower-value'),
+                        apply: (val) => {
+                            // Store custom jump power - will be used by detection system
+                            customJumpPower = val;
+                        }
+                    },
+                    gravity: {
+                        slider: document.getElementById('gravity-slider'),
+                        value: document.getElementById('gravity-value'),
+                        apply: (val) => {
+                            // Store custom gravity value
+                            customGravity = val;
+                            if (world && world.physicsWorld) {
+                                world.physicsWorld.gravity.set(0, val, 0);
+                            }
+                        }
+                    }
+                };
+
+                // Setup all sliders
+                Object.keys(sliders).forEach(key => {
+                    const config = sliders[key];
+                    if (config.slider && config.value) {
+                        config.slider.addEventListener('input', function(e) {
+                            const val = parseFloat(e.target.value);
+                            config.value.textContent = val.toFixed(2);
+                            config.apply(val);
+                        });
+                    }
+                });
+
+                // Jump boost + gravity enforcement + FPS tracking + vehicle icon toggle
+                function applyCustomSettings() {
+                    // FPS calculation
+                    const currentTime = performance.now();
+                    frameCount++;
+                    if (currentTime - lastFrameTime >= 1000) {
+                        fps = Math.round(frameCount * 1000 / (currentTime - lastFrameTime));
+                        if (fpsCounter) fpsCounter.textContent = `FPS: ${fps}`;
+                        frameCount = 0;
+                        lastFrameTime = currentTime;
+                    }
+
+                    if (world && world.characters && world.characters.length > 0) {
+                        const now = Date.now();
+                        const player = world.characters[0]; // Main player character
+
+                        // Toggle vehicle button icon and throttle buttons based on vehicle type
+                        if (player) {
+                            const isInVehicle = player.occupyingSeat !== null && player.occupyingSeat !== undefined;
+
+                            if (isInVehicle) {
+                                // In vehicle: show character icon (exit)
+                                carIcon.classList.remove('active');
+                                characterIcon.classList.add('active');
+
+                                // Detect vehicle type
+                                const vehicle = player.occupyingSeat.vehicle;
+
+                                // Keep car detection simple - show buttons for all vehicles for now
+                                const isCar = false; // Always show throttle buttons - they don't affect cars anyway
+
+                                // Show throttle buttons for all vehicles EXCEPT cars
+                                // (Buttons don't affect cars anyway, but hide them to reduce clutter)
+                                const throttleUp = document.getElementById('throttle-up');
+                                const throttleDown = document.getElementById('throttle-down');
+                                if (isCar) {
+                                    // Hide buttons for cars
+                                    if (throttleUp) throttleUp.classList.remove('visible');
+                                    if (throttleDown) throttleDown.classList.remove('visible');
+                                } else {
+                                    // Show buttons for aircraft (and any other vehicles by default)
+                                    if (throttleUp) throttleUp.classList.add('visible');
+                                    if (throttleDown) throttleDown.classList.add('visible');
+                                }
+                            } else {
+                                // Not in vehicle: show car icon (enter), hide throttle
+                                carIcon.classList.add('active');
+                                characterIcon.classList.remove('active');
+
+                                const throttleUp = document.getElementById('throttle-up');
+                                const throttleDown = document.getElementById('throttle-down');
+                                if (throttleUp) throttleUp.classList.remove('visible');
+                                if (throttleDown) throttleDown.classList.remove('visible');
+                            }
+                        }
+
+                        world.characters.forEach(char => {
+                            if (char.characterCapsule && char.characterCapsule.body) {
+                                const body = char.characterCapsule.body;
+                                const currentVelY = body.velocity.y;
+
+                                // PRECISE detection: velocity just increased by ~4 (game's jump boost)
+                                const velocityIncrease = currentVelY - previousVelocityY;
+
+                                // Only boost if velocity increased by approximately 4 AND cooldown passed
+                                if (velocityIncrease >= 3.8 && velocityIncrease <= 4.2 && (now - lastBoostTime) > 150) {
+                                    // Replace game's +4 with custom jump power
+                                    body.velocity.y = previousVelocityY + customJumpPower;
+                                    lastBoostTime = now;
+                                }
+
+                                // Track velocity for next frame
+                                previousVelocityY = body.velocity.y;
+                            }
+                        });
+
+                        // Continuously enforce custom gravity (prevents any resets)
+                        if (world.physicsWorld) {
+                            world.physicsWorld.gravity.set(0, customGravity, 0);
+                        }
+                    }
+                    requestAnimationFrame(applyCustomSettings);
+                }
+                applyCustomSettings();
+            }
+
+            // VEHICLE TYPE TAGGING - Tag vehicles once at startup for accurate editor control
+            function tagVehicleTypes() {
+                if (!world || !world.vehicles) return;
+
+                const cars = [];
+                const aircraft = [];
+
+                // Categorize vehicles
+                world.vehicles.forEach(vehicle => {
+                    if (vehicle.rayCastVehicle) {
+                        cars.push(vehicle);
+                    } else {
+                        aircraft.push(vehicle);
+                    }
+                });
+
+                // Tag each vehicle with its editor type
+                cars.forEach(vehicle => {
+                    vehicle._editorType = 'car';
+                });
+
+                // Tag first aircraft as plane, second as helicopter
+                if (aircraft[0]) aircraft[0]._editorType = 'plane';
+                if (aircraft[1]) aircraft[1]._editorType = 'helicopter';
+            }
+
+            // Tag vehicles once when world loads
+            let vehiclesTagged = false;
+            let vehicleTagInterval = null;
+            let tagAttempts = 0;
+            const MAX_TAG_ATTEMPTS = 30; // Try for 30 seconds max
+
+            function ensureVehiclesTagged() {
+                tagAttempts++;
+
+                if (!vehiclesTagged && world && world.vehicles && world.vehicles.length > 0) {
+                    tagVehicleTypes();
+                    vehiclesTagged = true;
+
+                    // SECURITY FIX: Clear interval once tagging is complete
+                    if (vehicleTagInterval) {
+                        clearInterval(vehicleTagInterval);
+                        vehicleTagInterval = null;
+                        console.log('Vehicle tagging complete, interval cleared');
+                    }
+                }
+
+                // SECURITY FIX: Stop trying after MAX_TAG_ATTEMPTS to prevent infinite loop
+                if (tagAttempts >= MAX_TAG_ATTEMPTS && vehicleTagInterval) {
+                    clearInterval(vehicleTagInterval);
+                    vehicleTagInterval = null;
+                    console.warn('Vehicle tagging timeout after', tagAttempts, 'attempts');
+                }
+            }
+
+            // Check for tagged vehicles periodically, will auto-clear when done
+            vehicleTagInterval = setInterval(ensureVehiclesTagged, 1000);
+
+            // Car Editor Sliders - Independent setup with BASE VALUE STORAGE
+            const vehicleBaseValues = new WeakMap(); // Store original factory values per vehicle
+            const vehicleCurrentValues = new WeakMap(); // Store current slider multipliers
+
+            function getOrCreateBaseValues(vehicle) {
+                if (!vehicleBaseValues.has(vehicle)) {
+                    const base = {
+                        // Physics properties
+                        suspensionRestLength: [],
+                        wheelRadius: [],
+                        wheelPositionX: [],
+                        wheelPositionZ: [],
+                        suspensionStiffness: [],
+                        dampingRelaxation: [],
+                        frictionSlip: [],
+                        // Visual properties
+                        wheelObjectScaleX: [],
+                        wheelObjectScaleY: [],
+                        wheelObjectScaleZ: [],
+                        vehicleScaleX: 1.0,
+                        vehicleScaleY: 1.0,
+                        vehicleScaleZ: 1.0
+                    };
+
+                    // Capture physics baseline
+                    if (vehicle.rayCastVehicle && vehicle.rayCastVehicle.wheelInfos) {
+                        vehicle.rayCastVehicle.wheelInfos.forEach((wheel, i) => {
+                            base.suspensionRestLength[i] = wheel.suspensionRestLength;
+                            base.wheelRadius[i] = wheel.radius;
+                            base.wheelPositionX[i] = wheel.chassisConnectionPointLocal.x;
+                            base.wheelPositionZ[i] = wheel.chassisConnectionPointLocal.z;
+                            base.suspensionStiffness[i] = wheel.suspensionStiffness;
+                            base.dampingRelaxation[i] = wheel.dampingRelaxation;
+                            base.frictionSlip[i] = wheel.frictionSlip;
+                        });
+                    }
+
+                    // Capture visual baseline
+                    if (vehicle.wheels) {
+                        vehicle.wheels.forEach((wheel, i) => {
+                            if (wheel && wheel.wheelObject && wheel.wheelObject.scale) {
+                                base.wheelObjectScaleX[i] = wheel.wheelObject.scale.x;
+                                base.wheelObjectScaleY[i] = wheel.wheelObject.scale.y;
+                                base.wheelObjectScaleZ[i] = wheel.wheelObject.scale.z;
+                            }
+                        });
+                    }
+
+                    // Capture vehicle body scale
+                    base.vehicleScaleX = vehicle.scale.x;
+                    base.vehicleScaleY = vehicle.scale.y;
+                    base.vehicleScaleZ = vehicle.scale.z;
+
+                    vehicleBaseValues.set(vehicle, base);
+                }
+                return vehicleBaseValues.get(vehicle);
+            }
+
+            function getOrCreateCurrentValues(vehicle) {
+                if (!vehicleCurrentValues.has(vehicle)) {
+                    const current = {
+                        carScale: 1.0,
+                        tireDiameter: 1.0,
+                        tireWidth: 1.0,
+                        rideHeight: 1.0,
+                        trackWidth: 1.0,
+                        trackLength: 1.0
+                    };
+                    vehicleCurrentValues.set(vehicle, current);
+                }
+                return vehicleCurrentValues.get(vehicle);
+            }
+
+            // Helper function to apply combined wheel visual scaling
+            function updateWheelVisuals(vehicle) {
+                const base = getOrCreateBaseValues(vehicle);
+                const current = getOrCreateCurrentValues(vehicle);
+
+                if (vehicle.wheels) {
+                    vehicle.wheels.forEach((wheel, i) => {
+                        if (wheel && wheel.wheelObject && wheel.wheelObject.scale) {
+                            // Combine all multipliers
+                            const scaleX = base.wheelObjectScaleX[i] * current.carScale * current.tireDiameter * current.tireWidth;
+                            const scaleY = base.wheelObjectScaleY[i] * current.carScale * current.tireDiameter;
+                            const scaleZ = base.wheelObjectScaleZ[i] * current.carScale * current.tireDiameter;
+                            wheel.wheelObject.scale.set(scaleX, scaleY, scaleZ);
+                        }
+                    });
+                }
+            }
+
+            const carSliders = {
+                carscale: {
+                    slider: document.getElementById('car-scale-slider'),
+                    value: document.getElementById('car-scale-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle) {
+                                    const base = getOrCreateBaseValues(vehicle);
+                                    const current = getOrCreateCurrentValues(vehicle);
+
+                                    // Store current scale value
+                                    current.carScale = val;
+
+                                    // Scale vehicle body from baseline
+                                    vehicle.scale.set(
+                                        base.vehicleScaleX * val,
+                                        base.vehicleScaleY * val,
+                                        base.vehicleScaleZ * val
+                                    );
+
+                                    // Don't scale player - they stay normal size regardless of vehicle size
+                                    // (Vehicle interior scales but character stays proportional to world)
+
+                                    // Update all wheel visuals with combined scaling
+                                    updateWheelVisuals(vehicle);
+
+                                    // Also scale physics properties to match
+                                    vehicle.rayCastVehicle.wheelInfos.forEach((wheel, i) => {
+                                        wheel.radius = base.wheelRadius[i] * val * current.tireDiameter;
+                                        wheel.suspensionRestLength = base.suspensionRestLength[i] * val * current.rideHeight;
+                                        wheel.chassisConnectionPointLocal.x = base.wheelPositionX[i] * val * current.trackWidth;
+                                        wheel.chassisConnectionPointLocal.z = base.wheelPositionZ[i] * val * current.trackLength;
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },
+                rideheight: {
+                    slider: document.getElementById('ride-height-slider'),
+                    value: document.getElementById('ride-height-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle) {
+                                    const base = getOrCreateBaseValues(vehicle);
+                                    const current = getOrCreateCurrentValues(vehicle);
+
+                                    // Store current ride height value
+                                    current.rideHeight = val;
+
+                                    // Adjust suspension from baseline, combined with carScale
+                                    vehicle.rayCastVehicle.wheelInfos.forEach((wheel, i) => {
+                                        wheel.suspensionRestLength = base.suspensionRestLength[i] * current.carScale * val;
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },
+                trackwidth: {
+                    slider: document.getElementById('track-width-slider'),
+                    value: document.getElementById('track-width-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle && vehicle.rayCastVehicle.wheelInfos.length >= 4) {
+                                    const base = getOrCreateBaseValues(vehicle);
+                                    const current = getOrCreateCurrentValues(vehicle);
+
+                                    // Store current track width value
+                                    current.trackWidth = val;
+
+                                    // Adjust lateral positions from baseline, combined with carScale
+                                    vehicle.rayCastVehicle.wheelInfos.forEach((wheel, i) => {
+                                        wheel.chassisConnectionPointLocal.x = base.wheelPositionX[i] * current.carScale * val;
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },
+                tracklength: {
+                    slider: document.getElementById('track-length-slider'),
+                    value: document.getElementById('track-length-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle && vehicle.rayCastVehicle.wheelInfos.length >= 4) {
+                                    const base = getOrCreateBaseValues(vehicle);
+                                    const current = getOrCreateCurrentValues(vehicle);
+
+                                    // Store current track length value
+                                    current.trackLength = val;
+
+                                    // Adjust longitudinal positions from baseline, combined with carScale
+                                    vehicle.rayCastVehicle.wheelInfos.forEach((wheel, i) => {
+                                        wheel.chassisConnectionPointLocal.z = base.wheelPositionZ[i] * current.carScale * val;
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },
+                tirediameter: {
+                    slider: document.getElementById('tire-diameter-slider'),
+                    value: document.getElementById('tire-diameter-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle) {
+                                    const base = getOrCreateBaseValues(vehicle);
+                                    const current = getOrCreateCurrentValues(vehicle);
+
+                                    // Store current tire diameter value
+                                    current.tireDiameter = val;
+
+                                    // Adjust wheel physics radius from baseline, combined with carScale
+                                    vehicle.rayCastVehicle.wheelInfos.forEach((wheel, i) => {
+                                        wheel.radius = base.wheelRadius[i] * current.carScale * val;
+                                    });
+
+                                    // Update wheel visuals with combined scaling
+                                    updateWheelVisuals(vehicle);
+                                }
+                            }
+                        }
+                    }
+                },
+                tirewidth: {
+                    slider: document.getElementById('tire-width-slider'),
+                    value: document.getElementById('tire-width-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle) {
+                                    const current = getOrCreateCurrentValues(vehicle);
+
+                                    // Store current tire width value
+                                    current.tireWidth = val;
+
+                                    // Update wheel visuals with combined scaling (width affects X axis)
+                                    updateWheelVisuals(vehicle);
+                                }
+                            }
+                        }
+                    }
+                },
+                torque: {
+                    slider: document.getElementById('torque-slider'),
+                    value: document.getElementById('torque-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle) {
+                                    // Adjust engine force (torque)
+                                    vehicle.rayCastVehicle.maxForce = 500 * val;
+                                }
+                            }
+                        }
+                    }
+                },
+                horsepower: {
+                    slider: document.getElementById('horsepower-slider'),
+                    value: document.getElementById('horsepower-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // Horsepower affects acceleration
+                                if (vehicle.accelerationForce !== undefined) {
+                                    vehicle.accelerationForce = vehicle.accelerationForce * val;
+                                }
+                            }
+                        }
+                    }
+                },
+                topspeed: {
+                    slider: document.getElementById('topspeed-slider'),
+                    value: document.getElementById('topspeed-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // Top speed limiter
+                                if (vehicle.rayCastVehicle && vehicle.rayCastVehicle.chassisBody) {
+                                    vehicle.maxSpeed = 50 * val;
+                                }
+                            }
+                        }
+                    }
+                },
+                tractionfront: {
+                    slider: document.getElementById('traction-front-slider'),
+                    value: document.getElementById('traction-front-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle) {
+                                    const base = getOrCreateBaseValues(vehicle);
+                                    // Front wheels traction from BASE values (indices 0,1)
+                                    for (let i = 0; i < 2; i++) {
+                                        if (vehicle.rayCastVehicle.wheelInfos[i]) {
+                                            vehicle.rayCastVehicle.wheelInfos[i].frictionSlip = base.frictionSlip[i] * val;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                tractionrear: {
+                    slider: document.getElementById('traction-rear-slider'),
+                    value: document.getElementById('traction-rear-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle) {
+                                    const base = getOrCreateBaseValues(vehicle);
+                                    // Rear wheels traction from BASE values (indices 2,3)
+                                    for (let i = 2; i < 4; i++) {
+                                        if (vehicle.rayCastVehicle.wheelInfos[i]) {
+                                            vehicle.rayCastVehicle.wheelInfos[i].frictionSlip = base.frictionSlip[i] * val;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                suspensioncompression: {
+                    slider: document.getElementById('suspension-compression-slider'),
+                    value: document.getElementById('suspension-compression-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle) {
+                                    const base = getOrCreateBaseValues(vehicle);
+                                    vehicle.rayCastVehicle.wheelInfos.forEach((wheel, i) => {
+                                        wheel.suspensionStiffness = base.suspensionStiffness[i] * val;
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },
+                suspensionrebound: {
+                    slider: document.getElementById('suspension-rebound-slider'),
+                    value: document.getElementById('suspension-rebound-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle) {
+                                    const base = getOrCreateBaseValues(vehicle);
+                                    vehicle.rayCastVehicle.wheelInfos.forEach((wheel, i) => {
+                                        wheel.dampingRelaxation = base.dampingRelaxation[i] * val;
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },
+                weightfront: {
+                    slider: document.getElementById('weight-front-slider'),
+                    value: document.getElementById('weight-front-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle && vehicle.rayCastVehicle.chassisBody) {
+                                    // Store front weight value
+                                    if (!vehicle._weightValues) vehicle._weightValues = { front: 1.0, rear: 1.0 };
+                                    vehicle._weightValues.front = val;
+
+                                    // Calculate combined center of mass
+                                    const com = vehicle.rayCastVehicle.chassisBody.shapeOffsets[0];
+                                    if (com) {
+                                        // More front weight = negative Z, more rear weight = positive Z
+                                        const frontEffect = -0.5 * (vehicle._weightValues.front - 1);
+                                        const rearEffect = 0.5 * (vehicle._weightValues.rear - 1);
+                                        com.z = frontEffect + rearEffect;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                weightrear: {
+                    slider: document.getElementById('weight-rear-slider'),
+                    value: document.getElementById('weight-rear-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                if (vehicle.rayCastVehicle && vehicle.rayCastVehicle.chassisBody) {
+                                    // Store rear weight value
+                                    if (!vehicle._weightValues) vehicle._weightValues = { front: 1.0, rear: 1.0 };
+                                    vehicle._weightValues.rear = val;
+
+                                    // Calculate combined center of mass
+                                    const com = vehicle.rayCastVehicle.chassisBody.shapeOffsets[0];
+                                    if (com) {
+                                        // More front weight = negative Z, more rear weight = positive Z
+                                        const frontEffect = -0.5 * (vehicle._weightValues.front - 1);
+                                        const rearEffect = 0.5 * (vehicle._weightValues.rear - 1);
+                                        com.z = frontEffect + rearEffect;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Plane Editor Sliders
+            const planeSliders = {
+                scale: {
+                    slider: document.getElementById('plane-scale-slider'),
+                    value: document.getElementById('plane-scale-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // ONLY work on PLANE specifically
+                                if (vehicle._editorType === 'plane') {
+                                    // Scale the vehicle
+                                    vehicle.scale.set(val, val, val);
+
+                                    // Scale player with the vehicle
+                                    player.scale.set(val, val, val);
+                                }
+                            }
+                        }
+                    }
+                },
+                engine: {
+                    slider: document.getElementById('plane-engine-slider'),
+                    value: document.getElementById('plane-engine-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to planes
+                                if (vehicle._editorType === 'plane' && vehicle.actions && vehicle.actions.throttle) {
+                                    vehicle.enginePowerMultiplier = val;
+                                }
+                            }
+                        }
+                    }
+                },
+                maxspeed: {
+                    slider: document.getElementById('plane-maxspeed-slider'),
+                    value: document.getElementById('plane-maxspeed-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to planes
+                                if (vehicle._editorType === 'plane') {
+                                    vehicle.maxSpeedMultiplier = val;
+                                }
+                            }
+                        }
+                    }
+                },
+                roll: {
+                    slider: document.getElementById('plane-roll-slider'),
+                    value: document.getElementById('plane-roll-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to planes
+                                if (vehicle._editorType === 'plane') {
+                                    vehicle.rollSensitivity = val;
+                                }
+                            }
+                        }
+                    }
+                },
+                pitch: {
+                    slider: document.getElementById('plane-pitch-slider'),
+                    value: document.getElementById('plane-pitch-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to planes
+                                if (vehicle._editorType === 'plane') {
+                                    vehicle.pitchSensitivity = val;
+                                }
+                            }
+                        }
+                    }
+                },
+                yaw: {
+                    slider: document.getElementById('plane-yaw-slider'),
+                    value: document.getElementById('plane-yaw-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to planes
+                                if (vehicle._editorType === 'plane') {
+                                    vehicle.yawSensitivity = val;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Helicopter Editor Sliders
+            const heliSliders = {
+                scale: {
+                    slider: document.getElementById('heli-scale-slider'),
+                    value: document.getElementById('heli-scale-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // ONLY work on HELICOPTER specifically
+                                if (vehicle._editorType === 'helicopter') {
+                                    // Scale the vehicle
+                                    vehicle.scale.set(val, val, val);
+
+                                    // Scale player with the vehicle
+                                    player.scale.set(val, val, val);
+                                }
+                            }
+                        }
+                    }
+                },
+                engine: {
+                    slider: document.getElementById('heli-engine-slider'),
+                    value: document.getElementById('heli-engine-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to helicopters
+                                if (vehicle._editorType === 'helicopter') {
+                                    vehicle.enginePowerMultiplier = val;
+                                }
+                            }
+                        }
+                    }
+                },
+                maxspeed: {
+                    slider: document.getElementById('heli-maxspeed-slider'),
+                    value: document.getElementById('heli-maxspeed-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to helicopters
+                                if (vehicle._editorType === 'helicopter') {
+                                    vehicle.maxSpeedMultiplier = val;
+                                }
+                            }
+                        }
+                    }
+                },
+                roll: {
+                    slider: document.getElementById('heli-roll-slider'),
+                    value: document.getElementById('heli-roll-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to helicopters
+                                if (vehicle._editorType === 'helicopter') {
+                                    vehicle.rollSensitivity = val;
+                                }
+                            }
+                        }
+                    }
+                },
+                pitch: {
+                    slider: document.getElementById('heli-pitch-slider'),
+                    value: document.getElementById('heli-pitch-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to helicopters
+                                if (vehicle._editorType === 'helicopter') {
+                                    vehicle.pitchSensitivity = val;
+                                }
+                            }
+                        }
+                    }
+                },
+                yaw: {
+                    slider: document.getElementById('heli-yaw-slider'),
+                    value: document.getElementById('heli-yaw-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to helicopters
+                                if (vehicle._editorType === 'helicopter') {
+                                    vehicle.yawSensitivity = val;
+                                }
+                            }
+                        }
+                    }
+                },
+                lift: {
+                    slider: document.getElementById('heli-lift-slider'),
+                    value: document.getElementById('heli-lift-value'),
+                    apply: (val) => {
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                                const vehicle = player.occupyingSeat.vehicle;
+                                // FIXED: Only apply to helicopters
+                                if (vehicle._editorType === 'helicopter') {
+                                    vehicle.liftForceMultiplier = val;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Setup all car sliders
+            Object.keys(carSliders).forEach(key => {
+                const config = carSliders[key];
+                if (config.slider && config.value) {
+                    config.slider.addEventListener('input', function(e) {
+                        const val = parseFloat(e.target.value);
+                        config.value.textContent = val.toFixed(2);
+                        config.apply(val);
+                    });
+                }
+            });
+
+            // Setup all plane sliders
+            Object.keys(planeSliders).forEach(key => {
+                const config = planeSliders[key];
+                if (config.slider && config.value) {
+                    config.slider.addEventListener('input', function(e) {
+                        const val = parseFloat(e.target.value);
+                        config.value.textContent = val.toFixed(2);
+                        config.apply(val);
+                    });
+                }
+            });
+
+            // Setup all helicopter sliders
+            Object.keys(heliSliders).forEach(key => {
+                const config = heliSliders[key];
+                if (config.slider && config.value) {
+                    config.slider.addEventListener('input', function(e) {
+                        const val = parseFloat(e.target.value);
+                        config.value.textContent = val.toFixed(2);
+                        config.apply(val);
+                    });
+                }
+            });
+
+            // Reset vehicle to factory defaults
+            function resetVehicleToFactory(vehicle) {
+                console.log('=== RESETTING VEHICLE TO FACTORY DEFAULTS ===');
+
+                // Reset current multipliers to 1.0 (neutral)
+                const current = getOrCreateCurrentValues(vehicle);
+                current.carScale = 1.0;
+                current.tireDiameter = 1.0;
+                current.tireWidth = 1.0;
+                current.rideHeight = 1.0;
+                current.trackWidth = 1.0;
+                current.trackLength = 1.0;
+
+                // Apply factory settings
+                const base = getOrCreateBaseValues(vehicle);
+
+                // Reset vehicle body scale
+                vehicle.scale.set(base.vehicleScaleX, base.vehicleScaleY, base.vehicleScaleZ);
+
+                // Reset wheel visuals
+                if (vehicle.wheels) {
+                    vehicle.wheels.forEach((wheel, i) => {
+                        if (wheel && wheel.wheelObject && wheel.wheelObject.scale) {
+                            wheel.wheelObject.scale.set(
+                                base.wheelObjectScaleX[i],
+                                base.wheelObjectScaleY[i],
+                                base.wheelObjectScaleZ[i]
+                            );
+                        }
+                    });
+                }
+
+                // Reset physics properties
+                if (vehicle.rayCastVehicle && vehicle.rayCastVehicle.wheelInfos) {
+                    vehicle.rayCastVehicle.wheelInfos.forEach((wheel, i) => {
+                        wheel.suspensionRestLength = base.suspensionRestLength[i];
+                        wheel.radius = base.wheelRadius[i];
+                        wheel.chassisConnectionPointLocal.x = base.wheelPositionX[i];
+                        wheel.chassisConnectionPointLocal.z = base.wheelPositionZ[i];
+                    });
+                }
+
+                console.log('Vehicle reset to factory defaults');
+            }
+
+            // Initialize ALL vehicles immediately on load
+            function initializeAllVehicles() {
+                if (world && world.vehicles && world.vehicles.length > 0) {
+                    console.log('=== INITIALIZING ALL VEHICLES ===');
+                    world.vehicles.forEach((vehicle, idx) => {
+                        if (vehicle && vehicle.rayCastVehicle && vehicle.wheels && vehicle.wheels.length >= 4) {
+                            console.log(`Initializing vehicle ${idx}`);
+
+                            // CRITICAL: Capture TRUE factory baseline values IMMEDIATELY
+                            // This must happen BEFORE any player interaction or slider adjustments
+                            const baseValues = getOrCreateBaseValues(vehicle);
+                            console.log('Factory baseline values captured:');
+                            console.log(`  Suspension rest length: [${baseValues.suspensionRestLength.map(v => v.toFixed(3)).join(', ')}]`);
+                            console.log(`  Wheel radius: [${baseValues.wheelRadius.map(v => v.toFixed(3)).join(', ')}]`);
+                            console.log(`  Wheel position X: [${baseValues.wheelPositionX.map(v => v.toFixed(3)).join(', ')}]`);
+                            console.log(`  Wheel position Z: [${baseValues.wheelPositionZ.map(v => v.toFixed(3)).join(', ')}]`);
+                            console.log(`  Wheel visual scale X: [${baseValues.wheelObjectScaleX.map(v => v.toFixed(3)).join(', ')}]`);
+                            console.log(`  Wheel visual scale Y: [${baseValues.wheelObjectScaleY.map(v => v.toFixed(3)).join(', ')}]`);
+                            console.log(`  Wheel visual scale Z: [${baseValues.wheelObjectScaleZ.map(v => v.toFixed(3)).join(', ')}]`);
+                            console.log(`  Vehicle body scale: [${baseValues.vehicleScaleX.toFixed(3)}, ${baseValues.vehicleScaleY.toFixed(3)}, ${baseValues.vehicleScaleZ.toFixed(3)}]`);
+
+                            // Reset vehicle to factory defaults
+                            resetVehicleToFactory(vehicle);
+
+                            // Check default steering config
+                            console.log('Default wheel steering config from GLB:');
+                            vehicle.wheels.forEach((wheel, i) => {
+                                console.log(`  Wheel ${i}: steering=${wheel.steering}, drive=${wheel.drive}`);
+                            });
+
+                            // CRITICAL FIX: FORCE front wheel steering initialization
+                            // Wheel layout: 0=FL, 1=RL, 2=FR, 3=RR (left-right pairs, not front-back)
+                            if (vehicle.rayCastVehicle && vehicle.wheels.length >= 4) {
+                                // Set default steering mode
+                                vehicle.steeringMode = 'front';
+
+                                // FORCE steering values - wheels 0 and 2 are FRONT wheels
+                                vehicle.wheels[0].steering = 'front';  // Front left steers
+                                vehicle.wheels[2].steering = 'front';  // Front right steers
+                                vehicle.wheels[1].steering = null;     // Rear left no steering
+                                vehicle.wheels[3].steering = null;     // Rear right no steering
+
+                                console.log('FORCED front wheel steering:', {
+                                    mode: vehicle.steeringMode,
+                                    wheel0: vehicle.wheels[0].steering,
+                                    wheel1: vehicle.wheels[1].steering,
+                                    wheel2: vehicle.wheels[2].steering,
+                                    wheel3: vehicle.wheels[3].steering
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Try to initialize vehicles repeatedly until world is loaded
+            let vehicleInitInterval = setInterval(function() {
+                if (world && world.vehicles && world.vehicles.length > 0) {
+                    initializeAllVehicles();
+                    clearInterval(vehicleInitInterval);
+                }
+            }, 100);
+
+            // Steering Mode Handler (Fixed - using property flags like Drive Mode)
+            const steeringModeSelect = document.getElementById('steering-mode-select');
+            if (steeringModeSelect) {
+                steeringModeSelect.addEventListener('change', function(e) {
+                    if (world && world.characters && world.characters.length > 0) {
+                        const player = world.characters[0];
+                        if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                            const vehicle = player.occupyingSeat.vehicle;
+                            if (vehicle.rayCastVehicle && vehicle.wheels && vehicle.wheels.length >= 4) {
+                                const mode = e.target.value;
+                                vehicle.steeringMode = mode; // Set vehicle steering mode property
+                                console.log('Steering mode changed to:', mode);
+
+                                // Update wheel steering properties
+                                // Wheel layout: 0=FL, 1=RL, 2=FR, 3=RR (left-right pairs)
+                                if (mode === 'front') {
+                                    // Front wheel steer: 0=FL and 2=FR steer
+                                    vehicle.wheels[0].steering = 'front';
+                                    vehicle.wheels[2].steering = 'front';
+                                    vehicle.wheels[1].steering = null;
+                                    vehicle.wheels[3].steering = null;
+                                } else if (mode === '4wheel') {
+                                    // 4-wheel steer: Front (0,2) and rear (1,3) turn opposite
+                                    vehicle.wheels[0].steering = '4wheel-front';
+                                    vehicle.wheels[2].steering = '4wheel-front';
+                                    vehicle.wheels[1].steering = '4wheel-rear';
+                                    vehicle.wheels[3].steering = '4wheel-rear';
+                                } else if (mode === 'crabwalk') {
+                                    // Crab walk: All wheels turn same direction
+                                    vehicle.wheels[0].steering = 'crabwalk';
+                                    vehicle.wheels[1].steering = 'crabwalk';
+                                    vehicle.wheels[2].steering = 'crabwalk';
+                                    vehicle.wheels[3].steering = 'crabwalk';
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Drive Mode Handler
+            const driveModeSelect = document.getElementById('drive-mode-select');
+            if (driveModeSelect) {
+                driveModeSelect.addEventListener('change', function(e) {
+                    if (world && world.characters && world.characters.length > 0) {
+                        const player = world.characters[0];
+                        if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                            const vehicle = player.occupyingSeat.vehicle;
+                            if (vehicle.rayCastVehicle && vehicle.wheels && vehicle.wheels.length >= 4) {
+                                const mode = e.target.value;
+                                vehicle.drive = mode; // Set vehicle drive property
+
+                                // Update wheel drive properties
+                                // Front wheels: indices 0,1 | Rear wheels: indices 2,3
+                                if (mode === 'fwd') {
+                                    // Front wheel drive
+                                    vehicle.wheels[0].drive = 'fwd';
+                                    vehicle.wheels[1].drive = 'fwd';
+                                    vehicle.wheels[2].drive = null;
+                                    vehicle.wheels[3].drive = null;
+                                } else if (mode === 'awd') {
+                                    // All wheel drive
+                                    vehicle.wheels[0].drive = 'awd';
+                                    vehicle.wheels[1].drive = 'awd';
+                                    vehicle.wheels[2].drive = 'awd';
+                                    vehicle.wheels[3].drive = 'awd';
+                                } else if (mode === 'rwd') {
+                                    // Rear wheel drive
+                                    vehicle.wheels[0].drive = null;
+                                    vehicle.wheels[1].drive = null;
+                                    vehicle.wheels[2].drive = 'rwd';
+                                    vehicle.wheels[3].drive = 'rwd';
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Drift Mode Handler
+            const driftModeToggle = document.getElementById('drift-mode-toggle');
+            if (driftModeToggle) {
+                driftModeToggle.addEventListener('change', function(e) {
+                    if (world && world.characters && world.characters.length > 0) {
+                        const player = world.characters[0];
+                        if (player.occupyingSeat && player.occupyingSeat.vehicle) {
+                            const vehicle = player.occupyingSeat.vehicle;
+                            if (vehicle.rayCastVehicle) {
+                                const base = getOrCreateBaseValues(vehicle);
+                                if (e.target.checked) {
+                                    // Drift mode ON - reduce rear traction significantly
+                                    vehicle.rayCastVehicle.wheelInfos[2].frictionSlip = base.frictionSlip[2] * 0.3;
+                                    vehicle.rayCastVehicle.wheelInfos[3].frictionSlip = base.frictionSlip[3] * 0.3;
+                                } else {
+                                    // Drift mode OFF - restore from traction rear slider value
+                                    const rearTractionSlider = document.getElementById('traction-rear-slider');
+                                    const rearTractionVal = rearTractionSlider ? parseFloat(rearTractionSlider.value) : 1.0;
+                                    vehicle.rayCastVehicle.wheelInfos[2].frictionSlip = base.frictionSlip[2] * rearTractionVal;
+                                    vehicle.rayCastVehicle.wheelInfos[3].frictionSlip = base.frictionSlip[3] * rearTractionVal;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Enter Vehicle Button Handlers - Use tagged vehicle types
+            function findVehicleByEditorType(editorType) {
+                if (!world || !world.vehicles || world.vehicles.length === 0) {
+                    return null;
+                }
+
+                // Find vehicle with matching _editorType tag
+                for (let i = 0; i < world.vehicles.length; i++) {
+                    if (world.vehicles[i]._editorType === editorType) {
+                        return world.vehicles[i];
+                    }
+                }
+
+                return null;
+            }
+
+            function teleportIntoVehicle(vehicle) {
+                if (!vehicle || !world || !world.characters || world.characters.length === 0) {
+                    return;
+                }
+
+                const player = world.characters[0];
+
+                // Exit current vehicle first if in one
+                if (player.occupyingSeat) {
+                    dispatchKey('KeyF', true);
+                    setTimeout(() => dispatchKey('KeyF', false), 50);
+                    setTimeout(() => performTeleport(player, vehicle), 300);
+                } else {
+                    performTeleport(player, vehicle);
+                }
+            }
+
+            function performTeleport(player, vehicle) {
+                const vehiclePos = vehicle.position;
+
+                if (!vehiclePos || !player.characterCapsule || !player.characterCapsule.body) {
+                    return;
+                }
+
+                // Check distance to vehicle
+                const playerPos = player.characterCapsule.body.position;
+                const dx = vehiclePos.x - playerPos.x;
+                const dy = vehiclePos.y - playerPos.y;
+                const dz = vehiclePos.z - playerPos.z;
+                const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                // If already close to vehicle (within 5 units), just enter without teleporting
+                if (distance < 5) {
+                    dispatchKey('KeyF', true);
+                    setTimeout(() => dispatchKey('KeyF', false), 50);
+                    return;
+                }
+
+                // Teleport to vehicle
+                player.characterCapsule.body.position.set(
+                    vehiclePos.x + 1.0,
+                    vehiclePos.y + 0.3,
+                    vehiclePos.z - 2.0
+                );
+
+                player.position.copy(player.characterCapsule.body.position);
+
+                player.characterCapsule.body.velocity.set(0, 0, 0);
+                player.characterCapsule.body.angularVelocity.set(0, 0, 0);
+
+                setTimeout(() => {
+                    dispatchKey('KeyF', true);
+                    setTimeout(() => dispatchKey('KeyF', false), 50);
+                }, 100);
+            }
+
+            // Vehicle Enter Button Factory (consolidated from 71 lines of duplicate code)
+            function setupVehicleEnterButton(buttonId, vehicleIndex) {
+                const btn = document.getElementById(buttonId);
+                if (!btn) return;
+
+                let touchHandled = false;
+
+                btn.addEventListener('touchend', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    touchHandled = true;
+                    if (world && world.vehicles && world.vehicles[vehicleIndex]) {
+                        teleportIntoVehicle(world.vehicles[vehicleIndex]);
+                    }
+                    setTimeout(() => { touchHandled = false; }, 300);
+                }, { passive: false });
+
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (touchHandled) return;
+                    if (world && world.vehicles && world.vehicles[vehicleIndex]) {
+                        teleportIntoVehicle(world.vehicles[vehicleIndex]);
+                    }
+                });
+            }
+
+            // Setup all vehicle enter buttons
+            setupVehicleEnterButton('enter-car-btn', 4);    // Car is vehicle 4
+            setupVehicleEnterButton('enter-plane-btn', 2);  // Plane is vehicle 2
+            setupVehicleEnterButton('enter-heli-btn', 1);   // Helicopter is vehicle 1
+        });
+
+        // Gamepad Controls (Lenovo Legion Go, Xbox, PlayStation, Bluetooth controllers)
+        (function() {
+            const activeGamepadKeys = new Set();
+            const DEADZONE = 0.15;
+            const SPRINT_THRESHOLD = 0.7;  // Sprint when stick pushed 70% or more
+            const CAMERA_SENSITIVITY = 17.0;  // Doubled for better responsiveness
+
+            // Track trigger states to prevent flickering
+            let lastAccelState = false;
+            let lastBrakeState = false;
+
+            // Button mapping (standard gamepad layout)
+            const BUTTON_MAP = {
+                // Button 0 (A) handled separately for vehicle bunny hop
+                1: 'KeyB',         // B/Circle
+                2: 'KeyX',         // X/Square
+                3: 'KeyF',         // Y/Triangle - Enter/Exit vehicle
+                // Button 4 (L1) handled separately below for E-brake (in-vehicle only)
+                5: 'KeyE',         // RB/R1 - Yaw right (aircraft)
+                8: 'Escape',       // Select/Share - Menu
+                9: 'KeyF'          // Start/Options - Enter/Exit vehicle (same as Y)
+                // D-Pad buttons 12-15 REMOVED - they conflicted with left stick axes
+                // Left stick already handles WASD movement, D-Pad not needed
+            };
+
+            // Track A button state for bunny hop
+            let lastAButtonState = false;
+
+            // Gamepad connection events
+            window.addEventListener('gamepadconnected', function(e) {
+                console.log('🎮 GAMEPAD CONNECTED:', e.gamepad.id);
+                console.log('   Buttons:', e.gamepad.buttons.length, '| Axes:', e.gamepad.axes.length);
+            });
+
+            window.addEventListener('gamepaddisconnected', function(e) {
+                console.log('🎮 GAMEPAD DISCONNECTED');
+                activeGamepadKeys.forEach(code => dispatchKey(code, false));
+                activeGamepadKeys.clear();
+            });
+
+            function setGamepadKey(code, pressed) {
+                if (pressed && !activeGamepadKeys.has(code)) {
+                    activeGamepadKeys.add(code);
+                    dispatchKey(code, true);
+                } else if (!pressed && activeGamepadKeys.has(code)) {
+                    activeGamepadKeys.delete(code);
+                    dispatchKey(code, false);
+                }
+            }
+
+            // Periodic state logging (every 5 seconds)
+            let lastStateLog = 0;
+
+            // Main gamepad polling loop
+            function pollGamepad() {
+                const gamepads = navigator.getGamepads();
+
+                for (let i = 0; i < gamepads.length; i++) {
+                    const gamepad = gamepads[i];
+                    if (!gamepad) continue;
+
+                    // Log gamepad state every 5 seconds
+                    const now = Date.now();
+                    if (now - lastStateLog > 5000) {
+                        console.log('🎮 GAMEPAD STATE:');
+                        console.log('   Left Stick:', gamepad.axes[0].toFixed(2), gamepad.axes[1].toFixed(2));
+                        console.log('   Right Stick:', gamepad.axes[2].toFixed(2), gamepad.axes[3].toFixed(2));
+                        console.log('   Active Keys:', Array.from(activeGamepadKeys).join(', '));
+                        if (world && world.characters && world.characters.length > 0) {
+                            const player = world.characters[0];
+                            console.log('   In Vehicle:', player.occupyingSeat !== null);
+                        }
+                        lastStateLog = now;
+                    }
+
+                    // Check vehicle status first
+                    const player = (world && world.characters && world.characters.length > 0) ? world.characters[0] : null;
+                    const inVehicle = player ? (player.occupyingSeat !== null) : false;
+
+                    // Handle buttons
+                    gamepad.buttons.forEach((button, btnIndex) => {
+                        if (BUTTON_MAP[btnIndex]) {
+                            setGamepadKey(BUTTON_MAP[btnIndex], button.pressed);
+                        }
+                    });
+
+                    // A button (button 0) = Bunny hop in vehicle, Jump on foot
+                    if (gamepad.buttons[0]) {
+                        const aPressed = gamepad.buttons[0].pressed;
+                        if (inVehicle) {
+                            // Vehicle bunny hop - only trigger on button press (not hold)
+                            if (aPressed && !lastAButtonState) {
+                                // Apply bunny hop force directly
+                                if (player && player.occupyingSeat) {
+                                    const vehicle = player.occupyingSeat.vehicle;
+                                    if (vehicle && vehicle.rayCastVehicle && vehicle.rayCastVehicle.chassisBody) {
+                                        vehicle.rayCastVehicle.chassisBody.velocity.y += 5;
+                                    }
+                                }
+                            }
+                            lastAButtonState = aPressed;
+                        } else {
+                            // On foot - regular jump
+                            setGamepadKey('Space', aPressed);
+                            lastAButtonState = false;
+                        }
+                    }
+
+                    // L1 (button 4) = E-brake (only in vehicle)
+                    if (gamepad.buttons[4]) {
+                        if (inVehicle) {
+                            setGamepadKey('Space', gamepad.buttons[4].pressed);
+                        }
+                    }
+
+                    // Handle left stick (movement) - CALCULATE FIRST
+                    const leftX = Math.abs(gamepad.axes[0]) > DEADZONE ? gamepad.axes[0] : 0;
+                    const leftY = Math.abs(gamepad.axes[1]) > DEADZONE ? gamepad.axes[1] : 0;
+
+                    // Calculate stick magnitude for sprint detection
+                    const stickMagnitude = Math.sqrt(leftX * leftX + leftY * leftY);
+
+                    // Send movement keys
+                    setGamepadKey('KeyA', leftX < -DEADZONE);
+                    setGamepadKey('KeyD', leftX > DEADZONE);
+                    // Q/E for yaw mixing (helicopter tail rotor, plane rudder)
+                    setGamepadKey('KeyQ', leftX < -DEADZONE);
+                    setGamepadKey('KeyE', leftX > DEADZONE);
+
+                    // Handle triggers (analog)
+                    const leftTrigger = gamepad.buttons[6] ? gamepad.buttons[6].value : 0;
+                    const rightTrigger = gamepad.buttons[7] ? gamepad.buttons[7].value : 0;
+
+                    if (inVehicle) {
+                        // In vehicle: Triggers control throttle/brake (W/S keys), left stick only steers
+                        const accelPressed = rightTrigger > 0.2;  // RT/R2 - Accelerate
+                        const brakePressed = leftTrigger > 0.2;   // LT/L2 - Brake
+
+                        // Only send events when state CHANGES
+                        if (accelPressed !== lastAccelState) {
+                            setGamepadKey('KeyW', accelPressed);
+                            lastAccelState = accelPressed;
+                        }
+                        if (brakePressed !== lastBrakeState) {
+                            setGamepadKey('KeyS', brakePressed);
+                            lastBrakeState = brakePressed;
+                        }
+
+                        setGamepadKey('ShiftLeft', false);          // No sprint in vehicle
+                        setGamepadKey('ControlLeft', false);
+                    } else {
+                        // On foot: left stick controls W/S movement
+                        setGamepadKey('KeyW', leftY < -DEADZONE);
+                        setGamepadKey('KeyS', leftY > DEADZONE);
+                        // Sprint when stick pushed far
+                        setGamepadKey('ControlLeft', false);
+                        setGamepadKey('ShiftLeft', stickMagnitude > SPRINT_THRESHOLD);
+
+                        // Reset trigger states when on foot
+                        lastAccelState = false;
+                        lastBrakeState = false;
+                    }
+
+                    // Handle right stick (camera)
+                    const rightX = Math.abs(gamepad.axes[2]) > DEADZONE ? gamepad.axes[2] : 0;
+                    const rightY = Math.abs(gamepad.axes[3]) > DEADZONE ? gamepad.axes[3] : 0;
+
+                    if (world && world.cameraOperator && (rightX !== 0 || rightY !== 0)) {
+                        world.cameraOperator.move(
+                            rightX * CAMERA_SENSITIVITY,
+                            rightY * CAMERA_SENSITIVITY
+                        );
+                    }
+                }
+
+                requestAnimationFrame(pollGamepad);
+            }
+
+            // Start polling
+            pollGamepad();
+        })();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
