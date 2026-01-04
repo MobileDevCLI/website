@@ -462,6 +462,48 @@ Mobile AI development is not a compromise. For many developers, especially those
 **Key insight documented**:
 This entire session proves the thesis - built full website, brand, social presence from Android phone using Termux + Claude Code in Boris Mode. Screen can be turned off while Claude works autonomously. The proof.html page documents the complete journey.
 
+### January 3-4, 2026 - Session 4: Interactive Demos Marathon (Overnight)
+
+**Goal**: Build the most impressive interactive website in the world with physics, shaders, and simulations.
+
+**What we're building**:
+1. /demos.html - Interactive demos hub page
+2. /demo/fluid.html - Navier-Stokes fluid simulation (DONE)
+3. /demo/cloth.html - Verlet cloth physics
+4. /demo/galaxy.html - 100K particle galaxy generator
+5. /demo/gravity.html - N-body gravity simulation
+6. /demo/fractal.html - Mandelbrot/Julia fractal explorer
+7. /demo/raymarching.html - GPU raymarched shapes
+8. /demo/audio.html - Microphone audio visualizer
+9. /demo/terrain.html - Procedural terrain generator
+10. /demo/metaballs.html - Marching cubes blobby shapes
+11. /demo/fire.html - Volumetric fire & smoke
+12. /demo/waves.html - Wave interference patterns
+13. /demo/magnetic.html - Magnetic field visualization
+14. /demo/neural.html - Neural network visualization
+15. /demo/boids.html - Flocking simulation
+16. /demo/shaderart.html - Interactive shader art gallery
+17. /demo/life.html - GPU Game of Life
+
+**Tech stack for demos**:
+- Three.js for 3D
+- Cannon.js for physics
+- WebGL shaders for GPU effects
+- Web Audio API for sound
+- Touch + mouse controls
+
+**Session notes**:
+- User is sleeping, Claude working autonomously overnight
+- Committing and pushing after each demo for live testing
+- Following Boris Mode rules: verify, commit frequently, push to both repos
+- Target 30fps on mobile
+- All demos must have touch controls
+
+**Progress log**:
+- [x] demos.html hub created
+- [x] fluid.html - Navier-Stokes complete
+- [ ] More demos in progress...
+
 ---
 
 ## How to Use This Document

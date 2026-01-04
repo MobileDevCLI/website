@@ -12,12 +12,20 @@ This is MobileCLI - a brand/website/SaaS that turns Android phones into AI devel
 ```
 ├── setup.sh              # Main installer script
 ├── extras.sh             # Termux:API utilities
-├── index.html            # Homepage (Three.js 3D hero)
+├── index.html            # Homepage (Three.js + Cannon.js physics hero)
 ├── login.html            # Auth (Supabase - GitHub OAuth)
 ├── dashboard.html        # User dashboard with setup wizard
 ├── pricing.html          # Free/Pro/Team tiers
 ├── learn.html            # Documentation
 ├── examples.html         # Three.js, physics examples
+├── demos.html            # Interactive demos hub (NEW)
+├── demo/                 # Individual demo pages (NEW)
+│   ├── fluid.html        # Navier-Stokes fluid simulation
+│   ├── cloth.html        # Verlet cloth physics
+│   ├── galaxy.html       # Particle galaxy generator
+│   ├── gravity.html      # N-body gravity simulation
+│   ├── fractal.html      # Mandelbrot/Julia explorer
+│   └── ...               # More demos
 ├── games.html            # Games arcade
 ├── news.html             # News feed
 ├── proof.html            # Case study
@@ -209,6 +217,31 @@ Logo dropdown includes: GitHub, Twitter, YouTube, Email
 4. **Mobile-first** - always test on phone
 5. **Create tags before major changes**
 6. **Update this file** when you learn something new
+
+---
+
+## Demo Development Rules
+
+### Quality Standards (Boris Mode)
+- **Target 30fps minimum** on mobile devices
+- **Test on actual device** - not just browser
+- **Verify everything** - verification is the 2-3x quality multiplier
+- **Commit frequently** with good descriptive messages
+- **Push after each demo** so user can test live
+
+### Demo Requirements
+- Touch controls must work smoothly
+- Mouse controls for desktop
+- Back button to /demos.html
+- Info panel explaining the demo
+- Control buttons for common actions
+- Works fullscreen on mobile
+
+### WebGL Best Practices
+- Use `powerPreference: "high-performance"`
+- Limit pixel ratio: `Math.min(window.devicePixelRatio, 2)`
+- Clean up resources on page leave
+- Handle WebGL context loss gracefully
 
 ---
 
