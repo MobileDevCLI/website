@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Fire & Smoke - MobileCLI Demos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 100, 50, 0.2);
+            border-color: rgba(255, 100, 50, 0.3);
+        }
+
+        .info {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            max-width: 280px;
+        }
+
+        .info h3 {
+            color: #ff6432;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 100, 50, 0.2);
+            border-color: rgba(255, 100, 50, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 100, 50, 0.3);
+            border-color: #ff6432;
+            color: #ff6432;
+        }
+
+        .stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ff6432;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 600px) {
+            .info { display: none; }
+            .ui { top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <a href="/demos.html" class="back-btn">← Back to Demos</a>
+        <div class="info">
+            <h3>Fire & Smoke</h3>
+            <p>Touch to create fire. Particles rise and dissipate with realistic physics. Hold longer for bigger flames!</p>
+        </div>
+    </div>
+
+    <div class="stats" id="stats">Particles: 0</div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="clearFire()">Clear</button>
+        <button class="control-btn" onclick="addBonfire()">Bonfire</button>
+        <button class="control-btn" onclick="toggleWind()">Wind</button>
+        <button class="control-btn" onclick="toggleSmoke()">More Smoke</button>
+        <button class="control-btn" onclick="toggleColor()">Blue Fire</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Particle pool
+        const MAX_PARTICLES = 3000;
+        let particles = [];
+
+        // Settings
+        let windEnabled = false;
+        let windStrength = 0;
+        let moreSmoke = false;
+        let blueFlame = false;
+
+        // Fire sources
+        let sources = [];
+
+        class Particle {
+            constructor(x, y, type = 'fire') {
+                this.reset(x, y, type);
+            }
+
+            reset(x, y, type) {
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = -Math.random() * 3 - 2;
+
+                if (type === 'fire') {
+                    this.life = 1;
+                    this.decay = 0.02 + Math.random() * 0.02;
+                    this.size = 15 + Math.random() * 20;
+                    this.turbulence = Math.random() * 0.3;
+                } else {
+                    // Smoke
+                    this.life = 1;
+                    this.decay = 0.005 + Math.random() * 0.01;
+                    this.size = 20 + Math.random() * 30;
+                    this.vx = (Math.random() - 0.5) * 1;
+                    this.vy = -Math.random() * 1.5 - 0.5;
+                    this.turbulence = Math.random() * 0.2;
+                }
+
+                this.active = true;
+            }
+
+            update() {
+                if (!this.active) return;
+
+                // Apply wind
+                if (windEnabled) {
+                    this.vx += windStrength * 0.1;
+                }
+
+                // Turbulence
+                this.vx += (Math.random() - 0.5) * this.turbulence;
+
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Decay
+                this.life -= this.decay;
+
+                // Expand size for smoke
+                if (this.type === 'smoke') {
+                    this.size += 0.5;
+                } else {
+                    this.size *= 0.98;
+                }
+
+                if (this.life <= 0) {
+                    this.active = false;
+                }
+            }
+
+            draw() {
+                if (!this.active || this.life <= 0) return;
+
+                ctx.save();
+
+                if (this.type === 'fire') {
+                    // Fire gradient
+                    const gradient = ctx.createRadialGradient(
+                        this.x, this.y, 0,
+                        this.x, this.y, this.size
+                    );
+
+                    if (blueFlame) {
+                        const alpha = this.life * 0.8;
+                        gradient.addColorStop(0, `rgba(200, 220, 255, ${alpha})`);
+                        gradient.addColorStop(0.3, `rgba(100, 150, 255, ${alpha * 0.8})`);
+                        gradient.addColorStop(0.6, `rgba(50, 100, 255, ${alpha * 0.5})`);
+                        gradient.addColorStop(1, `rgba(20, 50, 200, 0)`);
+                    } else {
+                        const alpha = this.life * 0.8;
+                        gradient.addColorStop(0, `rgba(255, 255, 200, ${alpha})`);
+                        gradient.addColorStop(0.2, `rgba(255, 200, 50, ${alpha * 0.9})`);
+                        gradient.addColorStop(0.4, `rgba(255, 100, 20, ${alpha * 0.7})`);
+                        gradient.addColorStop(0.7, `rgba(200, 50, 10, ${alpha * 0.4})`);
+                        gradient.addColorStop(1, `rgba(100, 20, 0, 0)`);
+                    }
+
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // Smoke
+                    const alpha = this.life * 0.3;
+                    ctx.fillStyle = `rgba(80, 80, 80, ${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        // Initialize particle pool
+        for (let i = 0; i < MAX_PARTICLES; i++) {
+            particles.push(new Particle(0, 0, 'fire'));
+            particles[i].active = false;
+        }
+
+        // Get inactive particle
+        function getParticle(x, y, type) {
+            for (const p of particles) {
+                if (!p.active) {
+                    p.reset(x, y, type);
+                    return p;
+                }
+            }
+            return null;
+        }
+
+        // Emit fire at position
+        function emitFire(x, y, intensity = 1) {
+            const fireCount = Math.floor(3 * intensity);
+            const smokeCount = moreSmoke ? Math.floor(2 * intensity) : Math.floor(0.5 * intensity);
+
+            for (let i = 0; i < fireCount; i++) {
+                const px = x + (Math.random() - 0.5) * 30;
+                const py = y + (Math.random() - 0.5) * 10;
+                getParticle(px, py, 'fire');
+            }
+
+            for (let i = 0; i < smokeCount; i++) {
+                const px = x + (Math.random() - 0.5) * 40;
+                const py = y - 30 + (Math.random() - 0.5) * 20;
+                getParticle(px, py, 'smoke');
+            }
+        }
+
+        // Fire source class
+        class FireSource {
+            constructor(x, y, size = 1) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.life = 5; // seconds
+            }
+
+            update(dt) {
+                this.life -= dt;
+                emitFire(this.x, this.y, this.size);
+            }
+
+            isAlive() {
+                return this.life > 0;
+            }
+        }
+
+        // Input handling
+        let isDrawing = false;
+        let lastPos = { x: 0, y: 0 };
+
+        function getPos(e) {
+            return {
+                x: e.touches ? e.touches[0].clientX : e.clientX,
+                y: e.touches ? e.touches[0].clientY : e.clientY
+            };
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            lastPos = getPos(e);
+            sources.push(new FireSource(lastPos.x, lastPos.y, 2));
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            emitFire(pos.x, pos.y, 2);
+            lastPos = pos;
+        });
+
+        canvas.addEventListener('mouseup', () => { isDrawing = false; });
+        canvas.addEventListener('mouseleave', () => { isDrawing = false; });
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isDrawing = true;
+            lastPos = getPos(e);
+            sources.push(new FireSource(lastPos.x, lastPos.y, 2));
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            emitFire(pos.x, pos.y, 2);
+            lastPos = pos;
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', () => { isDrawing = false; });
+
+        // Control functions
+        window.clearFire = function() {
+            sources = [];
+            for (const p of particles) {
+                p.active = false;
+            }
+        };
+
+        window.addBonfire = function() {
+            sources.push(new FireSource(width / 2, height - 100, 3));
+        };
+
+        window.toggleWind = function() {
+            windEnabled = !windEnabled;
+            windStrength = windEnabled ? 2 : 0;
+            document.querySelectorAll('.control-btn')[2].classList.toggle('active', windEnabled);
+        };
+
+        window.toggleSmoke = function() {
+            moreSmoke = !moreSmoke;
+            document.querySelectorAll('.control-btn')[3].classList.toggle('active', moreSmoke);
+        };
+
+        window.toggleColor = function() {
+            blueFlame = !blueFlame;
+            document.querySelectorAll('.control-btn')[4].classList.toggle('active', blueFlame);
+        };
+
+        // Animation loop
+        let lastTime = performance.now();
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            const dt = (time - lastTime) / 1000;
+            lastTime = time;
+
+            // Clear with fade
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Update wind
+            if (windEnabled) {
+                windStrength = Math.sin(time * 0.001) * 2;
+            }
+
+            // Update sources
+            sources = sources.filter(s => {
+                s.update(dt);
+                return s.isAlive();
+            });
+
+            // Update and draw particles
+            let activeCount = 0;
+
+            // Draw smoke first (behind fire)
+            for (const p of particles) {
+                if (p.active && p.type === 'smoke') {
+                    p.update();
+                    p.draw();
+                    if (p.active) activeCount++;
+                }
+            }
+
+            // Then draw fire
+            for (const p of particles) {
+                if (p.active && p.type === 'fire') {
+                    p.update();
+                    p.draw();
+                    if (p.active) activeCount++;
+                }
+            }
+
+            // Update stats
+            document.getElementById('stats').textContent = `Particles: ${activeCount}`;
+        }
+
+        // Start with a bonfire
+        addBonfire();
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>
