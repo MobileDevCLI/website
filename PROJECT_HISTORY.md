@@ -410,10 +410,32 @@ Mobile AI development is not a compromise. For many developers, especially those
 **Next priorities**:
 1. Get Twitter API working
 2. Set up newsletter (Buttondown)
-3. Create News page
-4. Build Twitter scraper
-5. Write full research paper
-6. Add more tutorials
+3. Build Twitter scraper
+4. Write full research paper
+5. Add more tutorials
+
+### January 3, 2026 - Session 2: Content Build
+
+**What we accomplished**:
+1. Rewrote Learn page as proper developer reference (not a "corny" tutorial)
+2. Created News page with curated AI/dev news feed
+3. Added category filters: AI & LLMs, Claude Code, Mobile Dev, Termux, Open Source
+4. Featured story cards and regular news grid layout
+5. Added News link to navigation across all pages
+6. Created CLAUDE.md for AI session context
+
+**Pages now live**:
+- / (Home with Matrix hero)
+- /games.html (Games arcade)
+- /learn.html (Setup guide - rewritten)
+- /news.html (News feed - NEW)
+
+**Next priorities**:
+1. Get Twitter API working
+2. Set up newsletter (Buttondown)
+3. Build automated news feed
+4. Write full research paper
+5. YouTube content
 
 ---
 
