@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News - MobileDevCLI</title>
+    <meta name="description" content="Latest AI development news, mobile coding updates, and tech insights.">
+    <link rel="canonical" href="https://mobilecli.com/news.html">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-card: #111111;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #444444;
+            --matrix: #00ff41;
+            --matrix-dark: #003b00;
+            --accent-2: #00d4ff;
+            --border: #1a1a1a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--matrix);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--matrix);
+        }
+
+        /* Mobile Tabs */
+        .mobile-tabs {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            z-index: 999;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mobile-tabs-inner {
+            display: flex;
+            min-width: max-content;
+        }
+
+        .mobile-tab {
+            flex: 0 0 auto;
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+        }
+
+        .mobile-tab.active {
+            color: var(--matrix);
+            border-bottom-color: var(--matrix);
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 120px 0 60px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .page-header h1 span {
+            color: var(--matrix);
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        /* Category Filters */
+        .filters {
+            padding: 24px 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 60px;
+            z-index: 100;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 8px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover,
+        .filter-tag.active {
+            border-color: var(--matrix);
+            color: var(--matrix);
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        /* News Grid */
+        .news-section {
+            padding: 48px 0;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        .news-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .news-card:hover {
+            border-color: var(--matrix);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(0, 255, 65, 0.1);
+        }
+
+        .news-card-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--matrix-dark), var(--bg-card));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .news-card-content {
+            padding: 24px;
+        }
+
+        .news-card-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .news-card-category {
+            padding: 4px 12px;
+            background: rgba(0, 255, 65, 0.1);
+            border-radius: 100px;
+            color: var(--matrix);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .news-card-date {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .news-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .news-card h3 a {
+            color: var(--text);
+            transition: color 0.2s;
+        }
+
+        .news-card h3 a:hover {
+            color: var(--matrix);
+        }
+
+        .news-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .news-card-source {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .news-card-source span {
+            color: var(--matrix);
+        }
+
+        /* Featured Card */
+        .featured-card {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--bg-card);
+            border: 1px solid var(--matrix);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .featured-card:hover {
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.2);
+        }
+
+        .featured-card .news-card-image {
+            height: 100%;
+            min-height: 280px;
+        }
+
+        .featured-card .news-card-content {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--matrix);
+            color: var(--bg);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            width: fit-content;
+        }
+
+        .featured-card h3 {
+            font-size: 1.5rem;
+        }
+
+        /* Coming Soon Banner */
+        .coming-soon {
+            text-align: center;
+            padding: 80px 24px;
+            background: var(--bg-secondary);
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+            margin-top: 48px;
+        }
+
+        .coming-soon h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: var(--matrix);
+        }
+
+        .coming-soon p {
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto 24px;
+        }
+
+        .coming-soon .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--matrix);
+            color: var(--bg);
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .coming-soon .btn:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+            background: var(--bg);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--matrix);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-tabs {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .page-header {
+                padding-top: 140px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .filters {
+                top: 102px;
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-card {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-card .news-card-image {
+                min-height: 200px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">&gt;_ MobileDevCLI</a>
+            <div class="nav-links">
+                <a href="/games.html">Games</a>
+                <a href="/learn.html">Learn</a>
+                <a href="/news.html">News</a>
+                <a href="https://youtube.com/@MobileDevCLI">YouTube</a>
+                <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-tabs">
+        <div class="mobile-tabs-inner">
+            <a href="/" class="mobile-tab">Home</a>
+            <a href="/games.html" class="mobile-tab">Games</a>
+            <a href="/learn.html" class="mobile-tab">Learn</a>
+            <a href="/news.html" class="mobile-tab active">News</a>
+            <a href="https://youtube.com/@MobileDevCLI" class="mobile-tab">YouTube</a>
+            <a href="https://twitter.com/MobileDevCLI" class="mobile-tab">Twitter</a>
+            <a href="https://github.com/MobileDevCLI" class="mobile-tab">GitHub</a>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1><span>//</span> News Feed</h1>
+            <p>Latest AI development news, mobile coding updates, and tech insights curated for developers.</p>
+        </div>
+    </header>
+
+    <section class="filters">
+        <div class="container">
+            <div class="filter-tags">
+                <span class="filter-tag active">All</span>
+                <span class="filter-tag">AI & LLMs</span>
+                <span class="filter-tag">Claude Code</span>
+                <span class="filter-tag">Mobile Dev</span>
+                <span class="filter-tag">Termux</span>
+                <span class="filter-tag">Open Source</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="news-section">
+        <div class="container">
+            <div class="news-grid">
+                <!-- Featured Story -->
+                <article class="news-card featured-card">
+                    <div class="news-card-image">🤖</div>
+                    <div class="news-card-content">
+                        <span class="featured-badge">Featured</span>
+                        <div class="news-card-meta">
+                            <span class="news-card-category">Claude Code</span>
+                            <span class="news-card-date">Jan 3, 2026</span>
+                        </div>
+                        <h3><a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank">Claude Code Now Available Worldwide</a></h3>
+                        <p>Anthropic's AI coding assistant is now accessible to developers globally. Build entire projects with natural language commands, autonomous file operations, and deep codebase understanding.</p>
+                        <div class="news-card-source">Source: <span>Anthropic</span></div>
+                    </div>
+                </article>
+
+                <!-- Regular Cards -->
+                <article class="news-card">
+                    <div class="news-card-image">📱</div>
+                    <div class="news-card-content">
+                        <div class="news-card-meta">
+                            <span class="news-card-category">Mobile Dev</span>
+                            <span class="news-card-date">Jan 2, 2026</span>
+                        </div>
+                        <h3><a href="https://f-droid.org/packages/com.termux/" target="_blank">Termux Gets Major Update with Android 14 Fixes</a></h3>
+                        <p>The latest Termux update addresses compatibility issues with Android 14, improving stability for mobile developers.</p>
+                        <div class="news-card-source">Source: <span>F-Droid</span></div>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-card-image">⚡</div>
+                    <div class="news-card-content">
+                        <div class="news-card-meta">
+                            <span class="news-card-category">AI & LLMs</span>
+                            <span class="news-card-date">Jan 1, 2026</span>
+                        </div>
+                        <h3><a href="https://www.anthropic.com" target="_blank">2025 Was the Year of Agentic AI</a></h3>
+                        <p>From simple chatbots to autonomous agents that can code, browse, and execute tasks. A look back at how AI transformed development.</p>
+                        <div class="news-card-source">Source: <span>Anthropic</span></div>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-card-image">🔧</div>
+                    <div class="news-card-content">
+                        <div class="news-card-meta">
+                            <span class="news-card-category">Open Source</span>
+                            <span class="news-card-date">Dec 30, 2025</span>
+                        </div>
+                        <h3><a href="https://github.com/anthropics/claude-code" target="_blank">Claude Code Open Sources Key Components</a></h3>
+                        <p>The MCP (Model Context Protocol) and various tooling components are now open source, enabling custom integrations.</p>
+                        <div class="news-card-source">Source: <span>GitHub</span></div>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-card-image">🎮</div>
+                    <div class="news-card-content">
+                        <div class="news-card-meta">
+                            <span class="news-card-category">Open Source</span>
+                            <span class="news-card-date">Dec 28, 2025</span>
+                        </div>
+                        <h3><a href="https://jblaha.art/sketchbook/latest" target="_blank">Sketchbook: Open Source 3D Game Engine in TypeScript</a></h3>
+                        <p>A beautiful character controller and vehicle physics demo built with Three.js and Cannon.js. Perfect for learning 3D web game dev.</p>
+                        <div class="news-card-source">Source: <span>swift502</span></div>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-card-image">🌍</div>
+                    <div class="news-card-content">
+                        <div class="news-card-meta">
+                            <span class="news-card-category">Mobile Dev</span>
+                            <span class="news-card-date">Dec 25, 2025</span>
+                        </div>
+                        <h3><a href="#">Developer Codes From Phone, Ships $1M App</a></h3>
+                        <p>A developer in Southeast Asia built and launched a successful SaaS product entirely from their Android phone using Termux + AI tools.</p>
+                        <div class="news-card-source">Source: <span>Community</span></div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Coming Soon -->
+            <div class="coming-soon">
+                <h3>More News Coming Soon</h3>
+                <p>We're building an automated news feed that pulls the latest AI and mobile dev updates. Follow us for notifications.</p>
+                <a href="https://twitter.com/MobileDevCLI" class="btn">Follow @MobileDevCLI</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="copyright">&copy; 2025 MobileDevCLI. MIT License.</p>
+                <div class="footer-links">
+                    <a href="https://github.com/MobileDevCLI">GitHub</a>
+                    <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+                    <a href="https://youtube.com/@MobileDevCLI">YouTube</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Filter tag interaction
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
