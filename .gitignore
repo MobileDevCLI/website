@@ -1,0 +1,26 @@
+# Personal files - not for public repository
+PERSONAL_AI_JOURNEY.md
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
