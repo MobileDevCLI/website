@@ -123,6 +123,73 @@
             font-size: 0.9rem;
         }
 
+        /* Mobile Menu Dropdown */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 104px; /* Below admin banner + nav */
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px;
+            z-index: 999;
+            max-height: calc(100vh - 104px);
+            overflow-y: auto;
+        }
+
+        .mobile-menu.open {
+            display: block;
+        }
+
+        .mobile-menu-section {
+            margin-bottom: 20px;
+        }
+
+        .mobile-menu-section h4 {
+            color: var(--primary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mobile-menu a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu a:active {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--text);
+        }
+
+        .mobile-menu a.active {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--primary);
+        }
+
+        .mobile-menu .pro-badge-mobile {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: var(--bg);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
         /* Tab Navigation */
         .tab-nav {
             background: var(--bg-secondary);
@@ -503,9 +570,61 @@
                 <a href="#" class="active">Pro Dashboard</a>
                 <span class="pro-badge-nav">PRO</span>
             </div>
-            <button class="mobile-menu-btn" onclick="alert('Mobile menu - same links as desktop')">Menu</button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">Menu</button>
         </div>
     </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-section">
+            <h4>Pro Dashboard</h4>
+            <a href="#" class="active">Dashboard Home <span class="pro-badge-mobile">PRO</span></a>
+        </div>
+        <div class="mobile-menu-section">
+            <h4>Product</h4>
+            <a href="/pricing.html">Pricing</a>
+            <a href="/learn.html">Documentation</a>
+            <a href="/quickstart.html">Quick Start</a>
+            <a href="/examples.html">Examples</a>
+        </div>
+        <div class="mobile-menu-section">
+            <h4>Interactive</h4>
+            <a href="/demos.html">Demos</a>
+            <a href="/games.html">Games</a>
+            <a href="/labs.html">Labs</a>
+        </div>
+        <div class="mobile-menu-section">
+            <h4>Resources</h4>
+            <a href="/research.html">Research</a>
+            <a href="/proof.html">The Story</a>
+            <a href="/news.html">News</a>
+        </div>
+        <div class="mobile-menu-section">
+            <h4>Guides</h4>
+            <a href="/legal-guide.html">Legal Guide</a>
+            <a href="/security-guide.html">Security Guide</a>
+        </div>
+        <div class="mobile-menu-section">
+            <h4>Community</h4>
+            <a href="https://discord.gg/mobilecli" target="_blank">Discord</a>
+            <a href="https://github.com/MobileDevCLI" target="_blank">GitHub</a>
+            <a href="https://twitter.com/MobileDevCLI" target="_blank">Twitter / X</a>
+            <a href="https://youtube.com/@MobileDevCLI" target="_blank">YouTube</a>
+        </div>
+        <div class="mobile-menu-section">
+            <h4>Legal</h4>
+            <a href="/terms.html">Terms of Service</a>
+            <a href="/privacy.html">Privacy Policy</a>
+            <a href="/ip.html">IP Notice</a>
+            <a href="/dmca.html">DMCA</a>
+            <a href="/disclaimer.html">Disclaimer</a>
+        </div>
+        <div class="mobile-menu-section">
+            <h4>Account</h4>
+            <a href="/dashboard.html">My Dashboard</a>
+            <a href="/login.html">Login / Sign Up</a>
+        </div>
+    </div>
 
     <!-- Tab Navigation -->
     <div class="tab-nav">
@@ -1202,6 +1321,31 @@ git push</pre>
     </footer>
 
     <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+            mobileMenuBtn.textContent = mobileMenu.classList.contains('open') ? 'Close' : 'Menu';
+        });
+
+        // Close menu when clicking a link
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                mobileMenuBtn.textContent = 'Menu';
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+                mobileMenuBtn.textContent = 'Menu';
+            }
+        });
+
         function showTab(tabId) {
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
