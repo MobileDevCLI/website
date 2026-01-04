@@ -1,7 +1,8 @@
 # MobileDevCLI Platform Roadmap
 
 **Created**: January 3, 2026
-**Status**: Planning Phase
+**Updated**: January 4, 2026
+**Status**: Active Development
 **Vision**: Full-featured platform for mobile AI development community
 
 ---
@@ -18,32 +19,46 @@ Transform MobileDevCLI from a static website into a complete SaaS platform with:
 
 ---
 
-## Phase 1: Foundation (Current)
+## Phase 1: Foundation (COMPLETE)
 
 ### Completed
-- [x] Landing page with Matrix hero
+- [x] Landing page with Matrix hero → Mixed Chaos 3D hero
 - [x] Games arcade page
 - [x] Learn/setup guide page
 - [x] News feed page (static)
 - [x] Mobile responsive design
 - [x] GitHub integration
 - [x] Vercel deployment
+- [x] Legal pages (Terms, Privacy, Disclaimer, IP, DMCA)
+- [x] SEO: sitemap.xml, robots.txt, JSON-LD, Open Graph, Twitter Cards
+- [x] 17 interactive WebGL demos
+- [x] Pricing page with tiers
+- [x] Dashboard with setup wizard
+- [x] Login with GitHub OAuth (Supabase)
+- [x] Quick Start guide
+- [x] Examples/resources page
+- [x] Research log page
+- [x] Labs page
+- [x] Legal guide (public education)
+- [x] Security guide (public education)
+- [x] WEBSITE.md comprehensive documentation
 
-### In Progress
-- [ ] Legal pages (Terms, Privacy, Liability)
-- [ ] SEO meta tags and sitemap
-- [ ] Better git branching strategy
+### Freemium Model (COMPLETE)
+- [x] Pro-preview.html with all secret sauce
+- [x] Free pages with teasers only
+- [x] robots.txt blocks pro content from search
+- [x] Secret sauce audit completed
 
 ---
 
-## Phase 2: Authentication & Accounts
+## Phase 2: Authentication & Accounts (IN PROGRESS)
 
 ### User Authentication
-Required: Backend infrastructure (Firebase, Supabase, or custom)
+Backend: Supabase (PostgreSQL + Auth)
 
 **Login Methods:**
+- [x] GitHub OAuth (WORKING)
 - [ ] Google OAuth
-- [ ] GitHub OAuth
 - [ ] Email/password (with verification)
 - [ ] Optional: Apple, Twitter/X OAuth
 
@@ -426,17 +441,21 @@ Hosting: Cloudflare Pages
 
 ## Priority Order
 
-### Immediate (This Week)
-1. Legal pages (Terms, Privacy)
-2. SEO meta tags
-3. Git branching setup
-4. Update CLAUDE.md with practices
+### Completed (January 2-4, 2026)
+1. ~~Legal pages (Terms, Privacy)~~ DONE
+2. ~~SEO meta tags, sitemap, robots.txt~~ DONE
+3. ~~Choose backend (Supabase)~~ DONE
+4. ~~Set up authentication (GitHub OAuth)~~ DONE
+5. ~~Update CLAUDE.md with practices~~ DONE
+6. ~~Create WEBSITE.md documentation~~ DONE
+7. ~~Freemium model implementation~~ DONE
+8. ~~17 interactive demos~~ DONE
 
-### Short-term (This Month)
-5. Choose backend (recommend Supabase)
-6. Set up authentication
-7. Create admin dashboard shell
-8. Twitter API access
+### Next Up (This Week)
+1. Stripe payment integration
+2. Enforce Pro paywall (check subscription)
+3. User profile page
+4. Google OAuth
 
 ### Medium-term (Next Month)
 9. Payment integration

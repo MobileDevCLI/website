@@ -664,11 +664,81 @@ Public teaching page that explains:
 
 ---
 
+## FREEMIUM MODEL & SECRET SAUCE PROTECTION
+
+### The Business Model
+```
+FREE: Teasers only (shows WHAT is possible, not HOW)
+PRO ($10/mo): All secret sauce revealed
+TEAM ($20/user/mo): Team features + SSO
+```
+
+### What is "Secret Sauce"?
+The specific knowledge that makes this work:
+
+1. **F-Droid Download Link** - Play Store Termux is broken/outdated
+2. **--dangerously-skip-permissions** - Enables autonomous AI operation
+3. **Complete Setup Commands** - The exact workflow that works
+
+### Page Classification
+
+**FREE PAGES (Teasers Only):**
+- dashboard.html, learn.html, quickstart.html, examples.html
+- news.html, security-guide.html, disclaimer.html
+- MUST NOT contain: F-Droid links, real permission flags, full commands
+
+**PRO PAGE (Full Secret Sauce):**
+- pro-preview.html (ONLY this page reveals everything)
+- Contains: F-Droid link, --dangerously-skip-permissions, full methodology
+
+### Before Committing - Audit for Leaks
+```bash
+# Check for secret sauce in free pages
+grep -ri "f-droid\|dangerously-skip-permissions" *.html | grep -v pro-preview
+```
+If matches found → FIX BEFORE PUSHING
+
+### Teaser Text Examples
+```html
+<!-- WRONG (leaking secret sauce) -->
+<a href="https://f-droid.org/packages/com.termux/">Download Termux</a>
+<code>claude --dangerously-skip-permissions</code>
+
+<!-- RIGHT (proper teaser) -->
+<p>Pro subscribers get the exact download link</p>
+<p>Full Autonomous Mode (Pro feature)</p>
+```
+
+---
+
+## Additional Documentation
+
+**WEBSITE.md** - Complete website documentation
+- Full architecture and deployment guide
+- All pitfalls and solutions
+- Component documentation
+- Common tasks reference
+- READ THIS for comprehensive understanding
+
+**GENESIS.md** - The invention story
+- IP protection documentation
+- Prior art declaration
+- Method specification
+
+**ROADMAP.md** - Platform vision
+- Feature roadmap
+- Priority order
+- Success metrics
+
+---
+
 ## When in Doubt
 
 1. Check if both repos are synced: `git log origin/master --oneline -1` vs `git log website/master --oneline -1`
 2. Check Vercel deployment status
 3. Make repos public if Vercel stops deploying
 4. Read this file for solutions
-5. **Legal questions**: Check LEGAL_KNOWLEDGE.md in home directory
-6. **Security questions**: Check SECURITY_PRACTICES.md in home directory
+5. **Full website docs**: Read WEBSITE.md
+6. **Legal questions**: Check LEGAL_KNOWLEDGE.md in home directory
+7. **Security questions**: Check SECURITY_PRACTICES.md in home directory
+8. **Invention/IP**: Read GENESIS.md

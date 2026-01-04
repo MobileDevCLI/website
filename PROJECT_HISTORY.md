@@ -1,6 +1,6 @@
 # MobileDevCLI: Complete Project History & Research Document
 
-**Last Updated**: January 3, 2026
+**Last Updated**: January 4, 2026
 **Author**: Samblamz (MobileDevCLI)
 **Status**: Living Document - Continuously Updated
 
@@ -526,6 +526,61 @@ This entire session proves the thesis - built full website, brand, social presen
 - Committed after each demo for continuous testing
 - Used WebGL shaders for GPU acceleration where needed
 - Followed Autonomous Mode best practices throughout
+
+### January 4, 2026 - Session 5: Hero Redesign, SEO, Freemium & Documentation
+
+**What we accomplished**:
+1. Redesigned homepage hero with "Mixed Chaos" 3D scene
+   - Three.js water surface with custom shaders
+   - Fire particles and ambient particles
+   - Floating physics objects with Cannon.js
+   - Mode toggle (scroll vs play) to solve touch/scroll conflict
+2. Implemented comprehensive SEO
+   - Created sitemap.xml (19 pages)
+   - Created robots.txt (blocks pro-preview.html)
+   - Added JSON-LD structured data
+   - Added Twitter Cards and Open Graph meta tags
+3. Rebuilt pro-preview.html as full-featured Pro dashboard
+   - Complete navigation bar
+   - 6 tabbed sections: Overview, Setup, Commands, Research, Story, Troubleshooting
+   - Proper mobile menu with all links
+   - All secret sauce properly revealed
+4. Conducted secret sauce audit
+   - Found leaks: `--dangerously-skip-permissions` in free pages
+   - Found leaks: F-Droid links in free pages
+   - Fixed all leaks in: learn.html, disclaimer.html, security-guide.html, quickstart.html, dashboard.html, examples.html, news.html
+5. Created comprehensive WEBSITE.md documentation
+   - Full website architecture
+   - Deployment pipeline
+   - Freemium model explanation
+   - All pitfalls and solutions
+   - Component documentation
+   - Common tasks reference
+6. Updated CLAUDE.md with freemium model rules
+7. Verified Wayback Machine has NO archived versions
+
+**Key decisions made**:
+- Freemium model: Free = teasers only, Pro = full secret sauce
+- Secret sauce defined: F-Droid link, --dangerously-skip-permissions, full methodology
+- robots.txt blocks pro-preview.html from search engines
+- Mode toggle pattern for touch/scroll conflict on 3D hero
+
+**Files created**:
+- WEBSITE.md (new comprehensive documentation)
+- sitemap.xml (SEO)
+- robots.txt (SEO)
+
+**Files significantly modified**:
+- index.html (Mixed Chaos hero)
+- pro-preview.html (complete rebuild)
+- learn.html, quickstart.html, dashboard.html, examples.html, news.html, disclaimer.html, security-guide.html (secret sauce removal)
+- CLAUDE.md (freemium model rules)
+
+**Discoveries**:
+- Paywall is a "reasonable measure" that helps trade secret protection
+- Mode toggle pattern solves mobile 3D touch vs scroll conflict
+- Wayback Machine only archives sites after they're well-known
+- Browser cache issues can persist even with vercel.json headers
 
 ---
 
