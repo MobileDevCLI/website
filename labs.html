@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labs - Experimental Projects - MobileDevCLI</title>
+    <meta name="description" content="Experimental Android apps and projects in development. Download experimental APKs and track our progress building mobile AI tools.">
+    <link rel="canonical" href="https://mobilecli.com/labs.html">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-code: #0d1117;
+            --bg-card: #111111;
+            --text: #e6e6e6;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --matrix: #00ff41;
+            --matrix-dim: #00aa2a;
+            --border: #1a1a1a;
+            --accent: #00d4ff;
+            --warning: #ff6b35;
+            --danger: #ff3333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        a {
+            color: var(--matrix);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--matrix);
+            text-decoration: none;
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 100px;
+            padding-bottom: 80px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--matrix), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        /* Warning Banner */
+        .warning-banner {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 40px;
+        }
+
+        .warning-banner h3 {
+            color: var(--warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-banner p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Project Cards */
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .project-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-experimental {
+            background: rgba(255, 107, 53, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .status-wip {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+
+        .project-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        .meta-item {
+            font-size: 0.9rem;
+        }
+
+        .meta-label {
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .meta-value {
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin: 24px 0;
+            padding-left: 24px;
+            border-left: 2px solid var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -29px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            background: var(--matrix);
+            border-radius: 50%;
+        }
+
+        .timeline-item.pending::before {
+            background: var(--text-muted);
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            color: var(--text-secondary);
+        }
+
+        /* Download Button */
+        .download-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            background: var(--bg-card);
+            border-color: var(--matrix);
+            text-decoration: none;
+        }
+
+        .download-size {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-left: 8px;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        .code-block code {
+            color: var(--matrix);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .project-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">mobile<span style="color: var(--accent)">cli</span></a>
+            <div class="nav-links">
+                <a href="/pricing.html">Pricing</a>
+                <a href="/learn.html">Docs</a>
+                <a href="/demos.html">Demos</a>
+                <a href="/games.html">Games</a>
+                <a href="/labs.html" style="color: var(--warning);">Labs</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <h1>Labs</h1>
+            <p class="subtitle">Experimental projects and prototypes. Download at your own risk.</p>
+
+            <!-- Warning Banner -->
+            <div class="warning-banner">
+                <h3>Experimental Software</h3>
+                <p>These projects are works in progress. They may crash, have bugs, or not work at all. They're shared here to document our development journey and preserve the progress we've made. Feel free to explore, but don't expect production-ready software.</p>
+            </div>
+
+            <!-- Android AI CLI -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <h2 class="project-title">Android AI CLI</h2>
+                        <span class="project-status status-experimental">Experimental</span>
+                    </div>
+                </div>
+
+                <p class="project-description">
+                    An ambitious attempt to create an Android terminal app with proot + Alpine Linux, allowing users to run Claude Code CLI directly on their phones. The goal is a self-contained Linux environment without needing Termux.
+                </p>
+
+                <div class="project-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">Goal</div>
+                        <div class="meta-value">Run Claude Code on Android</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Tech Stack</div>
+                        <div class="meta-value">Java, Proot, Alpine Linux</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Status</div>
+                        <div class="meta-value">Phase 3 of 6</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Last Updated</div>
+                        <div class="meta-value">January 3, 2026</div>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom: 12px; color: var(--text);">Development Progress</h4>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Phase 1 - Complete</div>
+                        <div class="timeline-content">Proot binary for Android arm64 (v5.1.0, statically linked)</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Phase 2 - Complete</div>
+                        <div class="timeline-content">Alpine Linux rootfs works with proot, apk package manager functional</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Phase 3 - In Progress</div>
+                        <div class="timeline-content">Java bootstrap downloads on first launch (EROFS fixes applied)</div>
+                    </div>
+                    <div class="timeline-item pending">
+                        <div class="timeline-date">Phase 4 - Pending</div>
+                        <div class="timeline-content">Terminal connects to proot shell</div>
+                    </div>
+                    <div class="timeline-item pending">
+                        <div class="timeline-date">Phase 5 - Pending</div>
+                        <div class="timeline-content">Full package manager integration</div>
+                    </div>
+                    <div class="timeline-item pending">
+                        <div class="timeline-date">Phase 6 - Pending</div>
+                        <div class="timeline-content">Claude Code CLI runs successfully</div>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom: 12px; color: var(--text);">Key Challenges Solved</h4>
+                <ul style="color: var(--text-secondary); margin-left: 20px; margin-bottom: 16px;">
+                    <li>EROFS read-only filesystem errors (symlink handling)</li>
+                    <li>Startup crashes from missing color resources</li>
+                    <li>System tar symlink issues on Android</li>
+                    <li>Studied UserLAnd architecture for patterns (GPL - no code copied)</li>
+                </ul>
+
+                <div class="download-section">
+                    <a href="/labs/android-ai-cli-debug.apk" class="download-btn" download>
+                        Download APK
+                        <span class="download-size">(1.2 MB)</span>
+                    </a>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px;">
+                        Warning: This APK will likely crash or show a blank screen. It's preserved for historical purposes.
+                    </p>
+                </div>
+            </div>
+
+            <!-- AI Chat -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <h2 class="project-title">AI Chat</h2>
+                        <span class="project-status status-wip">Work in Progress</span>
+                    </div>
+                </div>
+
+                <p class="project-description">
+                    A native Android chat interface for AI conversations. Built as an exploration into creating a mobile-first AI experience with a clean, modern UI.
+                </p>
+
+                <div class="project-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">Goal</div>
+                        <div class="meta-value">Native Android AI Chat</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Tech Stack</div>
+                        <div class="meta-value">Android WebView / Native</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Status</div>
+                        <div class="meta-value">Early Prototype</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Last Updated</div>
+                        <div class="meta-value">January 3, 2026</div>
+                    </div>
+                </div>
+
+                <div class="download-section">
+                    <a href="/labs/ai-chat.apk" class="download-btn" download>
+                        Download APK
+                        <span class="download-size">(9 MB)</span>
+                    </a>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px;">
+                        Warning: This is an early prototype and may not function correctly.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Development Journey -->
+            <div class="project-card" style="border-color: var(--matrix-dim);">
+                <h2 class="project-title" style="color: var(--matrix);">The Development Journey</h2>
+                <p class="project-description">
+                    These projects represent days of experimentation trying different approaches to bring AI development tools to Android. We explored:
+                </p>
+                <ul style="color: var(--text-secondary); margin-left: 20px; margin-bottom: 16px; line-height: 2;">
+                    <li><strong>Multiple architectures:</strong> v1, v2, v3, optionA, optionB approaches</li>
+                    <li><strong>Proot integration:</strong> Running Linux userspace on Android without root</li>
+                    <li><strong>Alpine Linux:</strong> Lightweight distro for minimal footprint</li>
+                    <li><strong>Terminal emulation:</strong> PTY handling, JNI native code</li>
+                    <li><strong>Symlink handling:</strong> Android filesystem quirks with EROFS</li>
+                    <li><strong>GitHub Actions:</strong> Automated builds for rapid iteration</li>
+                </ul>
+                <p class="project-description">
+                    While these apps don't fully work yet, they represent significant progress toward the goal of running Claude Code on any Android device. The journey continues!
+                </p>
+            </div>
+
+            <!-- Call to Action -->
+            <div style="text-align: center; margin-top: 60px;">
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Want to help or follow our progress?</p>
+                <a href="https://github.com/MobileDevCLI" class="download-btn" target="_blank">
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 MobileDevCLI. Experimental software - use at your own risk.</p>
+            <p style="margin-top: 8px;">
+                <a href="/terms.html">Terms</a> &middot;
+                <a href="/privacy.html">Privacy</a> &middot;
+                <a href="/disclaimer.html">Disclaimer</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
