@@ -65,7 +65,7 @@ cat >> ~/.bashrc << 'BASHRC_END'
 # https://mobilecli.com
 # ═══════════════════════════════════════════════════════════════════
 
-# Boris Mode - Claude Code with full permissions
+# Autonomous Mode - Claude Code with full permissions
 alias claude="claude --dangerously-skip-permissions"
 alias cc="claude --dangerously-skip-permissions"
 
@@ -115,7 +115,7 @@ echo "║  • Git (version control)                                     ║"
 echo "║  • GitHub CLI (gh command)                                   ║"
 echo "║                                                              ║"
 echo "║  New commands:                                               ║"
-echo "║  • cc or claude  - Start Claude (Boris Mode)                 ║"
+echo "║  • cc or claude  - Start Claude (Autonomous Mode)             ║"
 echo "║  • gp \"message\"  - Quick git add, commit, push              ║"
 echo "║  • gs            - Git status                                ║"
 echo "║                                                              ║"

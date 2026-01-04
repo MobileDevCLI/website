@@ -372,8 +372,8 @@
             border-top: 1px solid var(--border);
         }
 
-        /* Boris Badge */
-        .boris-badge {
+        /* Pro Badge */
+        .pro-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -593,8 +593,8 @@
 
             <div class="quick-links">
                 <a href="#install-termux" class="quick-link">Quick Start</a>
-                <a href="#boris-mode" class="quick-link">Boris Mode</a>
-                <a href="#boris-stack" class="quick-link">Boris Stack</a>
+                <a href="#autonomous-mode" class="quick-link">Autonomous Mode</a>
+                <a href="#pro-workflow" class="quick-link">Pro Workflow</a>
                 <a href="#persistent" class="quick-link">Background Tasks</a>
                 <a href="#advanced" class="quick-link">Hooks & Agents</a>
                 <a href="#troubleshooting" class="quick-link">Troubleshooting</a>
@@ -602,7 +602,7 @@
 
             <div class="tip" style="margin-bottom: 48px;">
                 <div class="tip-label">What makes this different?</div>
-                <p><strong>CLI, not APIs.</strong> Claude Code connects with your Anthropic account directly — no API keys, no rate limits, no token counting. This is how Boris Cherny (creator of Claude Code) works: sessions running 24+ hours, 2.4M tokens, full autonomous operation.</p>
+                <p><strong>CLI, not APIs.</strong> Claude Code connects with your Anthropic account directly — no API keys, no rate limits, no token counting. Run sessions for 24+ hours, use millions of tokens, with full autonomous operation.</p>
             </div>
 
             <div class="toc">
@@ -611,8 +611,8 @@
                     <li><a href="#install-termux">1. Install Termux</a></li>
                     <li><a href="#setup-packages">2. Install Packages</a></li>
                     <li><a href="#install-claude">3. Install Claude Code</a></li>
-                    <li><a href="#boris-mode">4. Boris Mode (Autonomous)</a></li>
-                    <li><a href="#boris-stack">5. The Boris Stack (Full Methodology)</a></li>
+                    <li><a href="#autonomous-mode">4. Autonomous Mode</a></li>
+                    <li><a href="#pro-workflow">5. Pro Workflow (Full Methodology)</a></li>
                     <li><a href="#persistent">6. Keep Termux Running Forever</a></li>
                     <li><a href="#github-auth">7. GitHub Authentication</a></li>
                     <li><a href="#workflow">8. The Workflow</a></li>
@@ -695,18 +695,18 @@ pkg install -y nodejs git gh</code></pre>
                 <p>First run will ask you to authenticate. Follow the prompts to log in with your Anthropic account.</p>
             </section>
 
-            <section id="boris-mode">
-                <h2>4. Boris Mode (Autonomous)</h2>
+            <section id="autonomous-mode">
+                <h2>4. Autonomous Mode</h2>
                 <p>By default, Claude asks permission before reading files, writing files, and running commands. On mobile, this is tedious.</p>
 
-                <p><strong>Boris Mode</strong> (named after Boris Cherny, creator of Claude Code) runs with <code>--dangerously-skip-permissions</code>, letting Claude work autonomously.</p>
+                <p><strong>Autonomous Mode</strong> runs with <code>--dangerously-skip-permissions</code>, letting Claude work autonomously without asking permission for every action.</p>
 
                 <div class="code-block">
                     <div class="code-header">
                         <span class="code-label">Terminal</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code><span class="comment"># Run Claude in Boris Mode</span>
+                    <pre><code><span class="comment"># Run Claude in Autonomous Mode</span>
 claude --dangerously-skip-permissions</code></pre>
                 </div>
 
@@ -718,7 +718,7 @@ claude --dangerously-skip-permissions</code></pre>
                         <span class="code-label">~/.bashrc</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code><span class="comment"># Boris Mode aliases</span>
+                    <pre><code><span class="comment"># Autonomous Mode aliases</span>
 alias claude="claude --dangerously-skip-permissions"
 alias cc="claude --dangerously-skip-permissions"</code></pre>
                 </div>
@@ -733,18 +733,18 @@ alias cc="claude --dangerously-skip-permissions"</code></pre>
                     <pre><code>source ~/.bashrc</code></pre>
                 </div>
 
-                <p>Now just type <code>cc</code> to start Claude in Boris Mode.</p>
+                <p>Now just type <code>cc</code> to start Claude in Autonomous Mode.</p>
 
                 <div class="warning">
                     <div class="tip-label">Warning</div>
-                    <p>Boris Mode gives Claude full access to your system. Only use in environments you trust. Great for personal projects, careful with sensitive data.</p>
+                    <p>Autonomous Mode gives Claude full access to your system. Only use in environments you trust. Great for personal projects, careful with sensitive data.</p>
                 </div>
             </section>
 
-            <section id="boris-stack">
-                <h2>5. The Boris Stack (Full Methodology)</h2>
-                <div class="boris-badge">From Boris Cherny, Creator of Claude Code</div>
-                <p>This is how the creator of Claude Code actually uses it. These patterns are proven at scale on the Claude Code codebase itself — sessions running 24+ hours, 2.4M tokens, completely autonomous.</p>
+            <section id="pro-workflow">
+                <h2>5. Pro Workflow (Full Methodology)</h2>
+                <div class="pro-badge">Advanced Techniques for Maximum Productivity</div>
+                <p>These advanced patterns maximize productivity for AI-assisted development. Run sessions for 24+ hours, use millions of tokens, with completely autonomous operation.</p>
 
                 <details>
                     <summary>Parallel Sessions: Run 5-10 Claudes Simultaneously</summary>
@@ -942,7 +942,7 @@ Bash(git log:*)</code></pre>
                             <li><strong>Agent Stop Hook:</strong> Trigger verification deterministically when Claude finishes</li>
                             <li><strong>ralph-wiggum Plugin:</strong> Community plugin for long-running autonomous sessions</li>
                         </ul>
-                        <p><strong>Real example:</strong> Boris showed a session that ran for 1 day, 2 hours, 47 minutes using 2.4 million tokens. Completely autonomous.</p>
+                        <p><strong>Real example:</strong> Sessions can run for over a day using millions of tokens. Completely autonomous while you sleep.</p>
                         <div class="warning">
                             <div class="tip-label">Only in sandboxed environments</div>
                             <p>Use <code>--permission-mode=dontAsk</code> only where Claude can't cause damage.</p>
@@ -981,7 +981,7 @@ Bash(git log:*)</code></pre>
                             </tr>
                         </table>
                         <div class="tip">
-                            <div class="tip-label">Key insight from Boris</div>
+                            <div class="tip-label">Key insight</div>
                             <p>"Verification looks different for each domain. Make sure to invest in making this rock-solid. It's the highest-leverage improvement you can make."</p>
                         </div>
                     </div>
@@ -1137,7 +1137,7 @@ alias gs="git status"</code></pre>
                         <span class="code-label">Terminal</span>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <pre><code><span class="comment"># 1. Start Claude in Boris Mode</span>
+                    <pre><code><span class="comment"># 1. Start Claude in Autonomous Mode</span>
 cc
 
 <span class="comment"># 2. Tell Claude what you want</span>
@@ -1174,7 +1174,7 @@ gp "Add landing page"</code></pre>
                     <li>Installs nodejs, git, gh</li>
                     <li>Installs Claude Code</li>
                     <li>Configures <code>~/.termux/termux.properties</code></li>
-                    <li>Adds Boris Mode aliases to <code>~/.bashrc</code></li>
+                    <li>Adds Autonomous Mode aliases to <code>~/.bashrc</code></li>
                     <li>Adds git shortcuts</li>
                     <li>Sets up auto CLAUDE.md creation</li>
                 </ul>
@@ -1320,7 +1320,7 @@ echo "allow-external-apps=true" >> ~/.termux/termux.properties
 <span class="comment"># Add to bashrc</span>
 cat >> ~/.bashrc << 'EOF'
 
-<span class="comment"># Boris Mode</span>
+<span class="comment"># Autonomous Mode</span>
 alias claude="claude --dangerously-skip-permissions"
 alias cc="claude --dangerously-skip-permissions"
 

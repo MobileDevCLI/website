@@ -64,7 +64,7 @@ That's it! You're ready to code.
 
 | Command | Description |
 |---------|-------------|
-| `cc` | Start Claude Code in Boris Mode |
+| `cc` | Start Claude Code in Autonomous Mode |
 | `claude` | Same as `cc` |
 | `gp "message"` | Git add, commit, and push in one command |
 | `gs` | Git status |
@@ -99,9 +99,9 @@ Requires [Termux:API app](https://f-droid.org/packages/com.termux.api/).
 
 ---
 
-## Boris Mode
+## Autonomous Mode
 
-MobileDevCLI runs Claude Code in "Boris Mode" by default (`--dangerously-skip-permissions`). This means Claude can:
+MobileDevCLI runs Claude Code in "Autonomous Mode" by default (`--dangerously-skip-permissions`). This means Claude can:
 
 - Read and write files without asking
 - Run shell commands without asking

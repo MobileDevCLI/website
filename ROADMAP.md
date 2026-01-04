@@ -159,7 +159,7 @@ Required: Backend infrastructure (Firebase, Supabase, or custom)
 - Anthropic Claude (@AnthropicAI)
 - Three.js (@threejs)
 - Babylon.js (@babylonjs)
-- Boris Cherny (@bcherny)
+- Anthropic (Claude Code team)
 - Add more as needed
 
 **Features:**

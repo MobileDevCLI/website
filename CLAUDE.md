@@ -358,7 +358,7 @@ Logo dropdown includes: GitHub, Discord, Twitter/X, YouTube, Contact
 
 ## Demo Development Rules
 
-### Quality Standards (Boris Mode)
+### Quality Standards (Autonomous Mode)
 - **Target 30fps minimum** on mobile devices
 - **Test on actual device** - not just browser
 - **Verify everything** - verification is the 2-3x quality multiplier
@@ -412,7 +412,7 @@ Read ~/storage/dcim/Screenshots/Screenshot_20260104.jpg
 - Visual debugging - screenshot a bug, Claude sees it
 - UI iteration - "make this button bigger" with visual reference
 - Game development - Claude can see rendered frames
-- Verification loop - Boris's 2-3x quality multiplier, now visual
+- Verification loop - the 2-3x quality multiplier, now visual
 
 ### Termux:API Integration
 Full hardware access via Termux:API app:

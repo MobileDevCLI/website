@@ -64,7 +64,7 @@ We discovered that **Claude Code + Termux on Android** creates a development env
 This isn't about mobile being "good enough" - it's about mobile being **better** for certain workflows because:
 1. You always have your phone
 2. No context switching between devices
-3. Boris Mode allows fully autonomous AI work
+3. Autonomous Mode allows fully autonomous AI work
 4. You can code from anywhere - commute, coffee shop, bed
 
 ---
@@ -85,7 +85,7 @@ Installs:
 - Claude Code (@anthropic-ai/claude-code)
 
 Configures:
-- Boris Mode aliases (`cc`, `claude`)
+- Autonomous Mode aliases (`cc`, `claude`)
 - Auto CLAUDE.md creation in git repos
 - Quick git shortcuts (`gp`, `gs`)
 - Termux properties for external apps
@@ -122,8 +122,8 @@ Configures:
 
 ## The Mobile AI Development Workflow
 
-### Boris Mode
-Named after Boris Cherny (creator of Claude Code), this runs Claude with `--dangerously-skip-permissions`, enabling:
+### Autonomous Mode
+Named after the creator of Claude Code (creator of Claude Code), this runs Claude with `--dangerously-skip-permissions`, enabling:
 - Autonomous file reading/writing
 - Command execution without prompts
 - Full project building without interruption
@@ -175,7 +175,7 @@ Named after Boris Cherny (creator of Claude Code), this runs Claude with `--dang
 │  └── Claude Code (AI assistant)          │
 ├─────────────────────────────────────────┤
 │  ~/.bashrc configuration                 │
-│  ├── Boris Mode aliases                  │
+│  ├── Autonomous Mode aliases                  │
 │  ├── Auto CLAUDE.md function             │
 │  └── Git shortcuts                       │
 ├─────────────────────────────────────────┤
@@ -221,8 +221,8 @@ Phone (Termux)
 
 ## Key Learnings & Discoveries
 
-### Discovery 1: Boris Mode is Essential
-Without `--dangerously-skip-permissions`, Claude constantly asks for confirmation. On mobile, typing "yes" repeatedly is painful. Boris Mode makes Claude truly autonomous.
+### Discovery 1: Autonomous Mode is Essential
+Without `--dangerously-skip-permissions`, Claude constantly asks for confirmation. On mobile, typing "yes" repeatedly is painful. Autonomous Mode makes Claude truly autonomous.
 
 ### Discovery 2: CLAUDE.md Compounds Knowledge
 Every time Claude makes a mistake, add it to CLAUDE.md. The knowledge accumulates. Future sessions are smarter.
@@ -261,7 +261,7 @@ Our setup.sh is ~100 lines. It installs 4 packages and adds some aliases. That's
 **"Mobile-First AI Development: How Claude Code + Termux Creates a Superior Development Environment"**
 
 ### Abstract
-We demonstrate that AI-assisted software development on Android phones using Claude Code and Termux is not merely viable, but in many cases superior to traditional desktop development. The combination of portability, AI autonomy (Boris Mode), and zero hardware costs creates a new paradigm for software engineering.
+We demonstrate that AI-assisted software development on Android phones using Claude Code and Termux is not merely viable, but in many cases superior to traditional desktop development. The combination of portability, AI autonomy (Autonomous Mode), and zero hardware costs creates a new paradigm for software engineering.
 
 ### Key Arguments
 
@@ -273,7 +273,7 @@ We demonstrate that AI-assisted software development on Android phones using Cla
 
 4. **Economic Democratization**: Requiring a $1000+ laptop to code is a barrier. Phones remove this barrier.
 
-5. **Boris Mode Autonomy**: The ability to let AI work for hours uninterrupted produces qualitatively different results than constant human-AI ping-pong.
+5. **Autonomous Mode Autonomy**: The ability to let AI work for hours uninterrupted produces qualitatively different results than constant human-AI ping-pong.
 
 ### Methodology
 - Built complete website (mobilecli.com) entirely from Android phone
@@ -398,7 +398,7 @@ Mobile AI development is not a compromise. For many developers, especially those
 10. Created this PROJECT_HISTORY.md
 
 **Key decisions made**:
-- Boris Mode as default (--dangerously-skip-permissions)
+- Autonomous Mode as default (--dangerously-skip-permissions)
 - Matrix green (#00ff41) as brand color
 - Anonymous identity (Samblamz)
 - Focus on simplicity and one-click workflows
@@ -460,7 +460,7 @@ Mobile AI development is not a compromise. For many developers, especially those
 - /disclaimer.html (Disclaimer)
 
 **Key insight documented**:
-This entire session proves the thesis - built full website, brand, social presence from Android phone using Termux + Claude Code in Boris Mode. Screen can be turned off while Claude works autonomously. The proof.html page documents the complete journey.
+This entire session proves the thesis - built full website, brand, social presence from Android phone using Termux + Claude Code in Autonomous Mode. Screen can be turned off while Claude works autonomously. The proof.html page documents the complete journey.
 
 ### January 3-4, 2026 - Session 4: Interactive Demos Marathon (Overnight)
 
@@ -495,7 +495,7 @@ This entire session proves the thesis - built full website, brand, social presen
 **Session notes**:
 - User is sleeping, Claude working autonomously overnight
 - Committing and pushing after each demo for live testing
-- Following Boris Mode rules: verify, commit frequently, push to both repos
+- Following Autonomous Mode rules: verify, commit frequently, push to both repos
 - Target 30fps on mobile
 - All demos must have touch controls
 
@@ -525,7 +525,7 @@ This entire session proves the thesis - built full website, brand, social presen
 - All demos have touch + mouse controls
 - Committed after each demo for continuous testing
 - Used WebGL shaders for GPU acceleration where needed
-- Followed Boris Mode best practices throughout
+- Followed Autonomous Mode best practices throughout
 
 ---
 
@@ -545,7 +545,7 @@ Use this as the single source of truth for what MobileDevCLI is, what we've buil
 ## Quick Commands Reference
 
 ```bash
-# Start Claude in Boris Mode
+# Start Claude in Autonomous Mode
 cc
 
 # Quick git push

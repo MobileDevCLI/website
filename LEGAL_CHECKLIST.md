@@ -132,7 +132,7 @@ This checklist covers EVERY legal protection requirement for a US-based tech sta
 - [x] Third-party links disclaimer
 - [x] Professional advice disclaimer
 - [x] AI/Automation disclaimer
-- [x] "Boris Mode" autonomous operation warning
+- [x] Autonomous Mode operation warning
 - [x] Limitation of liability
 
 ---

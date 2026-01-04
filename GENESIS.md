@@ -8,6 +8,29 @@
 
 ---
 
+## THE CORE INVENTION (Proprietary IP)
+
+The invention is a **METHOD for autonomous software development using AI on mobile phones**. Specifically:
+
+### What IS the Invention:
+1. **Mobile Phone as Development Environment** - Using Android/iOS phones as complete coding workstations
+2. **Linux Layer on Mobile** - Termux (Android) or iSH/a-Shell (iOS) providing full CLI access
+3. **AI CLI as Primary Interface** - Claude Code as the development interface, not a traditional IDE
+4. **Autonomous 24+ Hour Sessions** - Phone running development sessions overnight while sleeping
+5. **CLAUDE.md Knowledge Compounding** - Documentation file that accumulates AI knowledge across sessions
+6. **Dual-Repository Deployment** - Synchronized source and deployment repos pushed from mobile
+7. **Platform-Agnostic Method** - Works on any phone with Linux layer + AI CLI
+
+### What is NOT Part of the Invention:
+- General productivity tips for using AI tools (available to everyone)
+- The underlying technologies themselves (Termux, Claude Code, Git, etc.)
+- The specific website code (MIT licensed, open source)
+
+### The Novel Contribution:
+The **combination and method** of using these technologies together for mobile-first AI development is the proprietary intellectual property. No one had combined these elements in this way before January 2026.
+
+---
+
 ## The Realization
 
 This isn't just a website that teaches people how to use AI on their phone.
