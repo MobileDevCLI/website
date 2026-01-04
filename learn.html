@@ -68,11 +68,53 @@
             max-width: 1200px;
         }
 
+        .logo-wrapper {
+            position: relative;
+        }
+
         .logo {
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--matrix);
             font-family: 'Courier New', monospace;
+            cursor: pointer;
+        }
+
+        .logo-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s;
+            z-index: 1001;
+            margin-top: 8px;
+        }
+
+        .logo-wrapper:hover .logo-dropdown,
+        .logo-wrapper:focus-within .logo-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .logo-dropdown a {
+            display: block;
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .logo-dropdown a:hover {
+            background: rgba(0, 255, 65, 0.1);
+            color: var(--matrix);
         }
 
         .nav-links {
@@ -429,7 +471,15 @@
 <body>
     <nav>
         <div class="container">
-            <a href="/" class="logo">>_ MobileDevCLI</a>
+            <div class="logo-wrapper">
+                <span class="logo">&gt;_ MobileDevCLI</span>
+                <div class="logo-dropdown">
+                    <a href="https://github.com/MobileDevCLI">GitHub</a>
+                    <a href="https://twitter.com/MobileDevCLI">X / Twitter</a>
+                    <a href="https://youtube.com/@MobileDevCLI">YouTube</a>
+                    <a href="mailto:mobiledev.li@gmail.com">Email</a>
+                </div>
+            </div>
             <div class="nav-links">
                 <a href="/games.html">Games</a>
                 <a href="/learn.html" class="active">Learn</a>
