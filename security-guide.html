@@ -269,6 +269,12 @@
             margin: 16px 0;
         }
 
+        .checklist ul,
+        ul.checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
         .checklist li {
             list-style: none;
             position: relative;
@@ -281,6 +287,15 @@
             position: absolute;
             left: 0;
             color: #ff6b6b;
+        }
+
+        /* Ensure ol numbers are visible and styled */
+        ol {
+            counter-reset: list-counter;
+        }
+
+        ol li {
+            counter-increment: list-counter;
         }
 
         footer {
