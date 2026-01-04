@@ -327,6 +327,89 @@
             margin-bottom: 8px;
         }
 
+        /* Expandable Sections */
+        details {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        details summary {
+            padding: 16px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        details summary:hover {
+            background: rgba(0, 255, 65, 0.05);
+        }
+
+        details summary::before {
+            content: '▶';
+            font-size: 0.7rem;
+            color: var(--matrix);
+            transition: transform 0.2s;
+        }
+
+        details[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        details summary::marker,
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details .detail-content {
+            padding: 0 20px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Boris Badge */
+        .boris-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid #a855f7;
+            color: #a855f7;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        /* Quick links bar */
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .quick-link {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .quick-link:hover {
+            border-color: var(--matrix);
+            color: var(--matrix);
+        }
+
         /* Tips */
         .tip {
             background: rgba(0, 255, 65, 0.05);
@@ -505,12 +588,21 @@
         <div class="container">
             <div class="hero">
                 <h1>Documentation</h1>
-                <p>Everything you need to run AI CLI tools on Android. Works with Claude Code, Gemini CLI, Codex, and more.</p>
+                <p>The complete guide to running AI CLI tools natively on your Android phone. Not through a browser. Not via APIs. A real Linux terminal running Claude Code directly.</p>
+            </div>
+
+            <div class="quick-links">
+                <a href="#install-termux" class="quick-link">Quick Start</a>
+                <a href="#boris-mode" class="quick-link">Boris Mode</a>
+                <a href="#boris-stack" class="quick-link">Boris Stack</a>
+                <a href="#persistent" class="quick-link">Background Tasks</a>
+                <a href="#advanced" class="quick-link">Hooks & Agents</a>
+                <a href="#troubleshooting" class="quick-link">Troubleshooting</a>
             </div>
 
             <div class="tip" style="margin-bottom: 48px;">
-                <div class="tip-label">New to MobileCLI?</div>
-                <p><a href="/login.html">Create a free account</a> and follow the interactive setup guide in your <a href="/dashboard.html">Dashboard</a>.</p>
+                <div class="tip-label">What makes this different?</div>
+                <p><strong>CLI, not APIs.</strong> Claude Code connects with your Anthropic account directly — no API keys, no rate limits, no token counting. This is how Boris Cherny (creator of Claude Code) works: sessions running 24+ hours, 2.4M tokens, full autonomous operation.</p>
             </div>
 
             <div class="toc">
@@ -520,12 +612,13 @@
                     <li><a href="#setup-packages">2. Install Packages</a></li>
                     <li><a href="#install-claude">3. Install Claude Code</a></li>
                     <li><a href="#boris-mode">4. Boris Mode (Autonomous)</a></li>
-                    <li><a href="#persistent">5. Keep Termux Running Forever</a></li>
-                    <li><a href="#github-auth">6. GitHub Authentication</a></li>
-                    <li><a href="#workflow">7. The Workflow</a></li>
-                    <li><a href="#automation">8. Automation Scripts</a></li>
-                    <li><a href="#advanced">9. Advanced: Hooks & Agents</a></li>
-                    <li><a href="#troubleshooting">10. Troubleshooting</a></li>
+                    <li><a href="#boris-stack">5. The Boris Stack (Full Methodology)</a></li>
+                    <li><a href="#persistent">6. Keep Termux Running Forever</a></li>
+                    <li><a href="#github-auth">7. GitHub Authentication</a></li>
+                    <li><a href="#workflow">8. The Workflow</a></li>
+                    <li><a href="#automation">9. Automation Scripts</a></li>
+                    <li><a href="#advanced">10. Advanced: Hooks & Agents</a></li>
+                    <li><a href="#troubleshooting">11. Troubleshooting</a></li>
                 </ul>
             </div>
 
@@ -648,8 +741,283 @@ alias cc="claude --dangerously-skip-permissions"</code></pre>
                 </div>
             </section>
 
+            <section id="boris-stack">
+                <h2>5. The Boris Stack (Full Methodology)</h2>
+                <div class="boris-badge">From Boris Cherny, Creator of Claude Code</div>
+                <p>This is how the creator of Claude Code actually uses it. These patterns are proven at scale on the Claude Code codebase itself — sessions running 24+ hours, 2.4M tokens, completely autonomous.</p>
+
+                <details>
+                    <summary>Parallel Sessions: Run 5-10 Claudes Simultaneously</summary>
+                    <div class="detail-content">
+                        <p>Don't wait. While one Claude is thinking, prompt another.</p>
+                        <ul>
+                            <li>Run 5 terminal Claudes in numbered tabs (1-5)</li>
+                            <li>Run 5-10 more on claude.ai/code in parallel</li>
+                            <li>Use <code>--teleport</code> to transfer sessions between terminal and web</li>
+                            <li>Start sessions from phone, check back later</li>
+                        </ul>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">Terminal</span>
+                            </div>
+                            <pre><code><span class="comment"># Background a session and hand off to web</span>
+claude &
+<span class="comment"># Use --teleport to move sessions between devices</span></code></pre>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Model Selection: Always Use Opus 4.5 with Thinking</summary>
+                    <div class="detail-content">
+                        <p>Bigger models are actually faster in practice.</p>
+                        <ul>
+                            <li>Less steering required — Opus understands context better</li>
+                            <li>Better at tool use — fewer errors, less back-and-forth</li>
+                            <li>Almost always faster end-to-end despite being "slower"</li>
+                        </ul>
+                        <p><strong>The math:</strong> If Sonnet needs 5 back-and-forth corrections but Opus gets it right first try, Opus wins every time.</p>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>CLAUDE.md: Compounding Knowledge</summary>
+                    <div class="detail-content">
+                        <p>The secret sauce. Every mistake becomes a permanent rule.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">CLAUDE.md (example)</span>
+                            </div>
+                            <pre><code># Project Rules
+
+**Always use `bun`, not `npm`.**
+
+## Commands
+- Typecheck: bun run typecheck
+- Test: bun run test -- -t "test name"
+- Lint: bun run lint:file -- "file.ts"
+
+## Code Style
+- Prefer `type` over `interface`
+- **Never use `enum`** - use string literal unions
+- Always handle errors explicitly
+
+## Learned Rules
+- Don't add console.log to production code
+- Use absolute imports, not relative
+- Run tests before committing</code></pre>
+                        </div>
+                        <p><strong>Key insight:</strong> Anytime Claude makes a mistake, add a rule. The knowledge compounds. Your future sessions get smarter automatically.</p>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Plan Mode First: Think Before Coding</summary>
+                    <div class="detail-content">
+                        <p>Most sessions should start in Plan mode.</p>
+                        <ol>
+                            <li>Enter Plan mode: <code>shift+tab</code> twice</li>
+                            <li>Describe what you want</li>
+                            <li>Go back and forth until the plan is solid</li>
+                            <li>Switch to auto-accept mode</li>
+                            <li>Claude 1-shots the implementation</li>
+                        </ol>
+                        <p><strong>Why:</strong> A good plan is the foundation. You catch architectural issues before code is written. Much faster than fixing bad code.</p>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Slash Commands: Automate Inner Loops</summary>
+                    <div class="detail-content">
+                        <p>Create commands for workflows you do multiple times per day.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">.claude/commands/commit-push-pr.md</span>
+                            </div>
+                            <pre><code># /commit-push-pr
+
+1. Run git status to see changes
+2. Create a commit message based on the diff
+3. Push to origin
+4. Create a PR with a summary of changes
+5. Return the PR URL</code></pre>
+                        </div>
+                        <p>Now just type <code>/commit-push-pr</code> and it's done.</p>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Subagents: Specialized AI Workers</summary>
+                    <div class="detail-content">
+                        <p>Create agents for specific tasks. Claude can spawn these itself.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">.claude/agents/</span>
+                            </div>
+                            <pre><code>├── code-simplifier.md    # Cleanup after implementation
+├── code-architect.md     # Architectural decisions
+├── verify-app.md         # End-to-end testing
+├── build-validator.md    # Validate builds
+└── oncall-guide.md       # Production issue handling</code></pre>
+                        </div>
+                        <p><strong>code-simplifier:</strong> Run as a cleanup pass. Reduces complexity, improves readability.</p>
+                        <p><strong>verify-app:</strong> Step-by-step testing procedures. Ensures nothing breaks before shipping.</p>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>PostToolUse Hooks: Auto-Format Everything</summary>
+                    <div class="detail-content">
+                        <p>Run commands automatically after Claude edits files.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">.claude/settings.json</span>
+                            </div>
+                            <pre><code>{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "command": "npm run format || true"
+      }
+    ]
+  }
+}</code></pre>
+                        </div>
+                        <p>Claude generates well-formatted code 90% of the time. The hook handles the last 10%. <code>|| true</code> prevents formatting errors from blocking work.</p>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Smart Permissions: Pre-Allow Safe Commands</summary>
+                    <div class="detail-content">
+                        <p>Don't use <code>--dangerously-skip-permissions</code> on sensitive systems. Instead, pre-allow specific commands.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">/permissions (pre-allowed commands)</span>
+                            </div>
+                            <pre><code>Bash(npm run build:*)
+Bash(npm run test:*)
+Bash(npm run lint:*)
+Bash(git status:*)
+Bash(git diff:*)
+Bash(git log:*)</code></pre>
+                        </div>
+                        <p>Check these into <code>.claude/settings.json</code> and share with your team.</p>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>MCP Servers: Connect Any Tool</summary>
+                    <div class="detail-content">
+                        <p>Claude Code can use external tools via MCP (Model Context Protocol).</p>
+                        <ul>
+                            <li>Search and post to Slack</li>
+                            <li>Query databases (BigQuery, Postgres)</li>
+                            <li>Grab error logs from Sentry</li>
+                            <li>Any tool with an MCP server</li>
+                        </ul>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">.mcp.json</span>
+                            </div>
+                            <pre><code>{
+  "mcpServers": {
+    "slack": {
+      "type": "http",
+      "url": "https://slack.mcp.anthropic.com/mcp"
+    }
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Long-Running Tasks: Let Claude Cook</summary>
+                    <div class="detail-content">
+                        <p>Start a task, walk away. Check back hours later.</p>
+                        <ul>
+                            <li><strong>Background Agent Verification:</strong> Prompt Claude to verify its own work when done</li>
+                            <li><strong>Agent Stop Hook:</strong> Trigger verification deterministically when Claude finishes</li>
+                            <li><strong>ralph-wiggum Plugin:</strong> Community plugin for long-running autonomous sessions</li>
+                        </ul>
+                        <p><strong>Real example:</strong> Boris showed a session that ran for 1 day, 2 hours, 47 minutes using 2.4 million tokens. Completely autonomous.</p>
+                        <div class="warning">
+                            <div class="tip-label">Only in sandboxed environments</div>
+                            <p>Use <code>--permission-mode=dontAsk</code> only where Claude can't cause damage.</p>
+                        </div>
+                    </div>
+                </details>
+
+                <details open>
+                    <summary>Verification: The 2-3x Quality Multiplier</summary>
+                    <div class="detail-content">
+                        <p><strong>This is the most important insight.</strong> If Claude has a feedback loop, it will 2-3x the quality of the final result.</p>
+                        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <th style="text-align: left; padding: 8px; color: var(--matrix);">Domain</th>
+                                <th style="text-align: left; padding: 8px; color: var(--matrix);">Verification Method</th>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 8px;">Web UI</td>
+                                <td style="padding: 8px;">Chrome extension — opens browser, tests UI, iterates</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 8px;">CLI Tools</td>
+                                <td style="padding: 8px;">Run bash commands, check exit codes</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 8px;">Libraries</td>
+                                <td style="padding: 8px;">Run test suite after changes</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 8px;">Mobile Apps</td>
+                                <td style="padding: 8px;">Phone simulator or device testing</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px;">Games</td>
+                                <td style="padding: 8px;">Serve locally, screenshot, visual check</td>
+                            </tr>
+                        </table>
+                        <div class="tip">
+                            <div class="tip-label">Key insight from Boris</div>
+                            <p>"Verification looks different for each domain. Make sure to invest in making this rock-solid. It's the highest-leverage improvement you can make."</p>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Mobile/Termux Adaptations</summary>
+                    <div class="detail-content">
+                        <p>Special considerations for Android development:</p>
+                        <ul>
+                            <li>Target 30fps minimum on mobile devices</li>
+                            <li>Use Termux:API for hardware access, not raw intents</li>
+                            <li>Test Three.js games on actual device, not just browser</li>
+                        </ul>
+                        <h4 style="margin-top: 16px;">Mobile Verification Loop:</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-label">Terminal</span>
+                            </div>
+                            <pre><code><span class="comment"># 1. Serve locally</span>
+npx http-server -p 8080
+
+<span class="comment"># 2. Capture screenshot</span>
+termux-screenshot ~/screenshot.png
+
+<span class="comment"># 3. Notify when done</span>
+termux-notification -t "Build complete"
+
+<span class="comment"># 4. Check screenshot or feed back to Claude</span></code></pre>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
             <section id="persistent">
-                <h2>5. Keep Termux Running Forever</h2>
+                <h2>6. Keep Termux Running Forever</h2>
                 <p>By default, Android kills background apps. Fix this:</p>
 
                 <h3>Enable Wake Lock</h3>
@@ -722,7 +1090,7 @@ cc
             </section>
 
             <section id="github-auth">
-                <h2>6. GitHub Authentication</h2>
+                <h2>7. GitHub Authentication</h2>
                 <p>Connect to GitHub so Claude can push code:</p>
 
                 <div class="code-block">
@@ -761,7 +1129,7 @@ alias gs="git status"</code></pre>
             </section>
 
             <section id="workflow">
-                <h2>7. The Workflow</h2>
+                <h2>8. The Workflow</h2>
                 <p>Here's how you actually use this:</p>
 
                 <div class="code-block">
@@ -788,7 +1156,7 @@ gp "Add landing page"</code></pre>
             </section>
 
             <section id="automation">
-                <h2>8. Automation Scripts</h2>
+                <h2>9. Automation Scripts</h2>
                 <p>Our setup script does everything above automatically:</p>
 
                 <div class="code-block">
@@ -826,7 +1194,7 @@ gp "Add landing page"</code></pre>
             </section>
 
             <section id="advanced">
-                <h2>9. Advanced: Hooks & Agents</h2>
+                <h2>10. Advanced: Hooks & Agents</h2>
                 <p>For power users who want more control.</p>
 
                 <h3>Hooks</h3>
