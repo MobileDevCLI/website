@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Preview | MobileCLI</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --bg-card: #0a0a0a;
+            --matrix: #00ff41;
+            --cyan: #00d4ff;
+            --purple: #a855f7;
+            --text: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #555555;
+            --border: #1a1a1a;
+            --warning: #ff6b6b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .admin-banner {
+            background: linear-gradient(90deg, var(--purple), var(--matrix));
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--matrix), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--matrix);
+            margin: 40px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: var(--cyan);
+            margin: 24px 0 12px;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .code-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: rgba(0, 255, 65, 0.1);
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-label {
+            color: var(--matrix);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .copy-btn {
+            background: var(--matrix);
+            color: var(--bg);
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        pre {
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .warning-box {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .warning-box h4 {
+            color: var(--warning);
+            margin-bottom: 8px;
+        }
+
+        .pro-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--purple), var(--matrix));
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        ul {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        li strong {
+            color: var(--text);
+        }
+
+        .step {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: var(--matrix);
+            color: var(--bg);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 700;
+            margin-right: 12px;
+        }
+
+        .step h3 {
+            display: inline;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--matrix);
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            pre {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-banner">
+        ADMIN PREVIEW - This is what Pro subscribers see
+    </div>
+
+    <div class="container">
+        <a href="/" class="back-link">&larr; Back to Home</a>
+
+        <h1>Pro Setup Guide <span class="pro-badge">PRO</span></h1>
+        <p class="subtitle">Complete setup instructions with real commands. This is the secret sauce.</p>
+
+        <div class="warning-box">
+            <h4>Confidential Content</h4>
+            <p>This page contains the actual methodology. Do not share publicly. Subscribers only.</p>
+        </div>
+
+        <h2>The Stack</h2>
+        <p>Here's exactly what we use:</p>
+        <ul>
+            <li><strong>Termux</strong> - Linux terminal emulator for Android (F-Droid version only)</li>
+            <li><strong>Termux:API</strong> - Hardware access (camera, notifications, clipboard)</li>
+            <li><strong>Claude Code</strong> - Anthropic's AI coding CLI (npm package)</li>
+            <li><strong>tmux</strong> - Terminal multiplexer for persistent sessions</li>
+            <li><strong>Node.js LTS</strong> - JavaScript runtime</li>
+            <li><strong>Git + GitHub CLI</strong> - Version control and GitHub integration</li>
+        </ul>
+
+        <h2>Step-by-Step Setup</h2>
+
+        <div class="step">
+            <span class="step-number">1</span>
+            <h3>Install Termux</h3>
+            <p>Download Termux from F-Droid (NOT Google Play - that version is outdated):</p>
+            <p><a href="https://f-droid.org/packages/com.termux/" target="_blank" style="color: var(--cyan);">https://f-droid.org/packages/com.termux/</a></p>
+            <p>Also install Termux:API from F-Droid for hardware access.</p>
+        </div>
+
+        <div class="step">
+            <span class="step-number">2</span>
+            <h3>Update and Install Dependencies</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre># Update packages
+pkg update -y && pkg upgrade -y
+
+# Install core dependencies
+pkg install nodejs-lts git gh openssh -y
+
+# Install Termux:API package (after installing Termux:API app)
+pkg install termux-api -y</pre>
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-number">3</span>
+            <h3>Install Claude Code</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre># Install Claude Code globally
+npm install -g @anthropic-ai/claude-code
+
+# Verify installation
+claude --version</pre>
+            </div>
+            <p>You'll need an Anthropic account. Claude Code will prompt you to authenticate via browser on first run.</p>
+        </div>
+
+        <div class="step">
+            <span class="step-number">4</span>
+            <h3>Setup GitHub Authentication</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre># Login to GitHub CLI
+gh auth login
+
+# Choose:
+# - GitHub.com
+# - HTTPS
+# - Login with a web browser
+# - Follow the prompts</pre>
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-number">5</span>
+            <h3>Install tmux for Persistent Sessions</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre># Install tmux
+pkg install tmux -y
+
+# Create a new session named 'dev'
+tmux new -s dev
+
+# To detach: press Ctrl+B then D
+# To reattach later:
+tmux attach -t dev</pre>
+            </div>
+        </div>
+
+        <h2>Running Claude Code</h2>
+
+        <h3>Standard Mode</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Run Claude in your project directory
+cd ~/your-project
+claude</pre>
+        </div>
+
+        <h3>Autonomous Mode (The Power Move)</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Run Claude without permission prompts
+claude --dangerously-skip-permissions
+
+# This allows Claude to:
+# - Read/write files without asking
+# - Run bash commands without asking
+# - Work autonomously for hours</pre>
+        </div>
+
+        <div class="warning-box">
+            <h4>Use Autonomous Mode Carefully</h4>
+            <p>Only use <code>--dangerously-skip-permissions</code> in projects where you trust what Claude might do. It can read, write, and execute anything.</p>
+        </div>
+
+        <h2>24+ Hour Sessions</h2>
+        <p>The magic combo for sessions that run for days:</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash - The Full Setup</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># 1. Prevent CPU sleep
+termux-wake-lock
+
+# 2. Keep Termux priority (prevents Android killing it)
+termux-notification -t "Dev Session" --ongoing -c "Claude running..."
+
+# 3. Start tmux session (survives Termux close)
+tmux new -s dev
+
+# 4. Run Claude autonomously
+claude --dangerously-skip-permissions
+
+# Now you can:
+# - Close the Termux app (session keeps running)
+# - Lock your phone (session keeps running)
+# - Come back hours later and it's still going</pre>
+        </div>
+
+        <h3>Reattach to Running Session</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Open Termux and reattach
+tmux attach -t dev
+
+# List all sessions
+tmux ls</pre>
+        </div>
+
+        <h2>Termux:API Commands</h2>
+        <p>Full hardware access from the terminal:</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash - Hardware Access</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Camera
+termux-camera-photo ~/photo.jpg
+
+# Screenshot (requires Termux:API app)
+termux-screenshot ~/screenshot.png
+
+# Notifications
+termux-notification -t "Title" -c "Content"
+termux-notification -t "Dev" --ongoing  # Persistent notification
+
+# Clipboard
+termux-clipboard-get
+termux-clipboard-set "text to copy"
+
+# Text to speech
+termux-tts-speak "Hello world"
+
+# Battery status
+termux-battery-status
+
+# WiFi info
+termux-wifi-connectioninfo
+
+# Vibrate
+termux-vibrate
+
+# Toast message
+termux-toast "Quick message"
+
+# Open URL in browser
+termux-open-url "https://google.com"
+
+# Share intent
+termux-share -a send ~/file.txt</pre>
+        </div>
+
+        <h2>CLAUDE.md - Knowledge Compounding</h2>
+        <p>This is the secret weapon. Create a CLAUDE.md file in your project root:</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">CLAUDE.md Template</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Project Instructions
+
+## Quick Context
+What this project is and what you're building.
+
+## Tech Stack
+- List your technologies
+- Any specific versions
+
+## Important Rules
+- Never do X
+- Always do Y
+- Preferred patterns
+
+## Common Commands
+```bash
+npm run dev
+npm run build
+```
+
+## Learned Lessons
+Every time Claude makes a mistake, add it here.
+Claude reads this file at the start of every session.</pre>
+        </div>
+
+        <p>The key insight: <strong>Every mistake becomes a permanent rule.</strong> When Claude does something wrong, add it to CLAUDE.md. It won't make that mistake again.</p>
+
+        <h2>Dual-Repo Deployment</h2>
+        <p>How to push to multiple repos (source + deployment):</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash - Setup Remotes</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Add multiple remotes
+git remote add origin https://github.com/YourOrg/source.git
+git remote add website https://github.com/YourOrg/website.git
+
+# Push to both
+git push origin master
+git push website master
+
+# One-liner for both
+git add -A && git commit -m "message" && git push origin master && git push website master</pre>
+        </div>
+
+        <h2>Troubleshooting</h2>
+
+        <h3>Claude Code not installing?</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Make sure Node is updated
+pkg upgrade nodejs-lts
+
+# Clear npm cache
+npm cache clean --force
+
+# Try installing again
+npm install -g @anthropic-ai/claude-code</pre>
+        </div>
+
+        <h3>Session killed by Android?</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Make sure you have:
+termux-wake-lock                              # Prevents CPU sleep
+termux-notification -t "Dev" --ongoing        # Keeps priority
+
+# Also check Android settings:
+# Settings > Apps > Termux > Battery > Unrestricted</pre>
+        </div>
+
+        <h3>Storage access issues?</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-label">Bash</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre># Grant storage permission
+termux-setup-storage
+
+# Then access via:
+~/storage/shared/       # Internal storage
+~/storage/dcim/         # Camera photos
+~/storage/downloads/    # Downloads</pre>
+        </div>
+
+        <p style="margin-top: 60px; color: var(--text-muted); text-align: center;">
+            This is confidential Pro content. &copy; 2026 MobileDevCLI. All Rights Reserved.
+        </p>
+    </div>
+
+    <script>
+        function copyCode(btn) {
+            const pre = btn.closest('.code-block').querySelector('pre');
+            const code = pre.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+    </script>
+</body>
+</html>
