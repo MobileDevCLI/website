@@ -8,9 +8,13 @@ This is MobileCLI - a brand/website/SaaS that turns Android phones into AI devel
 **GitHub**: github.com/MobileDevCLI
 **Supabase**: mwxlguqukyfberyhtkmg.supabase.co
 
-## The Invention
+## The Invention (PROTECTED IP)
 
 **Read GENESIS.md** - This project isn't just a website. It's an invention.
+
+**IMPORTANT:** See IP_NOTICE.md for intellectual property protection.
+- Code = MIT License (open source)
+- Method/Invention = All Rights Reserved (proprietary)
 
 We built an autonomous development platform that outperforms Replit:
 - Runs locally on a phone (not cloud)

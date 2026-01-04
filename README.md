@@ -178,14 +178,28 @@ pkg update && pkg upgrade
 
 ---
 
-## License
+## The Invention
 
-MIT License - see [LICENSE](LICENSE) for details.
+This isn't just a setup script. **It's an invention.**
+
+Read [GENESIS.md](GENESIS.md) for the full story of how we built an autonomous development platform that outperforms Replit - entirely on a phone.
+
+---
+
+## License & Intellectual Property
+
+**Source Code**: MIT License - see [LICENSE](LICENSE)
+
+**Method/Invention**: All Rights Reserved - see [IP_NOTICE.md](IP_NOTICE.md)
+
+The code is open source. The method is proprietary intellectual property.
 
 ---
 
 <div align="center">
 
-**Built for mobile developers, by mobile developers.**
+**Invented by Samblamz. Built entirely on a mobile phone.**
+
+Copyright (c) 2026 Samblamz / MobileDevCLI
 
 </div>
