@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intellectual Property Notice - MobileDevCLI</title>
+    <meta name="description" content="Intellectual Property Notice, Copyright, and Proprietary Method Protection for MobileDevCLI">
+    <link rel="canonical" href="https://mobilecli.com/ip.html">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-card: #111111;
+            --text: #e6e6e6;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --matrix: #00ff41;
+            --border: #1a1a1a;
+            --warning: #ff6b6b;
+            --gold: #ffd700;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        a {
+            color: var(--matrix);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .logo-wrapper {
+            position: relative;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+        }
+
+        .logo-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s;
+            z-index: 1001;
+            margin-top: 8px;
+        }
+
+        .logo-wrapper:hover .logo-dropdown,
+        .logo-wrapper:focus-within .logo-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .logo-dropdown a {
+            display: block;
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .logo-dropdown a:hover {
+            background: rgba(0, 255, 65, 0.1);
+            color: var(--matrix);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--matrix);
+        }
+
+        .content {
+            padding: 100px 0 60px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--gold);
+        }
+
+        .last-updated {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin: 48px 0 16px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin: 24px 0 12px;
+            color: var(--matrix);
+        }
+
+        p, ul {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        ul {
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .warning-box {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin: 32px 0;
+        }
+
+        .warning-box h3 {
+            color: var(--warning);
+            margin-bottom: 12px;
+            margin-top: 0;
+        }
+
+        .ip-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .ip-box h3 {
+            color: var(--gold);
+            margin-bottom: 12px;
+            margin-top: 0;
+        }
+
+        .highlight {
+            background: var(--bg-card);
+            border-left: 3px solid var(--matrix);
+            padding: 16px 20px;
+            margin: 24px 0;
+        }
+
+        .legal-text {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text);
+        }
+
+        .damages-section {
+            background: rgba(255, 107, 107, 0.05);
+            border: 1px solid var(--warning);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .damages-section h3 {
+            color: var(--warning);
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-card);
+            color: var(--matrix);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--text-secondary);
+        }
+
+        .date-stamp {
+            font-family: 'Courier New', monospace;
+            background: var(--bg-card);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--matrix);
+        }
+
+        footer {
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            margin: 0 12px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo-wrapper">
+                <a href="/" class="logo">&gt;_ MobileCLI</a>
+                <div class="logo-dropdown">
+                    <a href="https://github.com/MobileDevCLI">GitHub</a>
+                    <a href="https://twitter.com/MobileDevCLI">X / Twitter</a>
+                    <a href="https://youtube.com/@MobileDevCLI">YouTube</a>
+                    <a href="mailto:mobiledevcli@gmail.com">Email</a>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="/pricing.html">Pricing</a>
+                <a href="/learn.html">Docs</a>
+                <a href="/quickstart.html">Quick Start</a>
+                <a href="/demos.html">Demos</a>
+                <a href="/login.html">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="container">
+            <h1>Intellectual Property Notice</h1>
+            <p class="last-updated">Effective Date: <span class="date-stamp">January 4, 2026</span></p>
+
+            <div class="ip-box">
+                <h3>NOTICE OF PROPRIETARY RIGHTS</h3>
+                <p class="legal-text">THIS WEBSITE AND ITS CONTENTS CONTAIN PROPRIETARY INTELLECTUAL PROPERTY PROTECTED BY UNITED STATES AND INTERNATIONAL COPYRIGHT, TRADE SECRET, AND OTHER INTELLECTUAL PROPERTY LAWS. UNAUTHORIZED USE, REPRODUCTION, OR DISTRIBUTION MAY RESULT IN CIVIL AND CRIMINAL PENALTIES.</p>
+            </div>
+
+            <h2>1. Copyright Notice</h2>
+            <p class="legal-text">Copyright &copy; 2026 Samblamz / MobileDevCLI. All Rights Reserved.</p>
+            <p>All content on this website, including but not limited to text, graphics, logos, images, audio clips, video clips, data compilations, software, documentation, and the selection and arrangement thereof, is the exclusive property of MobileDevCLI or its licensors and is protected by United States and international copyright laws.</p>
+
+            <h2>2. Dual-License Structure</h2>
+            <p>This project operates under a dual-license structure:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>License</th>
+                        <th>Rights Granted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Source Code (HTML, CSS, JS, Shell Scripts)</td>
+                        <td>MIT License</td>
+                        <td>Open source, free to use, modify, distribute</td>
+                    </tr>
+                    <tr>
+                        <td>Method, System, Process, Invention</td>
+                        <td>All Rights Reserved</td>
+                        <td>Proprietary - No rights granted without written permission</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>3. Proprietary Method - All Rights Reserved</h2>
+            <div class="warning-box">
+                <h3>CRITICAL: The METHOD is NOT Open Source</h3>
+                <p>The MIT License applies ONLY to the source code. The following proprietary elements are protected by trade secret, copyright, and other applicable laws:</p>
+            </div>
+
+            <h3>Protected Intellectual Property Includes:</h3>
+            <ul>
+                <li><strong>The Method:</strong> The system and process for autonomous AI-assisted software development on mobile devices</li>
+                <li><strong>CLAUDE.md Knowledge Compounding System:</strong> The technique of accumulating AI knowledge across sessions via documentation files</li>
+                <li><strong>Mobile-First AI Development Workflow:</strong> The specific combination of technologies (Termux, Claude Code, persistence mechanisms) for mobile development</li>
+                <li><strong>Continuous AI Development Sessions:</strong> The method for maintaining 24+ hour autonomous AI coding sessions</li>
+                <li><strong>Dual-Repository Deployment Synchronization:</strong> The workflow for maintaining synchronized source and deployment repositories</li>
+                <li><strong>Platform-Agnostic Mobile Development System:</strong> The method working across Android (Termux) and iOS (iSH/a-Shell)</li>
+            </ul>
+
+            <p>These methods are documented in detail in our <a href="https://github.com/MobileDevCLI/setup/blob/master/GENESIS.md">GENESIS.md</a> file, which constitutes a formal disclosure of the invention.</p>
+
+            <h2>4. Prior Art Declaration</h2>
+            <div class="highlight">
+                <p><strong>Date of Invention:</strong> <span class="date-stamp">January 2-4, 2026</span></p>
+                <p><strong>Inventor:</strong> Samblamz</p>
+                <p><strong>Method of Documentation:</strong> Single continuous AI conversation on Android mobile device</p>
+            </div>
+            <p>This invention is documented and timestamped via:</p>
+            <ul>
+                <li>Cryptographically signed Git commit history</li>
+                <li>Public GitHub repository disclosure</li>
+                <li>Internet Archive (Wayback Machine) preservation</li>
+                <li>Continuous development logs</li>
+            </ul>
+            <p>These timestamps serve as legal evidence of prior art under United States patent law (35 U.S.C. &sect; 102) and equivalent international provisions.</p>
+
+            <h2>5. Prohibited Uses</h2>
+            <p class="legal-text">THE FOLLOWING ACTIVITIES ARE STRICTLY PROHIBITED WITHOUT PRIOR WRITTEN AUTHORIZATION:</p>
+            <ul>
+                <li>Filing any patent application covering any aspect of the Method described herein</li>
+                <li>Claiming invention, ownership, or creation of the Method</li>
+                <li>Creating commercial products, services, or platforms based on the Method</li>
+                <li>Teaching, training, or offering courses on the Method for commercial purposes</li>
+                <li>Reverse engineering the Method for commercial exploitation</li>
+                <li>Removing, altering, or obscuring any intellectual property notices</li>
+                <li>Misrepresenting the origin, ownership, or authorship of the Method</li>
+                <li>Using the Method to compete directly with MobileDevCLI</li>
+            </ul>
+
+            <h2>6. Permitted Uses</h2>
+            <p>Subject to the restrictions above, you MAY:</p>
+            <ul>
+                <li>Use the open-source code under MIT License terms</li>
+                <li>Learn from and study the Method for personal, non-commercial education</li>
+                <li>Reference this work in academic or research contexts with proper attribution</li>
+                <li>Build personal, non-commercial projects using the publicly available code</li>
+                <li>Share links to this website and our public repositories</li>
+            </ul>
+
+            <h2>7. Attribution Requirements</h2>
+            <p>Any permitted use of the METHOD (not just the code) requires the following attribution:</p>
+            <div class="highlight">
+                <code>
+                    Method invented by Samblamz (2026)<br>
+                    https://github.com/MobileDevCLI<br>
+                    https://mobilecli.com
+                </code>
+            </div>
+
+            <h2>8. Damages and Remedies</h2>
+            <div class="damages-section">
+                <h3>NOTICE OF POTENTIAL LIABILITY</h3>
+                <p class="legal-text">VIOLATION OF THIS INTELLECTUAL PROPERTY NOTICE MAY RESULT IN THE FOLLOWING DAMAGES AND REMEDIES:</p>
+                <ul>
+                    <li><strong>Actual Damages:</strong> Recovery of all profits derived from infringement plus any additional damages suffered</li>
+                    <li><strong>Statutory Damages:</strong> Up to $150,000 per willful infringement under 17 U.S.C. &sect; 504(c)</li>
+                    <li><strong>Injunctive Relief:</strong> Court orders to immediately cease all infringing activities</li>
+                    <li><strong>Attorney's Fees:</strong> Recovery of all legal costs incurred in enforcement actions</li>
+                    <li><strong>Destruction of Infringing Materials:</strong> Court-ordered destruction of all infringing copies and derivatives</li>
+                    <li><strong>Criminal Penalties:</strong> For willful infringement for commercial advantage, up to 5 years imprisonment and $250,000 in fines under 18 U.S.C. &sect; 2319</li>
+                </ul>
+            </div>
+
+            <h2>9. Enforcement</h2>
+            <p>MobileDevCLI actively monitors for intellectual property violations and will pursue enforcement through:</p>
+            <ul>
+                <li><strong>DMCA Takedown Notices:</strong> Immediate removal of infringing content from hosting platforms</li>
+                <li><strong>Cease and Desist Letters:</strong> Formal demands to halt infringing activities</li>
+                <li><strong>Civil Litigation:</strong> Lawsuits seeking damages, injunctions, and attorney's fees</li>
+                <li><strong>Patent Interference Proceedings:</strong> Challenges to any improperly filed patents covering our methods</li>
+                <li><strong>Trade Secret Misappropriation Claims:</strong> Under the Defend Trade Secrets Act (18 U.S.C. &sect; 1836)</li>
+                <li><strong>Criminal Referrals:</strong> For willful commercial infringement</li>
+            </ul>
+
+            <h2>10. Commercial Licensing</h2>
+            <p>For commercial use of the METHOD, including but not limited to:</p>
+            <ul>
+                <li>Building products or services based on the Method</li>
+                <li>Incorporating the Method into enterprise workflows</li>
+                <li>Training or educational programs</li>
+                <li>Resale or sublicensing</li>
+            </ul>
+            <p>Contact us for licensing terms:</p>
+            <div class="highlight">
+                <p><strong>Email:</strong> <a href="mailto:mobiledevcli@gmail.com">mobiledevcli@gmail.com</a></p>
+                <p><strong>GitHub:</strong> <a href="https://github.com/MobileDevCLI">@MobileDevCLI</a></p>
+            </div>
+
+            <h2>11. Governing Law and Jurisdiction</h2>
+            <p>This Intellectual Property Notice shall be governed by and construed in accordance with the laws of the United States of America. Any disputes arising from this notice or relating to the intellectual property described herein shall be subject to the exclusive jurisdiction of the federal and state courts of the United States.</p>
+
+            <h2>12. Severability</h2>
+            <p>If any provision of this Notice is held to be invalid or unenforceable, such provision shall be struck and the remaining provisions shall remain in full force and effect.</p>
+
+            <h2>13. No Waiver</h2>
+            <p>Failure to enforce any provision of this Notice shall not constitute a waiver of our rights to enforce such provision or any other provision in the future.</p>
+
+            <h2>14. Entire Agreement</h2>
+            <p>This Intellectual Property Notice, together with our Terms of Service and Privacy Policy, constitutes the entire agreement between you and MobileDevCLI regarding intellectual property rights.</p>
+
+            <div class="ip-box">
+                <h3>ACKNOWLEDGMENT</h3>
+                <p>By accessing this website, downloading any code, or using any materials from MobileDevCLI, you acknowledge that you have read, understood, and agree to be bound by this Intellectual Property Notice. If you do not agree, you must immediately cease all use of our website and materials.</p>
+            </div>
+
+            <h2>15. Contact for IP Matters</h2>
+            <p>For intellectual property inquiries, licensing requests, or to report suspected infringement:</p>
+            <p><strong>Email:</strong> <a href="mailto:mobiledevcli@gmail.com">mobiledevcli@gmail.com</a></p>
+            <p><strong>Subject Line:</strong> [IP INQUIRY] - Your Subject</p>
+
+            <p style="margin-top: 48px; color: var(--text-muted); font-size: 0.9rem;">
+                <em>This notice was last updated on January 4, 2026 and supersedes all previous versions.</em>
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>
+                <a href="/">Home</a>
+                <a href="/terms.html">Terms</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/disclaimer.html">Disclaimer</a>
+                <a href="/ip.html">IP Notice</a>
+            </p>
+            <p style="margin-top: 16px;">&copy; 2026 Samblamz / MobileDevCLI. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
