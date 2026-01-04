@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Raymarching - MobileCLI Demos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .info {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            max-width: 280px;
+        }
+
+        .info h3 {
+            color: #a855f7;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .info { display: none; }
+            .ui { top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <a href="/demos.html" class="back-btn">← Back to Demos</a>
+        <div class="info">
+            <h3>Raymarching</h3>
+            <p>GPU-rendered signed distance fields with soft shadows, ambient occlusion, and reflections. Pure math, no meshes!</p>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="nextScene()">Next Scene</button>
+        <button class="control-btn" onclick="toggleRotation()">Pause</button>
+        <button class="control-btn" onclick="toggleReflections()">Reflections</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+        let width, height;
+        function resize() {
+            // Use lower resolution for mobile performance
+            const scale = window.devicePixelRatio > 1 ? 0.5 : 0.75;
+            width = canvas.width = Math.floor(window.innerWidth * scale);
+            height = canvas.height = Math.floor(window.innerHeight * scale);
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            gl.viewport(0, 0, width, height);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Vertex shader
+        const vertexShaderSource = `
+            attribute vec2 a_position;
+            void main() {
+                gl_Position = vec4(a_position, 0.0, 1.0);
+            }
+        `;
+
+        // Fragment shader with raymarching
+        const fragmentShaderSource = `
+            precision highp float;
+
+            uniform vec2 u_resolution;
+            uniform float u_time;
+            uniform int u_scene;
+            uniform int u_reflections;
+            uniform vec2 u_mouse;
+
+            #define MAX_STEPS 64
+            #define MAX_DIST 100.0
+            #define SURF_DIST 0.001
+
+            // Rotation matrix
+            mat2 rot2D(float angle) {
+                float s = sin(angle);
+                float c = cos(angle);
+                return mat2(c, -s, s, c);
+            }
+
+            // SDF primitives
+            float sdSphere(vec3 p, float r) {
+                return length(p) - r;
+            }
+
+            float sdBox(vec3 p, vec3 b) {
+                vec3 q = abs(p) - b;
+                return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+            }
+
+            float sdTorus(vec3 p, vec2 t) {
+                vec2 q = vec2(length(p.xz) - t.x, p.y);
+                return length(q) - t.y;
+            }
+
+            float sdCapsule(vec3 p, vec3 a, vec3 b, float r) {
+                vec3 ab = b - a;
+                vec3 ap = p - a;
+                float t = clamp(dot(ap, ab) / dot(ab, ab), 0.0, 1.0);
+                return length(ap - ab * t) - r;
+            }
+
+            // Smooth min for blending
+            float smin(float a, float b, float k) {
+                float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+                return mix(b, a, h) - k * h * (1.0 - h);
+            }
+
+            // Scene 0: Morphing spheres
+            float scene0(vec3 p) {
+                float t = u_time * 0.5;
+
+                vec3 p1 = p - vec3(sin(t) * 2.0, 0.0, 0.0);
+                vec3 p2 = p - vec3(-sin(t) * 2.0, 0.0, 0.0);
+                vec3 p3 = p - vec3(0.0, sin(t * 1.5) * 1.5, 0.0);
+
+                float s1 = sdSphere(p1, 1.0 + sin(t * 2.0) * 0.2);
+                float s2 = sdSphere(p2, 1.0 + cos(t * 2.0) * 0.2);
+                float s3 = sdSphere(p3, 0.8);
+
+                float d = smin(smin(s1, s2, 0.5), s3, 0.5);
+
+                // Floor
+                float floor = p.y + 2.0;
+                return min(d, floor);
+            }
+
+            // Scene 1: Gyroid structure
+            float scene1(vec3 p) {
+                float t = u_time * 0.3;
+                p.xz *= rot2D(t);
+                p.xy *= rot2D(t * 0.7);
+
+                float scale = 3.0;
+                float gyroid = abs(dot(sin(p * scale), cos(p.yzx * scale))) - 0.3;
+                float sphere = sdSphere(p, 2.5);
+
+                return max(gyroid / scale, sphere);
+            }
+
+            // Scene 2: Infinite boxes
+            float scene2(vec3 p) {
+                float t = u_time * 0.5;
+
+                // Repeat space
+                vec3 q = p;
+                q.xz = mod(q.xz + 2.5, 5.0) - 2.5;
+
+                // Rotating box
+                q.xy *= rot2D(t + floor((p.x + 2.5) / 5.0) * 0.5);
+                q.yz *= rot2D(t * 0.7 + floor((p.z + 2.5) / 5.0) * 0.3);
+
+                float box = sdBox(q, vec3(0.8 + sin(t) * 0.1));
+
+                // Floor
+                float floor = p.y + 2.0;
+                return min(box, floor);
+            }
+
+            // Scene 3: Torus knot
+            float scene3(vec3 p) {
+                float t = u_time * 0.4;
+                p.xz *= rot2D(t);
+
+                float torus = sdTorus(p, vec2(2.0, 0.5));
+
+                // Add spiraling capsules
+                float d = torus;
+                for (int i = 0; i < 8; i++) {
+                    float angle = float(i) * 0.785 + t;
+                    vec3 offset = vec3(cos(angle) * 2.0, sin(angle * 3.0) * 0.5, sin(angle) * 2.0);
+                    d = smin(d, sdSphere(p - offset, 0.3), 0.3);
+                }
+
+                return d;
+            }
+
+            // Main scene function
+            float getScene(vec3 p) {
+                if (u_scene == 0) return scene0(p);
+                if (u_scene == 1) return scene1(p);
+                if (u_scene == 2) return scene2(p);
+                return scene3(p);
+            }
+
+            // Calculate normal
+            vec3 getNormal(vec3 p) {
+                float d = getScene(p);
+                vec2 e = vec2(0.001, 0.0);
+                vec3 n = d - vec3(
+                    getScene(p - e.xyy),
+                    getScene(p - e.yxy),
+                    getScene(p - e.yyx)
+                );
+                return normalize(n);
+            }
+
+            // Soft shadows
+            float getSoftShadow(vec3 ro, vec3 rd, float mint, float maxt, float k) {
+                float res = 1.0;
+                float t = mint;
+                for (int i = 0; i < 32; i++) {
+                    if (t > maxt) break;
+                    float h = getScene(ro + rd * t);
+                    if (h < 0.001) return 0.0;
+                    res = min(res, k * h / t);
+                    t += h;
+                }
+                return res;
+            }
+
+            // Ambient occlusion
+            float getAO(vec3 p, vec3 n) {
+                float occ = 0.0;
+                float sca = 1.0;
+                for (int i = 0; i < 5; i++) {
+                    float h = 0.01 + 0.12 * float(i) / 4.0;
+                    float d = getScene(p + h * n);
+                    occ += (h - d) * sca;
+                    sca *= 0.95;
+                }
+                return clamp(1.0 - 3.0 * occ, 0.0, 1.0);
+            }
+
+            // Raymarching
+            float rayMarch(vec3 ro, vec3 rd) {
+                float dO = 0.0;
+                for (int i = 0; i < MAX_STEPS; i++) {
+                    vec3 p = ro + rd * dO;
+                    float dS = getScene(p);
+                    dO += dS;
+                    if (dO > MAX_DIST || dS < SURF_DIST) break;
+                }
+                return dO;
+            }
+
+            // Get color based on scene
+            vec3 getColor(vec3 p, vec3 n) {
+                if (u_scene == 1) {
+                    // Gyroid - iridescent
+                    return 0.5 + 0.5 * cos(u_time + p.xyz + vec3(0.0, 2.0, 4.0));
+                }
+
+                // Check if floor
+                if (p.y < -1.9) {
+                    float checker = mod(floor(p.x) + floor(p.z), 2.0);
+                    return mix(vec3(0.1), vec3(0.3), checker);
+                }
+
+                // Object color
+                return vec3(0.8, 0.3, 0.5);
+            }
+
+            void main() {
+                vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+
+                // Camera
+                float camAngle = u_time * 0.3 + u_mouse.x * 3.0;
+                vec3 ro = vec3(sin(camAngle) * 6.0, 3.0 + u_mouse.y * 2.0, cos(camAngle) * 6.0);
+                vec3 lookAt = vec3(0.0, 0.0, 0.0);
+
+                // Camera matrix
+                vec3 forward = normalize(lookAt - ro);
+                vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), forward));
+                vec3 up = cross(forward, right);
+
+                vec3 rd = normalize(uv.x * right + uv.y * up + 1.5 * forward);
+
+                // Light
+                vec3 lightPos = vec3(5.0, 10.0, 5.0);
+
+                // Raymarch
+                float d = rayMarch(ro, rd);
+
+                vec3 col = vec3(0.0);
+
+                if (d < MAX_DIST) {
+                    vec3 p = ro + rd * d;
+                    vec3 n = getNormal(p);
+                    vec3 l = normalize(lightPos - p);
+
+                    // Base color
+                    vec3 baseCol = getColor(p, n);
+
+                    // Diffuse
+                    float diff = max(dot(n, l), 0.0);
+
+                    // Specular
+                    vec3 h = normalize(l - rd);
+                    float spec = pow(max(dot(n, h), 0.0), 32.0);
+
+                    // Shadow
+                    float shadow = getSoftShadow(p + n * 0.02, l, 0.02, 10.0, 8.0);
+
+                    // Ambient occlusion
+                    float ao = getAO(p, n);
+
+                    // Combine
+                    col = baseCol * (0.1 + diff * shadow * 0.8) * ao;
+                    col += spec * shadow * 0.3;
+
+                    // Reflections
+                    if (u_reflections == 1) {
+                        vec3 refDir = reflect(rd, n);
+                        float refD = rayMarch(p + n * 0.02, refDir);
+                        if (refD < MAX_DIST) {
+                            vec3 refP = p + refDir * refD;
+                            vec3 refN = getNormal(refP);
+                            vec3 refCol = getColor(refP, refN);
+                            float refDiff = max(dot(refN, l), 0.0);
+                            col += refCol * refDiff * 0.2;
+                        }
+                    }
+
+                    // Fog
+                    col = mix(col, vec3(0.0), 1.0 - exp(-0.01 * d * d));
+                }
+
+                // Gamma correction
+                col = pow(col, vec3(0.4545));
+
+                gl_FragColor = vec4(col, 1.0);
+            }
+        `;
+
+        // Compile shader
+        function createShader(type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        }
+
+        // Create program
+        const vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.error(gl.getProgramInfoLog(program));
+        }
+
+        gl.useProgram(program);
+
+        // Get locations
+        const locations = {
+            position: gl.getAttribLocation(program, 'a_position'),
+            resolution: gl.getUniformLocation(program, 'u_resolution'),
+            time: gl.getUniformLocation(program, 'u_time'),
+            scene: gl.getUniformLocation(program, 'u_scene'),
+            reflections: gl.getUniformLocation(program, 'u_reflections'),
+            mouse: gl.getUniformLocation(program, 'u_mouse')
+        };
+
+        // Create quad
+        const quadBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1,  1, -1,  -1, 1,
+            -1, 1,   1, -1,   1, 1
+        ]), gl.STATIC_DRAW);
+
+        gl.enableVertexAttribArray(locations.position);
+        gl.vertexAttribPointer(locations.position, 2, gl.FLOAT, false, 0, 0);
+
+        // State
+        let currentScene = 0;
+        let rotating = true;
+        let reflections = 1;
+        let mouse = { x: 0, y: 0.5 };
+        let timeOffset = 0;
+        let pausedTime = 0;
+
+        // Mouse/touch controls
+        document.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX / window.innerWidth;
+            mouse.y = 1 - e.clientY / window.innerHeight;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            mouse.x = e.touches[0].clientX / window.innerWidth;
+            mouse.y = 1 - e.touches[0].clientY / window.innerHeight;
+        }, { passive: true });
+
+        // Control functions
+        window.nextScene = function() {
+            currentScene = (currentScene + 1) % 4;
+        };
+
+        window.toggleRotation = function() {
+            rotating = !rotating;
+            if (rotating) {
+                timeOffset = pausedTime;
+            } else {
+                pausedTime = performance.now() * 0.001 - timeOffset;
+            }
+        };
+
+        window.toggleReflections = function() {
+            reflections = 1 - reflections;
+        };
+
+        // Animation loop
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            const t = rotating ? time * 0.001 - timeOffset : pausedTime;
+
+            gl.uniform2f(locations.resolution, width, height);
+            gl.uniform1f(locations.time, t);
+            gl.uniform1i(locations.scene, currentScene);
+            gl.uniform1i(locations.reflections, reflections);
+            gl.uniform2f(locations.mouse, mouse.x, mouse.y);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>
