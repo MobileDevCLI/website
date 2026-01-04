@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Wave Interference - MobileCLI Demos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 180, 255, 0.2);
+            border-color: rgba(0, 180, 255, 0.3);
+        }
+
+        .info {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            max-width: 280px;
+        }
+
+        .info h3 {
+            color: #00b4ff;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 180, 255, 0.2);
+            border-color: rgba(0, 180, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: rgba(0, 180, 255, 0.3);
+            border-color: #00b4ff;
+            color: #00b4ff;
+        }
+
+        .stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #00b4ff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 600px) {
+            .info { display: none; }
+            .ui { top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui">
+        <a href="/demos.html" class="back-btn">← Back to Demos</a>
+        <div class="info">
+            <h3>Wave Interference</h3>
+            <p>Tap to create wave sources. Watch constructive and destructive interference patterns form in real-time.</p>
+        </div>
+    </div>
+
+    <div class="stats" id="stats">Sources: 0</div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="clearSources()">Clear</button>
+        <button class="control-btn" onclick="addPreset('double')">Double Slit</button>
+        <button class="control-btn" onclick="addPreset('circle')">Circle Array</button>
+        <button class="control-btn" onclick="toggleFrequency()">Frequency</button>
+        <button class="control-btn" onclick="toggleColors()">Colors</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Wave parameters
+        let sources = [];
+        let frequency = 0.15;
+        let wavelength = 30;
+        let amplitude = 1;
+        let colorMode = 0;
+        let time = 0;
+
+        const colorModes = [
+            { name: 'Ocean', colors: ['#001428', '#003366', '#0066cc', '#00b4ff', '#88ddff', '#ffffff'] },
+            { name: 'Fire', colors: ['#000000', '#330000', '#660000', '#cc3300', '#ff6600', '#ffff00'] },
+            { name: 'Neon', colors: ['#000022', '#110044', '#440088', '#8800ff', '#ff00ff', '#ffffff'] },
+            { name: 'Thermal', colors: ['#000044', '#0000aa', '#00ff00', '#ffff00', '#ff0000', '#ffffff'] }
+        ];
+
+        class WaveSource {
+            constructor(x, y, phase = 0) {
+                this.x = x;
+                this.y = y;
+                this.phase = phase;
+            }
+
+            getAmplitude(px, py, t) {
+                const dx = px - this.x;
+                const dy = py - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Wave equation: A * sin(k*r - w*t + phase)
+                const k = 2 * Math.PI / wavelength;
+                const w = frequency * 2 * Math.PI;
+                const wave = Math.sin(k * distance - w * t + this.phase);
+
+                // Decay with distance
+                const decay = Math.max(0.1, 1 - distance / (Math.max(width, height) * 0.7));
+
+                return wave * amplitude * decay;
+            }
+        }
+
+        // Create image data for fast rendering
+        let imageData;
+
+        function initImageData() {
+            imageData = ctx.createImageData(width, height);
+        }
+        initImageData();
+        window.addEventListener('resize', initImageData);
+
+        // Get color from value (-1 to 1)
+        function getColor(value) {
+            const colors = colorModes[colorMode].colors;
+            const t = (value + 1) / 2; // Map to 0-1
+            const idx = t * (colors.length - 1);
+            const i = Math.floor(idx);
+            const f = idx - i;
+
+            if (i >= colors.length - 1) return hexToRgb(colors[colors.length - 1]);
+            if (i < 0) return hexToRgb(colors[0]);
+
+            const c1 = hexToRgb(colors[i]);
+            const c2 = hexToRgb(colors[i + 1]);
+
+            return {
+                r: Math.floor(c1.r + (c2.r - c1.r) * f),
+                g: Math.floor(c1.g + (c2.g - c1.g) * f),
+                b: Math.floor(c1.b + (c2.b - c1.b) * f)
+            };
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 0, g: 0, b: 0 };
+        }
+
+        // Render waves
+        function render() {
+            const data = imageData.data;
+            const step = 2; // Render every 2 pixels for performance
+
+            for (let y = 0; y < height; y += step) {
+                for (let x = 0; x < width; x += step) {
+                    let totalAmplitude = 0;
+
+                    // Sum amplitudes from all sources (superposition)
+                    for (const source of sources) {
+                        totalAmplitude += source.getAmplitude(x, y, time);
+                    }
+
+                    // Clamp
+                    totalAmplitude = Math.max(-1, Math.min(1, totalAmplitude));
+
+                    const color = getColor(totalAmplitude);
+
+                    // Fill the step x step block
+                    for (let dy = 0; dy < step && y + dy < height; dy++) {
+                        for (let dx = 0; dx < step && x + dx < width; dx++) {
+                            const idx = ((y + dy) * width + (x + dx)) * 4;
+                            data[idx] = color.r;
+                            data[idx + 1] = color.g;
+                            data[idx + 2] = color.b;
+                            data[idx + 3] = 255;
+                        }
+                    }
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            // Draw source indicators
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 2;
+
+            for (const source of sources) {
+                ctx.beginPath();
+                ctx.arc(source.x, source.y, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(source.x, source.y, 15 + Math.sin(time * frequency * 2 * Math.PI) * 5, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        // Input handling
+        let lastTap = 0;
+
+        function addSource(x, y) {
+            sources.push(new WaveSource(x, y, Math.random() * Math.PI * 2));
+            document.getElementById('stats').textContent = `Sources: ${sources.length}`;
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const now = Date.now();
+            if (now - lastTap < 300) {
+                // Double click - add multiple sources in a small area
+                for (let i = 0; i < 3; i++) {
+                    const angle = (i / 3) * Math.PI * 2;
+                    addSource(e.clientX + Math.cos(angle) * 30, e.clientY + Math.sin(angle) * 30);
+                }
+            } else {
+                addSource(e.clientX, e.clientY);
+            }
+            lastTap = now;
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length === 0) return;
+            const touch = e.changedTouches[0];
+            const now = Date.now();
+            if (now - lastTap < 300) {
+                for (let i = 0; i < 3; i++) {
+                    const angle = (i / 3) * Math.PI * 2;
+                    addSource(touch.clientX + Math.cos(angle) * 30, touch.clientY + Math.sin(angle) * 30);
+                }
+            } else {
+                addSource(touch.clientX, touch.clientY);
+            }
+            lastTap = now;
+        });
+
+        // Control functions
+        window.clearSources = function() {
+            sources = [];
+            document.getElementById('stats').textContent = `Sources: 0`;
+        };
+
+        window.addPreset = function(type) {
+            sources = [];
+
+            if (type === 'double') {
+                // Double slit experiment
+                const slitGap = 100;
+                addSource(width / 2 - slitGap / 2, height / 3);
+                addSource(width / 2 + slitGap / 2, height / 3);
+            } else if (type === 'circle') {
+                // Circular array
+                const count = 8;
+                const radius = Math.min(width, height) * 0.25;
+                for (let i = 0; i < count; i++) {
+                    const angle = (i / count) * Math.PI * 2;
+                    addSource(
+                        width / 2 + Math.cos(angle) * radius,
+                        height / 2 + Math.sin(angle) * radius
+                    );
+                }
+            }
+        };
+
+        window.toggleFrequency = function() {
+            if (frequency === 0.15) {
+                frequency = 0.25;
+                wavelength = 20;
+            } else if (frequency === 0.25) {
+                frequency = 0.08;
+                wavelength = 50;
+            } else {
+                frequency = 0.15;
+                wavelength = 30;
+            }
+        };
+
+        window.toggleColors = function() {
+            colorMode = (colorMode + 1) % colorModes.length;
+        };
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            time += 0.5;
+
+            // Only render if we have sources
+            if (sources.length > 0) {
+                render();
+            } else {
+                // Draw placeholder
+                ctx.fillStyle = colorModes[colorMode].colors[0];
+                ctx.fillRect(0, 0, width, height);
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.font = '24px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Tap to create wave sources', width / 2, height / 2);
+            }
+        }
+
+        // Start with double slit
+        addPreset('double');
+        animate();
+    </script>
+</body>
+</html>
