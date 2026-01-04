@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn - AI Development Environments | MobileDevCLI</title>
+    <meta name="description" content="Compare AI development environments: Phone CLI, PC CLI, Web apps, and Android apps. Find the best tool for your workflow.">
+    <link rel="canonical" href="https://mobilecli.com/learn">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #0f0f0f;
+            --bg-tertiary: #1a1a1a;
+            --bg-card: #111111;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --accent-1: #00ff88;
+            --accent-2: #00d4ff;
+            --accent-3: #ff6b6b;
+            --accent-4: #ffd93d;
+            --gradient: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            --border: #222222;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        a {
+            color: var(--accent-1);
+            text-decoration: none;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 140px 0 60px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--gradient);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--bg);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .hero .tagline {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Section */
+        section {
+            padding: 60px 0;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-1);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        /* Environment Cards */
+        .env-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .env-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s;
+        }
+
+        .env-card:hover {
+            border-color: var(--accent-1);
+        }
+
+        .env-card.winner {
+            border-color: var(--accent-1);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.1);
+        }
+
+        .env-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .env-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-tertiary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .env-title h3 {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .env-title span {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .env-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--accent-1);
+            color: var(--bg);
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 100px;
+            margin-left: auto;
+        }
+
+        .env-desc {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .env-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-1);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .env-pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .pros, .cons {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+        }
+
+        .pros h4, .cons h4 {
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pros h4 { color: var(--accent-1); }
+        .cons h4 { color: var(--accent-3); }
+
+        .pros ul, .cons ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .pros li, .cons li {
+            margin-bottom: 6px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .pros li::before {
+            content: "+";
+            position: absolute;
+            left: 0;
+            color: var(--accent-1);
+        }
+
+        .cons li::before {
+            content: "-";
+            position: absolute;
+            left: 0;
+            color: var(--accent-3);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 60px;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table td {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table .check {
+            color: var(--accent-1);
+            font-size: 1.2rem;
+        }
+
+        .comparison-table .cross {
+            color: var(--accent-3);
+            font-size: 1.2rem;
+        }
+
+        .comparison-table .partial {
+            color: var(--accent-4);
+            font-size: 1.2rem;
+        }
+
+        /* Winner Section */
+        .winner-section {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
+            border: 1px solid var(--accent-1);
+            border-radius: 20px;
+            padding: 48px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .winner-section h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .winner-section p {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 32px;
+            font-size: 1.1rem;
+        }
+
+        .winner-badges {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .winner-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.95rem;
+        }
+
+        .winner-badge .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Use Cases */
+        .use-cases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .use-case {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .use-case h3 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .use-case p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .use-case .recommendation {
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .use-case .recommendation strong {
+            color: var(--accent-1);
+        }
+
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            padding: 60px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .env-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .env-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .env-pros-cons {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-table {
+                overflow-x: auto;
+            }
+
+            .winner-section {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">MobileDevCLI</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/games">Games</a>
+                <a href="/learn" class="active">Learn</a>
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+                <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">Complete Guide</div>
+            <h1>AI Development Environments</h1>
+            <p class="tagline">Compare every way to code with AI. Phone CLI, PC CLI, web interfaces, and mobile apps. Find what works best for you.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="section-label">The Four Options</div>
+            <h2 class="section-title">Pick Your Environment</h2>
+            <p class="section-desc">Each environment has strengths. Here's the honest breakdown.</p>
+
+            <div class="env-grid">
+                <!-- Phone CLI -->
+                <div class="env-card winner">
+                    <div class="env-header">
+                        <div class="env-icon">📱</div>
+                        <div class="env-title">
+                            <h3>Phone CLI</h3>
+                            <span>Termux + Claude Code</span>
+                        </div>
+                        <span class="env-badge">Winner</span>
+                    </div>
+                    <p class="env-desc">Full Linux terminal on your Android phone with Claude Code. Complete development environment that fits in your pocket.</p>
+                    <div class="env-stats">
+                        <div class="stat">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">Portable</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">Full</div>
+                            <div class="stat-label">Autonomy</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">$0</div>
+                            <div class="stat-label">Hardware</div>
+                        </div>
+                    </div>
+                    <div class="env-pros-cons">
+                        <div class="pros">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Code from anywhere</li>
+                                <li>Full file system access</li>
+                                <li>Run any CLI tool</li>
+                                <li>No monthly fees</li>
+                                <li>Boris Mode available</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Small screen</li>
+                                <li>Touch typing slower</li>
+                                <li>Battery drain</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PC CLI -->
+                <div class="env-card winner">
+                    <div class="env-header">
+                        <div class="env-icon">💻</div>
+                        <div class="env-title">
+                            <h3>PC CLI</h3>
+                            <span>Terminal + Claude Code</span>
+                        </div>
+                        <span class="env-badge">Winner</span>
+                    </div>
+                    <p class="env-desc">Claude Code on your desktop/laptop. Maximum screen real estate and keyboard speed for serious development.</p>
+                    <div class="env-stats">
+                        <div class="stat">
+                            <div class="stat-value">Max</div>
+                            <div class="stat-label">Power</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">Full</div>
+                            <div class="stat-label">Autonomy</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">Best</div>
+                            <div class="stat-label">Typing</div>
+                        </div>
+                    </div>
+                    <div class="env-pros-cons">
+                        <div class="pros">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Large screen</li>
+                                <li>Fast keyboard input</li>
+                                <li>Full system access</li>
+                                <li>Boris Mode available</li>
+                                <li>Multi-monitor support</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>Not portable</li>
+                                <li>Requires computer</li>
+                                <li>Power dependent</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Web Interface -->
+                <div class="env-card">
+                    <div class="env-header">
+                        <div class="env-icon">🌐</div>
+                        <div class="env-title">
+                            <h3>Web Interface</h3>
+                            <span>claude.ai / ChatGPT</span>
+                        </div>
+                    </div>
+                    <p class="env-desc">Browser-based AI chat. Good for quick questions and code snippets, but limited for real development.</p>
+                    <div class="env-stats">
+                        <div class="stat">
+                            <div class="stat-value">Easy</div>
+                            <div class="stat-label">Access</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">None</div>
+                            <div class="stat-label">Autonomy</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">$$</div>
+                            <div class="stat-label">Monthly</div>
+                        </div>
+                    </div>
+                    <div class="env-pros-cons">
+                        <div class="pros">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>No setup required</li>
+                                <li>Works on any device</li>
+                                <li>Good for learning</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>No file access</li>
+                                <li>Can't run commands</li>
+                                <li>Copy-paste workflow</li>
+                                <li>Monthly subscription</li>
+                                <li>Context limits</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Apps -->
+                <div class="env-card">
+                    <div class="env-header">
+                        <div class="env-icon">📲</div>
+                        <div class="env-title">
+                            <h3>Mobile Apps</h3>
+                            <span>Claude App / ChatGPT App</span>
+                        </div>
+                    </div>
+                    <p class="env-desc">Official mobile apps from Anthropic and OpenAI. Convenient for chat, but not designed for coding.</p>
+                    <div class="env-stats">
+                        <div class="stat">
+                            <div class="stat-value">Good</div>
+                            <div class="stat-label">UX</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">None</div>
+                            <div class="stat-label">Autonomy</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">$$</div>
+                            <div class="stat-label">Monthly</div>
+                        </div>
+                    </div>
+                    <div class="env-pros-cons">
+                        <div class="pros">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Native mobile UX</li>
+                                <li>Voice input</li>
+                                <li>Push notifications</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>Limitations</h4>
+                            <ul>
+                                <li>No file access</li>
+                                <li>No command execution</li>
+                                <li>Can't write to disk</li>
+                                <li>Chat-only interface</li>
+                                <li>Subscription required</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Phone CLI</th>
+                            <th>PC CLI</th>
+                            <th>Web</th>
+                            <th>Mobile App</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Read/Write Files</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Run Shell Commands</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Git Integration</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Boris Mode (Autonomous)</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Portable</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Offline Capable</td>
+                            <td><span class="partial">~</span></td>
+                            <td><span class="partial">~</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Free to Use</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="partial">~</span></td>
+                            <td><span class="partial">~</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Winner Section -->
+            <div class="winner-section">
+                <h2>The Verdict: CLI Wins</h2>
+                <p>Whether on phone or PC, the command-line interface gives you full power. AI can read your code, write files, run tests, commit to git, and build entire projects autonomously. Web and app interfaces are just chat windows.</p>
+                <div class="winner-badges">
+                    <div class="winner-badge">
+                        <span class="icon">📱</span>
+                        <span>Phone CLI for mobility</span>
+                    </div>
+                    <div class="winner-badge">
+                        <span class="icon">💻</span>
+                        <span>PC CLI for power</span>
+                    </div>
+                    <div class="winner-badge">
+                        <span class="icon">🤝</span>
+                        <span>Use both together</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Use Cases -->
+            <div class="section-label">When to Use What</div>
+            <h2 class="section-title">Real-World Scenarios</h2>
+            <p class="section-desc">Match the environment to your situation.</p>
+
+            <div class="use-cases">
+                <div class="use-case">
+                    <h3>🚇 Commuting</h3>
+                    <p>You're on the train with an idea. Need to prototype quickly before you forget.</p>
+                    <div class="recommendation">
+                        <strong>Use: Phone CLI</strong> - Full dev environment in your pocket
+                    </div>
+                </div>
+
+                <div class="use-case">
+                    <h3>🏢 At Your Desk</h3>
+                    <p>Serious coding session. Building features, debugging, writing tests.</p>
+                    <div class="recommendation">
+                        <strong>Use: PC CLI</strong> - Maximum screen and keyboard speed
+                    </div>
+                </div>
+
+                <div class="use-case">
+                    <h3>☕ Coffee Shop</h3>
+                    <p>Working remotely. Need to push some commits and review PRs.</p>
+                    <div class="recommendation">
+                        <strong>Use: Phone CLI</strong> - No laptop needed
+                    </div>
+                </div>
+
+                <div class="use-case">
+                    <h3>💬 Quick Question</h3>
+                    <p>Just need to ask "how do I do X in Python" - no coding needed.</p>
+                    <div class="recommendation">
+                        <strong>Use: Mobile App</strong> - Good enough for chat
+                    </div>
+                </div>
+
+                <div class="use-case">
+                    <h3>🎓 Learning</h3>
+                    <p>Following a tutorial, experimenting with new concepts.</p>
+                    <div class="recommendation">
+                        <strong>Use: PC CLI or Phone CLI</strong> - Hands-on is best
+                    </div>
+                </div>
+
+                <div class="use-case">
+                    <h3>🚀 Shipping Fast</h3>
+                    <p>Need to build and deploy something by end of day.</p>
+                    <div class="recommendation">
+                        <strong>Use: PC CLI + Boris Mode</strong> - Let AI cook
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="cta-section">
+                <h2>Ready to Start?</h2>
+                <p>Set up your Phone CLI environment in 5 minutes.</p>
+                <a href="/" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="/">Home</a>
+                    <a href="/games">Games</a>
+                    <a href="/learn">Learn</a>
+                    <a href="https://github.com/MobileDevCLI">GitHub</a>
+                    <a href="https://twitter.com/MobileDevCLI">Twitter</a>
+                </div>
+                <p class="copyright">&copy; 2025 MobileDevCLI</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

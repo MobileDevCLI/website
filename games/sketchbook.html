@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sketchbook - MobileDevCLI Games</title>
+    <meta name="description" content="Draw and create art right in your browser. Works great on touchscreens.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --accent-1: #00ff88;
+            --border: #222222;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 100;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            color: var(--text);
+        }
+
+        .title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            border-color: var(--accent-1);
+        }
+
+        .header-btn.primary {
+            background: var(--accent-1);
+            border-color: var(--accent-1);
+            color: var(--bg);
+        }
+
+        /* Canvas Container */
+        .canvas-container {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 80px;
+            background: #ffffff;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 16px;
+            overflow-x: auto;
+        }
+
+        .tool-group {
+            display: flex;
+            gap: 4px;
+            padding: 0 12px;
+            border-right: 1px solid var(--border);
+        }
+
+        .tool-group:last-child {
+            border-right: none;
+        }
+
+        .tool-btn {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tool-btn:hover {
+            background: var(--bg);
+        }
+
+        .tool-btn.active {
+            border-color: var(--accent-1);
+            background: var(--bg);
+        }
+
+        .color-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .color-btn.active {
+            border-color: var(--text);
+        }
+
+        .size-slider {
+            width: 100px;
+            height: 8px;
+            -webkit-appearance: none;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .size-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-1);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .size-display {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* Mobile optimization */
+        @media (max-width: 600px) {
+            .header {
+                height: 50px;
+                padding: 0 12px;
+            }
+
+            .title {
+                display: none;
+            }
+
+            .canvas-container {
+                top: 50px;
+                bottom: 70px;
+            }
+
+            .toolbar {
+                height: 70px;
+                gap: 4px;
+                padding: 0 8px;
+            }
+
+            .tool-group {
+                padding: 0 8px;
+            }
+
+            .tool-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+
+            .color-btn {
+                width: 30px;
+                height: 30px;
+            }
+
+            .size-slider {
+                width: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/games" class="back-btn">← Back</a>
+        <span class="title">Sketchbook</span>
+        <div class="header-actions">
+            <button class="header-btn" onclick="clearCanvas()">Clear</button>
+            <button class="header-btn primary" onclick="saveImage()">Save</button>
+        </div>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="toolbar">
+        <div class="tool-group">
+            <button class="tool-btn active" id="penTool" onclick="setTool('pen')">✏️</button>
+            <button class="tool-btn" id="eraserTool" onclick="setTool('eraser')">🧹</button>
+            <button class="tool-btn" id="fillTool" onclick="setTool('fill')">🪣</button>
+        </div>
+
+        <div class="tool-group">
+            <button class="color-btn active" style="background: #000000" onclick="setColor('#000000')"></button>
+            <button class="color-btn" style="background: #ff0000" onclick="setColor('#ff0000')"></button>
+            <button class="color-btn" style="background: #00ff00" onclick="setColor('#00ff00')"></button>
+            <button class="color-btn" style="background: #0000ff" onclick="setColor('#0000ff')"></button>
+            <button class="color-btn" style="background: #ffff00" onclick="setColor('#ffff00')"></button>
+            <button class="color-btn" style="background: #ff00ff" onclick="setColor('#ff00ff')"></button>
+            <button class="color-btn" style="background: #00ffff" onclick="setColor('#00ffff')"></button>
+        </div>
+
+        <div class="tool-group">
+            <span class="size-display" id="sizeDisplay">5</span>
+            <input type="range" class="size-slider" id="sizeSlider" min="1" max="50" value="5" oninput="setSize(this.value)">
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let currentColor = '#000000';
+        let currentSize = 5;
+        let currentTool = 'pen';
+
+        function resizeCanvas() {
+            const container = document.querySelector('.canvas-container');
+            const rect = container.getBoundingClientRect();
+
+            // Store current drawing
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Restore drawing if possible
+            if (imageData.width > 0) {
+                ctx.putImageData(imageData, 0, 0);
+            }
+
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const pos = getPos(e);
+            lastX = pos.x;
+            lastY = pos.y;
+
+            if (currentTool === 'fill') {
+                floodFill(Math.floor(pos.x), Math.floor(pos.y), currentColor);
+                isDrawing = false;
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+
+            const pos = getPos(e);
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+
+            if (currentTool === 'eraser') {
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = currentSize * 2;
+            } else {
+                ctx.strokeStyle = currentColor;
+                ctx.lineWidth = currentSize;
+            }
+
+            ctx.stroke();
+
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tool + 'Tool').classList.add('active');
+        }
+
+        function setColor(color) {
+            currentColor = color;
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function setSize(size) {
+            currentSize = parseInt(size);
+            document.getElementById('sizeDisplay').textContent = size;
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio);
+        }
+
+        function saveImage() {
+            const link = document.createElement('a');
+            link.download = 'sketchbook-' + Date.now() + '.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function floodFill(startX, startY, fillColor) {
+            const imageData = ctx.getImageData(0, 0, canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio);
+            const data = imageData.data;
+            const width = imageData.width;
+            const height = imageData.height;
+
+            const startIdx = (startY * width + startX) * 4;
+            const startR = data[startIdx];
+            const startG = data[startIdx + 1];
+            const startB = data[startIdx + 2];
+
+            // Convert hex to RGB
+            const hex = fillColor.replace('#', '');
+            const fillR = parseInt(hex.substr(0, 2), 16);
+            const fillG = parseInt(hex.substr(2, 2), 16);
+            const fillB = parseInt(hex.substr(4, 2), 16);
+
+            if (startR === fillR && startG === fillG && startB === fillB) return;
+
+            const stack = [[startX, startY]];
+            const visited = new Set();
+
+            while (stack.length > 0 && stack.length < 100000) {
+                const [x, y] = stack.pop();
+                const key = x + ',' + y;
+
+                if (visited.has(key)) continue;
+                if (x < 0 || x >= width || y < 0 || y >= height) continue;
+
+                const idx = (y * width + x) * 4;
+                if (data[idx] !== startR || data[idx + 1] !== startG || data[idx + 2] !== startB) continue;
+
+                visited.add(key);
+
+                data[idx] = fillR;
+                data[idx + 1] = fillG;
+                data[idx + 2] = fillB;
+                data[idx + 3] = 255;
+
+                stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing);
+        canvas.addEventListener('touchcancel', stopDrawing);
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initialize
+        resizeCanvas();
+    </script>
+</body>
+</html>
