@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MobileCLI</title>
+    <meta name="description" content="Your MobileCLI dashboard - manage your mobile development environment">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-card: #111111;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --matrix: #00ff41;
+            --matrix-dark: #003b00;
+            --border: #1a1a1a;
+            --warning: #ffd93d;
+            --error: #ff4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            color: var(--matrix);
+            text-decoration: none;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .user-menu:hover {
+            border-color: var(--matrix);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--matrix);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--bg);
+        }
+
+        .user-email {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 80px;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Welcome Section */
+        .welcome {
+            margin-bottom: 40px;
+        }
+
+        .welcome h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: var(--text-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--matrix);
+        }
+
+        .stat-card.warning .stat-value {
+            color: var(--warning);
+        }
+
+        /* Setup Status */
+        .setup-section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .setup-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        .setup-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .setup-step {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-number.completed {
+            background: var(--matrix);
+            border-color: var(--matrix);
+            color: var(--bg);
+        }
+
+        .step-number.active {
+            border-color: var(--matrix);
+            color: var(--matrix);
+        }
+
+        .step-content h4 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .step-action {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--matrix);
+            color: var(--bg);
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .step-action:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+        }
+
+        .step-action.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .step-action.secondary:hover {
+            border-color: var(--matrix);
+            color: var(--matrix);
+            box-shadow: none;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            border-color: var(--matrix);
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .action-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .action-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Plan Banner */
+        .plan-banner {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.1), rgba(0, 212, 255, 0.1));
+            border: 1px solid var(--matrix);
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .plan-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        .plan-info p {
+            color: var(--text-secondary);
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--matrix);
+            color: var(--bg);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
+        .upgrade-btn {
+            padding: 14px 28px;
+            background: var(--matrix);
+            color: var(--bg);
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .upgrade-btn:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--matrix);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .user-email {
+                display: none;
+            }
+
+            .welcome h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .setup-card {
+                padding: 20px;
+            }
+
+            .setup-step {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .plan-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading State -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div id="dashboard" class="hidden">
+        <header>
+            <div class="container">
+                <a href="/" class="logo">&gt;_ MobileCLI</a>
+                <div class="header-right">
+                    <div class="user-menu">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <span class="user-email" id="userEmail">user@email.com</span>
+                    </div>
+                    <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="container">
+                <!-- Welcome -->
+                <div class="welcome">
+                    <h1>Welcome back, <span id="userName">Developer</span></h1>
+                    <p>Here's your MobileCLI dashboard</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Setup Status</h3>
+                        <div class="stat-value" id="setupStatus">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Projects</h3>
+                        <div class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Plan</h3>
+                        <div class="stat-value">Free</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <h3>Days Left</h3>
+                        <div class="stat-value">∞</div>
+                    </div>
+                </div>
+
+                <!-- Setup Section -->
+                <div class="setup-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Setup Your Environment</h2>
+                    </div>
+                    <div class="setup-card">
+                        <div class="setup-steps">
+                            <div class="setup-step">
+                                <div class="step-number active">1</div>
+                                <div class="step-content">
+                                    <h4>Install Termux</h4>
+                                    <p>Download Termux from F-Droid (not Play Store - it's outdated there)</p>
+                                    <a href="https://f-droid.org/packages/com.termux/" target="_blank" class="step-action">Download Termux</a>
+                                </div>
+                            </div>
+                            <div class="setup-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Run Setup Script</h4>
+                                    <p>Open Termux and paste this command to install everything</p>
+                                    <code style="display: block; background: var(--bg); padding: 12px; border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; overflow-x: auto;">pkg update -y && pkg install -y nodejs git gh</code>
+                                    <button class="step-action secondary" onclick="copyCommand()">Copy Command</button>
+                                </div>
+                            </div>
+                            <div class="setup-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Install AI CLI</h4>
+                                    <p>Install Claude Code or your preferred AI CLI tool</p>
+                                    <code style="display: block; background: var(--bg); padding: 12px; border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; overflow-x: auto;">npm install -g @anthropic-ai/claude-code</code>
+                                    <button class="step-action secondary" onclick="copyAICommand()">Copy Command</button>
+                                </div>
+                            </div>
+                            <div class="setup-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Start Building!</h4>
+                                    <p>Run your AI CLI and start coding from your phone</p>
+                                    <a href="/learn.html" class="step-action">View Full Guide</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="section-header">
+                    <h2 class="section-title">Quick Actions</h2>
+                </div>
+                <div class="quick-actions">
+                    <div class="action-card" onclick="location.href='/learn.html'">
+                        <div class="action-icon">📚</div>
+                        <h3>Documentation</h3>
+                        <p>Full setup guide and best practices</p>
+                    </div>
+                    <div class="action-card" onclick="location.href='/examples.html'">
+                        <div class="action-icon">💡</div>
+                        <h3>Examples</h3>
+                        <p>Project templates and resources</p>
+                    </div>
+                    <div class="action-card" onclick="location.href='/pricing.html'">
+                        <div class="action-icon">⚡</div>
+                        <h3>Upgrade</h3>
+                        <p>Unlock pro features and templates</p>
+                    </div>
+                    <div class="action-card" onclick="window.open('https://github.com/MobileDevCLI', '_blank')">
+                        <div class="action-icon">💬</div>
+                        <h3>Community</h3>
+                        <p>Join the discussion on GitHub</p>
+                    </div>
+                </div>
+
+                <!-- Plan Banner -->
+                <div class="plan-banner">
+                    <div class="plan-info">
+                        <h3>You're on the Free Plan <span class="plan-badge">FREE</span></h3>
+                        <p>Upgrade to Pro for unlimited projects, premium templates, and priority support</p>
+                    </div>
+                    <a href="/pricing.html" class="upgrade-btn">Upgrade to Pro</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/supabase-config.js"></script>
+    <script>
+        // Check auth and load dashboard
+        (async () => {
+            const session = await auth.getSession();
+
+            if (!session) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            const user = await auth.getUser();
+
+            // Update UI with user info
+            const email = user.email || 'user@email.com';
+            const name = user.user_metadata?.full_name || email.split('@')[0];
+
+            document.getElementById('userEmail').textContent = email;
+            document.getElementById('userName').textContent = name;
+            document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
+
+            // Show dashboard
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+        })();
+
+        // Logout
+        async function handleLogout() {
+            await auth.signOut();
+        }
+
+        // Copy commands
+        function copyCommand() {
+            navigator.clipboard.writeText('pkg update -y && pkg install -y nodejs git gh');
+            alert('Command copied!');
+        }
+
+        function copyAICommand() {
+            navigator.clipboard.writeText('npm install -g @anthropic-ai/claude-code');
+            alert('Command copied!');
+        }
+    </script>
+</body>
+</html>

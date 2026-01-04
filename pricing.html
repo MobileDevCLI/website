@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - MobileCLI</title>
+    <meta name="description" content="MobileCLI pricing plans - Free, Pro, and Team tiers for mobile AI development">
+    <link rel="canonical" href="https://mobilecli.com/pricing.html">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-card: #111111;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --matrix: #00ff41;
+            --matrix-dark: #003b00;
+            --border: #1a1a1a;
+            --accent-blue: #00d4ff;
+            --accent-purple: #a855f7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--matrix);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--matrix);
+            font-family: 'Courier New', monospace;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--matrix);
+        }
+
+        /* Header */
+        .page-header {
+            padding: 120px 0 60px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .page-header p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Pricing Toggle */
+        .pricing-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 48px;
+            align-items: center;
+        }
+
+        .toggle-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .toggle-label.active {
+            color: var(--text);
+        }
+
+        .toggle-switch {
+            width: 60px;
+            height: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--matrix);
+            border-radius: 50%;
+            top: 2px;
+            left: 3px;
+            transition: transform 0.2s;
+        }
+
+        .toggle-switch.annual::after {
+            transform: translateX(28px);
+        }
+
+        .save-badge {
+            background: var(--matrix);
+            color: var(--bg);
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Pricing Grid */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 80px;
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--matrix);
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.15);
+            position: relative;
+        }
+
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--matrix);
+            color: var(--bg);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .plan-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+        }
+
+        .plan-price {
+            margin-bottom: 24px;
+        }
+
+        .price-amount {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .price-amount .currency {
+            font-size: 1.5rem;
+            vertical-align: top;
+        }
+
+        .price-period {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .plan-cta {
+            display: block;
+            padding: 16px 24px;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+            margin-bottom: 32px;
+        }
+
+        .plan-cta.primary {
+            background: var(--matrix);
+            color: var(--bg);
+        }
+
+        .plan-cta.primary:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+        }
+
+        .plan-cta.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .plan-cta.secondary:hover {
+            border-color: var(--matrix);
+            color: var(--matrix);
+        }
+
+        .plan-features {
+            list-style: none;
+            flex: 1;
+        }
+
+        .plan-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-features .check {
+            color: var(--matrix);
+            font-weight: bold;
+        }
+
+        .plan-features .x {
+            color: var(--text-muted);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 80px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 48px;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .faq-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .faq-item p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            margin: 0 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .pricing-card.featured {
+                order: -1;
+            }
+
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-header {
+                padding-top: 100px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .page-header p {
+                font-size: 1rem;
+            }
+
+            .price-amount {
+                font-size: 2.5rem;
+            }
+
+            .pricing-card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">&gt;_ MobileCLI</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/learn.html">Learn</a>
+                <a href="/login.html">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Simple, Transparent Pricing</h1>
+            <p>Start free, upgrade when you need more. Cancel anytime.</p>
+        </div>
+    </header>
+
+    <section>
+        <div class="container">
+            <!-- Toggle -->
+            <div class="pricing-toggle">
+                <span class="toggle-label active" id="monthlyLabel">Monthly</span>
+                <div class="toggle-switch" id="billingToggle" onclick="toggleBilling()"></div>
+                <span class="toggle-label" id="annualLabel">Annual</span>
+                <span class="save-badge">Save 20%</span>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="pricing-grid">
+                <!-- Free -->
+                <div class="pricing-card">
+                    <h3 class="plan-name">Free</h3>
+                    <p class="plan-desc">Get started with mobile AI development</p>
+                    <div class="plan-price">
+                        <div class="price-amount"><span class="currency">$</span>0</div>
+                        <div class="price-period">forever free</div>
+                    </div>
+                    <a href="/login.html" class="plan-cta secondary">Get Started</a>
+                    <ul class="plan-features">
+                        <li><span class="check">✓</span> Setup wizard</li>
+                        <li><span class="check">✓</span> 1 project</li>
+                        <li><span class="check">✓</span> Community support</li>
+                        <li><span class="check">✓</span> Basic templates</li>
+                        <li><span class="x">×</span> Priority support</li>
+                        <li><span class="x">×</span> Premium templates</li>
+                        <li><span class="x">×</span> Team features</li>
+                    </ul>
+                </div>
+
+                <!-- Pro -->
+                <div class="pricing-card featured">
+                    <h3 class="plan-name">Pro</h3>
+                    <p class="plan-desc">For serious mobile developers</p>
+                    <div class="plan-price">
+                        <div class="price-amount" id="proPrice"><span class="currency">$</span>10</div>
+                        <div class="price-period" id="proPeriod">per month</div>
+                    </div>
+                    <a href="/login.html" class="plan-cta primary">Start Free Trial</a>
+                    <ul class="plan-features">
+                        <li><span class="check">✓</span> Everything in Free</li>
+                        <li><span class="check">✓</span> Unlimited projects</li>
+                        <li><span class="check">✓</span> Priority support</li>
+                        <li><span class="check">✓</span> Premium templates</li>
+                        <li><span class="check">✓</span> Advanced setup configs</li>
+                        <li><span class="check">✓</span> Export/backup tools</li>
+                        <li><span class="x">×</span> Team features</li>
+                    </ul>
+                </div>
+
+                <!-- Team -->
+                <div class="pricing-card">
+                    <h3 class="plan-name">Team</h3>
+                    <p class="plan-desc">For teams and organizations</p>
+                    <div class="plan-price">
+                        <div class="price-amount" id="teamPrice"><span class="currency">$</span>20</div>
+                        <div class="price-period" id="teamPeriod">per user/month</div>
+                    </div>
+                    <a href="/login.html" class="plan-cta secondary">Contact Sales</a>
+                    <ul class="plan-features">
+                        <li><span class="check">✓</span> Everything in Pro</li>
+                        <li><span class="check">✓</span> Unlimited team members</li>
+                        <li><span class="check">✓</span> Shared configurations</li>
+                        <li><span class="check">✓</span> Team dashboard</li>
+                        <li><span class="check">✓</span> Admin controls</li>
+                        <li><span class="check">✓</span> SSO integration</li>
+                        <li><span class="check">✓</span> Dedicated support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>Can I cancel anytime?</h3>
+                    <p>Yes, you can cancel your subscription at any time. You'll keep access until the end of your billing period.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What payment methods do you accept?</h3>
+                    <p>We accept all major credit cards, PayPal, and can arrange invoicing for Team plans.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Is there a free trial?</h3>
+                    <p>Yes! Pro comes with a 14-day free trial. No credit card required to start.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Do I need my own AI API key?</h3>
+                    <p>Yes, you'll need your own API key for Claude, GPT, or whichever AI CLI you use. We provide the setup and tools.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What's included in "Premium templates"?</h3>
+                    <p>Pre-configured project starters for web apps, APIs, bots, and more - all optimized for mobile development.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I switch plans later?</h3>
+                    <p>Absolutely. Upgrade or downgrade anytime. We'll prorate the difference.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>
+                <a href="/terms.html">Terms</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/">Home</a>
+            </p>
+            <p style="margin-top: 16px;">&copy; 2026 MobileCLI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let isAnnual = false;
+
+        function toggleBilling() {
+            isAnnual = !isAnnual;
+
+            document.getElementById('billingToggle').classList.toggle('annual', isAnnual);
+            document.getElementById('monthlyLabel').classList.toggle('active', !isAnnual);
+            document.getElementById('annualLabel').classList.toggle('active', isAnnual);
+
+            // Update prices (20% off for annual)
+            if (isAnnual) {
+                document.getElementById('proPrice').innerHTML = '<span class="currency">$</span>8';
+                document.getElementById('proPeriod').textContent = 'per month, billed annually';
+                document.getElementById('teamPrice').innerHTML = '<span class="currency">$</span>16';
+                document.getElementById('teamPeriod').textContent = 'per user/month, billed annually';
+            } else {
+                document.getElementById('proPrice').innerHTML = '<span class="currency">$</span>10';
+                document.getElementById('proPeriod').textContent = 'per month';
+                document.getElementById('teamPrice').innerHTML = '<span class="currency">$</span>20';
+                document.getElementById('teamPeriod').textContent = 'per user/month';
+            }
+        }
+    </script>
+</body>
+</html>
