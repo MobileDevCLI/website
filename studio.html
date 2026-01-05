@@ -1122,6 +1122,11 @@
 
         // Initialize
         async function init() {
+            // BYPASS AUTH FOR TESTING - Show main app directly
+            currentUser = { email: 'demo@mobilecli.com' };
+            showMainApp();
+
+            /* Original auth code - re-enable when Supabase is ready
             // Check for existing session
             const { data: { session } } = await supabase.auth.getSession();
 
@@ -1140,6 +1145,7 @@
                     showLoginScreen();
                 }
             });
+            */
 
             // Load saved API key
             const savedKey = localStorage.getItem('mobilecli_api_key');
