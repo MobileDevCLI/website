@@ -311,6 +311,41 @@
             color: var(--text-muted);
         }
 
+        /* Mobile Tabs */
+        .mobile-tabs {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+            z-index: 999;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-tabs a {
+            display: inline-block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+
+        .mobile-tabs a:hover,
+        .mobile-tabs a.active {
+            color: var(--matrix);
+            border-color: var(--matrix);
+        }
+
         /* Mobile */
         @media (max-width: 768px) {
             h1 {
@@ -319,6 +354,14 @@
 
             .nav-links {
                 display: none;
+            }
+
+            .mobile-tabs {
+                display: block;
+            }
+
+            main {
+                padding-top: 140px;
             }
 
             .project-card {
@@ -340,6 +383,17 @@
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Tabs Navigation -->
+    <div class="mobile-tabs">
+        <a href="/">Home</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="/learn.html">Docs</a>
+        <a href="/demos.html">Demos</a>
+        <a href="/games.html">Games</a>
+        <a href="/labs.html" class="active">Labs</a>
+        <a href="/login.html">Login</a>
+    </div>
 
     <main>
         <div class="container">
@@ -505,12 +559,15 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 MobileDevCLI. Experimental software - use at your own risk.</p>
-            <p style="margin-top: 8px;">
+            <p>
+                <a href="/">Home</a> &middot;
                 <a href="/terms.html">Terms</a> &middot;
                 <a href="/privacy.html">Privacy</a> &middot;
-                <a href="/disclaimer.html">Disclaimer</a>
+                <a href="/disclaimer.html">Disclaimer</a> &middot;
+                <a href="/ip.html">IP Notice</a> &middot;
+                <a href="/dmca.html">DMCA</a>
             </p>
+            <p style="margin-top: 12px;">&copy; 2026 Samblamz / MobileDevCLI. All Rights Reserved.</p>
         </div>
     </footer>
 </body>
