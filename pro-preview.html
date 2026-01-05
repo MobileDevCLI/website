@@ -704,6 +704,7 @@
             <a href="#" onclick="goToTab('research'); return false;">Research Lab</a>
             <a href="#" onclick="goToTab('troubleshoot'); return false;">Troubleshooting</a>
             <a href="#" onclick="goToTab('story'); return false;">The Story</a>
+            <a href="#" onclick="goToTab('robotics'); return false;">AI Robotics</a>
         </div>
         <div class="mobile-menu-section">
             <div class="mobile-menu-label">Interactive & Inspiration</div>
@@ -743,6 +744,7 @@
             <button class="tab-btn" onclick="showTab('resources')">Inspiration</button>
             <button class="tab-btn" onclick="showTab('troubleshoot')">Troubleshooting</button>
             <button class="tab-btn" onclick="showTab('story')">The Story</button>
+            <button class="tab-btn" onclick="showTab('robotics')">AI Robotics</button>
         </div>
 
         <!-- ============================================ -->
@@ -3131,6 +3133,288 @@ git push origin master && git push website master</pre>
             <p>Because now that the method exists, anyone can use it. Every person with an Android phone is three commands away from having a development environment that matches any workstation on earth.</p>
             <p><strong>The 84 hours were just the beginning.</strong></p>
         </div>
+
+        <!-- ============================================ -->
+        <!-- TAB 9: AI ROBOTICS -->
+        <!-- ============================================ -->
+        <div id="robotics" class="tab-content">
+            <h2>AI Robotics Control — Next Invention</h2>
+            <p>The methodology for <strong>AI-controlled robotics</strong> using WiFi/ExpressLRS signals, video feedback loops, and multimodal AI decision making.</p>
+
+            <div class="info-box" style="border-left-color: var(--warning);">
+                <h4 style="color: var(--warning); margin-top: 0;">⚠️ Research Status</h4>
+                <p style="margin-bottom: 0;">This project is in <strong>active R&D</strong>. Years of experimentation with real hardware. Documentation began January 4, 2026. This is the next invention after MobileCLI.</p>
+            </div>
+
+            <h3>The Core Principle</h3>
+            <p><strong>AI orchestrates control, offloading specific tasks to specialized models for speed and accuracy.</strong></p>
+            <p>Don't make the AI do everything. MediaPipe handles pose detection. YOLO handles object tracking. The AI focuses on decision-making—what to do with that information.</p>
+
+            <div class="code-block">
+                <div class="code-header"><span>AI Orchestration Pattern</span></div>
+                <pre>
+Video → MediaPipe/YOLO (parallel) → Results to AI
+AI receives: [video frame + detection results]
+AI decides: "Target at coordinates X,Y, move left"
+AI sends: Control signal to robot</pre>
+            </div>
+
+            <h3>Hardware Inventory</h3>
+
+            <h4>Drones</h4>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: var(--bg-card);">
+                    <th style="padding: 12px; border: 1px solid var(--border); text-align: left;">Device</th>
+                    <th style="padding: 12px; border: 1px solid var(--border); text-align: left;">Status</th>
+                    <th style="padding: 12px; border: 1px solid var(--border); text-align: left;">Control</th>
+                    <th style="padding: 12px; border: 1px solid var(--border); text-align: left;">SDK</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid var(--border);">Cheap WiFi Drones</td>
+                    <td style="padding: 12px; border: 1px solid var(--border); color: var(--primary);">Working</td>
+                    <td style="padding: 12px; border: 1px solid var(--border);">WiFi direct</td>
+                    <td style="padding: 12px; border: 1px solid var(--border);">Reverse-engineered</td>
+                </tr>
+                <tr style="background: var(--bg-card);">
+                    <td style="padding: 12px; border: 1px solid var(--border);">DJI Tello TT</td>
+                    <td style="padding: 12px; border: 1px solid var(--border); color: var(--primary);"><strong>Autonomous achieved ✓</strong></td>
+                    <td style="padding: 12px; border: 1px solid var(--border);">WiFi SDK</td>
+                    <td style="padding: 12px; border: 1px solid var(--border);">Official</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid var(--border);">DJI Development Drone</td>
+                    <td style="padding: 12px; border: 1px solid var(--border); color: var(--secondary);">In progress</td>
+                    <td style="padding: 12px; border: 1px solid var(--border);">SDK</td>
+                    <td style="padding: 12px; border: 1px solid var(--border);">Official</td>
+                </tr>
+            </table>
+
+            <h4>Ground Robots</h4>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: var(--bg-card);">
+                    <th style="padding: 12px; border: 1px solid var(--border); text-align: left;">Device</th>
+                    <th style="padding: 12px; border: 1px solid var(--border); text-align: left;">Status</th>
+                    <th style="padding: 12px; border: 1px solid var(--border); text-align: left;">SDK Access</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid var(--border);">DJI RoboMaster S1</td>
+                    <td style="padding: 12px; border: 1px solid var(--border); color: var(--warning);">Limited</td>
+                    <td style="padding: 12px; border: 1px solid var(--border);">Closed (JavaScript only)</td>
+                </tr>
+                <tr style="background: var(--bg-card);">
+                    <td style="padding: 12px; border: 1px solid var(--border);">DJI RoboMaster EP (with arm)</td>
+                    <td style="padding: 12px; border: 1px solid var(--border); color: var(--secondary);">In progress</td>
+                    <td style="padding: 12px; border: 1px solid var(--border);">Full Python SDK ✓</td>
+                </tr>
+            </table>
+
+            <h3>Technical Architecture</h3>
+            <div class="code-block">
+                <div class="code-header"><span>The Signal Chain</span></div>
+                <pre>
+┌─────────────────────────────────────────────────────────────────┐
+│                        AI CONTROL SYSTEM                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
+│  │   AI     │───▶│ Control  │───▶│   TX     │───▶│   RX     │  │
+│  │ (Claude/ │    │ Signals  │    │ (WiFi/   │    │ (On      │  │
+│  │  Local)  │    │ Generate │    │  ELRS)   │    │  Robot)  │  │
+│  └──────────┘    └──────────┘    └──────────┘    └──────────┘  │
+│       ▲                                               │         │
+│       │                                               ▼         │
+│       │                                         ┌──────────┐   │
+│       │                                         │  Motors/ │   │
+│       │                                         │  Servos  │   │
+│       │                                         └──────────┘   │
+│       │                                               │         │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐       │         │
+│  │  Video   │◀───│  Video   │◀───│  Video   │◀──────┘         │
+│  │ Analysis │    │   RX     │    │   TX     │                  │
+│  └──────────┘    └──────────┘    └──────────┘                  │
+│       │                                                         │
+│       ▼                                                         │
+│  ┌──────────┐    ┌──────────┐                                  │
+│  │MediaPipe │    │  YOLO    │  (Offloaded detection)           │
+│  │Detection │    │ Models   │                                  │
+│  └──────────┘    └──────────┘                                  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘</pre>
+            </div>
+
+            <h3>Control Protocols</h3>
+
+            <details class="faq-item" style="margin-bottom: 12px;">
+                <summary>WiFi Drones (Cheap/Tello)</summary>
+                <div class="faq-answer">
+                    <div class="code-block">
+                        <pre>Connection: WiFi Direct to drone AP
+Control: UDP packets to drone IP
+Video: RTSP stream or UDP video port
+SDK: Tello SDK (official) or reverse-engineered</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="faq-item" style="margin-bottom: 12px;">
+                <summary>ExpressLRS (Low-Latency RC)</summary>
+                <div class="faq-answer">
+                    <div class="code-block">
+                        <pre>Control: CRSF protocol over UART
+Channels: 16 channels (4 full resolution, 12 switch)
+Output: PWM to servos/ESCs
+Latency: Sub-5ms achievable (up to 1000Hz)</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="faq-item" style="margin-bottom: 12px;">
+                <summary>DJI RoboMaster</summary>
+                <div class="faq-answer">
+                    <div class="code-block">
+                        <pre>S1: Closed JavaScript environment (limited)
+EP: Full SDK access (Python, Swift)
+Control: WiFi or USB
+Video: H.264 stream</pre>
+                    </div>
+                </div>
+            </details>
+
+            <h3>Development Phases</h3>
+
+            <div style="margin: 24px 0;">
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <span style="background: var(--primary); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 12px;">DONE</span>
+                    <span>Phase A: WiFi Drone Control</span>
+                </div>
+                <ul style="margin-left: 80px; color: var(--text-secondary);">
+                    <li>Connect to cheap WiFi drones ✓</li>
+                    <li>Control motors via AI ✓</li>
+                    <li>Get video feedback ✓</li>
+                    <li>Basic autonomous behavior ✓</li>
+                </ul>
+            </div>
+
+            <div style="margin: 24px 0;">
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <span style="background: var(--primary); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 12px;">DONE</span>
+                    <span>Phase B: Tello TT</span>
+                </div>
+                <ul style="margin-left: 80px; color: var(--text-secondary);">
+                    <li>SDK integration ✓</li>
+                    <li>Autonomous flight achieved ✓</li>
+                    <li>Video processing pipeline ✓</li>
+                </ul>
+            </div>
+
+            <div style="margin: 24px 0;">
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <span style="background: var(--secondary); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 12px;">IN PROGRESS</span>
+                    <span>Phase C: ExpressLRS Integration</span>
+                </div>
+                <ul style="margin-left: 80px; color: var(--text-secondary);">
+                    <li>PWM output from AI decisions</li>
+                    <li>Low-latency control loop</li>
+                    <li>Video feedback via separate channel</li>
+                </ul>
+            </div>
+
+            <div style="margin: 24px 0;">
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <span style="background: var(--secondary); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 12px;">IN PROGRESS</span>
+                    <span>Phase D: RoboMaster EP</span>
+                </div>
+                <ul style="margin-left: 80px; color: var(--text-secondary);">
+                    <li>SDK access confirmed</li>
+                    <li>Control via Python</li>
+                    <li>Vision pipeline integration</li>
+                </ul>
+            </div>
+
+            <div style="margin: 24px 0;">
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <span style="background: var(--accent); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 12px;">NEXT</span>
+                    <span>Phase E: Full AI Orchestration</span>
+                </div>
+                <ul style="margin-left: 80px; color: var(--text-secondary);">
+                    <li>MediaPipe integration</li>
+                    <li>YOLO model integration</li>
+                    <li>Multi-model pipeline</li>
+                    <li>Real-time decision making</li>
+                </ul>
+            </div>
+
+            <h3>Key Technical Challenges</h3>
+
+            <div class="info-box">
+                <h4 style="margin-top: 0;">1. Signal Acquisition</h4>
+                <ul style="margin-bottom: 0;">
+                    <li>Scanning for device signals (WiFi, 2.4GHz, 900MHz)</li>
+                    <li>Establishing stable connection</li>
+                    <li>Maintaining connection under movement</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4 style="margin-top: 0;">2. Dual Channel Operation</h4>
+                <ul style="margin-bottom: 0;">
+                    <li><strong>Control signals (outbound):</strong> Commands to motors/servos</li>
+                    <li><strong>Video signals (inbound):</strong> Camera feed for AI analysis</li>
+                    <li>Both must be low-latency</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4 style="margin-top: 0;">3. Latency Budget</h4>
+                <ul style="margin-bottom: 0;">
+                    <li>ExpressLRS: Up to 1000Hz (1ms theoretical)</li>
+                    <li>DJI: Sub-20ms typical</li>
+                    <li>WiFi drones: Variable (50-200ms)</li>
+                    <li>AI inference must fit within latency budget</li>
+                </ul>
+            </div>
+
+            <h3>Prior Art Status</h3>
+            <div class="info-box" style="border-left-color: var(--accent);">
+                <h4 style="color: var(--accent); margin-top: 0;">Confirmed Gap</h4>
+                <p>The complete methodology—<strong>AI orchestrating specialized models for real-time robot control via ExpressLRS/WiFi</strong>—is undocumented anywhere.</p>
+                <p style="margin-bottom: 0;">This is a novel approach. Academic papers cover individual pieces. Hobbyist forums have fragments. But the complete, reproducible methodology does not exist in public documentation.</p>
+            </div>
+
+            <h3>Key Principles</h3>
+            <ol>
+                <li><strong>No Hallucination</strong> — Every claim must be testable on real hardware</li>
+                <li><strong>Real Latency</strong> — Measure actual latency, don't assume</li>
+                <li><strong>Signal First</strong> — Connection must be stable before AI control</li>
+                <li><strong>Graceful Degradation</strong> — If AI fails, manual override must work</li>
+                <li><strong>Document Everything</strong> — Screenshots, logs, timestamps</li>
+            </ol>
+
+            <h3>Resources</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 20px;">
+                <a href="https://www.expresslrs.org/" target="_blank" style="display: block; background: var(--bg-card); padding: 20px; border-radius: 12px; text-decoration: none; color: var(--text); border: 1px solid var(--border); transition: all 0.2s;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">ExpressLRS</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Official documentation</div>
+                </a>
+                <a href="https://mediapipe.dev/" target="_blank" style="display: block; background: var(--bg-card); padding: 20px; border-radius: 12px; text-decoration: none; color: var(--text); border: 1px solid var(--border); transition: all 0.2s;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">MediaPipe</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Google ML solutions</div>
+                </a>
+                <a href="https://ultralytics.com/" target="_blank" style="display: block; background: var(--bg-card); padding: 20px; border-radius: 12px; text-decoration: none; color: var(--text); border: 1px solid var(--border); transition: all 0.2s;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">YOLO (Ultralytics)</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Object detection</div>
+                </a>
+                <a href="https://www.dji.com/robomaster-s1" target="_blank" style="display: block; background: var(--bg-card); padding: 20px; border-radius: 12px; text-decoration: none; color: var(--text); border: 1px solid var(--border); transition: all 0.2s;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">DJI RoboMaster</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Robot platform</div>
+                </a>
+            </div>
+
+            <div class="info-box" style="margin-top: 32px; background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(168, 85, 247, 0.1)); border-left-color: var(--primary);">
+                <h4 style="margin-top: 0;">📡 Updates Coming</h4>
+                <p style="margin-bottom: 0;">This section will be updated as experiments progress. Real hardware testing. Real latency measurements. Real documentation. No hallucination.</p>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -3190,7 +3474,7 @@ git push origin master && git push website master</pre>
 
             // Update the correct tab button
             const tabButtons = document.querySelectorAll('.tab-btn');
-            const tabNames = ['quickstart', 'complete', 'workflow', 'prompts', 'research', 'resources', 'troubleshoot', 'story'];
+            const tabNames = ['quickstart', 'complete', 'workflow', 'prompts', 'research', 'resources', 'troubleshoot', 'story', 'robotics'];
             const tabIndex = tabNames.indexOf(tabId);
             if (tabIndex >= 0 && tabButtons[tabIndex]) {
                 tabButtons[tabIndex].classList.add('active');
