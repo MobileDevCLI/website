@@ -4030,6 +4030,1067 @@ Start with step 1. Don't try to build everything at once.</pre>
                     </div>
                 </div>
             </details>
+
+            <!-- ============================================ -->
+            <!-- THE ULTIMATE TERMUX SETUP -->
+            <!-- ============================================ -->
+            <h2 style="margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border);">THE ULTIMATE TERMUX SETUP</h2>
+            <p>One command. Everything installed. Full autonomous development environment ready in 5 minutes.</p>
+
+            <div class="info-box" style="border-left-color: var(--primary); margin-bottom: 24px;">
+                <h4 style="margin-top: 0; color: var(--primary);">What This Does</h4>
+                <p style="margin-bottom: 0;">Installs ALL packages, sets up ALL aliases, configures GitHub auth, installs Claude Code, sets up storage access, and creates helper scripts. <strong>Copy once. Paste once. Done forever.</strong></p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — THE MEGA SETUP (Copy This Entire Block)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># ============================================</span>
+<span class="comment"># MOBILECLI ULTIMATE SETUP v2.0</span>
+<span class="comment"># Copy this ENTIRE block and paste into Termux</span>
+<span class="comment"># ============================================</span>
+
+<span class="comment"># Update and upgrade everything</span>
+pkg update -y && pkg upgrade -y
+
+<span class="comment"># Install ALL essential packages</span>
+pkg install -y nodejs git gh openssh tmux termux-api python vim curl wget jq htop nano
+
+<span class="comment"># Install Claude Code globally</span>
+npm install -g @anthropic-ai/claude-code
+
+<span class="comment"># Set up storage access (grants access to Downloads, Screenshots, etc.)</span>
+termux-setup-storage
+
+<span class="comment"># Create .bashrc aliases for productivity</span>
+cat >> ~/.bashrc << 'ALIASES'
+
+# ============ MobileCLI Aliases ============
+# Claude shortcuts
+alias cc="claude --dangerously-skip-permissions"
+alias claude-auto="claude --dangerously-skip-permissions"
+alias claude-safe="claude"
+
+# Session management
+alias wake="termux-wake-lock"
+alias unwake="termux-wake-unlock"
+alias dev="tmux attach -t dev 2>/dev/null || tmux new -s dev"
+alias devnew="tmux new -s dev"
+alias devkill="tmux kill-session -t dev"
+
+# Git shortcuts
+alias gs="git status"
+alias ga="git add -A"
+alias gc="git commit -m"
+alias gp="git push origin master && git push website master"
+alias deploy="git add -A && git commit -m 'update' && git push origin master && git push website master"
+
+# Termux API shortcuts
+alias notify="termux-notification -t"
+alias toast="termux-toast"
+alias clip="termux-clipboard-get"
+alias setclip="termux-clipboard-set"
+alias speak="termux-tts-speak"
+alias battery="termux-battery-status"
+alias wifi="termux-wifi-connectioninfo"
+alias torch="termux-torch on"
+alias torchoff="termux-torch off"
+alias vibrate="termux-vibrate -d 500"
+alias photo="termux-camera-photo"
+alias share="termux-share"
+alias openurl="termux-open-url"
+alias brightness="termux-brightness"
+alias volume="termux-volume"
+
+# Quick navigation
+alias home="cd ~"
+alias proj="cd ~/projects"
+alias screenshots="cd ~/storage/dcim/Screenshots && ls -lt | head -10"
+
+# Server shortcuts
+alias serve="npx http-server -p 8080"
+alias serveopen="npx http-server -p 8080 & sleep 2 && termux-open-url http://localhost:8080"
+
+# Utility
+alias cls="clear"
+alias ll="ls -la"
+alias lt="ls -lt"
+alias now="date '+%Y-%m-%d %H:%M:%S'"
+alias ip="curl -s ifconfig.me"
+
+ALIASES
+
+<span class="comment"># Create projects directory</span>
+mkdir -p ~/projects
+
+<span class="comment"># Create helpful scripts directory</span>
+mkdir -p ~/bin
+
+<span class="comment"># Create full-deploy script</span>
+cat > ~/bin/full-deploy << 'SCRIPT'
+#!/bin/bash
+# Full deploy with notification
+git add -A
+git commit -m "${1:-update}"
+git push origin master
+git push website master
+termux-notification -t "Deploy Complete" -c "Pushed to both repos"
+SCRIPT
+chmod +x ~/bin/full-deploy
+
+<span class="comment"># Create start-session script</span>
+cat > ~/bin/start-session << 'SCRIPT'
+#!/bin/bash
+# Start autonomous dev session
+termux-wake-lock
+termux-notification -t "Dev Session" -c "Wake lock acquired" --ongoing
+tmux new -s dev -d
+tmux send-keys -t dev "claude --dangerously-skip-permissions" Enter
+tmux attach -t dev
+SCRIPT
+chmod +x ~/bin/start-session
+
+<span class="comment"># Create done-notify script</span>
+cat > ~/bin/done << 'SCRIPT'
+#!/bin/bash
+# Send completion notification
+termux-notification -t "✅ Done!" -c "${1:-Task complete}"
+termux-vibrate -d 300
+termux-tts-speak "${1:-Task complete}"
+SCRIPT
+chmod +x ~/bin/done
+
+<span class="comment"># Add bin to PATH</span>
+echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+
+<span class="comment"># Reload bashrc</span>
+source ~/.bashrc
+
+<span class="comment"># Print success message</span>
+echo ""
+echo "============================================"
+echo "✅ MOBILECLI SETUP COMPLETE!"
+echo "============================================"
+echo ""
+echo "Next steps:"
+echo "1. Run: gh auth login (authenticate with GitHub)"
+echo "2. Run: claude (authenticate with Anthropic)"
+echo "3. Run: dev (start tmux session)"
+echo "4. Run: cc (start Claude in autonomous mode)"
+echo ""
+echo "Quick commands:"
+echo "  wake       - Keep phone awake"
+echo "  dev        - Start/attach tmux session"
+echo "  cc         - Claude autonomous mode"
+echo "  deploy     - Git commit and push to both repos"
+echo "  notify     - Send notification"
+echo "  done       - Notify task complete"
+echo ""
+echo "Have fun building! 🚀"
+echo "============================================"</pre>
+            </div>
+
+            <h3 style="margin-top: 32px;">After Running the Mega Setup</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Post-Setup Authentication</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Step 1: Authenticate with GitHub</span>
+gh auth login
+<span class="comment"># Choose: GitHub.com → HTTPS → Yes → Login with browser</span>
+
+<span class="comment"># Step 2: Authenticate with Claude</span>
+claude
+<span class="comment"># Opens browser → Log in with Anthropic account</span>
+
+<span class="comment"># Step 3: Start autonomous session</span>
+wake && dev && cc
+<span class="comment"># You're now in autonomous mode!</span></pre>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- COMPLETE TERMUX API REFERENCE -->
+            <!-- ============================================ -->
+            <h2 style="margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border);">Complete Termux API Reference</h2>
+            <p>Every <code>termux-*</code> command available. These are your phone's hardware and system APIs exposed to the command line.</p>
+
+            <div class="info-box" style="border-left-color: var(--secondary); margin-bottom: 24px;">
+                <h4 style="margin-top: 0; color: var(--secondary);">Prerequisites</h4>
+                <p style="margin-bottom: 0;">Install the Termux:API app from F-Droid AND run <code>pkg install termux-api</code>. Both are required.</p>
+            </div>
+
+            <h3>Session & Power Management</h3>
+            <div style="display: grid; gap: 12px; margin: 16px 0;">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-wake-lock — Keep CPU Active</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Prevent phone from sleeping (ESSENTIAL for long sessions)</span>
+termux-wake-lock
+
+<span class="comment"># Release wake lock when done</span>
+termux-wake-unlock</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-battery-status — Check Battery</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Get battery info (JSON output)</span>
+termux-battery-status
+<span class="comment"># Returns: {"health":"GOOD","percentage":85,"plugged":"UNPLUGGED",...}</span>
+
+<span class="comment"># Get just the percentage</span>
+termux-battery-status | jq '.percentage'</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-brightness — Screen Brightness</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Set brightness (0-255)</span>
+termux-brightness 128      <span class="comment"># 50%</span>
+termux-brightness 255      <span class="comment"># 100%</span>
+termux-brightness 0        <span class="comment"># Off (screen stays on but dark)</span>
+termux-brightness auto     <span class="comment"># Auto mode</span></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-torch — Flashlight Control</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Turn flashlight on/off</span>
+termux-torch on
+termux-torch off</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-volume — Audio Volume</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Get current volume levels</span>
+termux-volume
+
+<span class="comment"># Set specific stream volume</span>
+termux-volume music 10      <span class="comment"># Music volume to 10</span>
+termux-volume ring 7        <span class="comment"># Ringtone to 7</span>
+termux-volume notification 5</pre>
+                </div>
+            </div>
+
+            <h3>Notifications & Feedback</h3>
+            <div style="display: grid; gap: 12px; margin: 16px 0;">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-notification — Send Notifications</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Basic notification</span>
+termux-notification -t "Title" -c "Content message"
+
+<span class="comment"># Persistent notification (stays until dismissed)</span>
+termux-notification -t "Dev Session" -c "Running..." --ongoing
+
+<span class="comment"># Notification with ID (can update/remove later)</span>
+termux-notification -t "Build" -c "In progress..." --id build01
+termux-notification -t "Build" -c "Complete!" --id build01
+
+<span class="comment"># Notification with action button</span>
+termux-notification -t "Done" -c "Task finished" --button1 "Open" --button1-action "termux-open-url https://example.com"
+
+<span class="comment"># Remove a notification by ID</span>
+termux-notification-remove build01</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-toast — Quick Toast Message</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Show quick toast (disappears automatically)</span>
+termux-toast "Hello World"
+
+<span class="comment"># Short or long duration</span>
+termux-toast -s "Quick message"    <span class="comment"># Short</span>
+termux-toast -s "Longer message"   <span class="comment"># Long</span>
+
+<span class="comment"># Colored toast</span>
+termux-toast -b "#00ff88" -c "#000000" "Success!"</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-vibrate — Haptic Feedback</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Vibrate for duration (milliseconds)</span>
+termux-vibrate                 <span class="comment"># Default: 1000ms</span>
+termux-vibrate -d 500          <span class="comment"># 500ms</span>
+termux-vibrate -d 100          <span class="comment"># Quick tap</span>
+termux-vibrate -d 2000         <span class="comment"># Long buzz</span>
+
+<span class="comment"># Force vibrate even if phone is on silent</span>
+termux-vibrate -f -d 500</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-tts-speak — Text to Speech</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Speak text out loud</span>
+termux-tts-speak "Hello, your build is complete"
+
+<span class="comment"># Adjust speech rate and pitch</span>
+termux-tts-speak -r 1.5 "Speaking faster"     <span class="comment"># Rate 1.5x</span>
+termux-tts-speak -p 0.8 "Lower pitch"         <span class="comment"># Pitch 0.8</span>
+
+<span class="comment"># Pipe text to speak</span>
+echo "Build finished" | termux-tts-speak
+
+<span class="comment"># List available TTS engines</span>
+termux-tts-engines</pre>
+                </div>
+            </div>
+
+            <h3>Clipboard & Sharing</h3>
+            <div style="display: grid; gap: 12px; margin: 16px 0;">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-clipboard — Clipboard Access</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Get clipboard contents</span>
+termux-clipboard-get
+
+<span class="comment"># Set clipboard (from argument)</span>
+termux-clipboard-set "Text to copy"
+
+<span class="comment"># Set clipboard (from pipe)</span>
+echo "Piped text" | termux-clipboard-set
+
+<span class="comment"># Copy file contents to clipboard</span>
+cat file.txt | termux-clipboard-set
+
+<span class="comment"># Copy command output to clipboard</span>
+git log --oneline -5 | termux-clipboard-set</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-share — Share Intent</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Share a file (opens Android share sheet)</span>
+termux-share image.png
+termux-share document.pdf
+
+<span class="comment"># Share text</span>
+termux-share -a send "Text to share"
+
+<span class="comment"># Share with specific action</span>
+termux-share -a view image.png     <span class="comment"># View action</span>
+termux-share -a send text.txt      <span class="comment"># Send action</span></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-open-url — Open URLs</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Open URL in default browser</span>
+termux-open-url "https://mobilecli.com"
+
+<span class="comment"># Open local server</span>
+termux-open-url "http://localhost:8080"
+
+<span class="comment"># Open file with default app</span>
+termux-open image.png     <span class="comment"># Opens in gallery</span>
+termux-open document.pdf  <span class="comment"># Opens in PDF viewer</span></pre>
+                </div>
+            </div>
+
+            <h3>Camera & Media</h3>
+            <div style="display: grid; gap: 12px; margin: 16px 0;">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-camera — Take Photos</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Take photo with rear camera</span>
+termux-camera-photo output.jpg
+
+<span class="comment"># Use front camera (camera ID 1)</span>
+termux-camera-photo -c 1 selfie.jpg
+
+<span class="comment"># List available cameras</span>
+termux-camera-info</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-microphone-record — Record Audio</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Record audio (default format)</span>
+termux-microphone-record -f recording.m4a
+
+<span class="comment"># Record with specific duration (seconds)</span>
+termux-microphone-record -f recording.m4a -l 10
+
+<span class="comment"># Record with limit (max seconds)</span>
+termux-microphone-record -f recording.m4a -l 60
+
+<span class="comment"># Stop recording</span>
+termux-microphone-record -q</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-media-scan — Update Media Library</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Make new files appear in gallery/music apps</span>
+termux-media-scan ~/storage/dcim/photo.jpg
+termux-media-scan ~/storage/music/song.mp3
+
+<span class="comment"># Scan a directory</span>
+termux-media-scan -r ~/storage/dcim/Screenshots/</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-media-player — Play Audio</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Play audio file</span>
+termux-media-player play audio.mp3
+
+<span class="comment"># Control playback</span>
+termux-media-player pause
+termux-media-player play
+termux-media-player stop
+
+<span class="comment"># Get current info</span>
+termux-media-player info</pre>
+                </div>
+            </div>
+
+            <h3>Network & Connectivity</h3>
+            <div style="display: grid; gap: 12px; margin: 16px 0;">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-wifi — WiFi Information</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Get current WiFi connection info</span>
+termux-wifi-connectioninfo
+<span class="comment"># Returns: SSID, BSSID, IP address, link speed, etc.</span>
+
+<span class="comment"># Scan for available networks</span>
+termux-wifi-scaninfo
+
+<span class="comment"># Enable/disable WiFi</span>
+termux-wifi-enable true
+termux-wifi-enable false</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-telephony — Cellular Info</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Get device info (IMEI, phone number, etc.)</span>
+termux-telephony-deviceinfo
+
+<span class="comment"># Get cell tower info</span>
+termux-telephony-cellinfo
+
+<span class="comment"># Make a phone call</span>
+termux-telephony-call "+1234567890"</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-location — GPS Location</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Get current location (requires permission)</span>
+termux-location
+
+<span class="comment"># Specify provider</span>
+termux-location -p gps        <span class="comment"># GPS only (accurate but slow)</span>
+termux-location -p network    <span class="comment"># Network only (fast but less accurate)</span>
+termux-location -p passive    <span class="comment"># Passive (uses cached location)</span>
+
+<span class="comment"># Request once or continuous</span>
+termux-location -r once
+termux-location -r updates    <span class="comment"># Continuous updates</span></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-download — Download Files</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Download file using Android download manager</span>
+termux-download "https://example.com/file.zip"
+
+<span class="comment"># Download with custom title/description</span>
+termux-download -t "My Download" -d "Downloading file..." "https://example.com/file.zip"</pre>
+                </div>
+            </div>
+
+            <h3>Sensors & Input</h3>
+            <div style="display: grid; gap: 12px; margin: 16px 0;">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-sensor — Device Sensors</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># List all available sensors</span>
+termux-sensor -l
+
+<span class="comment"># Read specific sensor</span>
+termux-sensor -s "accelerometer" -n 1
+termux-sensor -s "gyroscope" -n 1
+termux-sensor -s "light" -n 1
+
+<span class="comment"># Continuous reading (n readings)</span>
+termux-sensor -s "accelerometer" -n 10 -d 100  <span class="comment"># 10 readings, 100ms delay</span></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-fingerprint — Fingerprint Auth</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Request fingerprint authentication</span>
+termux-fingerprint
+<span class="comment"># Returns: {"auth_result": "AUTH_RESULT_SUCCESS"} or failure</span>
+
+<span class="comment"># Use in scripts for secure operations</span>
+if termux-fingerprint | grep -q SUCCESS; then
+    echo "Authenticated!"
+    # Do secure thing
+fi</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-speech-to-text — Voice Input</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Record speech and convert to text</span>
+termux-speech-to-text
+<span class="comment"># Speaks and returns transcribed text</span>
+
+<span class="comment"># Use in scripts</span>
+TEXT=$(termux-speech-to-text)
+echo "You said: $TEXT"</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-dialog — Interactive Dialogs</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Confirmation dialog</span>
+termux-dialog confirm -t "Confirm" -i "Are you sure?"
+
+<span class="comment"># Text input dialog</span>
+termux-dialog text -t "Input" -i "Enter your name:"
+
+<span class="comment"># Radio button selection</span>
+termux-dialog radio -t "Choose" -v "Option 1,Option 2,Option 3"
+
+<span class="comment"># Checkbox selection</span>
+termux-dialog checkbox -t "Select" -v "Item 1,Item 2,Item 3"
+
+<span class="comment"># Date picker</span>
+termux-dialog date -t "Select Date"
+
+<span class="comment"># Time picker</span>
+termux-dialog time -t "Select Time"</pre>
+                </div>
+            </div>
+
+            <h3>SMS & Contacts</h3>
+            <div style="display: grid; gap: 12px; margin: 16px 0;">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-sms — SMS Access</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># List SMS messages</span>
+termux-sms-list
+
+<span class="comment"># List with limit</span>
+termux-sms-list -l 10       <span class="comment"># Last 10 messages</span>
+termux-sms-list -t inbox    <span class="comment"># Inbox only</span>
+termux-sms-list -t sent     <span class="comment"># Sent only</span>
+
+<span class="comment"># Send SMS</span>
+termux-sms-send -n "+1234567890" "Hello from Termux!"</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-contact-list — Access Contacts</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># List all contacts</span>
+termux-contact-list
+
+<span class="comment"># Get call log</span>
+termux-call-log -l 20  <span class="comment"># Last 20 calls</span></pre>
+                </div>
+            </div>
+
+            <h3>Storage & Files</h3>
+            <div style="display: grid; gap: 12px; margin: 16px 0;">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-setup-storage — Grant Storage Access</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Run once to grant storage permissions</span>
+termux-setup-storage
+
+<span class="comment"># This creates symlinks in ~/storage/:</span>
+ls ~/storage/
+<span class="comment"># dcim/      - Camera photos & screenshots</span>
+<span class="comment"># downloads/ - Downloads folder</span>
+<span class="comment"># movies/    - Videos</span>
+<span class="comment"># music/     - Music files</span>
+<span class="comment"># pictures/  - Pictures</span>
+<span class="comment"># shared/    - Internal storage root</span>
+
+<span class="comment"># Access screenshots</span>
+ls ~/storage/dcim/Screenshots/</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-storage-get — File Picker</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Open file picker and copy selected file</span>
+termux-storage-get output.txt
+
+<span class="comment"># Opens Android file picker, saves selected file to output.txt</span></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-usb — USB Device Access</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># List connected USB devices</span>
+termux-usb -l
+
+<span class="comment"># Request permission for USB device</span>
+termux-usb -r /dev/bus/usb/001/002
+
+<span class="comment"># Execute command with USB access</span>
+termux-usb -e "cat" /dev/bus/usb/001/002</pre>
+                </div>
+            </div>
+
+            <h3>System & Misc</h3>
+            <div style="display: grid; gap: 12px; margin: 16px 0;">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-wallpaper — Set Wallpaper</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Set wallpaper from file</span>
+termux-wallpaper -f image.jpg
+
+<span class="comment"># Set from URL</span>
+termux-wallpaper -u "https://example.com/wallpaper.jpg"
+
+<span class="comment"># Set lock screen wallpaper</span>
+termux-wallpaper -l -f lockscreen.jpg</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-infrared — IR Blaster</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># List supported carrier frequencies</span>
+termux-infrared-frequencies
+
+<span class="comment"># Transmit IR signal (for controlling TVs, etc.)</span>
+termux-infrared-transmit -f 38000 100,50,100,50,100</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-job-scheduler — Background Tasks</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Schedule a script to run periodically</span>
+termux-job-scheduler -s myscript.sh --period-ms 3600000  <span class="comment"># Every hour</span>
+
+<span class="comment"># Schedule with network requirement</span>
+termux-job-scheduler -s backup.sh --network unmetered
+
+<span class="comment"># Cancel scheduled job</span>
+termux-job-scheduler --cancel</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">termux-audio-info — Audio Info</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Get audio device information</span>
+termux-audio-info</pre>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- MEGA CLAUDE PROMPTS -->
+            <!-- ============================================ -->
+            <h2 style="margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border);">Mega Claude Prompts</h2>
+            <p>The big ones. Copy one prompt, paste it, and let Claude handle everything.</p>
+
+            <details class="expandable">
+                <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">THE ULTIMATE PROJECT SETUP (Everything in One Prompt)</summary>
+                <div class="expandable-content">
+                    <p>This prompt sets up a complete project from scratch. Fill in the placeholders and let Claude do the rest.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt — Complete Project Bootstrap</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>I want you to set up a complete project from scratch. Here are the details:
+
+PROJECT INFO:
+- Name: [YOUR_PROJECT_NAME]
+- Description: [ONE_SENTENCE_DESCRIPTION]
+- Type: [website / web app / API / game / tool]
+- GitHub Org: [YOUR_GITHUB_ORG]
+
+TECH STACK:
+- Frontend: Vanilla HTML/CSS/JS (no frameworks)
+- Styling: Dark theme, colors: #000000 (bg), #00ff88 (primary), #00d4ff (secondary)
+- Backend: [none / Supabase / other]
+- Hosting: Vercel (auto-deploy from GitHub)
+
+DO EVERYTHING:
+1. Create the project directory structure
+2. Create index.html with responsive layout and proper meta tags
+3. Create CLAUDE.md with project context, rules, and learned lessons section
+4. Create .gitignore (node_modules, .env, .DS_Store)
+5. Create vercel.json with cache-busting headers
+6. Initialize git repository
+7. Create GitHub repo: [ORG]/[REPO_NAME]
+8. Add both remotes (origin and website)
+9. Make initial commit and push to both repos
+10. Create a second repo for Vercel: [ORG]/website
+11. Push to website repo
+12. Verify everything is set up correctly
+
+CONSTRAINTS:
+- Mobile-first responsive design
+- No external CSS frameworks
+- Semantic HTML
+- Accessible (proper alt tags, ARIA where needed)
+
+Start now. Don't ask questions - make reasonable assumptions. Tell me what you created when done.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">BUILD ENTIRE WEBSITE OVERNIGHT</summary>
+                <div class="expandable-content">
+                    <p>Give Claude a full website spec and let it work while you sleep.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt — Autonomous Website Build</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Build a complete website for me. I'm going to sleep - work autonomously until it's done.
+
+WEBSITE: [YOUR_SITE_NAME]
+PURPOSE: [WHAT_THE_SITE_DOES]
+
+PAGES NEEDED:
+1. index.html - Landing page with hero section, features, and CTA
+2. about.html - About page with story and team info
+3. pricing.html - Pricing tiers (Free/Pro/Team or customize)
+4. login.html - Login page (can be placeholder for now)
+5. dashboard.html - User dashboard (placeholder)
+6. contact.html - Contact form
+7. terms.html - Terms of service (placeholder)
+8. privacy.html - Privacy policy (placeholder)
+
+DESIGN:
+- Dark theme (#000000 background)
+- Primary: #00ff88 (green)
+- Secondary: #00d4ff (cyan)
+- Accent: #a855f7 (purple)
+- Fonts: Inter for text, JetBrains Mono for code
+- Modern, minimal, premium feel
+
+REQUIREMENTS:
+- Mobile-first responsive
+- Consistent navigation across all pages
+- Footer with links to legal pages
+- Smooth hover transitions
+- No external CSS frameworks
+
+WORKFLOW:
+1. Create each page one by one
+2. After each page, commit with descriptive message
+3. Push to both repos (origin and website)
+4. Move to next page
+5. When all pages done, send notification: termux-notification -t "Website Complete"
+
+Don't wait for my approval between pages. Just build everything. I'll review when I wake up.
+
+Start now.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">FULL SAAS SETUP (Auth + Payments + Dashboard)</summary>
+                <div class="expandable-content">
+                    <p>Set up a complete SaaS with authentication, payments, and protected content.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt — Complete SaaS Bootstrap</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Set up a complete SaaS application with authentication, payments, and protected content.
+
+MY CREDENTIALS:
+- Supabase URL: [YOUR_SUPABASE_URL]
+- Supabase Anon Key: [YOUR_ANON_KEY]
+- Stripe is in test mode (I'll connect later)
+
+PRICING TIERS:
+- Free: $0 (limited features)
+- Pro: $[PRICE]/month (full access)
+- Team: $[PRICE]/user/month (team features)
+
+CREATE:
+1. js/supabase-config.js - Supabase client initialization
+2. login.html - OAuth login (GitHub button, Google button)
+3. dashboard.html - Protected page with:
+   - User info display
+   - Subscription status
+   - Logout button
+4. pricing.html - Pricing page with:
+   - Three tier cards
+   - Monthly/annual toggle
+   - CTA buttons linking to Stripe (placeholder URLs)
+5. Supabase setup instructions:
+   - SQL for users_profile table
+   - SQL for subscriptions table
+   - Row Level Security policies
+
+FEATURES:
+- Redirect to login if accessing dashboard without auth
+- Redirect to dashboard after successful login
+- Show different content based on subscription tier
+- Session persistence
+
+WORKFLOW:
+- Create each file
+- Test locally if possible
+- Commit after each major component
+- Push to both repos
+
+Go.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">WEBSITE AUDIT & FIX (Complete Review)</summary>
+                <div class="expandable-content">
+                    <p>Have Claude audit your entire website and fix all issues.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt — Full Website Audit</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Perform a complete audit of this website and fix all issues you find.
+
+AUDIT CHECKLIST:
+1. NAVIGATION
+   - All pages have consistent nav
+   - Mobile menu works on all pages
+   - All nav links work
+   - Active page is highlighted
+
+2. LINKS
+   - No broken internal links
+   - External links open in new tab
+   - No href="#" placeholders
+
+3. FOOTER
+   - All pages have footer
+   - Footer has all required links
+   - Copyright year is current
+
+4. MOBILE
+   - All pages are responsive
+   - Touch targets are adequate
+   - No horizontal scroll
+
+5. ACCESSIBILITY
+   - Images have alt text
+   - Proper heading hierarchy
+   - Sufficient color contrast
+
+6. PERFORMANCE
+   - No huge images
+   - Scripts at end of body
+   - Critical CSS inline
+
+7. SEO
+   - All pages have title tags
+   - All pages have meta descriptions
+   - Proper heading structure
+
+WORKFLOW:
+1. List all HTML files: find . -name "*.html"
+2. Audit each page against checklist
+3. Create a WEBSITE_AUDIT.md documenting all issues
+4. Fix each issue
+5. Update WEBSITE_AUDIT.md with fixes
+6. Commit with detailed message
+7. Push to both repos
+
+Start the audit now.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">ADD INTERACTIVE DEMOS (Physics/Games)</summary>
+                <div class="expandable-content">
+                    <p>Add multiple interactive WebGL demos to your site.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt — Demo Collection Builder</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Create a collection of interactive WebGL demos for my website.
+
+DEMOS TO CREATE:
+1. demo/fluid.html - Fluid simulation (touch to create ripples)
+2. demo/particles.html - Particle system (touch to spawn particles)
+3. demo/physics.html - Physics playground (falling objects, touch to throw)
+4. demo/galaxy.html - Galaxy generator (spinning stars)
+5. demo/fractals.html - Mandelbrot/Julia set explorer
+
+ALSO CREATE:
+- demos.html - Hub page linking to all demos with thumbnails
+
+REQUIREMENTS PER DEMO:
+- Full-screen canvas
+- Touch controls for mobile
+- Mouse controls for desktop
+- Info panel (collapsible) explaining controls
+- Reset button
+- Back button to demos.html
+- Dark theme matching site (#000000 bg, #00ff88/#00d4ff accents)
+- Target 30fps minimum on mobile
+- Clean up resources on page leave
+
+TECH:
+- Three.js from CDN for 3D demos
+- Cannon.js from CDN for physics
+- WebGL shaders for effects
+- requestAnimationFrame for animation
+
+WORKFLOW:
+1. Create demos.html hub first
+2. Create each demo one by one
+3. Test each demo works (run local server if needed)
+4. Commit after each demo
+5. Push to both repos
+6. Move to next demo
+
+Work autonomously. Notify me when all demos are done:
+termux-notification -t "Demos Complete" -c "All 5 demos created"
+
+Start now.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">DOCUMENTATION GENERATOR</summary>
+                <div class="expandable-content">
+                    <p>Generate complete documentation for your project.</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt — Auto Documentation</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Generate complete documentation for this project.
+
+CREATE:
+1. README.md - GitHub readme with:
+   - Project description
+   - Features list
+   - Screenshots (placeholders)
+   - Getting started guide
+   - Tech stack
+   - Contributing guidelines
+   - License
+
+2. learn.html - Documentation page with:
+   - Getting Started section
+   - Installation steps
+   - Configuration guide
+   - Usage examples
+   - FAQ section
+   - Troubleshooting
+
+3. quickstart.html - Quick start guide with:
+   - 5-minute setup
+   - Essential commands only
+   - First project walkthrough
+
+4. examples.html - Code examples page with:
+   - Common use cases
+   - Copy-paste code blocks
+   - Explanations
+
+STYLE:
+- Match existing site design
+- Code blocks with syntax highlighting
+- Collapsible sections for long content
+- Mobile-friendly
+
+WORKFLOW:
+1. Read existing files to understand the project
+2. Generate each doc file
+3. Commit after each
+4. Push to both repos
+
+Go.</pre>
+                    </div>
+                </div>
+            </details>
         </div>
 
         <!-- ============================================ -->
