@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLAUDE.md Templates — MobileCLI</title>
+    <meta name="description" content="Pre-built CLAUDE.md templates for different project types. Web apps, APIs, mobile apps, games, and more. Copy, customize, and start building.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #000000;
+            --bg-secondary: #050505;
+            --bg-card: #0a0a0a;
+            --bg-card-hover: #111111;
+            --text: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #555555;
+            --primary: #00ff88;
+            --primary-dim: #00cc6a;
+            --primary-glow: rgba(0, 255, 136, 0.4);
+            --secondary: #00d4ff;
+            --accent: #a855f7;
+            --border: #1a1a1a;
+            --border-light: #2a2a2a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text);
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding: 40px 0;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--border-light);
+            color: var(--text);
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #000;
+        }
+
+        /* Templates Grid */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        /* Template Card */
+        .template-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .template-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .template-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .template-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .template-header h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        .template-header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .template-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .template-tag {
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .template-tag.featured {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--accent);
+        }
+
+        .template-preview {
+            background: #0d1117;
+            padding: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .template-preview .comment {
+            color: #6a737d;
+        }
+
+        .template-preview .heading {
+            color: var(--secondary);
+        }
+
+        .template-preview .code {
+            color: var(--primary);
+        }
+
+        .template-actions {
+            padding: 16px 24px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Featured Banner */
+        .featured-banner {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 212, 255, 0.1));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .featured-content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .featured-content p {
+            color: var(--text-secondary);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 4px;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-code {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            color: var(--text);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Submit Section */
+        .submit-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .submit-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 12px;
+        }
+
+        .submit-section p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 80px;
+            padding: 40px 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 2rem; }
+            .templates-grid { grid-template-columns: 1fr; }
+            .featured-banner { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">>_ MobileCLI</a>
+            <div class="nav-links">
+                <a href="welcome.html">Welcome</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="learn.html">Docs</a>
+                <a href="session-manager.html">Sessions</a>
+                <a href="templates.html" class="active">Templates</a>
+                <a href="pro-preview.html">Pro</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>CLAUDE.md Templates</h1>
+            <p>Pre-built project configurations to supercharge your AI development. Copy, customize, and start building.</p>
+        </div>
+
+        <!-- Featured Banner -->
+        <div class="featured-banner">
+            <div class="featured-content">
+                <h2>What is CLAUDE.md?</h2>
+                <p>A configuration file that teaches Claude about your project. Better instructions = better results. These templates give you a head start.</p>
+            </div>
+            <a href="learn.html#claude-md" class="btn btn-primary">Learn More</a>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">All Templates</button>
+            <button class="filter-tab" data-filter="web">Web Apps</button>
+            <button class="filter-tab" data-filter="api">APIs</button>
+            <button class="filter-tab" data-filter="mobile">Mobile</button>
+            <button class="filter-tab" data-filter="games">Games</button>
+            <button class="filter-tab" data-filter="automation">Automation</button>
+        </div>
+
+        <!-- Templates Grid -->
+        <div class="templates-grid">
+            <!-- Next.js Full-Stack -->
+            <div class="template-card" data-category="web">
+                <div class="template-header">
+                    <div class="template-icon">⚡</div>
+                    <h3>Next.js Full-Stack</h3>
+                    <p>Complete Next.js 14+ setup with App Router, TypeScript, Tailwind, and database integration.</p>
+                    <div class="template-tags">
+                        <span class="template-tag featured">Popular</span>
+                        <span class="template-tag">TypeScript</span>
+                        <span class="template-tag">Tailwind</span>
+                    </div>
+                </div>
+                <div class="template-preview">
+<span class="heading"># Next.js Full-Stack Project</span>
+
+<span class="comment">## Tech Stack</span>
+- Next.js 14+ with App Router
+- TypeScript (strict mode)
+- Tailwind CSS
+- Prisma ORM
+
+<span class="comment">## Code Standards</span>
+<span class="code">- Use server components by default
+- Client components only when needed
+- Prefer server actions over API routes</span>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary" onclick="viewTemplate('nextjs')">Preview</button>
+                    <button class="btn btn-primary" onclick="copyTemplate('nextjs')">Copy</button>
+                </div>
+            </div>
+
+            <!-- REST API -->
+            <div class="template-card" data-category="api">
+                <div class="template-header">
+                    <div class="template-icon">🔌</div>
+                    <h3>REST API (Node.js)</h3>
+                    <p>Express.js API with authentication, validation, error handling, and OpenAPI docs.</p>
+                    <div class="template-tags">
+                        <span class="template-tag">Express</span>
+                        <span class="template-tag">JWT</span>
+                        <span class="template-tag">Swagger</span>
+                    </div>
+                </div>
+                <div class="template-preview">
+<span class="heading"># REST API Project</span>
+
+<span class="comment">## Architecture</span>
+- Express.js with TypeScript
+- JWT authentication
+- Zod validation
+- OpenAPI/Swagger docs
+
+<span class="comment">## Conventions</span>
+<span class="code">- Controllers handle HTTP
+- Services handle business logic
+- Repositories handle data access</span>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary" onclick="viewTemplate('restapi')">Preview</button>
+                    <button class="btn btn-primary" onclick="copyTemplate('restapi')">Copy</button>
+                </div>
+            </div>
+
+            <!-- React Native -->
+            <div class="template-card" data-category="mobile">
+                <div class="template-header">
+                    <div class="template-icon">📱</div>
+                    <h3>React Native App</h3>
+                    <p>Cross-platform mobile app with Expo, navigation, state management, and native features.</p>
+                    <div class="template-tags">
+                        <span class="template-tag">Expo</span>
+                        <span class="template-tag">TypeScript</span>
+                        <span class="template-tag">Zustand</span>
+                    </div>
+                </div>
+                <div class="template-preview">
+<span class="heading"># React Native Mobile App</span>
+
+<span class="comment">## Stack</span>
+- Expo SDK 50+
+- React Navigation v6
+- Zustand for state
+- NativeWind (Tailwind)
+
+<span class="comment">## Testing</span>
+<span class="code">npx expo start --tunnel
+# Scan QR with Expo Go app</span>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary" onclick="viewTemplate('reactnative')">Preview</button>
+                    <button class="btn btn-primary" onclick="copyTemplate('reactnative')">Copy</button>
+                </div>
+            </div>
+
+            <!-- Three.js Game -->
+            <div class="template-card" data-category="games">
+                <div class="template-header">
+                    <div class="template-icon">🎮</div>
+                    <h3>Three.js Game</h3>
+                    <p>3D browser game with physics, controls, responsive design, and mobile touch support.</p>
+                    <div class="template-tags">
+                        <span class="template-tag featured">Popular</span>
+                        <span class="template-tag">Three.js</span>
+                        <span class="template-tag">Cannon.js</span>
+                    </div>
+                </div>
+                <div class="template-preview">
+<span class="heading"># Three.js Browser Game</span>
+
+<span class="comment">## Performance Targets</span>
+- 30+ FPS on mobile
+- Max pixel ratio: 2
+- Efficient draw calls
+
+<span class="comment">## Testing</span>
+<span class="code">npx http-server -p 8080
+# Test on actual device!</span>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary" onclick="viewTemplate('threejs')">Preview</button>
+                    <button class="btn btn-primary" onclick="copyTemplate('threejs')">Copy</button>
+                </div>
+            </div>
+
+            <!-- Python Automation -->
+            <div class="template-card" data-category="automation">
+                <div class="template-header">
+                    <div class="template-icon">🐍</div>
+                    <h3>Python Automation</h3>
+                    <p>Scripts for web scraping, data processing, API integration, and scheduled tasks.</p>
+                    <div class="template-tags">
+                        <span class="template-tag">Python 3.11+</span>
+                        <span class="template-tag">Async</span>
+                        <span class="template-tag">Type Hints</span>
+                    </div>
+                </div>
+                <div class="template-preview">
+<span class="heading"># Python Automation Scripts</span>
+
+<span class="comment">## Standards</span>
+- Python 3.11+ with type hints
+- asyncio for concurrent ops
+- Structured logging
+- Error handling
+
+<span class="comment">## Running</span>
+<span class="code">python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt</span>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary" onclick="viewTemplate('python')">Preview</button>
+                    <button class="btn btn-primary" onclick="copyTemplate('python')">Copy</button>
+                </div>
+            </div>
+
+            <!-- Static Website -->
+            <div class="template-card" data-category="web">
+                <div class="template-header">
+                    <div class="template-icon">🌐</div>
+                    <h3>Static Website</h3>
+                    <p>Clean HTML/CSS/JS website with modern styling, animations, and responsive design.</p>
+                    <div class="template-tags">
+                        <span class="template-tag">HTML5</span>
+                        <span class="template-tag">CSS3</span>
+                        <span class="template-tag">Vanilla JS</span>
+                    </div>
+                </div>
+                <div class="template-preview">
+<span class="heading"># Static Website</span>
+
+<span class="comment">## Structure</span>
+- index.html (homepage)
+- /css (styles)
+- /js (scripts)
+- /assets (images, fonts)
+
+<span class="comment">## Style Guide</span>
+<span class="code">- Mobile-first responsive
+- CSS custom properties
+- No frameworks required</span>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary" onclick="viewTemplate('static')">Preview</button>
+                    <button class="btn btn-primary" onclick="copyTemplate('static')">Copy</button>
+                </div>
+            </div>
+
+            <!-- Supabase Backend -->
+            <div class="template-card" data-category="api">
+                <div class="template-header">
+                    <div class="template-icon">⚡</div>
+                    <h3>Supabase Backend</h3>
+                    <p>Backend-as-a-Service with auth, database, storage, and edge functions.</p>
+                    <div class="template-tags">
+                        <span class="template-tag">Supabase</span>
+                        <span class="template-tag">PostgreSQL</span>
+                        <span class="template-tag">RLS</span>
+                    </div>
+                </div>
+                <div class="template-preview">
+<span class="heading"># Supabase Backend</span>
+
+<span class="comment">## Features</span>
+- Auth (email, OAuth)
+- PostgreSQL database
+- Row Level Security
+- Edge Functions
+
+<span class="comment">## Security</span>
+<span class="code">- ANON key = safe client-side
+- SERVICE key = NEVER client-side
+- Always enable RLS</span>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary" onclick="viewTemplate('supabase')">Preview</button>
+                    <button class="btn btn-primary" onclick="copyTemplate('supabase')">Copy</button>
+                </div>
+            </div>
+
+            <!-- CLI Tool -->
+            <div class="template-card" data-category="automation">
+                <div class="template-header">
+                    <div class="template-icon">⌨️</div>
+                    <h3>CLI Tool</h3>
+                    <p>Command-line application with argument parsing, colors, progress bars, and config files.</p>
+                    <div class="template-tags">
+                        <span class="template-tag">Node.js</span>
+                        <span class="template-tag">Commander</span>
+                        <span class="template-tag">Inquirer</span>
+                    </div>
+                </div>
+                <div class="template-preview">
+<span class="heading"># CLI Tool</span>
+
+<span class="comment">## Features</span>
+- Commander for arg parsing
+- Inquirer for prompts
+- Chalk for colors
+- Ora for spinners
+
+<span class="comment">## Publishing</span>
+<span class="code">npm link  # Test locally
+npm publish  # To npm registry</span>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary" onclick="viewTemplate('cli')">Preview</button>
+                    <button class="btn btn-primary" onclick="copyTemplate('cli')">Copy</button>
+                </div>
+            </div>
+
+            <!-- Discord Bot -->
+            <div class="template-card" data-category="automation">
+                <div class="template-header">
+                    <div class="template-icon">🤖</div>
+                    <h3>Discord Bot</h3>
+                    <p>Discord.js bot with slash commands, event handlers, and database integration.</p>
+                    <div class="template-tags">
+                        <span class="template-tag">Discord.js</span>
+                        <span class="template-tag">Slash Commands</span>
+                    </div>
+                </div>
+                <div class="template-preview">
+<span class="heading"># Discord Bot</span>
+
+<span class="comment">## Structure</span>
+- /commands (slash commands)
+- /events (event handlers)
+- /utils (helpers)
+
+<span class="comment">## Security</span>
+<span class="code">- BOT_TOKEN in .env ONLY
+- Never commit .env file
+- Use intents wisely</span>
+                </div>
+                <div class="template-actions">
+                    <button class="btn btn-secondary" onclick="viewTemplate('discord')">Preview</button>
+                    <button class="btn btn-primary" onclick="copyTemplate('discord')">Copy</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Your Template -->
+        <div class="submit-section">
+            <h2>Have a Great Template?</h2>
+            <p>Share your CLAUDE.md configuration with the community. Help others build better with AI.</p>
+            <a href="https://github.com/MobileDevCLI/templates" target="_blank" class="btn btn-primary">Submit Template</a>
+        </div>
+    </div>
+
+    <!-- Modal for Full Preview -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Template Preview</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <pre class="modal-code" id="modalCode"></pre>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <button class="btn btn-primary" id="modalCopyBtn">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="pricing.html">Pricing</a>
+            <a href="learn.html">Documentation</a>
+            <a href="session-manager.html">Session Manager</a>
+            <a href="pro-preview.html">Pro Dashboard</a>
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+        </div>
+        <p>&copy; 2026 MobileCLI. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Full template content
+        const templates = {
+            nextjs: `# Next.js Full-Stack Project
+
+## Tech Stack
+- Next.js 14+ with App Router
+- TypeScript (strict mode)
+- Tailwind CSS for styling
+- Prisma ORM with PostgreSQL
+- NextAuth.js for authentication
+
+## Project Structure
+\`\`\`
+/app              # App router pages
+  /api            # API routes (use sparingly)
+  /(auth)         # Auth group routes
+  /(dashboard)    # Protected routes
+/components       # React components
+  /ui             # Reusable UI components
+/lib              # Utilities and configs
+/prisma           # Database schema
+\`\`\`
+
+## Code Standards
+
+### Components
+- Use server components by default
+- Add 'use client' only when needed (interactivity, hooks)
+- Prefer server actions over API routes
+- Co-locate components with their routes when possible
+
+### Styling
+- Use Tailwind utility classes
+- Extract repeated patterns to components, not CSS
+- Mobile-first responsive design
+
+### Data Fetching
+- Fetch in server components when possible
+- Use React Query for client-side data
+- Implement proper loading states
+
+## Commands
+\`\`\`bash
+npm run dev      # Development server
+npm run build    # Production build
+npm run lint     # Lint code
+npx prisma studio  # Database GUI
+\`\`\`
+
+## Environment Variables
+\`\`\`
+DATABASE_URL=     # Postgres connection string
+NEXTAUTH_SECRET=  # Auth secret (generate with openssl)
+NEXTAUTH_URL=     # Your app URL
+\`\`\``,
+
+            restapi: `# REST API Project
+
+## Architecture
+- Express.js with TypeScript
+- JWT authentication with refresh tokens
+- Zod for request/response validation
+- OpenAPI/Swagger documentation
+- PostgreSQL with Prisma
+
+## Project Structure
+\`\`\`
+/src
+  /controllers    # HTTP request handlers
+  /services       # Business logic
+  /repositories   # Database queries
+  /middleware     # Auth, validation, errors
+  /routes         # Route definitions
+  /types          # TypeScript types
+  /utils          # Helper functions
+\`\`\`
+
+## Code Conventions
+
+### Controllers
+- Handle HTTP concerns only
+- Extract body, call service, return response
+- Don't contain business logic
+
+### Services
+- Contain all business logic
+- Don't know about HTTP
+- Call repositories for data
+
+### Error Handling
+- Use custom error classes
+- Central error middleware
+- Consistent error response format
+
+## API Response Format
+\`\`\`json
+{
+  "success": true,
+  "data": {},
+  "message": "Optional message"
+}
+\`\`\`
+
+## Commands
+\`\`\`bash
+npm run dev       # Development with hot reload
+npm run build     # Compile TypeScript
+npm run start     # Production server
+npm run test      # Run tests
+\`\`\``,
+
+            reactnative: `# React Native Mobile App
+
+## Tech Stack
+- Expo SDK 50+
+- React Navigation v6
+- Zustand for state management
+- NativeWind (Tailwind for RN)
+- Expo SecureStore for sensitive data
+
+## Project Structure
+\`\`\`
+/app              # Expo Router pages
+/components       # Reusable components
+/hooks            # Custom hooks
+/stores           # Zustand stores
+/services         # API calls
+/utils            # Helpers
+/assets           # Images, fonts
+\`\`\`
+
+## Development Workflow
+
+### Testing on Device
+\`\`\`bash
+npx expo start --tunnel
+# Scan QR code with Expo Go app
+\`\`\`
+
+### Building
+\`\`\`bash
+eas build --platform android --profile preview
+eas build --platform ios --profile preview
+\`\`\`
+
+## Code Standards
+
+### Navigation
+- Use Expo Router (file-based routing)
+- Typed navigation with TypeScript
+- Deep linking support
+
+### State Management
+- Zustand for global state
+- React Query for server state
+- Local state for UI-only concerns
+
+### Performance
+- Use FlatList for long lists (never ScrollView)
+- Memoize expensive renders
+- Optimize images with expo-image
+
+## Platform-Specific Code
+\`\`\`typescript
+import { Platform } from 'react-native';
+
+Platform.select({
+  ios: () => /* iOS code */,
+  android: () => /* Android code */,
+});
+\`\`\``,
+
+            threejs: `# Three.js Browser Game
+
+## Tech Stack
+- Three.js for 3D rendering
+- Cannon.js for physics
+- Vanilla JavaScript (no build step)
+- Mobile-first design
+
+## Performance Targets
+- 30+ FPS on mid-range mobile devices
+- Maximum pixel ratio: 2
+- Efficient geometry and materials
+- Object pooling for particles
+
+## Project Structure
+\`\`\`
+/index.html       # Main page
+/js
+  /game.js        # Main game loop
+  /physics.js     # Cannon.js setup
+  /controls.js    # Input handling
+  /entities/      # Game objects
+/assets
+  /models/        # 3D models (GLTF)
+  /textures/      # Textures
+  /audio/         # Sound effects
+\`\`\`
+
+## Code Standards
+
+### Rendering
+- Use BufferGeometry, not Geometry
+- Share materials between similar objects
+- Dispose of unused resources
+- Use instancing for repeated objects
+
+### Physics
+- Fixed timestep for determinism
+- Sleep bodies when not moving
+- Use simple collision shapes
+
+### Controls
+- Support both touch and mouse
+- Responsive control sizing
+- Haptic feedback on mobile
+
+## Testing
+\`\`\`bash
+npx http-server -p 8080
+# Always test on actual mobile device!
+# Use Chrome DevTools mobile emulation for quick checks
+\`\`\`
+
+## Mobile Optimizations
+- Limit particle counts
+- Use lower poly models
+- Compress textures
+- Lazy load non-essential assets`,
+
+            python: `# Python Automation Scripts
+
+## Requirements
+- Python 3.11+
+- Type hints required
+- Async where beneficial
+- Structured logging
+
+## Project Structure
+\`\`\`
+/src
+  /scrapers       # Web scraping scripts
+  /processors     # Data processing
+  /integrations   # API clients
+  /utils          # Helpers
+/tests            # Unit tests
+/data             # Input/output data
+requirements.txt
+config.yaml
+\`\`\`
+
+## Code Standards
+
+### Type Hints
+\`\`\`python
+def process_data(items: list[dict]) -> dict[str, int]:
+    ...
+\`\`\`
+
+### Error Handling
+\`\`\`python
+try:
+    result = await fetch_data()
+except httpx.HTTPError as e:
+    logger.error(f"HTTP error: {e}")
+    raise
+\`\`\`
+
+### Logging
+\`\`\`python
+import structlog
+logger = structlog.get_logger()
+logger.info("processing", count=len(items))
+\`\`\`
+
+## Setup
+\`\`\`bash
+python -m venv venv
+source venv/bin/activate  # or venv\\Scripts\\activate on Windows
+pip install -r requirements.txt
+\`\`\`
+
+## Running
+\`\`\`bash
+python -m src.main
+python -m pytest tests/
+\`\`\`
+
+## Common Libraries
+- httpx (async HTTP)
+- beautifulsoup4 (HTML parsing)
+- pandas (data processing)
+- pydantic (validation)
+- structlog (logging)`,
+
+            static: `# Static Website
+
+## Tech Stack
+- Pure HTML5, CSS3, JavaScript
+- No frameworks or build tools
+- Mobile-first responsive design
+- Progressive enhancement
+
+## Structure
+\`\`\`
+/index.html       # Homepage
+/about.html       # About page
+/css
+  /styles.css     # Main styles
+  /components.css # Component styles
+/js
+  /main.js        # Main script
+  /utils.js       # Helpers
+/assets
+  /images/        # Optimized images
+  /fonts/         # Custom fonts
+\`\`\`
+
+## CSS Guidelines
+
+### Custom Properties
+\`\`\`css
+:root {
+  --color-primary: #00ff88;
+  --color-bg: #000000;
+  --font-main: 'Inter', sans-serif;
+}
+\`\`\`
+
+### Responsive Design
+- Mobile-first approach
+- Use clamp() for fluid typography
+- Flexbox and Grid for layout
+- No fixed widths (use max-width)
+
+### Performance
+- Critical CSS inline in <head>
+- Defer non-critical styles
+- Use system font stack as fallback
+
+## JavaScript
+- Vanilla JS only
+- Progressive enhancement
+- Feature detection before use
+- Minimal, purposeful scripts
+
+## Testing
+\`\`\`bash
+npx http-server -p 8080
+# Test on multiple devices and browsers
+\`\`\``,
+
+            supabase: `# Supabase Backend
+
+## Services Used
+- Authentication (email, OAuth)
+- PostgreSQL Database
+- Row Level Security (RLS)
+- Storage (file uploads)
+- Edge Functions (serverless)
+
+## Security Rules
+
+### CRITICAL
+- ANON key = safe for client-side code
+- SERVICE key = NEVER in client-side code
+- Always enable RLS on every table
+
+### Row Level Security
+\`\`\`sql
+-- Enable RLS
+ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+
+-- Users can only see their own posts
+CREATE POLICY "Users see own posts"
+ON posts FOR SELECT
+USING (auth.uid() = user_id);
+
+-- Users can only insert their own posts
+CREATE POLICY "Users create own posts"
+ON posts FOR INSERT
+WITH CHECK (auth.uid() = user_id);
+\`\`\`
+
+## Client Setup
+\`\`\`javascript
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+)
+\`\`\`
+
+## Database Conventions
+- Use snake_case for columns
+- Always add created_at, updated_at
+- Foreign keys with ON DELETE CASCADE
+- Index frequently queried columns
+
+## Edge Functions
+\`\`\`bash
+supabase functions new my-function
+supabase functions serve
+supabase functions deploy my-function
+\`\`\``,
+
+            cli: `# CLI Tool
+
+## Tech Stack
+- Node.js with TypeScript
+- Commander.js for arguments
+- Inquirer.js for prompts
+- Chalk for colors
+- Ora for spinners
+
+## Project Structure
+\`\`\`
+/src
+  /commands       # Command implementations
+  /utils          # Helpers
+  index.ts        # Entry point
+/bin
+  cli.js          # Executable entry
+package.json
+\`\`\`
+
+## Command Structure
+\`\`\`typescript
+import { Command } from 'commander';
+
+const program = new Command();
+
+program
+  .name('mycli')
+  .description('My awesome CLI tool')
+  .version('1.0.0');
+
+program
+  .command('init')
+  .description('Initialize a new project')
+  .option('-n, --name <name>', 'project name')
+  .action(async (options) => {
+    // Implementation
+  });
+\`\`\`
+
+## User Experience
+- Show progress for long operations
+- Provide helpful error messages
+- Support --help on all commands
+- Use colors meaningfully (not excessively)
+
+## Publishing
+\`\`\`bash
+# Test locally
+npm link
+
+# Publish to npm
+npm publish
+\`\`\`
+
+## package.json
+\`\`\`json
+{
+  "bin": {
+    "mycli": "./bin/cli.js"
+  }
+}
+\`\`\``,
+
+            discord: `# Discord Bot
+
+## Tech Stack
+- Discord.js v14+
+- TypeScript
+- Slash commands (required)
+- SQLite/PostgreSQL for data
+
+## Project Structure
+\`\`\`
+/src
+  /commands       # Slash commands
+  /events         # Event handlers
+  /utils          # Helpers
+  index.ts        # Entry point
+.env              # NEVER commit this!
+\`\`\`
+
+## Security
+
+### CRITICAL
+- BOT_TOKEN in .env file ONLY
+- Never commit .env to git
+- Add .env to .gitignore immediately
+
+### Intents
+Only request intents you actually need:
+\`\`\`typescript
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    // Add only what you need
+  ]
+});
+\`\`\`
+
+## Command Structure
+\`\`\`typescript
+export default {
+  data: new SlashCommandBuilder()
+    .setName('ping')
+    .setDescription('Replies with Pong!'),
+  async execute(interaction) {
+    await interaction.reply('Pong!');
+  },
+};
+\`\`\`
+
+## Deployment
+\`\`\`bash
+# Register commands globally (takes up to 1 hour)
+npm run deploy-commands
+
+# Start bot
+npm run start
+\`\`\`
+
+## Best Practices
+- Defer replies for slow operations
+- Handle errors gracefully
+- Log important events
+- Respect rate limits`
+        };
+
+        // Filter functionality
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                const filter = tab.dataset.filter;
+                document.querySelectorAll('.template-card').forEach(card => {
+                    if (filter === 'all' || card.dataset.category === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // View template in modal
+        function viewTemplate(name) {
+            const modal = document.getElementById('modalOverlay');
+            const title = document.getElementById('modalTitle');
+            const code = document.getElementById('modalCode');
+            const copyBtn = document.getElementById('modalCopyBtn');
+
+            title.textContent = name.charAt(0).toUpperCase() + name.slice(1) + ' Template';
+            code.textContent = templates[name];
+
+            copyBtn.onclick = () => copyTemplate(name);
+
+            modal.classList.add('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modalOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'modalOverlay') {
+                closeModal();
+            }
+        });
+
+        // Copy template to clipboard
+        function copyTemplate(name) {
+            navigator.clipboard.writeText(templates[name]).then(() => {
+                showToast('Template copied to clipboard!');
+            });
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #00ff88;
+                color: #000;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                z-index: 9999;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // Escape key closes modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>
