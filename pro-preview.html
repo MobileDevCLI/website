@@ -3576,6 +3576,127 @@ git push origin master && git push website master</pre>
                 </ul>
             </div>
 
+            <h3>Chapter 6.5: The Full Automation Pipeline</h3>
+            <p>This is what nobody else has documented. The complete chain that makes <strong>fully autonomous development</strong> possible:</p>
+
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 24px 0;">
+                <h4 style="margin-top: 0; color: var(--primary);">The Complete Toolchain</h4>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; line-height: 2.2; color: var(--text-secondary);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+                        <span style="color: var(--primary);">1.</span>
+                        <strong style="color: var(--text);">Termux</strong> (from F-Droid, NOT Play Store)
+                        <span style="color: var(--text-muted);">→ Linux environment on Android</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+                        <span style="color: var(--primary);">2.</span>
+                        <strong style="color: var(--text);">Termux:API</strong>
+                        <span style="color: var(--text-muted);">→ Hardware access (wake-lock, notifications, clipboard)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+                        <span style="color: var(--primary);">3.</span>
+                        <strong style="color: var(--text);">termux-wake-lock</strong>
+                        <span style="color: var(--text-muted);">→ CPU stays active with screen off</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+                        <span style="color: var(--primary);">4.</span>
+                        <strong style="color: var(--text);">pkg install git nodejs gh</strong>
+                        <span style="color: var(--text-muted);">→ Development essentials</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+                        <span style="color: var(--primary);">5.</span>
+                        <strong style="color: var(--text);">gh auth login</strong>
+                        <span style="color: var(--text-muted);">→ GitHub token stored locally</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+                        <span style="color: var(--primary);">6.</span>
+                        <strong style="color: var(--text);">npm install -g @anthropic-ai/claude-code</strong>
+                        <span style="color: var(--text-muted);">→ AI CLI installed</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+                        <span style="color: var(--primary);">7.</span>
+                        <strong style="color: var(--text);">Vercel → GitHub webhook</strong>
+                        <span style="color: var(--text-muted);">→ Auto-deploy on every push</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+                        <span style="color: var(--primary);">8.</span>
+                        <strong style="color: var(--text);">tmux + --dangerously-skip-permissions</strong>
+                        <span style="color: var(--text-muted);">→ Autonomous AI operation</span>
+                    </div>
+                </div>
+            </div>
+
+            <h4 style="color: var(--secondary);">The Automation Loop</h4>
+            <p>Once set up, this is what happens—<strong>automatically</strong>:</p>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 212, 255, 0.05)); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 24px 0;">
+                <div style="font-family: 'JetBrains Mono', monospace; text-align: center; font-size: 1rem; line-height: 2.5;">
+                    <div style="color: var(--primary);">You give Claude a task</div>
+                    <div style="color: var(--text-muted);">↓</div>
+                    <div style="color: var(--secondary);">Claude writes code</div>
+                    <div style="color: var(--text-muted);">↓</div>
+                    <div style="color: var(--accent);">Claude runs: git add && git commit && git push</div>
+                    <div style="color: var(--text-muted);">↓</div>
+                    <div style="color: var(--primary);">GitHub receives the push (token authenticated)</div>
+                    <div style="color: var(--text-muted);">↓</div>
+                    <div style="color: var(--secondary);">Vercel webhook triggers (connected to repo)</div>
+                    <div style="color: var(--text-muted);">↓</div>
+                    <div style="color: var(--accent);">Site rebuilds and deploys automatically</div>
+                    <div style="color: var(--text-muted);">↓</div>
+                    <div style="color: var(--primary); font-weight: 700;">Live in production in ~30 seconds</div>
+                </div>
+            </div>
+
+            <h4 style="color: var(--secondary);">The Token Authentication Chain</h4>
+            <p>When you run <code>gh auth login</code>, this happens:</p>
+            <ol>
+                <li><strong>Browser opens</strong> → You authorize the GitHub CLI</li>
+                <li><strong>Token is created</strong> → Stored securely in Termux</li>
+                <li><strong>git operations are authenticated</strong> → Push/pull just work</li>
+                <li><strong>No password prompts ever</strong> → True automation</li>
+            </ol>
+
+            <div class="code-block">
+                <div class="code-header"><span>Verify Authentication</span></div>
+                <pre><span class="comment"># Check GitHub auth status</span>
+gh auth status
+
+<span class="comment"># Shows: Logged in to github.com as YourUsername</span>
+<span class="comment"># Token: stored in /data/data/com.termux/...</span></pre>
+            </div>
+
+            <h4 style="color: var(--secondary);">The Vercel Connection</h4>
+            <p>Connecting Vercel to GitHub is the final piece:</p>
+            <ol>
+                <li><strong>Create Vercel account</strong> → Link to GitHub</li>
+                <li><strong>Import repo</strong> → Select your website repo</li>
+                <li><strong>Vercel creates a webhook</strong> → Watches for pushes</li>
+                <li><strong>Every push triggers a build</strong> → No manual deploys ever</li>
+            </ol>
+
+            <div class="info-box" style="border-left-color: var(--primary); background: rgba(0, 255, 136, 0.05);">
+                <h4 style="color: var(--primary); margin-top: 0;">Why This Changes Everything</h4>
+                <p>With this chain in place:</p>
+                <ul style="margin-bottom: 0;">
+                    <li>Claude writes code → <strong>automatically commits</strong></li>
+                    <li>Commits push → <strong>automatically deploy</strong></li>
+                    <li>You sleep → <strong>17 demos get built and go live</strong></li>
+                    <li>Phone stays cool → <strong>all compute is on Anthropic's servers</strong></li>
+                    <li>No laptop needed → <strong>ever</strong></li>
+                </ul>
+            </div>
+
+            <h4 style="color: var(--secondary);">Why The Phone Never Gets Hot</h4>
+            <p>This confused people at first. How can a phone run AI for 72+ hours and not overheat?</p>
+            <p><strong>Answer: The phone isn't running AI.</strong></p>
+            <p>Here's what ACTUALLY happens when Claude Code runs:</p>
+            <ol>
+                <li><strong>Your phone sends text</strong> (your prompt) to Anthropic's API</li>
+                <li><strong>Anthropic's datacenter</strong> runs the AI model (Opus 4.5, with thinking)</li>
+                <li><strong>Your phone receives text</strong> (Claude's response)</li>
+                <li><strong>Claude executes commands</strong> locally (git push, file writes)</li>
+            </ol>
+            <p>The AI computation—the part that would make a laptop scream—happens on Anthropic's $100M+ infrastructure. Your phone just sends and receives text. <strong>Same energy usage as WhatsApp.</strong></p>
+
             <h3>Chapter 7: The Meaning</h3>
             <p>What happened in 84 hours?</p>
             <p>A complete SaaS platform was built. From scratch. On a phone. By one person. Assisted by AI.</p>
