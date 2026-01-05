@@ -696,17 +696,14 @@
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-section">
-            <div class="mobile-menu-label">Product</div>
-            <a href="/pricing.html">Pricing</a>
-            <a href="/dashboard.html">Dashboard</a>
-            <a href="/proof.html">Case Study</a>
-        </div>
-        <div class="mobile-menu-section">
-            <div class="mobile-menu-label">Learn</div>
-            <a href="/learn.html">Documentation</a>
-            <a href="/quickstart.html">Quick Start</a>
-            <a href="/examples.html">Examples</a>
-            <a href="/research.html">Research</a>
+            <div class="mobile-menu-label">Pro Documentation</div>
+            <a href="#" onclick="goToTab('quickstart'); return false;">Quick Start</a>
+            <a href="#" onclick="goToTab('complete'); return false;">Complete Guide</a>
+            <a href="#" onclick="goToTab('workflow'); return false;">Workflow Mastery</a>
+            <a href="#" onclick="goToTab('prompts'); return false;">Magic Prompts</a>
+            <a href="#" onclick="goToTab('research'); return false;">Research Lab</a>
+            <a href="#" onclick="goToTab('resources'); return false;">Resources</a>
+            <a href="#" onclick="goToTab('troubleshoot'); return false;">Troubleshooting</a>
         </div>
         <div class="mobile-menu-section">
             <div class="mobile-menu-label">Interactive</div>
@@ -722,13 +719,9 @@
             <a href="https://youtube.com/@MobileDevCLI" target="_blank">YouTube</a>
         </div>
         <div class="mobile-menu-section">
-            <div class="mobile-menu-label">Resources</div>
-            <a href="/legal-guide.html">Legal Guide</a>
-            <a href="/security-guide.html">Security Guide</a>
-            <a href="/news.html">News</a>
-        </div>
-        <div class="mobile-menu-section">
-            <a href="/login.html" class="btn-primary">Account</a>
+            <div class="mobile-menu-label">Account</div>
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/pricing.html">Subscription</a>
         </div>
     </div>
 
@@ -2993,10 +2986,45 @@ git push origin master && git push website master</pre>
 
             // Show selected tab
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+
+            // Update tab button if called from tab bar
+            if (event && event.target && event.target.classList) {
+                event.target.classList.add('active');
+            }
 
             // Scroll to top of content
             window.scrollTo({ top: 200, behavior: 'smooth' });
+        }
+
+        // Called from mobile menu - shows tab and closes menu
+        function goToTab(tabId) {
+            // Close mobile menu
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            mobileMenu.classList.remove('open');
+            mobileMenuBtn.textContent = 'Menu';
+
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+
+            // Update the correct tab button
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabNames = ['quickstart', 'complete', 'workflow', 'prompts', 'research', 'resources', 'troubleshoot'];
+            const tabIndex = tabNames.indexOf(tabId);
+            if (tabIndex >= 0 && tabButtons[tabIndex]) {
+                tabButtons[tabIndex].classList.add('active');
+            }
+
+            // Scroll to top of content
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function copyCode(btn) {
