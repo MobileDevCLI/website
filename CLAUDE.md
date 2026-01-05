@@ -666,48 +666,185 @@ Public teaching page that explains:
 
 ## FREEMIUM MODEL & SECRET SAUCE PROTECTION
 
+### ⚠️ CRITICAL RULE: NEVER LEAK SECRET SAUCE TO FREE PAGES ⚠️
+
+Before writing ANY content to a free page, ask yourself:
+> "Does this reveal HOW to do it, or just WHAT is possible?"
+
+- **WHAT is possible** = FREE (sell the dream, show capabilities)
+- **HOW to do it** = PRO ONLY (the actual methodology)
+
 ### The Business Model
 ```
 FREE: Teasers only (shows WHAT is possible, not HOW)
-PRO ($10/mo): All secret sauce revealed
+PRO ($10/mo): All secret sauce revealed - full methodology
 TEAM ($20/user/mo): Team features + SSO
 ```
 
-### What is "Secret Sauce"?
-The specific knowledge that makes this work:
+**Future State:** Pro content will be gated behind Supabase login. Users must be authenticated AND have active Pro subscription to access pro-preview.html content.
 
-1. **F-Droid Download Link** - Play Store Termux is broken/outdated
-2. **--dangerously-skip-permissions** - Enables autonomous AI operation
-3. **Complete Setup Commands** - The exact workflow that works
+### What is "Secret Sauce"? (COMPLETE LIST)
+
+**NEVER put these on free pages:**
+
+| Secret Sauce | Why It's Protected |
+|--------------|-------------------|
+| `--dangerously-skip-permissions` | Enables autonomous AI operation |
+| `--permission-mode=dontAsk` | Alternative autonomous flag |
+| `termux-wake-lock` | CPU persistence command |
+| `tmux new -s dev` | Session persistence command |
+| F-Droid download link | Play Store version is broken |
+| `https://f-droid.org/packages/com.termux/` | Direct download URL |
+| Complete setup script sequence | The exact order of commands |
+| Three-layer persistence combo | wake-lock + tmux + autonomous mode |
+| CLAUDE.md knowledge compounding | The AI memory pattern |
+
+**Safe for free pages:**
+- General concepts: "autonomous mode", "session persistence", "CPU active"
+- Capabilities: "72 hours", "25+ pages", "zero battery drain"
+- Results: "built entire SaaS", "supercomputer access"
+- Benefits: "as fast as MacBook Pro", "flat subscription"
 
 ### Page Classification
 
 **FREE PAGES (Teasers Only):**
-- dashboard.html, learn.html, quickstart.html, examples.html
-- news.html, security-guide.html, disclaimer.html
-- MUST NOT contain: F-Droid links, real permission flags, full commands
+```
+index.html, proof.html, pricing.html, demos.html, games.html
+dashboard.html, learn.html, quickstart.html, examples.html
+news.html, research.html, labs.html
+legal-guide.html, security-guide.html
+terms.html, privacy.html, disclaimer.html, ip.html, dmca.html
+```
+
+Rules for FREE pages:
+- Show WHAT is possible (jaw-dropping capabilities)
+- Explain benefits and results
+- Use generic descriptions: "CPU Persistence", "Session Survival", "Autonomous Mode"
+- Always end with CTA to Pro for the "how"
+- NEVER include specific commands, flags, or download links
 
 **PRO PAGE (Full Secret Sauce):**
-- pro-preview.html (ONLY this page reveals everything)
-- Contains: F-Droid link, --dangerously-skip-permissions, full methodology
-
-### Before Committing - Audit for Leaks
-```bash
-# Check for secret sauce in free pages
-grep -ri "f-droid\|dangerously-skip-permissions" *.html | grep -v pro-preview
 ```
-If matches found → FIX BEFORE PUSHING
+pro-preview.html (ONLY this page reveals everything)
+```
 
-### Teaser Text Examples
+Rules for PRO page:
+- Contains ALL secret sauce
+- Exact commands, flags, download links
+- Step-by-step methodology
+- Copy-paste ready setup
+- Will be gated behind Supabase auth + subscription check
+
+### How to Write Teaser Content
+
+**Pattern: Describe the EFFECT, not the COMMAND**
+
+| SECRET (Pro Only) | TEASER (Free OK) |
+|-------------------|------------------|
+| `termux-wake-lock` | "Phone stays active even with screen off" |
+| `tmux new -s dev` | "Session survives even when app is backgrounded" |
+| `--dangerously-skip-permissions` | "AI works autonomously without manual approval" |
+| F-Droid link | "Special download source (Pro subscribers get the link)" |
+| Full command sequence | "The exact commands? That's in the Pro methodology." |
+
+**Example Transformation:**
+
 ```html
-<!-- WRONG (leaking secret sauce) -->
-<a href="https://f-droid.org/packages/com.termux/">Download Termux</a>
-<code>claude --dangerously-skip-permissions</code>
+<!-- ❌ WRONG - Leaking secret sauce on free page -->
+<h2>How It Worked</h2>
+<ul>
+  <li>termux-wake-lock — Kept CPU active</li>
+  <li>tmux — Session persisted</li>
+  <li>--dangerously-skip-permissions — Autonomous mode</li>
+</ul>
 
-<!-- RIGHT (proper teaser) -->
-<p>Pro subscribers get the exact download link</p>
-<p>Full Autonomous Mode (Pro feature)</p>
+<!-- ✅ RIGHT - Proper teaser for free page -->
+<h2>How It Worked</h2>
+<ul>
+  <li><strong>CPU Persistence</strong> — Phone stayed active even with screen off</li>
+  <li><strong>Session Survival</strong> — Work continued when app was backgrounded</li>
+  <li><strong>Autonomous Mode</strong> — AI worked continuously without manual approval</li>
+</ul>
+<p><em>The exact commands? That's in the Pro methodology.</em></p>
 ```
+
+### Before Committing - MANDATORY Audit
+
+**Run this check before EVERY commit that touches HTML:**
+
+```bash
+# Check for secret sauce leaks in free pages
+grep -ri "f-droid\|dangerously-skip-permissions\|permission-mode\|termux-wake-lock\|tmux new\|tmux attach" *.html | grep -v pro-preview
+
+# Check proof.html specifically (common leak location)
+grep -i "dangerously\|wake-lock\|tmux\|f-droid" proof.html
+```
+
+**If matches found → FIX BEFORE PUSHING**
+
+Replace specific commands with generic descriptions.
+
+### Pro Access & Supabase Integration
+
+**Current State:**
+- pro-preview.html is publicly accessible (honor system)
+- robots.txt blocks it from search engines
+
+**Future State (when Supabase subscription is ready):**
+1. User must be logged in (Supabase Auth)
+2. User must have active Pro subscription (check `subscriptions` table)
+3. If not Pro → redirect to pricing.html with upgrade CTA
+4. Pro content rendered only after validation
+
+**Supabase Tables Needed:**
+```sql
+-- Users table (auto-created by Supabase Auth)
+-- Subscriptions table
+CREATE TABLE subscriptions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id),
+  tier TEXT NOT NULL, -- 'free', 'pro', 'team'
+  status TEXT NOT NULL, -- 'active', 'cancelled', 'expired'
+  stripe_customer_id TEXT,
+  stripe_subscription_id TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  expires_at TIMESTAMP
+);
+```
+
+**Pro Page Access Check (JavaScript):**
+```javascript
+// This will go in pro-preview.html when ready
+async function checkProAccess() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    window.location.href = '/login.html?redirect=pro-preview';
+    return false;
+  }
+
+  const { data: sub } = await supabase
+    .from('subscriptions')
+    .select('tier, status')
+    .eq('user_id', user.id)
+    .eq('status', 'active')
+    .single();
+
+  if (!sub || sub.tier === 'free') {
+    window.location.href = '/pricing.html?upgrade=true';
+    return false;
+  }
+
+  return true; // User has Pro access
+}
+```
+
+### Summary: The Golden Rule
+
+**When in doubt, ask:**
+> "If someone reads this, will they know EXACTLY how to do it?"
+
+- **YES** → Pro only
+- **NO, just impressed** → Free is OK
 
 ---
 
