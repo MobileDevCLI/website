@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MobileCLI Studio — AI-Powered Development</title>
+    <meta name="description" content="Build apps with AI. Bring your own API key, generate code, manage projects. The future of mobile development.">
+
+    <!-- Monaco Editor -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-dark: #000000;
+            --bg-card: #111111;
+            --bg-hover: #1a1a1a;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --primary: #00ff88;
+            --primary-dim: #00cc6a;
+            --secondary: #00d4ff;
+            --accent: #a855f7;
+            --border: #222222;
+            --border-light: #333333;
+            --error: #ff4444;
+            --success: #00ff88;
+            --warning: #ffaa00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            height: 56px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-spacer {
+            flex: 1;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-btn.primary {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .header-btn.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .header-btn:hover {
+            opacity: 0.9;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: var(--bg-card);
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #000;
+        }
+
+        /* Main Layout */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        /* File Tree */
+        .file-tree {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+        }
+
+        .file-item:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+
+        .file-item.active {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--primary);
+        }
+
+        .file-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
+
+        .folder-item {
+            font-weight: 500;
+        }
+
+        .folder-item .file-icon {
+            color: var(--warning);
+        }
+
+        /* Main Panel */
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Tabs */
+        .tabs-bar {
+            height: 40px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            gap: 4px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px 6px 0 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            background: transparent;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: var(--bg-hover);
+        }
+
+        .tab.active {
+            background: var(--bg-card);
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        .tab-close {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.15s;
+        }
+
+        .tab:hover .tab-close {
+            opacity: 0.5;
+        }
+
+        .tab-close:hover {
+            background: rgba(255, 68, 68, 0.2);
+            opacity: 1;
+        }
+
+        /* Editor Container */
+        .editor-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        #editor {
+            flex: 1;
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            width: 400px;
+            background: var(--bg);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .chat-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .model-select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .message.user {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            margin-left: 32px;
+        }
+
+        .message.assistant {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            margin-right: 32px;
+        }
+
+        .message.system {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .message-header {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message pre {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .message code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .chat-input-container {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: inherit;
+            resize: none;
+            max-height: 120px;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .send-btn:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 4px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .form-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .form-btn.primary {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .form-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Status indicators */
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border-radius: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.connected {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .status-dot.disconnected {
+            background: var(--error);
+        }
+
+        .status-dot.loading {
+            background: var(--warning);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .login-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .login-btn.github {
+            background: #24292e;
+            color: white;
+        }
+
+        .login-btn.email {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            display: none;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .toast.visible {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 56px;
+                bottom: 0;
+                z-index: 100;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .chat-panel {
+                position: fixed;
+                right: -400px;
+                top: 56px;
+                bottom: 0;
+                z-index: 100;
+                transition: right 0.3s ease;
+            }
+
+            .chat-panel.open {
+                right: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .chat-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+        }
+
+        /* Welcome State */
+        .welcome-state {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-content {
+            max-width: 500px;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+        }
+
+        .welcome-content h2 {
+            font-size: 1.75rem;
+            margin-bottom: 12px;
+        }
+
+        .welcome-content p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-action {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .quick-action:hover {
+            border-color: var(--primary);
+            background: var(--bg-hover);
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-logo">>_ MobileCLI</div>
+            <p class="login-subtitle">AI-Powered Development Studio</p>
+
+            <button class="login-btn github" onclick="loginWithGitHub()">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                Continue with GitHub
+            </button>
+
+            <div class="login-divider">or</div>
+
+            <div class="form-group" style="text-align: left;">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="your@email.com">
+            </div>
+
+            <button class="login-btn email" onclick="loginWithEmail()">
+                Continue with Email
+            </button>
+
+            <p style="margin-top: 24px; font-size: 0.85rem; color: var(--text-muted);">
+                By continuing, you agree to our <a href="terms.html" style="color: var(--primary);">Terms</a> and <a href="privacy.html" style="color: var(--primary);">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="app-container" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <button class="header-btn secondary" id="sidebarToggle" style="display: none;">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </button>
+            <div class="logo">>_ Studio</div>
+
+            <div class="api-status" id="apiStatus">
+                <span class="status-dot disconnected"></span>
+                <span>No API Key</span>
+            </div>
+
+            <div class="header-spacer"></div>
+
+            <button class="header-btn secondary" onclick="showModal('settingsModal')">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Settings
+            </button>
+
+            <button class="header-btn primary" onclick="showModal('exportModal')">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                Export
+            </button>
+
+            <button class="header-btn secondary" id="chatToggle" style="display: none;">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </button>
+
+            <div class="user-menu" id="userMenu" onclick="toggleUserDropdown()">
+                <div class="user-avatar" id="userAvatar">U</div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Project</div>
+                    <button class="header-btn primary" style="width: 100%;" onclick="showModal('newProjectModal')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                        New Project
+                    </button>
+                </div>
+
+                <div class="file-tree" id="fileTree">
+                    <!-- Files will be rendered here -->
+                </div>
+
+                <div class="sidebar-section">
+                    <button class="header-btn secondary" style="width: 100%;" onclick="addNewFile()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15h6"/></svg>
+                        Add File
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Panel -->
+            <main class="main-panel">
+                <!-- Tabs -->
+                <div class="tabs-bar" id="tabsBar">
+                    <!-- Tabs will be rendered here -->
+                </div>
+
+                <!-- Editor or Welcome -->
+                <div class="editor-container" id="editorContainer">
+                    <div class="welcome-state" id="welcomeState">
+                        <div class="welcome-content">
+                            <div class="welcome-icon">🚀</div>
+                            <h2>Welcome to MobileCLI Studio</h2>
+                            <p>Start a new project, open a file, or chat with AI to generate code.</p>
+                            <div class="quick-actions">
+                                <button class="quick-action" onclick="showModal('newProjectModal')">New Project</button>
+                                <button class="quick-action" onclick="addNewFile()">Create File</button>
+                                <button class="quick-action" onclick="focusChat()">Ask AI</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="editor" style="display: none;"></div>
+                </div>
+            </main>
+
+            <!-- Chat Panel -->
+            <aside class="chat-panel" id="chatPanel">
+                <div class="chat-header">
+                    <h3>AI Assistant</h3>
+                    <select class="model-select" id="modelSelect">
+                        <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
+                        <option value="claude-opus-4-20250514">Claude Opus 4</option>
+                        <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
+                    </select>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message system">
+                        Enter your Anthropic API key in Settings to start chatting with Claude.
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <textarea
+                            class="chat-input"
+                            id="chatInput"
+                            placeholder="Describe what you want to build..."
+                            rows="2"
+                            onkeydown="handleChatKeydown(event)"
+                        ></textarea>
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" onclick="hideModal('settingsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Anthropic API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
+                    <p class="form-hint">Your key is encrypted and stored locally. <a href="https://console.anthropic.com/" target="_blank" style="color: var(--primary);">Get an API key</a></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Default Model</label>
+                    <select id="defaultModel">
+                        <option value="claude-sonnet-4-20250514">Claude Sonnet 4 (Recommended)</option>
+                        <option value="claude-opus-4-20250514">Claude Opus 4 (Most Capable)</option>
+                        <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
+                    </select>
+                </div>
+
+                <button class="form-btn primary" onclick="saveSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Project Modal -->
+    <div class="modal-overlay" id="newProjectModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>New Project</h2>
+                <button class="modal-close" onclick="hideModal('newProjectModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Project Name</label>
+                    <input type="text" id="projectName" placeholder="my-awesome-app">
+                </div>
+
+                <div class="form-group">
+                    <label>Template</label>
+                    <select id="projectTemplate">
+                        <option value="blank">Blank Project</option>
+                        <option value="nextjs">Next.js App</option>
+                        <option value="react">React App</option>
+                        <option value="node">Node.js API</option>
+                        <option value="python">Python Script</option>
+                        <option value="html">Static Website</option>
+                    </select>
+                </div>
+
+                <button class="form-btn primary" onclick="createProject()">Create Project</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Export Project</h2>
+                <button class="modal-close" onclick="hideModal('exportModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="quick-actions" style="flex-direction: column;">
+                    <button class="quick-action" onclick="exportAsZip()" style="width: 100%; text-align: left; padding: 16px;">
+                        <strong>Download as ZIP</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 0.85rem;">Get all files in a ZIP archive</span>
+                    </button>
+                    <button class="quick-action" onclick="exportTermuxScript()" style="width: 100%; text-align: left; padding: 16px;">
+                        <strong>Generate Termux Script</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 0.85rem;">Script to create files in Termux</span>
+                    </button>
+                    <button class="quick-action" onclick="copyAllFiles()" style="width: 100%; text-align: left; padding: 16px;">
+                        <strong>Copy All to Clipboard</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 0.85rem;">Copy file contents with markers</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://mwxlguqukyfberyhtkmg.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13eGxndXF1a3lmYmVyeWh0a21nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU3NjQ2NzAsImV4cCI6MjA1MTM0MDY3MH0.bqxDyJr1LnFy4xkJT3acgLQNan8n9sWcI_cAq-3_d4o';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // App State
+        let currentUser = null;
+        let apiKey = null;
+        let editor = null;
+        let files = {};
+        let currentFile = null;
+        let openTabs = [];
+        let chatHistory = [];
+        let isGenerating = false;
+
+        // Monaco Editor
+        let monacoLoaded = false;
+
+        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
+
+        require(['vs/editor/editor.main'], function () {
+            monacoLoaded = true;
+
+            // Define dark theme
+            monaco.editor.defineTheme('mobilecli-dark', {
+                base: 'vs-dark',
+                inherit: true,
+                rules: [],
+                colors: {
+                    'editor.background': '#0a0a0a',
+                    'editor.foreground': '#e0e0e0',
+                    'editor.lineHighlightBackground': '#1a1a1a',
+                    'editor.selectionBackground': '#264f78',
+                    'editorCursor.foreground': '#00ff88',
+                    'editorLineNumber.foreground': '#555555',
+                }
+            });
+
+            // Create editor instance
+            editor = monaco.editor.create(document.getElementById('editor'), {
+                value: '',
+                language: 'javascript',
+                theme: 'mobilecli-dark',
+                fontSize: 14,
+                fontFamily: "'JetBrains Mono', monospace",
+                lineHeight: 22,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on',
+                automaticLayout: true,
+                padding: { top: 16, bottom: 16 },
+            });
+
+            // Auto-save on change
+            editor.onDidChangeModelContent(() => {
+                if (currentFile) {
+                    files[currentFile].content = editor.getValue();
+                    updateFileTree();
+                }
+            });
+        });
+
+        // Initialize
+        async function init() {
+            // Check for existing session
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (session) {
+                currentUser = session.user;
+                showMainApp();
+            }
+
+            // Listen for auth changes
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (session) {
+                    currentUser = session.user;
+                    showMainApp();
+                } else {
+                    currentUser = null;
+                    showLoginScreen();
+                }
+            });
+
+            // Load saved API key
+            const savedKey = localStorage.getItem('mobilecli_api_key');
+            if (savedKey) {
+                apiKey = savedKey;
+                updateApiStatus(true);
+            }
+
+            // Responsive handlers
+            setupResponsive();
+        }
+
+        // Auth Functions
+        async function loginWithGitHub() {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'github',
+                options: {
+                    redirectTo: window.location.origin + '/studio.html'
+                }
+            });
+            if (error) showToast(error.message, 'error');
+        }
+
+        async function loginWithEmail() {
+            const email = document.getElementById('loginEmail').value;
+            if (!email) {
+                showToast('Please enter your email', 'error');
+                return;
+            }
+
+            const { error } = await supabase.auth.signInWithOtp({
+                email: email,
+                options: {
+                    emailRedirectTo: window.location.origin + '/studio.html'
+                }
+            });
+
+            if (error) {
+                showToast(error.message, 'error');
+            } else {
+                showToast('Check your email for the login link!', 'success');
+            }
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            showLoginScreen();
+        }
+
+        // UI Functions
+        function showLoginScreen() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        function showMainApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'flex';
+
+            // Update user avatar
+            if (currentUser) {
+                const avatar = document.getElementById('userAvatar');
+                avatar.textContent = currentUser.email ? currentUser.email[0].toUpperCase() : 'U';
+            }
+
+            // Initialize with welcome message
+            updateChatMessages();
+        }
+
+        function showModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function hideModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' visible';
+            setTimeout(() => toast.classList.remove('visible'), 3000);
+        }
+
+        // Settings
+        function saveSettings() {
+            const key = document.getElementById('apiKeyInput').value;
+            const model = document.getElementById('defaultModel').value;
+
+            if (key) {
+                apiKey = key;
+                localStorage.setItem('mobilecli_api_key', key);
+                updateApiStatus(true);
+                document.getElementById('modelSelect').value = model;
+                showToast('Settings saved!', 'success');
+            }
+
+            hideModal('settingsModal');
+        }
+
+        function updateApiStatus(connected) {
+            const status = document.getElementById('apiStatus');
+            const dot = status.querySelector('.status-dot');
+            const text = status.querySelector('span:last-child');
+
+            if (connected) {
+                dot.className = 'status-dot connected';
+                text.textContent = 'Connected';
+                document.getElementById('sendBtn').disabled = false;
+            } else {
+                dot.className = 'status-dot disconnected';
+                text.textContent = 'No API Key';
+                document.getElementById('sendBtn').disabled = true;
+            }
+        }
+
+        // Project Functions
+        function createProject() {
+            const name = document.getElementById('projectName').value || 'my-project';
+            const template = document.getElementById('projectTemplate').value;
+
+            files = {};
+
+            switch (template) {
+                case 'nextjs':
+                    files['package.json'] = { content: JSON.stringify({ name, scripts: { dev: 'next dev' } }, null, 2), language: 'json' };
+                    files['app/page.tsx'] = { content: 'export default function Home() {\n  return <h1>Hello World</h1>\n}', language: 'typescript' };
+                    files['app/layout.tsx'] = { content: 'export default function RootLayout({ children }) {\n  return <html><body>{children}</body></html>\n}', language: 'typescript' };
+                    break;
+                case 'react':
+                    files['package.json'] = { content: JSON.stringify({ name, scripts: { start: 'react-scripts start' } }, null, 2), language: 'json' };
+                    files['src/App.jsx'] = { content: 'function App() {\n  return <h1>Hello World</h1>\n}\nexport default App', language: 'javascript' };
+                    files['src/index.jsx'] = { content: 'import React from "react"\nimport ReactDOM from "react-dom/client"\nimport App from "./App"\n\nReactDOM.createRoot(document.getElementById("root")).render(<App />)', language: 'javascript' };
+                    break;
+                case 'node':
+                    files['package.json'] = { content: JSON.stringify({ name, main: 'index.js', scripts: { start: 'node index.js' } }, null, 2), language: 'json' };
+                    files['index.js'] = { content: 'const express = require("express")\nconst app = express()\n\napp.get("/", (req, res) => res.json({ message: "Hello World" }))\n\napp.listen(3000, () => console.log("Server running on port 3000"))', language: 'javascript' };
+                    break;
+                case 'python':
+                    files['main.py'] = { content: '# ' + name + '\n\ndef main():\n    print("Hello World")\n\nif __name__ == "__main__":\n    main()', language: 'python' };
+                    files['requirements.txt'] = { content: '# Add your dependencies here', language: 'plaintext' };
+                    break;
+                case 'html':
+                    files['index.html'] = { content: '<!DOCTYPE html>\n<html>\n<head>\n  <title>' + name + '</title>\n  <link rel="stylesheet" href="styles.css">\n</head>\n<body>\n  <h1>Hello World</h1>\n  <script src="script.js"></script>\n</body>\n</html>', language: 'html' };
+                    files['styles.css'] = { content: 'body {\n  font-family: sans-serif;\n  margin: 40px;\n}', language: 'css' };
+                    files['script.js'] = { content: 'console.log("Hello World")', language: 'javascript' };
+                    break;
+                default:
+                    files['README.md'] = { content: '# ' + name + '\n\nNew project created with MobileCLI Studio.', language: 'markdown' };
+            }
+
+            updateFileTree();
+            hideModal('newProjectModal');
+            showToast('Project created!', 'success');
+        }
+
+        function addNewFile() {
+            const fileName = prompt('File name (e.g., index.js):');
+            if (fileName) {
+                const ext = fileName.split('.').pop();
+                const languageMap = {
+                    js: 'javascript', jsx: 'javascript', ts: 'typescript', tsx: 'typescript',
+                    py: 'python', html: 'html', css: 'css', json: 'json', md: 'markdown',
+                    sh: 'shell', yml: 'yaml', yaml: 'yaml'
+                };
+                files[fileName] = { content: '', language: languageMap[ext] || 'plaintext' };
+                openFile(fileName);
+                updateFileTree();
+            }
+        }
+
+        function openFile(fileName) {
+            currentFile = fileName;
+
+            // Add to tabs if not already open
+            if (!openTabs.includes(fileName)) {
+                openTabs.push(fileName);
+            }
+
+            // Show editor, hide welcome
+            document.getElementById('welcomeState').style.display = 'none';
+            document.getElementById('editor').style.display = 'block';
+
+            // Update editor content
+            if (editor && files[fileName]) {
+                const model = monaco.editor.createModel(
+                    files[fileName].content,
+                    files[fileName].language
+                );
+                editor.setModel(model);
+            }
+
+            updateTabs();
+            updateFileTree();
+        }
+
+        function closeTab(fileName, event) {
+            event.stopPropagation();
+            openTabs = openTabs.filter(t => t !== fileName);
+
+            if (currentFile === fileName) {
+                if (openTabs.length > 0) {
+                    openFile(openTabs[openTabs.length - 1]);
+                } else {
+                    currentFile = null;
+                    document.getElementById('welcomeState').style.display = 'flex';
+                    document.getElementById('editor').style.display = 'none';
+                }
+            }
+
+            updateTabs();
+        }
+
+        function updateTabs() {
+            const tabsBar = document.getElementById('tabsBar');
+            tabsBar.innerHTML = openTabs.map(fileName => `
+                <div class="tab ${fileName === currentFile ? 'active' : ''}" onclick="openFile('${fileName}')">
+                    <span>${fileName}</span>
+                    <div class="tab-close" onclick="closeTab('${fileName}', event)">×</div>
+                </div>
+            `).join('');
+        }
+
+        function updateFileTree() {
+            const fileTree = document.getElementById('fileTree');
+            const fileNames = Object.keys(files).sort();
+
+            fileTree.innerHTML = fileNames.map(fileName => `
+                <div class="file-item ${fileName === currentFile ? 'active' : ''}" onclick="openFile('${fileName}')">
+                    <svg class="file-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+                    <span>${fileName}</span>
+                </div>
+            `).join('');
+        }
+
+        // Chat Functions
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            if (!apiKey || isGenerating) return;
+
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            input.value = '';
+            isGenerating = true;
+            document.getElementById('sendBtn').disabled = true;
+
+            // Add user message
+            chatHistory.push({ role: 'user', content: message });
+            updateChatMessages();
+
+            // Add loading indicator
+            const messagesDiv = document.getElementById('chatMessages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message assistant';
+            loadingDiv.innerHTML = '<div class="spinner"></div>';
+            messagesDiv.appendChild(loadingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            try {
+                // Build context
+                let systemPrompt = `You are an expert coding assistant in MobileCLI Studio. Help the user build their project.
+
+Current project files:
+${Object.entries(files).map(([name, file]) => `--- ${name} ---\n${file.content}`).join('\n\n')}
+
+When generating code:
+1. Be concise and practical
+2. Use modern best practices
+3. If creating/modifying files, clearly indicate the filename
+4. Format code blocks with the language specified
+
+The user is building on a mobile device, so keep responses focused and actionable.`;
+
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey,
+                        'anthropic-version': '2023-06-01',
+                        'anthropic-dangerous-direct-browser-access': 'true'
+                    },
+                    body: JSON.stringify({
+                        model: document.getElementById('modelSelect').value,
+                        max_tokens: 4096,
+                        system: systemPrompt,
+                        messages: chatHistory.map(m => ({ role: m.role, content: m.content }))
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+
+                const assistantMessage = data.content[0].text;
+                chatHistory.push({ role: 'assistant', content: assistantMessage });
+
+                // Extract and apply code blocks
+                extractAndApplyCode(assistantMessage);
+
+            } catch (error) {
+                chatHistory.push({ role: 'assistant', content: `Error: ${error.message}` });
+            }
+
+            loadingDiv.remove();
+            updateChatMessages();
+            isGenerating = false;
+            document.getElementById('sendBtn').disabled = false;
+        }
+
+        function extractAndApplyCode(response) {
+            // Find code blocks with file indicators
+            const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+            const fileIndicatorRegex = /(?:file|filename|create|update|modify):\s*[`"]?([^\s`"]+)[`"]?/gi;
+
+            let match;
+            while ((match = fileIndicatorRegex.exec(response)) !== null) {
+                const fileName = match[1];
+                // Find the next code block after this indicator
+                const afterIndicator = response.slice(match.index);
+                const codeMatch = afterIndicator.match(/```(\w+)?\n([\s\S]*?)```/);
+                if (codeMatch) {
+                    const language = codeMatch[1] || 'plaintext';
+                    const code = codeMatch[2].trim();
+                    files[fileName] = { content: code, language: getLanguageFromExt(fileName) || language };
+                    updateFileTree();
+                }
+            }
+        }
+
+        function getLanguageFromExt(fileName) {
+            const ext = fileName.split('.').pop();
+            const map = {
+                js: 'javascript', jsx: 'javascript', ts: 'typescript', tsx: 'typescript',
+                py: 'python', html: 'html', css: 'css', json: 'json', md: 'markdown'
+            };
+            return map[ext];
+        }
+
+        function updateChatMessages() {
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.innerHTML = chatHistory.map(msg => {
+                const content = formatMessage(msg.content);
+                return `
+                    <div class="message ${msg.role}">
+                        <div class="message-header">${msg.role === 'user' ? 'You' : 'Claude'}</div>
+                        <div>${content}</div>
+                    </div>
+                `;
+            }).join('');
+
+            if (chatHistory.length === 0) {
+                messagesDiv.innerHTML = `
+                    <div class="message system">
+                        ${apiKey ? 'Ready to help you build. What would you like to create?' : 'Enter your Anthropic API key in Settings to start.'}
+                    </div>
+                `;
+            }
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function formatMessage(content) {
+            // Format code blocks
+            content = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+                return `<pre><code class="language-${lang || ''}">${escapeHtml(code.trim())}</code></pre>`;
+            });
+
+            // Format inline code
+            content = content.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Format line breaks
+            content = content.replace(/\n/g, '<br>');
+
+            return content;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function focusChat() {
+            document.getElementById('chatInput').focus();
+        }
+
+        // Export Functions
+        function exportAsZip() {
+            // Simple implementation - create a text file with all content
+            let content = '';
+            Object.entries(files).forEach(([name, file]) => {
+                content += `\n=== ${name} ===\n${file.content}\n`;
+            });
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'project-export.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            hideModal('exportModal');
+            showToast('Project exported!', 'success');
+        }
+
+        function exportTermuxScript() {
+            let script = '#!/data/data/com.termux/files/usr/bin/bash\n\n';
+            script += '# MobileCLI Studio Export Script\n';
+            script += '# Run this in Termux to create your project\n\n';
+
+            const projectName = Object.keys(files)[0]?.split('/')[0] || 'project';
+            script += `mkdir -p ${projectName}\ncd ${projectName}\n\n`;
+
+            Object.entries(files).forEach(([name, file]) => {
+                const dir = name.includes('/') ? name.substring(0, name.lastIndexOf('/')) : '';
+                if (dir) script += `mkdir -p ${dir}\n`;
+
+                // Escape content for heredoc
+                const escapedContent = file.content.replace(/'/g, "'\\''");
+                script += `cat > '${name}' << 'MOBILECLI_EOF'\n${file.content}\nMOBILECLI_EOF\n\n`;
+            });
+
+            script += 'echo "Project created successfully!"\n';
+
+            const blob = new Blob([script], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'create-project.sh';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            hideModal('exportModal');
+            showToast('Termux script downloaded!', 'success');
+        }
+
+        function copyAllFiles() {
+            let content = '';
+            Object.entries(files).forEach(([name, file]) => {
+                content += `\n=== ${name} ===\n${file.content}\n`;
+            });
+
+            navigator.clipboard.writeText(content).then(() => {
+                hideModal('exportModal');
+                showToast('Copied to clipboard!', 'success');
+            });
+        }
+
+        // Responsive
+        function setupResponsive() {
+            const mq = window.matchMedia('(max-width: 1024px)');
+
+            function handleResize(e) {
+                const sidebarToggle = document.getElementById('sidebarToggle');
+                const chatToggle = document.getElementById('chatToggle');
+
+                if (e.matches) {
+                    sidebarToggle.style.display = 'flex';
+                    chatToggle.style.display = 'flex';
+                } else {
+                    sidebarToggle.style.display = 'none';
+                    chatToggle.style.display = 'none';
+                    document.getElementById('sidebar').classList.remove('open');
+                    document.getElementById('chatPanel').classList.remove('open');
+                }
+            }
+
+            mq.addListener(handleResize);
+            handleResize(mq);
+
+            document.getElementById('sidebarToggle').onclick = () => {
+                document.getElementById('sidebar').classList.toggle('open');
+            };
+
+            document.getElementById('chatToggle').onclick = () => {
+                document.getElementById('chatPanel').classList.toggle('open');
+            };
+        }
+
+        // User dropdown (placeholder)
+        function toggleUserDropdown() {
+            if (confirm('Sign out?')) {
+                logout();
+            }
+        }
+
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>
