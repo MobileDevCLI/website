@@ -702,11 +702,11 @@
             <a href="#" onclick="goToTab('workflow'); return false;">Workflow Mastery</a>
             <a href="#" onclick="goToTab('prompts'); return false;">Magic Prompts</a>
             <a href="#" onclick="goToTab('research'); return false;">Research Lab</a>
-            <a href="#" onclick="goToTab('resources'); return false;">Resources</a>
             <a href="#" onclick="goToTab('troubleshoot'); return false;">Troubleshooting</a>
         </div>
         <div class="mobile-menu-section">
-            <div class="mobile-menu-label">Interactive</div>
+            <div class="mobile-menu-label">Interactive & Inspiration</div>
+            <a href="#" onclick="goToTab('resources'); return false;">Inspiration Gallery</a>
             <a href="/demos.html">Demos</a>
             <a href="/games.html">Games</a>
             <a href="/labs.html">Labs</a>
@@ -739,7 +739,7 @@
             <button class="tab-btn" onclick="showTab('workflow')">Workflow Mastery</button>
             <button class="tab-btn" onclick="showTab('prompts')">Magic Prompts</button>
             <button class="tab-btn" onclick="showTab('research')">Research Lab</button>
-            <button class="tab-btn" onclick="showTab('resources')">Resources</button>
+            <button class="tab-btn" onclick="showTab('resources')">Inspiration</button>
             <button class="tab-btn" onclick="showTab('troubleshoot')">Troubleshooting</button>
         </div>
 
@@ -2682,14 +2682,14 @@ curl -sL "https://www.yoursite.com" | grep "unique text"
         </div>
 
         <!-- ============================================ -->
-        <!-- TAB 5: RESOURCES -->
+        <!-- TAB 5: INSPIRATION GALLERY -->
         <!-- ============================================ -->
         <div id="resources" class="tab-content">
-            <h2>Resources & Examples</h2>
-            <p>Curated collection of tools, examples, and references for mobile AI development.</p>
+            <h2>Inspiration Gallery</h2>
+            <p>The coolest interactive demos, games, and resources from around the web. Get inspired. Grab the code. Build something amazing.</p>
 
             <h3>Our Interactive Demos</h3>
-            <p>17 WebGL demos we built to showcase what's possible. All run on mobile with touch controls.</p>
+            <p>17 WebGL demos we built — all run on mobile with touch controls. View source to learn how they work.</p>
 
             <div class="quick-links">
                 <a href="/demo/fluid.html" class="quick-link">
@@ -2734,51 +2734,93 @@ curl -sL "https://www.yoursite.com" | grep "unique text"
                 </a>
             </div>
 
-            <p><a href="/demos.html">View all 17 demos →</a></p>
+            <p><a href="/demos.html">View all 17 demos →</a> | <a href="/games.html">View Games →</a></p>
 
-            <h3>Three.js Resources</h3>
-            <p>Three.js is our primary 3D library. These examples show what's possible:</p>
+            <h3>Three.js Examples (Official)</h3>
+            <p>Hundreds of interactive demos. View source, copy the code, build your own:</p>
             <ul>
-                <li><a href="https://threejs.org/examples/" target="_blank">Official Three.js Examples</a> — Hundreds of demos</li>
-                <li><a href="https://threejs.org/examples/#webgl_animation_skinning_morph" target="_blank">Robot Character Animation</a></li>
-                <li><a href="https://threejs.org/examples/#webgl_shaders_ocean" target="_blank">Ocean Shader</a></li>
-                <li><a href="https://jblaha.art/sketchbook/latest" target="_blank">Sketchbook</a> — Full 3D game with physics</li>
-                <li><a href="https://threejs.org/manual/" target="_blank">Three.js Manual</a> — Learn Three.js</li>
+                <li><a href="https://threejs.org/examples/" target="_blank">All Three.js Examples</a> — The full collection (500+ demos)</li>
+                <li><a href="https://threejs.org/examples/#webgl_animation_skinning_morph" target="_blank">Robot Character Animation</a> — Skeletal animation</li>
+                <li><a href="https://threejs.org/examples/#webgl_shaders_ocean" target="_blank">Ocean Shader</a> — Realistic water simulation</li>
+                <li><a href="https://threejs.org/examples/#webgl_gpgpu_water" target="_blank">GPU Water Ripples</a> — Interactive water</li>
+                <li><a href="https://threejs.org/examples/#webgl_postprocessing_unreal_bloom" target="_blank">Unreal Bloom</a> — Glow effects</li>
+                <li><a href="https://threejs.org/examples/#webgl_buffergeometry_instancing" target="_blank">GPU Instancing</a> — Millions of objects</li>
+                <li><a href="https://threejs.org/examples/#webgl_materials_physical_transmission" target="_blank">Glass/Crystal Materials</a></li>
+                <li><a href="https://threejs.org/examples/#physics_ammo_instancing" target="_blank">Physics Instancing</a> — Thousands of physics objects</li>
             </ul>
 
-            <h3>Physics Libraries</h3>
+            <h3>Incredible Web Games & Experiments</h3>
+            <p>Mind-blowing projects that show what's possible in a browser:</p>
             <ul>
-                <li><a href="https://cannon-es.pmndrs.dev/" target="_blank">Cannon-es</a> — 3D physics engine (we use this)</li>
-                <li><a href="https://brm.io/matter-js/" target="_blank">Matter.js</a> — 2D physics engine</li>
-                <li><a href="https://github.com/liabru/matter-js" target="_blank">Rapier</a> — High-performance Rust physics</li>
+                <li><a href="https://jblaha.art/sketchbook/latest" target="_blank">Sketchbook</a> — Full 3D game with vehicles, physics, and characters</li>
+                <li><a href="https://bruno-simon.com/" target="_blank">Bruno Simon's Portfolio</a> — Drive a car around a 3D portfolio</li>
+                <li><a href="https://moments.epic.net/" target="_blank">Epic Moments</a> — Stunning Unreal Engine web demos</li>
+                <li><a href="https://paveldogreat.github.io/WebGL-Fluid-Simulation/" target="_blank">WebGL Fluid</a> — Beautiful fluid simulation</li>
+                <li><a href="https://experiments.withgoogle.com/collection/webvr" target="_blank">Google WebXR Experiments</a> — VR/AR on the web</li>
+                <li><a href="https://www.cubeslam.com/" target="_blank">Cube Slam</a> — Play pong in 3D</li>
+                <li><a href="https://hexgl.bkcore.com/" target="_blank">HexGL</a> — Futuristic racing game</li>
+                <li><a href="https://alteredqualia.com/" target="_blank">Altered Qualia</a> — Classic WebGL experiments</li>
+                <li><a href="https://www.ro.me/" target="_blank">Rome: 3 Dreams of Black</a> — Interactive music video</li>
             </ul>
 
-            <h3>Shader & WebGL</h3>
+            <h3>Physics Engines</h3>
             <ul>
-                <li><a href="https://thebookofshaders.com/" target="_blank">The Book of Shaders</a> — Learn GLSL</li>
-                <li><a href="https://www.shadertoy.com/" target="_blank">Shadertoy</a> — Shader examples and community</li>
-                <li><a href="https://webglfundamentals.org/" target="_blank">WebGL Fundamentals</a> — Learn WebGL from scratch</li>
+                <li><a href="https://cannon-es.pmndrs.dev/" target="_blank">Cannon-es</a> — 3D physics (we use this)</li>
+                <li><a href="https://brm.io/matter-js/" target="_blank">Matter.js</a> — 2D physics with demos</li>
+                <li><a href="https://rapier.rs/" target="_blank">Rapier</a> — High-performance Rust physics (has WASM)</li>
+                <li><a href="https://oimo.io/demos/" target="_blank">Oimo.js Demos</a> — Lightweight 3D physics</li>
+                <li><a href="https://p2js.org/" target="_blank">p2.js</a> — 2D physics library</li>
             </ul>
 
-            <h3>AI & Claude Code</h3>
+            <h3>Shader Playgrounds</h3>
             <ul>
-                <li><a href="https://github.com/anthropics/claude-code" target="_blank">Claude Code GitHub</a> — Official repository</li>
-                <li><a href="https://www.anthropic.com/" target="_blank">Anthropic</a> — Claude's creator</li>
-                <li><a href="https://claude.ai/code" target="_blank">Claude.ai/code</a> — Web-based Claude Code</li>
+                <li><a href="https://www.shadertoy.com/" target="_blank">Shadertoy</a> — Thousands of shader examples</li>
+                <li><a href="https://thebookofshaders.com/" target="_blank">The Book of Shaders</a> — Learn GLSL step by step</li>
+                <li><a href="https://www.vertexshaderart.com/" target="_blank">Vertex Shader Art</a> — Creative shader gallery</li>
+                <li><a href="https://glslsandbox.com/" target="_blank">GLSL Sandbox</a> — Live shader editor</li>
+                <li><a href="https://webglfundamentals.org/" target="_blank">WebGL Fundamentals</a> — Learn from scratch</li>
             </ul>
 
-            <h3>Mobile Development</h3>
+            <h3>Creative Coding Libraries</h3>
             <ul>
-                <li><a href="https://f-droid.org/packages/com.termux/" target="_blank">Termux (F-Droid)</a> — The working version</li>
-                <li><a href="https://wiki.termux.com/wiki/Main_Page" target="_blank">Termux Wiki</a> — Documentation</li>
-                <li><a href="https://f-droid.org/packages/com.termux.api/" target="_blank">Termux:API</a> — Hardware access</li>
+                <li><a href="https://p5js.org/examples/" target="_blank">p5.js Examples</a> — Creative coding made easy</li>
+                <li><a href="https://pixijs.com/" target="_blank">PixiJS</a> — 2D rendering engine</li>
+                <li><a href="https://github.com/pmndrs/react-three-fiber" target="_blank">React Three Fiber</a> — Three.js in React</li>
+                <li><a href="https://github.com/pmndrs/drei" target="_blank">Drei</a> — Useful helpers for R3F</li>
+                <li><a href="https://docs.pmnd.rs/" target="_blank">Poimandres Docs</a> — Awesome 3D ecosystem</li>
             </ul>
 
-            <h3>Deployment</h3>
+            <h3>Particle Systems</h3>
             <ul>
-                <li><a href="https://vercel.com/" target="_blank">Vercel</a> — Where we deploy</li>
-                <li><a href="https://supabase.com/" target="_blank">Supabase</a> — Our backend (auth, database)</li>
-                <li><a href="https://github.com/" target="_blank">GitHub</a> — Version control</li>
+                <li><a href="https://github.com/creativelifeform/three-nebula" target="_blank">Three Nebula</a> — Powerful particle system</li>
+                <li><a href="https://www.vantajs.com/" target="_blank">Vanta.js</a> — Animated 3D backgrounds</li>
+                <li><a href="https://particles.js.org/" target="_blank">tsParticles</a> — Highly configurable particles</li>
+            </ul>
+
+            <h3>Audio Visualization</h3>
+            <ul>
+                <li><a href="https://musiclab.chromeexperiments.com/" target="_blank">Chrome Music Lab</a> — Fun audio experiments</li>
+                <li><a href="https://www.evanpro.com/codepen-soundcloud-viz/" target="_blank">SoundCloud Visualizers</a> — Music + visuals</li>
+                <li><a href="https://threejs.org/examples/#webaudio_visualizer" target="_blank">Three.js Audio Visualizer</a></li>
+            </ul>
+
+            <h3>AI & Machine Learning in Browser</h3>
+            <ul>
+                <li><a href="https://teachablemachine.withgoogle.com/" target="_blank">Teachable Machine</a> — Train ML in browser</li>
+                <li><a href="https://ml5js.org/" target="_blank">ml5.js</a> — Friendly machine learning</li>
+                <li><a href="https://www.tensorflow.org/js/demos" target="_blank">TensorFlow.js Demos</a> — Real ML in browser</li>
+                <li><a href="https://runwayml.com/" target="_blank">Runway ML</a> — Creative AI tools</li>
+            </ul>
+
+            <h3>GitHub Repos to Clone</h3>
+            <p>Clone these, run locally, modify, and learn:</p>
+            <ul>
+                <li><a href="https://github.com/mrdoob/three.js" target="_blank">three.js</a> — The source + all examples</li>
+                <li><a href="https://github.com/pmndrs/cannon-es" target="_blank">cannon-es</a> — Physics engine we use</li>
+                <li><a href="https://github.com/schteppe/cannon.js" target="_blank">cannon.js</a> — Original physics engine</li>
+                <li><a href="https://github.com/brunosimon/folio-2019" target="_blank">Bruno Simon's Portfolio Code</a></li>
+                <li><a href="https://github.com/swift502/Sketchbook" target="_blank">Sketchbook Source</a> — Full 3D game</li>
+                <li><a href="https://github.com/PavelDoGreat/WebGL-Fluid-Simulation" target="_blank">WebGL Fluid Source</a></li>
             </ul>
         </div>
 
