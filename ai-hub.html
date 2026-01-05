@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resource Hub - MobileCLI</title>
+    <meta name="description" content="The ultimate AI tools directory. 3D generation, video AI, music creation, voice cloning, image generation, coding assistants - all the best AI tools in one place.">
+    <link rel="canonical" href="https://mobilecli.com/ai-hub">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #0f0f0f;
+            --bg-tertiary: #1a1a1a;
+            --bg-card: #111111;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --accent-1: #00ff88;
+            --accent-2: #00d4ff;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --accent-yellow: #eab308;
+            --gradient: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            --border: #222222;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        a {
+            color: var(--accent-1);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-1);
+            font-family: 'Courier New', monospace;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-links a.active {
+            color: var(--accent-1);
+        }
+
+        /* Header */
+        .page-header {
+            padding: 120px 0 60px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0, 255, 136, 0.1) 0%, transparent 100%);
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin: 32px 0 48px;
+        }
+
+        .category-btn {
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-btn:hover {
+            border-color: var(--accent-1);
+            color: var(--text);
+        }
+
+        .category-btn.active {
+            background: var(--accent-1);
+            color: var(--bg);
+            border-color: var(--accent-1);
+        }
+
+        /* Section */
+        .section {
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-icon {
+            font-size: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 800px;
+        }
+
+        /* Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent-1);
+            transform: translateY(-4px);
+        }
+
+        .tool-header {
+            padding: 20px 20px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tool-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .tool-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .tool-badge {
+            margin-left: auto;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-free {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-1);
+        }
+
+        .badge-freemium {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--accent-2);
+        }
+
+        .badge-paid {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--accent-purple);
+        }
+
+        .badge-top {
+            background: rgba(249, 115, 22, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .tool-content {
+            padding: 0 20px 20px;
+        }
+
+        .tool-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .tool-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .feature-tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+        }
+
+        .tool-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tool-link {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tool-link.primary {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: var(--bg);
+        }
+
+        .tool-link.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .tool-link:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Stats Banner */
+        .stats-banner {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 48px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 24px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.1));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 16px;
+            padding: 48px;
+            margin: 48px 0;
+            text-align: center;
+        }
+
+        .cta-banner h3 {
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+        }
+
+        .cta-banner p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .copyright {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .page-header p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-nav {
+                gap: 8px;
+            }
+
+            .category-btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            .stats-banner {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cta-banner {
+                padding: 32px 20px;
+            }
+        }
+
+        /* Mobile Tab Nav */
+        .mobile-tab-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.98);
+            border-top: 1px solid var(--border);
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-tab-nav {
+                display: flex;
+                justify-content: space-around;
+            }
+
+            body {
+                padding-bottom: 70px;
+            }
+        }
+
+        .mobile-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-decoration: none;
+        }
+
+        .mobile-tab.active {
+            color: var(--accent-1);
+        }
+
+        .mobile-tab-icon {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">MobileCLI</a>
+            <div class="nav-links">
+                <a href="/pricing.html">Pricing</a>
+                <a href="/learn.html">Docs</a>
+                <a href="/games.html">Games</a>
+                <a href="/twominutepapers.html">Two Minute Papers</a>
+                <a href="/ai-hub.html" class="active">AI Hub</a>
+                <a href="/demos.html">Demos</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>AI Resource Hub</h1>
+            <p>The ultimate directory of AI tools. From 3D generation to video creation, music, voice, images, and code - discover the best AI has to offer.</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Category Navigation -->
+            <div class="category-nav">
+                <a href="#3d" class="category-btn">3D / STL</a>
+                <a href="#video" class="category-btn">Video</a>
+                <a href="#music" class="category-btn">Music</a>
+                <a href="#voice" class="category-btn">Voice / TTS</a>
+                <a href="#image" class="category-btn">Images</a>
+                <a href="#writing" class="category-btn">Writing</a>
+                <a href="#code" class="category-btn">Code</a>
+                <a href="#research" class="category-btn">Research</a>
+            </div>
+
+            <!-- Stats Banner -->
+            <div class="stats-banner">
+                <div class="stat-item">
+                    <h3>50+</h3>
+                    <p>AI Tools Listed</p>
+                </div>
+                <div class="stat-item">
+                    <h3>8</h3>
+                    <p>Categories</p>
+                </div>
+                <div class="stat-item">
+                    <h3>20+</h3>
+                    <p>Free Options</p>
+                </div>
+                <div class="stat-item">
+                    <h3>2026</h3>
+                    <p>Updated</p>
+                </div>
+            </div>
+
+            <!-- 3D Generation Section -->
+            <section class="section" id="3d">
+                <div class="section-header">
+                    <span class="section-icon">🎮</span>
+                    <h2 class="section-title">3D / STL Generation</h2>
+                </div>
+                <p class="section-desc">Turn text or images into 3D models. Export to STL for 3D printing, or use in games, VR, and AR applications.</p>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">M</div>
+                            <span class="tool-name">Meshy</span>
+                            <span class="tool-badge badge-top">Top Pick</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">The #1 AI 3D model generator. Text or image to 3D in seconds. Direct plugins for Blender, Unity, Unreal, Maya.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Text-to-3D</span>
+                                <span class="feature-tag">Image-to-3D</span>
+                                <span class="feature-tag">STL Export</span>
+                                <span class="feature-tag">PBR Textures</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.meshy.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">T</div>
+                            <span class="tool-name">Tripo3D</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Multi-billion parameter 3D foundation model. Generate textured meshes in 8 seconds with auto-rigging.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">8 Second Gen</span>
+                                <span class="feature-tag">Auto-Rig</span>
+                                <span class="feature-tag">Animation</span>
+                                <span class="feature-tag">OBJ/FBX</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.tripo3d.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                                <a href="https://studio.tripo3d.ai/" target="_blank" class="tool-link secondary">Studio</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">L</div>
+                            <span class="tool-name">Luma Genie</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">From the creators of Dream Machine. Text and image to high-quality 3D models with great topology.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Clean Topology</span>
+                                <span class="feature-tag">Multi-View</span>
+                                <span class="feature-tag">Game Ready</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://lumalabs.ai/genie" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">S</div>
+                            <span class="tool-name">Shap-E</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">OpenAI's open-source text-to-3D model. Run locally or on HuggingFace. Great for experimentation.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Open Source</span>
+                                <span class="feature-tag">Run Locally</span>
+                                <span class="feature-tag">MIT License</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://github.com/openai/shap-e" target="_blank" class="tool-link primary">GitHub</a>
+                                <a href="https://huggingface.co/spaces/hysts/Shap-E" target="_blank" class="tool-link secondary">Demo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">C</div>
+                            <span class="tool-name">CSM.ai</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Common Sense Machines. Generate 3D from single images with incredible detail and accuracy.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Single Image</span>
+                                <span class="feature-tag">High Detail</span>
+                                <span class="feature-tag">API Access</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.csm.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">K</div>
+                            <span class="tool-name">Kaedim</span>
+                            <span class="tool-badge badge-paid">Paid</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Production-grade 3D assets. Human QA ensures quality. Used by major game studios.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Human QA</span>
+                                <span class="feature-tag">Production Ready</span>
+                                <span class="feature-tag">Game Studios</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.kaedim3d.com/" target="_blank" class="tool-link primary">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Generation Section -->
+            <section class="section" id="video">
+                <div class="section-header">
+                    <span class="section-icon">🎬</span>
+                    <h2 class="section-title">AI Video Generation</h2>
+                </div>
+                <p class="section-desc">Create videos from text or images. The future of video production is here - generate, edit, and transform video with AI.</p>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">S</div>
+                            <span class="tool-name">Sora</span>
+                            <span class="tool-badge badge-top">Top Pick</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">OpenAI's groundbreaking video model. Creates realistic videos up to 60 seconds with incredible physics understanding.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">60s Videos</span>
+                                <span class="feature-tag">1080p</span>
+                                <span class="feature-tag">Physics</span>
+                                <span class="feature-tag">Text-to-Video</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://sora.com/" target="_blank" class="tool-link primary">Try Sora</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">R</div>
+                            <span class="tool-name">Runway Gen-4</span>
+                            <span class="tool-badge badge-top">Pro Choice</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">The most comprehensive creative toolkit. Precise control, character consistency, multi-shot narratives.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Multi-Shot</span>
+                                <span class="feature-tag">Character Lock</span>
+                                <span class="feature-tag">Motion Brush</span>
+                                <span class="feature-tag">Lip Sync</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://runwayml.com/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">K</div>
+                            <span class="tool-name">Kling AI</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">1080p videos up to 180 seconds! Sophisticated physics, extend feature for long narratives. Best value.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">180s Videos</span>
+                                <span class="feature-tag">1080p</span>
+                                <span class="feature-tag">Extend Mode</span>
+                                <span class="feature-tag">$10/mo</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://klingai.com/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">P</div>
+                            <span class="tool-name">Pika 2.5</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Best value AI video. AI Lip Sync, sound effects generator, video-to-video styling. Great for creators.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Lip Sync</span>
+                                <span class="feature-tag">SFX Gen</span>
+                                <span class="feature-tag">V2V Style</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://pika.art/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">L</div>
+                            <span class="tool-name">Luma Dream Machine</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Impressive realism with Ray-2 model. Beautiful minimal interface. Great physics simulation.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Ray-2 Model</span>
+                                <span class="feature-tag">Fast Gen</span>
+                                <span class="feature-tag">Clean UI</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://lumalabs.ai/dream-machine" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">V</div>
+                            <span class="tool-name">Veo 2 (Google)</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Google's answer to Sora. Real 4K footage, up to 120 seconds. SynthID watermarking built-in.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">4K Output</span>
+                                <span class="feature-tag">120s Videos</span>
+                                <span class="feature-tag">SynthID</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://deepmind.google/technologies/veo/" target="_blank" class="tool-link primary">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">H</div>
+                            <span class="tool-name">HeyGen</span>
+                            <span class="tool-badge badge-paid">Paid</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Best for AI avatars and video translation. Create talking head videos, translate to any language.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">AI Avatars</span>
+                                <span class="feature-tag">Translation</span>
+                                <span class="feature-tag">Lip Sync</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.heygen.com/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">S</div>
+                            <span class="tool-name">Synthesia</span>
+                            <span class="tool-badge badge-paid">Paid</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Enterprise AI video. 160+ avatar presenters, 130+ languages. Used by Fortune 500 companies.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">160+ Avatars</span>
+                                <span class="feature-tag">130+ Languages</span>
+                                <span class="feature-tag">Enterprise</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.synthesia.io/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Music Generation Section -->
+            <section class="section" id="music">
+                <div class="section-header">
+                    <span class="section-icon">🎵</span>
+                    <h2 class="section-title">AI Music Generation</h2>
+                </div>
+                <p class="section-desc">Create full songs with vocals, instrumentals, and lyrics. AI music is now indistinguishable from human-made tracks.</p>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">S</div>
+                            <span class="tool-name">Suno</span>
+                            <span class="tool-badge badge-top">Top Pick</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Best overall AI music generator. v4.5 creates radio-ready tracks. 50 free credits/day (10 songs).</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Full Songs</span>
+                                <span class="feature-tag">Vocals</span>
+                                <span class="feature-tag">50 Credits Free</span>
+                                <span class="feature-tag">Any Genre</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://suno.com/" target="_blank" class="tool-link primary">Create Music</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">U</div>
+                            <span class="tool-name">Udio</span>
+                            <span class="tool-badge badge-top">Best Quality</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Superior audio quality and vocal realism. Better production, more "radio-ready" than Suno. 3 songs/day free.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Best Quality</span>
+                                <span class="feature-tag">Vocal Realism</span>
+                                <span class="feature-tag">Stem Download</span>
+                                <span class="feature-tag">Remixing</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://udio.com/" target="_blank" class="tool-link primary">Create Music</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">A</div>
+                            <span class="tool-name">AIVA</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Classical and orchestral AI composer. Perfect for film scores, games, and emotional soundtracks.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Orchestral</span>
+                                <span class="feature-tag">Film Scores</span>
+                                <span class="feature-tag">MIDI Export</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.aiva.ai/" target="_blank" class="tool-link primary">Compose</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">B</div>
+                            <span class="tool-name">Beatoven.ai</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Safest for YouTubers - Fairly Trained certified. Copyright-safe background music for videos.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Copyright Safe</span>
+                                <span class="feature-tag">YouTube Ready</span>
+                                <span class="feature-tag">Fairly Trained</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.beatoven.ai/" target="_blank" class="tool-link primary">Create Music</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">M</div>
+                            <span class="tool-name">Mubert</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Generative AI music for streaming. Infinite, unique tracks. Great for content creators and streamers.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Infinite Music</span>
+                                <span class="feature-tag">Streaming</span>
+                                <span class="feature-tag">API Access</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://mubert.com/" target="_blank" class="tool-link primary">Generate</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">R</div>
+                            <span class="tool-name">Riffusion</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Open-source music generation using diffusion. Creates music from spectrograms. Totally free!</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Open Source</span>
+                                <span class="feature-tag">Free</span>
+                                <span class="feature-tag">Spectrogram</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.riffusion.com/" target="_blank" class="tool-link primary">Create Free</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Voice / TTS Section -->
+            <section class="section" id="voice">
+                <div class="section-header">
+                    <span class="section-icon">🎙️</span>
+                    <h2 class="section-title">Voice AI / Text-to-Speech</h2>
+                </div>
+                <p class="section-desc">Clone voices, generate speech, create voiceovers. AI voices are now indistinguishable from real humans.</p>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">11</div>
+                            <span class="tool-name">ElevenLabs</span>
+                            <span class="tool-badge badge-top">Top Pick</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Industry-leading voice AI. Clone any voice from 30 seconds. 29 languages. The gold standard.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Voice Clone</span>
+                                <span class="feature-tag">29 Languages</span>
+                                <span class="feature-tag">Emotion Control</span>
+                                <span class="feature-tag">API</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://elevenlabs.io/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">F</div>
+                            <span class="tool-name">Fish Audio</span>
+                            <span class="tool-badge badge-top">#1 Quality</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">#1 on TTS-Arena! Often better than ElevenLabs. $9.99/mo for 200 minutes. Incredible value.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Top Ranked</span>
+                                <span class="feature-tag">$9.99/mo</span>
+                                <span class="feature-tag">Voice Clone</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://fish.audio/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">C</div>
+                            <span class="tool-name">Cartesia</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Beats ElevenLabs in 72% of comparisons. Real-time streaming TTS. Lightning fast inference.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Real-time</span>
+                                <span class="feature-tag">Low Latency</span>
+                                <span class="feature-tag">Streaming API</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://cartesia.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">P</div>
+                            <span class="tool-name">PlayHT</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">600+ voices in 140+ languages. Great for podcasts, audiobooks, and long-form content.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">600+ Voices</span>
+                                <span class="feature-tag">140+ Languages</span>
+                                <span class="feature-tag">Long-form</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://play.ht/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">CB</div>
+                            <span class="tool-name">Chatterbox</span>
+                            <span class="tool-badge badge-free">Open Source</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Wins blind tests vs ElevenLabs! Clone from 5 seconds. 17 languages. MIT license - run locally free.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">MIT License</span>
+                                <span class="feature-tag">5s Clone</span>
+                                <span class="feature-tag">Run Locally</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://github.com/nari-labs/chatterbox" target="_blank" class="tool-link primary">GitHub</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">R</div>
+                            <span class="tool-name">Resemble AI</span>
+                            <span class="tool-badge badge-paid">Paid</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Enterprise voice AI. Clone from 10 seconds. Deploy on your own servers. 3x cheaper than ElevenLabs.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Self-Host</span>
+                                <span class="feature-tag">Enterprise</span>
+                                <span class="feature-tag">3x Cheaper</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.resemble.ai/" target="_blank" class="tool-link primary">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Image Generation Section -->
+            <section class="section" id="image">
+                <div class="section-header">
+                    <span class="section-icon">🎨</span>
+                    <h2 class="section-title">AI Image Generation</h2>
+                </div>
+                <p class="section-desc">Create stunning images from text. Art, photos, designs - AI image generators can create anything you can imagine.</p>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">M</div>
+                            <span class="tool-name">Midjourney</span>
+                            <span class="tool-badge badge-top">Top Pick</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">The most aesthetic AI image generator. v6.1 creates stunning art. Discord-based, active community.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Best Aesthetics</span>
+                                <span class="feature-tag">Discord</span>
+                                <span class="feature-tag">v6.1</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://midjourney.com/" target="_blank" class="tool-link primary">Join</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">D</div>
+                            <span class="tool-name">DALL-E 3</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">OpenAI's image model. Best at following complex prompts. Built into ChatGPT. Great text rendering.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Prompt Accuracy</span>
+                                <span class="feature-tag">Text in Images</span>
+                                <span class="feature-tag">ChatGPT</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://openai.com/dall-e-3" target="_blank" class="tool-link primary">Try in ChatGPT</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">SD</div>
+                            <span class="tool-name">Stable Diffusion</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Open-source image generation. Run locally with full control. SDXL, SD3 available. Massive community.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Open Source</span>
+                                <span class="feature-tag">Run Locally</span>
+                                <span class="feature-tag">SD3 / SDXL</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://stability.ai/" target="_blank" class="tool-link primary">Download</a>
+                                <a href="https://stable-diffusion-web.com/playground" target="_blank" class="tool-link secondary">Web Demo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">I</div>
+                            <span class="tool-name">Ideogram</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Best text rendering in images. Creates logos, posters, designs with perfect typography.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Best Text</span>
+                                <span class="feature-tag">Logos</span>
+                                <span class="feature-tag">Design</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://ideogram.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">L</div>
+                            <span class="tool-name">Leonardo.ai</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Game asset focused. Create consistent characters, environments, and items for games and apps.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Game Assets</span>
+                                <span class="feature-tag">Consistency</span>
+                                <span class="feature-tag">Fine-tuning</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://leonardo.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">F</div>
+                            <span class="tool-name">Flux</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Black Forest Labs' open model. Rivals Midjourney quality. Flux Pro, Flux Dev, Flux Schnell variants.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Open Weights</span>
+                                <span class="feature-tag">MJ Quality</span>
+                                <span class="feature-tag">Fast</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://blackforestlabs.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Writing AI Section -->
+            <section class="section" id="writing">
+                <div class="section-header">
+                    <span class="section-icon">✍️</span>
+                    <h2 class="section-title">AI Writing & Chat</h2>
+                </div>
+                <p class="section-desc">The most capable AI assistants for writing, research, analysis, and creative work.</p>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">C</div>
+                            <span class="tool-name">Claude</span>
+                            <span class="tool-badge badge-top">Best Writing</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Best for writing and reasoning. Natural prose, careful analysis, 200K context. Claude Opus 4.5 is the most capable.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Best Prose</span>
+                                <span class="feature-tag">200K Context</span>
+                                <span class="feature-tag">Reasoning</span>
+                                <span class="feature-tag">Coding</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://claude.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">G</div>
+                            <span class="tool-name">ChatGPT</span>
+                            <span class="tool-badge badge-top">Most Popular</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">The original AI assistant. GPT-5 with image gen, code interpreter, custom GPTs. All-in-one toolkit.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Image Gen</span>
+                                <span class="feature-tag">Code Run</span>
+                                <span class="feature-tag">Plugins</span>
+                                <span class="feature-tag">GPT Store</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://chat.openai.com/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">G</div>
+                            <span class="tool-name">Gemini</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Google's AI. Deep integration with Google Workspace. Gemini 2.5 is fast and capable. Great value.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Google Workspace</span>
+                                <span class="feature-tag">Fast</span>
+                                <span class="feature-tag">Multimodal</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://gemini.google.com/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">P</div>
+                            <span class="tool-name">Perplexity</span>
+                            <span class="tool-badge badge-top">Best Research</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">AI research assistant with citations. Every answer includes sources. Best for fact-checking and deep dives.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Citations</span>
+                                <span class="feature-tag">Real-time</span>
+                                <span class="feature-tag">Research</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://perplexity.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">J</div>
+                            <span class="tool-name">Jasper</span>
+                            <span class="tool-badge badge-paid">Paid</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Built for marketing. Brand voice training, templates, workflows. Used by marketing teams worldwide.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Marketing</span>
+                                <span class="feature-tag">Brand Voice</span>
+                                <span class="feature-tag">Templates</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.jasper.ai/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">N</div>
+                            <span class="tool-name">NotebookLM</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Google's document AI. Upload sources, get AI-generated podcasts, summaries, Q&A. Mind-blowing.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Audio Podcasts</span>
+                                <span class="feature-tag">Source Analysis</span>
+                                <span class="feature-tag">Free</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://notebooklm.google.com/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Code AI Section -->
+            <section class="section" id="code">
+                <div class="section-header">
+                    <span class="section-icon">💻</span>
+                    <h2 class="section-title">AI Coding Assistants</h2>
+                </div>
+                <p class="section-desc">Code faster with AI. From autocomplete to full autonomous agents that build entire applications.</p>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">CC</div>
+                            <span class="tool-name">Claude Code</span>
+                            <span class="tool-badge badge-top">We Use This!</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Anthropic's CLI coding tool. Built this entire website! Autonomous agents, multi-file edits, terminal access.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Autonomous</span>
+                                <span class="feature-tag">CLI</span>
+                                <span class="feature-tag">Full Context</span>
+                                <span class="feature-tag">Opus 4.5</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://claude.ai/code" target="_blank" class="tool-link primary">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">Cu</div>
+                            <span class="tool-name">Cursor</span>
+                            <span class="tool-badge badge-top">Top IDE</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">AI-native IDE. Composer builds entire apps. Deep codebase understanding. Multi-model support.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Full IDE</span>
+                                <span class="feature-tag">Composer</span>
+                                <span class="feature-tag">Multi-Model</span>
+                                <span class="feature-tag">$20/mo</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://cursor.com/" target="_blank" class="tool-link primary">Download</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">GH</div>
+                            <span class="tool-name">GitHub Copilot</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Most integrated. Works in VS Code, JetBrains, Neovim. 50 free requests/month. Multiple AI models.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">VS Code</span>
+                                <span class="feature-tag">JetBrains</span>
+                                <span class="feature-tag">50 Free</span>
+                                <span class="feature-tag">$10/mo</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://github.com/features/copilot" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">W</div>
+                            <span class="tool-name">Windsurf</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">By Codeium. Explains what it's doing as it codes. Great for learning. Generous free tier, Pro at $15/mo.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Explains Code</span>
+                                <span class="feature-tag">Learning</span>
+                                <span class="feature-tag">$15/mo</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://codeium.com/windsurf" target="_blank" class="tool-link primary">Download</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">R</div>
+                            <span class="tool-name">Replit Agent</span>
+                            <span class="tool-badge badge-freemium">Freemium</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Full autonomous development. Builds, tests, and deploys complete applications. No local setup needed.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Autonomous</span>
+                                <span class="feature-tag">Deploy</span>
+                                <span class="feature-tag">Cloud IDE</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://replit.com/" target="_blank" class="tool-link primary">Try Free</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">Co</div>
+                            <span class="tool-name">Continue</span>
+                            <span class="tool-badge badge-free">Open Source</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Open-source Copilot alternative. 20K+ GitHub stars. Use any model - local or cloud. Full control.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Open Source</span>
+                                <span class="feature-tag">Any Model</span>
+                                <span class="feature-tag">Local LLMs</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://continue.dev/" target="_blank" class="tool-link primary">Install</a>
+                                <a href="https://github.com/continuedev/continue" target="_blank" class="tool-link secondary">GitHub</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Research Section -->
+            <section class="section" id="research">
+                <div class="section-header">
+                    <span class="section-icon">🔬</span>
+                    <h2 class="section-title">Research & Learning</h2>
+                </div>
+                <p class="section-desc">Stay on the cutting edge. Papers, demos, and resources to understand the latest in AI.</p>
+
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">📺</div>
+                            <span class="tool-name">Two Minute Papers</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Dr. Károly explains cutting-edge research. 1.5M subscribers. "What a time to be alive!"</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Research</span>
+                                <span class="feature-tag">YouTube</span>
+                                <span class="feature-tag">Weekly</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="/twominutepapers.html" class="tool-link primary">Our Hub</a>
+                                <a href="https://www.youtube.com/user/keeroyz" target="_blank" class="tool-link secondary">YouTube</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">🤗</div>
+                            <span class="tool-name">Hugging Face</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">The GitHub of AI. 500K+ models, datasets, spaces. Try any AI model instantly. Essential resource.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">500K Models</span>
+                                <span class="feature-tag">Spaces</span>
+                                <span class="feature-tag">Datasets</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://huggingface.co/" target="_blank" class="tool-link primary">Explore</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">📄</div>
+                            <span class="tool-name">Papers With Code</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Every ML paper with implementation. State-of-the-art benchmarks. Find working code for any paper.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Papers</span>
+                                <span class="feature-tag">Code</span>
+                                <span class="feature-tag">Benchmarks</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://paperswithcode.com/" target="_blank" class="tool-link primary">Browse</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">🎓</div>
+                            <span class="tool-name">fast.ai</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Free deep learning courses. Top-down practical approach. Used by thousands of AI practitioners.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Free Course</span>
+                                <span class="feature-tag">Practical</span>
+                                <span class="feature-tag">Community</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.fast.ai/" target="_blank" class="tool-link primary">Learn</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">📰</div>
+                            <span class="tool-name">The Batch</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Andrew Ng's AI newsletter. Weekly digest of the most important AI news and developments.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Newsletter</span>
+                                <span class="feature-tag">Andrew Ng</span>
+                                <span class="feature-tag">Weekly</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://www.deeplearning.ai/the-batch/" target="_blank" class="tool-link primary">Subscribe</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-header">
+                            <div class="tool-logo">🏆</div>
+                            <span class="tool-name">LMSYS Chatbot Arena</span>
+                            <span class="tool-badge badge-free">Free</span>
+                        </div>
+                        <div class="tool-content">
+                            <p class="tool-desc">Crowdsourced AI rankings. Compare models side-by-side. The most trusted LLM leaderboard.</p>
+                            <div class="tool-features">
+                                <span class="feature-tag">Rankings</span>
+                                <span class="feature-tag">Compare</span>
+                                <span class="feature-tag">Trusted</span>
+                            </div>
+                            <div class="tool-links">
+                                <a href="https://chat.lmsys.org/" target="_blank" class="tool-link primary">Compare</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Banner -->
+            <div class="cta-banner">
+                <h3>Build with AI on Your Phone</h3>
+                <p>MobileCLI turns your Android phone into an AI development environment. Run Claude Code, build apps, deploy websites - all from your pocket.</p>
+                <a href="/pricing.html" class="cta-btn">Get Started Free</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="/terms.html">Terms</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/games.html">Games</a>
+                <a href="/twominutepapers.html">Two Minute Papers</a>
+                <a href="/demos.html">Demos</a>
+            </div>
+            <p class="copyright">&copy; 2026 MobileCLI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Mobile Tab Nav -->
+    <div class="mobile-tab-nav">
+        <a href="/" class="mobile-tab">
+            <span class="mobile-tab-icon">🏠</span>
+            Home
+        </a>
+        <a href="/games.html" class="mobile-tab">
+            <span class="mobile-tab-icon">🎮</span>
+            Games
+        </a>
+        <a href="/ai-hub.html" class="mobile-tab active">
+            <span class="mobile-tab-icon">🤖</span>
+            AI Hub
+        </a>
+        <a href="/twominutepapers.html" class="mobile-tab">
+            <span class="mobile-tab-icon">🔬</span>
+            TMP
+        </a>
+        <a href="/demos.html" class="mobile-tab">
+            <span class="mobile-tab-icon">✨</span>
+            Demos
+        </a>
+    </div>
+</body>
+</html>
