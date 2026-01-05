@@ -1273,6 +1273,72 @@ claude --model opus --thinking</pre>
             </details>
 
             <details class="expandable">
+                <summary>CLAUDE.md: Living Documentation</summary>
+                <div class="expandable-content">
+                    <p>Maintain a shared CLAUDE.md file that captures everything Claude needs to know about your project.</p>
+
+                    <h4>How It Works</h4>
+                    <ol>
+                        <li>Create <code>CLAUDE.md</code> in your project root</li>
+                        <li>Write project context, rules, code style preferences</li>
+                        <li><strong>Anytime Claude does something wrong, add a rule to prevent it</strong></li>
+                        <li>Knowledge compounds across sessions — future sessions are smarter</li>
+                    </ol>
+
+                    <h4>What to Include</h4>
+                    <ul>
+                        <li>Project description and tech stack</li>
+                        <li>Code style preferences (types vs interfaces, etc.)</li>
+                        <li>Common commands (build, test, deploy)</li>
+                        <li>Learned lessons and mistakes to avoid</li>
+                        <li>Important rules (never do X, always do Y)</li>
+                    </ul>
+
+                    <div class="info-box tip">
+                        <div class="info-box-title">This is "Compounding Engineering"</div>
+                        <p>Knowledge accumulates over time. After a few weeks, your CLAUDE.md becomes a highly tuned instruction set that dramatically reduces errors.</p>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>GitHub Integration: Auto-Update CLAUDE.md</summary>
+                <div class="expandable-content">
+                    <p>Use <code>@claude</code> in PR reviews to automatically update CLAUDE.md.</p>
+
+                    <h4>The Workflow</h4>
+                    <ol>
+                        <li>During code review, notice Claude did something incorrectly</li>
+                        <li>Comment on PR: <code>@claude add to CLAUDE.md to never use enums, always prefer literal unions</code></li>
+                        <li>Claude Code GitHub Action reads the comment, updates CLAUDE.md, and commits</li>
+                        <li>Install via <code>/install-github-action</code> slash command</li>
+                    </ol>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Example PR Comment</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Your comment on a PR:</span>
+nit: use a string literal, not ts enum
+@claude add to CLAUDE.md to never use enums, always prefer literal unions
+
+<span class="comment"># Claude bot responds:</span>
+Claude finished task in 39s
+✓ Read current CLAUDE.md to understand existing guidance
+✓ Update CLAUDE.md to strengthen "no enums" guidance
+✓ Commit the change
+Committed in 156a458</pre>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">Why This Matters</div>
+                        <p>You never have to manually edit CLAUDE.md again. Just tag @claude in your code reviews and the knowledge updates automatically.</p>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
                 <summary>Plan Mode First: Think Before Coding</summary>
                 <div class="expandable-content">
                     <p><strong>Most sessions should start in Plan mode.</strong> Don't jump straight to implementation.</p>
