@@ -860,9 +860,29 @@ claude --dangerously-skip-permissions</pre>
                 </div>
             </div>
 
-            <div class="info-box">
-                <div class="info-box-title">You're Done</div>
-                <p>That's it. You now have a fully autonomous AI development environment running on your phone. Claude can read files, write code, run commands, and deploy to production — all while you sleep.</p>
+            <div class="step-card">
+                <span class="step-number">8</span>
+                <span class="step-title">Connect Vercel for Auto-Deploy</span>
+                <p style="margin-top: 16px;"><strong>The final piece.</strong> Connect your GitHub repo to Vercel for automatic deployment on every push.</p>
+                <ol style="color: var(--text-secondary); margin: 16px 0 16px 20px;">
+                    <li>Go to <a href="https://vercel.com" target="_blank">vercel.com</a> and sign in with GitHub</li>
+                    <li>Click "Import Project" → Select your repo</li>
+                    <li>Vercel creates a webhook that watches for pushes</li>
+                    <li>Every <code>git push</code> now auto-deploys in ~30 seconds</li>
+                </ol>
+                <div class="info-box tip">
+                    <div class="info-box-title">The Full Circle</div>
+                    <p>Now when Claude runs <code>git push</code>, Vercel automatically deploys. You give a task, go to sleep, wake up to a live website.</p>
+                </div>
+            </div>
+
+            <div class="info-box" style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(168, 85, 247, 0.1)); border-left-color: var(--primary);">
+                <div class="info-box-title" style="color: var(--primary);">The Complete Automation Loop</div>
+                <p style="margin-bottom: 12px;">You now have the full pipeline:</p>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary);">
+                    You → Claude → Code → Git Push → GitHub → Vercel → <strong style="color: var(--primary);">LIVE</strong>
+                </div>
+                <p style="margin-top: 12px; margin-bottom: 0;">This is what built this entire website from a phone in 84 hours. The same power is now yours.</p>
             </div>
 
             <h3>Quick Reference</h3>
@@ -934,6 +954,51 @@ alias dev="tmux attach -t dev || tmux new -s dev"</pre>
                 <li>Package management (install any npm/apt package)</li>
             </ul>
             <p>The AI doesn't care about screen size or touch vs keyboard. It operates through the terminal — and the terminal works identically on every platform.</p>
+
+            <h2>The Full Automation Chain</h2>
+            <p>This is what makes everything work together as <strong>one seamless system</strong>:</p>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 212, 255, 0.05)); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 24px 0;">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+                    <div style="display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; margin: 8px 0;">
+                        <span style="color: var(--primary); font-weight: 700;">1.</span>
+                        <span><strong>Termux</strong> (F-Droid) → Linux on Android</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; margin: 8px 0;">
+                        <span style="color: var(--primary); font-weight: 700;">2.</span>
+                        <span><strong>Termux:API</strong> → wake-lock, notifications, hardware</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; margin: 8px 0;">
+                        <span style="color: var(--primary); font-weight: 700;">3.</span>
+                        <span><strong>termux-wake-lock</strong> → CPU stays active with screen off</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; margin: 8px 0;">
+                        <span style="color: var(--primary); font-weight: 700;">4.</span>
+                        <span><strong>pkg install</strong> → git, nodejs, gh (GitHub CLI)</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; margin: 8px 0;">
+                        <span style="color: var(--secondary); font-weight: 700;">5.</span>
+                        <span><strong>gh auth login</strong> → Token stored, git push works automatically</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; margin: 8px 0;">
+                        <span style="color: var(--secondary); font-weight: 700;">6.</span>
+                        <span><strong>Claude Code</strong> → AI writes, commits, pushes code</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; margin: 8px 0;">
+                        <span style="color: var(--accent); font-weight: 700;">7.</span>
+                        <span><strong>Vercel + GitHub</strong> → Webhook auto-deploys on push</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; margin: 8px 0;">
+                        <span style="color: var(--accent); font-weight: 700;">8.</span>
+                        <span><strong>tmux + autonomous mode</strong> → Runs forever, no prompts</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box" style="border-left-color: var(--primary);">
+                <h4 style="margin-top: 0; color: var(--primary);">The Result</h4>
+                <p style="margin-bottom: 0;">You say "build this" → Claude writes code → commits → pushes → Vercel deploys → <strong>live in 30 seconds</strong>. While you sleep.</p>
+            </div>
 
             <h2>Termux Deep Dive</h2>
             <p>Termux is an Android terminal emulator and Linux environment app. It provides a full Linux system without requiring root access.</p>
@@ -1772,13 +1837,132 @@ alias gpp="git push origin master && git push website master"</pre>
         <!-- TAB 3: WORKFLOW MASTERY -->
         <!-- ============================================ -->
         <div id="workflow" class="tab-content">
-            <h2>Mobile Mastery</h2>
-            <p>These techniques were developed specifically for mobile AI development. This is what makes a phone outperform a laptop — the innovations that turn Android into a 24/7 autonomous development machine.</p>
+            <h2>The Complete Automation Pipeline</h2>
+            <p><strong>This is the invention.</strong> Not just the tools, but how they connect together to create fully autonomous development from a phone.</p>
 
-            <div class="info-box" style="border-left-color: var(--accent); margin-bottom: 32px;">
-                <div class="info-box-title" style="color: var(--accent);">The MobileCLI Innovation</div>
-                <p>Desktop developers are limited by their attention span. Mobile developers with these techniques can run AI sessions for 24+ hours while they sleep. The phone becomes an always-on development server in your pocket.</p>
+            <div class="info-box" style="border-left-color: var(--primary); background: rgba(0, 255, 136, 0.08); margin-bottom: 32px;">
+                <div class="info-box-title" style="color: var(--primary);">Why This Matters</div>
+                <p>Each tool existed before. The innovation is the <strong>complete chain</strong> — every piece connected so that you give one command and wake up to a deployed website. This is what we built in 84 hours. This is what you're learning.</p>
             </div>
+
+            <h3>The 8-Step Toolchain</h3>
+            <p>From bare phone to fully autonomous development environment:</p>
+
+            <div style="background: var(--bg-card); border: 2px solid var(--primary); border-radius: 16px; padding: 32px; margin: 24px 0;">
+                <div style="display: grid; gap: 16px;">
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(0,255,136,0.05); border-radius: 8px;">
+                        <span style="background: var(--primary); color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">1</span>
+                        <div>
+                            <strong style="color: var(--text);">Install Termux from F-Droid</strong>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">Linux environment on Android (NOT Play Store version)</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(0,212,255,0.05); border-radius: 8px;">
+                        <span style="background: var(--secondary); color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">2</span>
+                        <div>
+                            <strong style="color: var(--text);">Install Termux:API</strong>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">Hardware access: wake-lock, notifications, camera, clipboard</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(0,255,136,0.05); border-radius: 8px;">
+                        <span style="background: var(--primary); color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">3</span>
+                        <div>
+                            <strong style="color: var(--text);">Run termux-wake-lock</strong>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">CPU stays active even with screen off - the persistence layer</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(0,212,255,0.05); border-radius: 8px;">
+                        <span style="background: var(--secondary); color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">4</span>
+                        <div>
+                            <strong style="color: var(--text);">pkg install git nodejs gh termux-api</strong>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">Development essentials - runtime, version control, GitHub CLI</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(168,85,247,0.08); border-radius: 8px;">
+                        <span style="background: var(--accent); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">5</span>
+                        <div>
+                            <strong style="color: var(--text);">gh auth login</strong>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">GitHub token stored locally - no password prompts ever again</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(0,255,136,0.05); border-radius: 8px;">
+                        <span style="background: var(--primary); color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">6</span>
+                        <div>
+                            <strong style="color: var(--text);">npm install -g @anthropic-ai/claude-code</strong>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">Install Claude Code - the AI that writes, commits, and deploys</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(0,212,255,0.05); border-radius: 8px;">
+                        <span style="background: var(--secondary); color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">7</span>
+                        <div>
+                            <strong style="color: var(--text);">Connect Vercel to GitHub</strong>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">Webhook auto-deploys on every push - no manual deploys ever</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(168,85,247,0.08); border-radius: 8px;">
+                        <span style="background: var(--accent); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">8</span>
+                        <div>
+                            <strong style="color: var(--text);">tmux + claude --dangerously-skip-permissions</strong>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">Autonomous AI operation - session survives, AI works without prompts</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>The Automation Loop</h3>
+            <p>Once the toolchain is set up, this happens <strong>automatically</strong>:</p>
+
+            <div style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.08), rgba(168, 85, 247, 0.08)); border: 1px solid var(--border-light); border-radius: 16px; padding: 32px; margin: 24px 0;">
+                <div style="font-family: 'JetBrains Mono', monospace; text-align: center; line-height: 2.8;">
+                    <div style="font-size: 1.1rem; color: var(--primary); font-weight: 600;">You: "Build me a website with 17 WebGL demos"</div>
+                    <div style="color: var(--text-muted); font-size: 1.5rem;">↓</div>
+                    <div style="color: var(--secondary);">Claude writes HTML, CSS, JavaScript, shaders</div>
+                    <div style="color: var(--text-muted); font-size: 1.5rem;">↓</div>
+                    <div style="color: var(--accent);">Claude: <code style="background: var(--bg-card); padding: 4px 8px; border-radius: 4px;">git add -A && git commit -m "..." && git push</code></div>
+                    <div style="color: var(--text-muted); font-size: 1.5rem;">↓</div>
+                    <div style="color: var(--primary);">GitHub receives push (token-authenticated)</div>
+                    <div style="color: var(--text-muted); font-size: 1.5rem;">↓</div>
+                    <div style="color: var(--secondary);">Vercel webhook triggers automatically</div>
+                    <div style="color: var(--text-muted); font-size: 1.5rem;">↓</div>
+                    <div style="color: var(--accent);">Build runs, site deploys (~30 seconds)</div>
+                    <div style="color: var(--text-muted); font-size: 1.5rem;">↓</div>
+                    <div style="font-size: 1.2rem; color: var(--primary); font-weight: 700; padding: 12px; background: rgba(0,255,136,0.1); border-radius: 8px; margin-top: 8px;">LIVE IN PRODUCTION</div>
+                </div>
+            </div>
+
+            <h3>Why The Phone Never Gets Hot</h3>
+            <p>People ask: "How can you run AI for 72 hours without the phone overheating?"</p>
+            <p><strong>Answer: The phone isn't running AI.</strong></p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0;">
+                <div style="background: rgba(255,100,100,0.1); border: 1px solid rgba(255,100,100,0.3); border-radius: 12px; padding: 20px;">
+                    <h4 style="color: #ff6b6b; margin-top: 0;">What People Think Happens</h4>
+                    <ul style="color: var(--text-secondary); margin: 0;">
+                        <li>Phone runs AI model locally</li>
+                        <li>CPU maxes out</li>
+                        <li>Phone gets hot</li>
+                        <li>Battery drains fast</li>
+                        <li>Sessions limited</li>
+                    </ul>
+                </div>
+                <div style="background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 12px; padding: 20px;">
+                    <h4 style="color: var(--primary); margin-top: 0;">What Actually Happens</h4>
+                    <ul style="color: var(--text-secondary); margin: 0;">
+                        <li>Phone sends text to Anthropic API</li>
+                        <li>Anthropic's datacenter runs Opus 4.5</li>
+                        <li>Phone receives text response</li>
+                        <li>Phone executes simple commands</li>
+                        <li>Same power as WhatsApp</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p>The AI computation happens on <strong>Anthropic's $100M+ infrastructure</strong>. Your phone just sends and receives text. That's why a $200 phone equals a $3000 MacBook — because neither is doing the AI work.</p>
+
+            <hr style="border: none; border-top: 1px solid var(--border); margin: 48px 0;">
+
+            <h2>Mobile Mastery</h2>
+            <p>Now let's dive deep into each component of the toolchain:</p>
 
             <details class="expandable" open>
                 <summary>The F-Droid Discovery: Why Play Store Termux is Broken</summary>
