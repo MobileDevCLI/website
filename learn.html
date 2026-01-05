@@ -1053,8 +1053,8 @@ Bash(git log:*)</code></pre>
                         </ul>
                         <p><strong>Real example:</strong> Sessions can run for over a day using millions of tokens. Completely autonomous while you sleep.</p>
                         <div class="warning">
-                            <div class="tip-label">Only in sandboxed environments</div>
-                            <p>Use <code>--permission-mode=dontAsk</code> only where Claude can't cause damage.</p>
+                            <div class="tip-label">Sandboxed environments only</div>
+                            <p>Autonomous mode should only be used in environments where AI actions can't cause damage. <a href="/pricing.html" style="color: var(--matrix);">Pro subscribers</a> get the exact commands and safety protocols.</p>
                         </div>
                     </div>
                 </details>
@@ -1174,27 +1174,22 @@ echo "allow-external-apps=true" >> ~/.terminal/terminal.properties</code></pre>
                 </div>
 
                 <h3>Run Sessions in Background</h3>
-                <p>Start a long-running Claude session that survives closing the app:</p>
+                <p>The real power comes from sessions that run while you're away:</p>
 
-                <div class="code-block">
-                    <div class="code-header">
-                        <span class="code-label">Terminal</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre><code><span class="comment"># Start tmux (terminal multiplexer)</span>
-session-manager install
-tmux
-
-<span class="comment"># Inside tmux, start Claude</span>
-cc
-
-<span class="comment"># Detach with Ctrl+B, then D</span>
-<span class="comment"># Reattach later with: tmux attach</span></code></pre>
+                <div class="info-box" style="background: rgba(168, 85, 247, 0.1); border-left: 4px solid #a855f7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h4 style="color: #a855f7; margin-top: 0;">Session Persistence (Pro Feature)</h4>
+                    <p>With the right configuration:</p>
+                    <ul style="margin: 12px 0;">
+                        <li><strong>CPU stays active</strong> — Phone doesn't kill your process</li>
+                        <li><strong>Session survives</strong> — Close the app, come back later</li>
+                        <li><strong>72+ hours continuous</strong> — Multi-day autonomous sessions</li>
+                    </ul>
+                    <p style="margin-bottom: 0;">The exact commands and methodology are in the <a href="/pricing.html" style="color: #a855f7;">Pro documentation</a>.</p>
                 </div>
 
                 <div class="tip">
-                    <div class="tip-label">Pro tip</div>
-                    <p>With tmux + wake lock, you can close Terminal, put your phone in your pocket, and Claude keeps working. Check back later for results.</p>
+                    <div class="tip-label">What's possible</div>
+                    <p>Put your phone in your pocket and Claude keeps working. Check back later for results. This is how we built 17 WebGL demos overnight.</p>
                 </div>
             </section>
 
