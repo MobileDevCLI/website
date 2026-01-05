@@ -248,6 +248,42 @@ If you don't → Check Vercel connection to correct repo.
 
 ---
 
+### INSTANT Deployment Verification (Run After Every Push)
+
+**After every `git push`, run this verification:**
+
+```bash
+# 1. Verify git is synced (local = origin = website)
+git log --oneline -1
+git log origin/master --oneline -1
+git log website/master --oneline -1
+# All three should show the SAME commit hash
+
+# 2. Verify content is LIVE on Vercel (bypasses browser cache)
+curl -sL "https://www.mobilecli.com" | grep "UNIQUE_TEXT_FROM_YOUR_CHANGE"
+# If found → Deployment successful, issue is browser cache
+# If not found → Vercel webhook may be broken
+
+# 3. For new pages, verify they exist
+curl -sI "https://www.mobilecli.com/newpage.html" | head -1
+# Should return "HTTP/2 200" if page exists
+
+# 4. Verify external links work (no hallucination)
+curl -sI "https://external-link.com" | head -1
+# Should return 200 or 3xx (redirect)
+```
+
+**If user says "I don't see changes":**
+1. First run the curl test - if curl shows new content, it's BROWSER CACHE
+2. Tell user: "Clear browser cache or use incognito mode"
+3. Samsung: Menu → Privacy → Delete browsing data → Cached files
+4. Chrome: Settings → Privacy → Clear browsing data → Cached images
+5. Edge: Settings → Privacy → Clear browsing data
+
+**This is almost ALWAYS browser cache, not a deployment issue.**
+
+---
+
 ### Legacy: Browser Cache Solutions
 
 **Diagnosis Steps:**
