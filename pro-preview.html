@@ -1199,8 +1199,327 @@ gh pr status</pre>
         <!-- TAB 3: WORKFLOW MASTERY -->
         <!-- ============================================ -->
         <div id="workflow" class="tab-content">
-            <h2>Pro Workflow Patterns</h2>
-            <p>These advanced patterns maximize productivity for AI-assisted development. These techniques come from the creator of Claude Code and are used to build production applications.</p>
+            <h2>Mobile Mastery</h2>
+            <p>These techniques were developed specifically for mobile AI development. This is what makes a phone outperform a laptop — the innovations that turn Android into a 24/7 autonomous development machine.</p>
+
+            <div class="info-box" style="border-left-color: var(--accent); margin-bottom: 32px;">
+                <div class="info-box-title" style="color: var(--accent);">The MobileCLI Innovation</div>
+                <p>Desktop developers are limited by their attention span. Mobile developers with these techniques can run AI sessions for 24+ hours while they sleep. The phone becomes an always-on development server in your pocket.</p>
+            </div>
+
+            <details class="expandable" open>
+                <summary>The F-Droid Discovery: Why Play Store Termux is Broken</summary>
+                <div class="expandable-content">
+                    <p><strong>This is the first secret.</strong> Most people try the Play Store version of Termux and think mobile development doesn't work. They're wrong — they just have broken software.</p>
+
+                    <p>Google's API restrictions forced the Play Store Termux to be abandoned in 2020. It's broken on Android 10+. The F-Droid version is actively maintained and fully functional.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">The Working Download Links</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Main Termux app (MUST be from F-Droid)</span>
+https://f-droid.org/packages/com.termux/
+
+<span class="comment"># Termux:API (hardware access)</span>
+https://f-droid.org/packages/com.termux.api/
+
+<span class="comment"># Termux:Styling (themes)</span>
+https://f-droid.org/packages/com.termux.styling/</pre>
+                    </div>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">Critical</div>
+                        <p>Never mix Play Store and F-Droid Termux packages. If you have Play Store Termux installed, uninstall it completely before installing from F-Droid.</p>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable" open>
+                <summary>The Wake Lock + tmux Combo: 24-Hour Sessions</summary>
+                <div class="expandable-content">
+                    <p><strong>This is what makes mobile development actually work.</strong> Without this combo, Android kills your session within minutes of locking the screen.</p>
+
+                    <h4>The Problem</h4>
+                    <p>Android aggressively kills background apps to save battery. A 3-hour AI task gets killed after 10 minutes when you lock your phone.</p>
+
+                    <h4>The Solution: Three Layers of Protection</h4>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — The Immortal Session Setup</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Layer 1: Wake Lock (keeps CPU active)</span>
+termux-wake-lock
+
+<span class="comment"># Layer 2: tmux (session survives terminal close)</span>
+pkg install -y tmux
+tmux new -s dev
+
+<span class="comment"># Layer 3: Autonomous mode (no human input needed)</span>
+claude --dangerously-skip-permissions
+
+<span class="comment"># Now you can lock your phone, go to sleep, wake up to completed work</span></pre>
+                    </div>
+
+                    <h4>Layer 1: termux-wake-lock</h4>
+                    <p>Acquires an Android wake lock that prevents the CPU from sleeping. You'll see a persistent notification — that's proof it's working.</p>
+
+                    <h4>Layer 2: tmux</h4>
+                    <p>Terminal multiplexer that keeps sessions alive even if the Termux app is closed or crashes. Your Claude session runs inside tmux, so it survives anything.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — tmux Commands</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Detach from session (keeps it running)</span>
+<span class="comment"># Press: Ctrl+b, then d</span>
+
+<span class="comment"># List running sessions</span>
+tmux ls
+
+<span class="comment"># Reattach to your session</span>
+tmux attach -t dev
+
+<span class="comment"># Kill a session when done</span>
+tmux kill-session -t dev</pre>
+                    </div>
+
+                    <h4>Layer 3: Disable Battery Optimization</h4>
+                    <p>Go to: <strong>Android Settings → Apps → Termux → Battery → Unrestricted</strong></p>
+                    <p>This tells Android to never kill Termux, even during aggressive battery saving.</p>
+
+                    <div class="info-box tip">
+                        <div class="info-box-title">Pro Tip</div>
+                        <p>Add aliases to your <code>~/.bashrc</code> for quick access:</p>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">~/.bashrc Aliases</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Quick start autonomous session</span>
+alias cc="claude --dangerously-skip-permissions"
+alias wake="termux-wake-lock"
+alias dev="tmux attach -t dev || tmux new -s dev"
+
+<span class="comment"># The ultimate one-liner</span>
+alias godmode="termux-wake-lock && tmux new -s dev -d && tmux send-keys -t dev 'claude --dangerously-skip-permissions' Enter && tmux attach -t dev"</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable" open>
+                <summary>Termux:API Mastery: Full Hardware Access</summary>
+                <div class="expandable-content">
+                    <p><strong>Your phone has sensors a laptop doesn't.</strong> Camera, GPS, accelerometer, microphone, fingerprint scanner — all accessible from the command line.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — Install Termux:API</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Install the package</span>
+pkg install -y termux-api
+
+<span class="comment"># Also install Termux:API app from F-Droid</span>
+<span class="comment"># https://f-droid.org/packages/com.termux.api/</span></pre>
+                    </div>
+
+                    <h4>Essential Commands</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — Hardware Access Commands</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># === NOTIFICATIONS ===</span>
+termux-notification -t "Build Complete" -c "Your app is ready"
+termux-notification --ongoing -t "Dev Session" -c "Claude is working..."
+termux-toast "Quick message!"
+
+<span class="comment"># === CAMERA ===</span>
+termux-camera-photo ~/photo.jpg           # Take photo
+termux-camera-photo -c 1 ~/selfie.jpg     # Front camera
+
+<span class="comment"># === SCREENSHOTS ===</span>
+termux-screenshot ~/screenshot.png
+
+<span class="comment"># === CLIPBOARD ===</span>
+termux-clipboard-get                      # Read clipboard
+echo "text" | termux-clipboard-set        # Write to clipboard
+
+<span class="comment"># === AUDIO ===</span>
+termux-tts-speak "Hello world"            # Text to speech
+termux-microphone-record -f ~/audio.m4a   # Record audio
+
+<span class="comment"># === SENSORS ===</span>
+termux-battery-status                     # Battery info
+termux-wifi-connectioninfo                # WiFi details
+termux-location                           # GPS coordinates
+
+<span class="comment"># === SYSTEM ===</span>
+termux-vibrate                            # Vibrate phone
+termux-torch on                           # Flashlight
+termux-brightness 255                     # Max brightness
+
+<span class="comment"># === SHARING ===</span>
+termux-open-url "https://example.com"     # Open browser
+termux-share -a send ~/file.txt           # Share file</pre>
+                    </div>
+
+                    <h4>Real Use Cases</h4>
+                    <ul>
+                        <li><strong>Build notifications:</strong> Get notified when long builds complete</li>
+                        <li><strong>Visual debugging:</strong> Screenshot your app, Claude analyzes it</li>
+                        <li><strong>Voice input:</strong> Dictate code changes instead of typing</li>
+                        <li><strong>Location-aware apps:</strong> Build with real GPS data</li>
+                        <li><strong>Sensor data:</strong> Test accelerometer-based features</li>
+                    </ul>
+                </div>
+            </details>
+
+            <details class="expandable" open>
+                <summary>Storage Access: Claude Sees Your Screenshots</summary>
+                <div class="expandable-content">
+                    <p><strong>This unlocks visual AI development.</strong> Claude can read and analyze images directly from your phone's storage.</p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — Enable Storage Access</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Run once to grant storage permissions</span>
+termux-setup-storage
+
+<span class="comment"># Accept the permission dialog</span>
+<span class="comment"># This creates symlinks in ~/storage/</span></pre>
+                    </div>
+
+                    <h4>Storage Locations</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — Where Files Live</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># After termux-setup-storage, you get these symlinks:</span>
+~/storage/dcim/          # Camera photos
+~/storage/downloads/     # Downloads folder
+~/storage/movies/        # Videos
+~/storage/music/         # Audio files
+~/storage/pictures/      # Pictures
+~/storage/shared/        # Shared storage root
+
+<span class="comment"># Screenshots location (Samsung)</span>
+~/storage/dcim/Screenshots/
+
+<span class="comment"># Screenshots location (Pixel/stock Android)</span>
+~/storage/pictures/Screenshots/</pre>
+                    </div>
+
+                    <h4>The Visual Verification Loop</h4>
+                    <p>This is the killer feature. Claude can analyze screenshots to verify its work:</p>
+
+                    <ol>
+                        <li>Claude writes code for a UI feature</li>
+                        <li>You (or Claude) runs the app</li>
+                        <li>Take a screenshot: <code>termux-screenshot ~/test.png</code></li>
+                        <li>Tell Claude: "Read ~/test.png and check if the button looks right"</li>
+                        <li>Claude analyzes the image and iterates</li>
+                    </ol>
+
+                    <div class="info-box">
+                        <div class="info-box-title">Why This Matters</div>
+                        <p>Desktop Claude Code needs a Chrome extension for visual verification. Mobile Claude Code can see screenshots natively. The phone becomes a visual feedback loop for AI development.</p>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Dual-Repo Deployment: Origin + Website</summary>
+                <div class="expandable-content">
+                    <p>A deployment pattern that keeps your source organized while enabling instant Vercel deploys.</p>
+
+                    <h4>The Setup</h4>
+                    <ul>
+                        <li><strong>origin</strong> — Main source of truth (your primary repo)</li>
+                        <li><strong>website</strong> — Deployment target (Vercel watches this)</li>
+                    </ul>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — Configure Dual Repos</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Check current remotes</span>
+git remote -v
+
+<span class="comment"># Add website remote</span>
+git remote add website https://github.com/YourOrg/website.git
+
+<span class="comment"># Push to both (always do this)</span>
+git push origin master && git push website master</pre>
+                    </div>
+
+                    <h4>Quick Deploy Alias</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">~/.bashrc</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Add to ~/.bashrc</span>
+alias gpp="git push origin master && git push website master"
+alias deploy="git add -A && git commit -m 'deploy' && gpp"</pre>
+                    </div>
+
+                    <p>Now just type <code>deploy</code> and your site updates in seconds.</p>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>The Autonomous Mode Flag: --dangerously-skip-permissions</summary>
+                <div class="expandable-content">
+                    <p><strong>This is the power flag.</strong> It's what enables truly autonomous AI development.</p>
+
+                    <h4>What It Does</h4>
+                    <p>Normally, Claude asks permission for every file write, command execution, or significant action. Safe, but slow. This flag removes all permission checks.</p>
+
+                    <h4>With This Flag, Claude Can:</h4>
+                    <ul>
+                        <li>Read and write any file instantly</li>
+                        <li>Execute any shell command</li>
+                        <li>Push to git without confirmation</li>
+                        <li>Make API calls</li>
+                        <li>Run for hours without human input</li>
+                    </ul>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Bash — Permission Modes</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><span class="comment"># Full autonomous (no prompts)</span>
+claude --dangerously-skip-permissions
+
+<span class="comment"># Alternative flag</span>
+claude --permission-mode=dontAsk
+
+<span class="comment"># Default (asks for each action)</span>
+claude</pre>
+                    </div>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">Why "Dangerous"?</div>
+                        <p>On a production server with real data, this flag could be catastrophic. On your phone in a sandboxed Termux environment, it's perfectly safe. Your phone IS the sandbox.</p>
+                    </div>
+                </div>
+            </details>
+
+            <h2 style="margin-top: 64px;">Advanced Claude Code Patterns</h2>
+            <p>General patterns that work on any platform — desktop or mobile. These complement your mobile mastery.</p>
 
             <details class="expandable">
                 <summary>Parallel Sessions: Run 5-10 Claudes Simultaneously</summary>
