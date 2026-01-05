@@ -848,6 +848,36 @@ async function checkProAccess() {
 
 ---
 
+## Inspiration Resources
+
+### Two Minute Papers (Dr. Károly Zsolnai-Fehér)
+The best AI and physics research explained simply. Essential viewing for cutting-edge demos.
+
+**Links:**
+- YouTube: https://www.youtube.com/@TwoMinutePapers
+- Twitter: https://twitter.com/karoly_zsolnai
+- Patreon: https://www.patreon.com/TwoMinutePapers
+- Personal site: https://users.cg.tuwien.ac.at/zsolnai/
+
+**Key Topics for Our Demos:**
+- Fluid simulations (Navier-Stokes)
+- Gaussian Splatting (3D from photos)
+- Neural Radiance Fields (NeRF)
+- Cloth and soft body physics
+- Smoke and fire simulations
+- AI image generation
+- Physics engines
+
+**Interactive Demos Inspired by Two Minute Papers:**
+- WebGL Fluid Simulation: https://paveldogreat.github.io/WebGL-Fluid-Simulation/
+- GPU Fluid Experiments: https://haxiomic.github.io/GPU-Fluid-Experiments/html5/
+- 3D Gaussian Splatting: https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/
+- Awesome Gaussian Splatting: https://mrnerf.github.io/awesome-3D-gaussian-splatting/
+
+When building new demos, check Two Minute Papers for inspiration. His videos explain cutting-edge research in accessible ways that can guide our WebGL implementations.
+
+---
+
 ## Additional Documentation
 
 **WEBSITE.md** - Complete website documentation
