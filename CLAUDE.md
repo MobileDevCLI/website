@@ -876,6 +876,40 @@ The best AI and physics research explained simply. Essential viewing for cutting
 
 When building new demos, check Two Minute Papers for inspiration. His videos explain cutting-edge research in accessible ways that can guide our WebGL implementations.
 
+### Lambda GPU Cloud
+For running heavy AI/ML research that requires GPU power.
+
+**Links:**
+- Main site: https://lambda.ai/
+- Pricing: https://lambda.ai/pricing
+- On-Demand: https://lambda.ai/service/gpu-cloud
+
+**Pricing (as of Jan 2026):**
+- H100: ~$1.35/hr
+- A100: affordable hourly rates
+- No egress fees
+- Pre-installed PyTorch, CUDA, Lambda Stack
+
+**Use for:**
+- Training Gaussian Splatting models
+- Running SIGGRAPH paper code
+- Training NeRFs
+- Any heavy ML workload
+
+### SIGGRAPH Research with Demos
+Cem Yuksel's research has many papers featured on Two Minute Papers with source code and demos:
+- https://www.cemyuksel.com/research/
+- Real-Time Fiber Cloth (2 TMP episodes)
+- Vertex Block Descent (SIGGRAPH 2025 Audience Choice)
+- Stochastic Lightcuts (featured on TMP)
+- Interactive Splines demo
+
+### Physics Playground Collections
+- PhET: https://phet.colorado.edu/ (106 physics simulations!)
+- My Physics Lab: https://www.myphysicslab.com/
+- oPhysics: https://ophysics.com/
+- Science Playground List: https://thescienceplayground.com/ (thousands!)
+
 ---
 
 ## Additional Documentation
