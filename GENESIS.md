@@ -15,15 +15,27 @@ The invention is a **METHOD for autonomous software development using AI on mobi
 ### What IS the Invention:
 1. **Mobile Phone as Development Environment** - Using Android/iOS phones as complete coding workstations
 2. **Linux Layer on Mobile** - Termux (Android) or iSH/a-Shell (iOS) providing full CLI access
-3. **AI CLI as Primary Interface** - Claude Code as the development interface, not a traditional IDE
+3. **Any AI CLI as Primary Interface** - AI CLI tools (Claude, Grok, Gemini, Codex, etc.) as the development interface
 4. **Autonomous 24+ Hour Sessions** - Phone running development sessions overnight while sleeping
-5. **CLAUDE.md Knowledge Compounding** - Documentation file that accumulates AI knowledge across sessions
+5. **Knowledge Compounding** - Documentation files that accumulate AI knowledge across sessions
 6. **Dual-Repository Deployment** - Synchronized source and deployment repos pushed from mobile
-7. **Platform-Agnostic Method** - Works on any phone with Linux layer + AI CLI
+7. **AI-Agnostic, Platform-Agnostic Method** - Works on any phone with Linux layer + any AI CLI
+
+### AI Platform Independence:
+The methodology is NOT specific to any single AI provider:
+| AI CLI | Provider | Status |
+|--------|----------|--------|
+| Claude Code | Anthropic | Tested, proven |
+| Grok CLI | xAI (Elon Musk) | Compatible |
+| Gemini CLI | Google | Compatible |
+| Codex / ChatGPT CLI | OpenAI | Compatible |
+| Future AI CLIs | Any | Compatible |
+
+**The invention is the METHOD, not the AI tool.**
 
 ### What is NOT Part of the Invention:
 - General productivity tips for using AI tools (available to everyone)
-- The underlying technologies themselves (Termux, Claude Code, Git, etc.)
+- The underlying technologies themselves (Termux, any AI CLI, Git, etc.)
 - The specific website code (MIT licensed, open source)
 
 ### The Novel Contribution:
@@ -74,7 +86,7 @@ This entire website - 17 demos, full documentation, auth system, payment integra
 
 No laptop. No desktop. No Replit. No traditional IDE.
 
-Just a phone, Termux, and Claude.
+Just a phone, a Linux terminal, and an AI CLI.
 
 ---
 

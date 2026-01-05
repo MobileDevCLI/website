@@ -38,11 +38,11 @@ The inventor was traveling—location redacted for privacy—when the pieces sud
 
 Termux. Linux on Android. It had existed since 2015.
 
-Claude Code. Anthropic's AI CLI. Released in 2024.
+AI CLIs. Claude Code, Grok, Gemini, Codex—any terminal-based AI. All emerging 2023-2024.
 
 tmux. Terminal multiplexer. Existed since 1987.
 
-Each piece public. Each piece documented. Each piece sitting there, waiting for someone to combine them in exactly the right way.
+Each piece public. Each piece documented. Each piece sitting there, waiting for someone to combine them in exactly the right way. The methodology works with ANY AI CLI—Claude was just the first one tested.
 
 The inventor pulled out their phone—a Samsung Galaxy, the same $200 device they'd had for years—and started typing.
 
