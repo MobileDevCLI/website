@@ -53,11 +53,25 @@ The methodology consists of six integrated components:
 | Component | Description | Novel Aspect |
 |-----------|-------------|--------------|
 | Linux Layer | Terminal environment on mobile OS | Integration method |
-| AI CLI Interface | Claude Code as primary development tool | Mobile deployment |
+| **AI CLI Interface (Any)** | **Any AI CLI tool (Claude, Grok, Gemini, Codex, etc.)** | **Platform-agnostic** |
 | Three-Layer Persistence | CPU + Session + Autonomous mode combined | Undocumented synthesis |
-| Knowledge Compounding | CLAUDE.md documentation system | Original contribution |
+| Knowledge Compounding | Project documentation system for AI context | Original contribution |
 | Dual-Repository Deployment | Synchronized source + production repos | Mobile workflow |
 | Zero-Compute Architecture | All AI runs on remote servers | Discovery/articulation |
+
+### 1.2.1 AI Platform Independence
+
+**Critical distinction**: The methodology is NOT specific to any single AI provider.
+
+| AI CLI | Provider | Compatibility |
+|--------|----------|---------------|
+| Claude Code | Anthropic | Tested, proven |
+| Grok CLI | xAI (Elon Musk) | Compatible |
+| Gemini CLI | Google | Compatible |
+| Codex / ChatGPT CLI | OpenAI | Compatible |
+| Future AI CLIs | Any | Compatible |
+
+**The invention is the mobile methodology, not the AI tool.** Any AI with terminal interface can be used. This significantly broadens patent claims and market applicability.
 
 ### 1.3 Why It's Novel
 
@@ -286,8 +300,12 @@ Client is evaluating two paths:
 - Scale over time
 
 **Option B: Strategic Sale/License**
-- Approach Anthropic (Claude Code creator) for acquisition or licensing
-- Potentially other AI companies
+- Approach AI companies for acquisition or licensing:
+  - **Anthropic** (Claude Code) - Direct beneficiary, proven with their tool
+  - **xAI / Elon Musk** (Grok) - Compatible, massive reach potential
+  - **Google** (Gemini) - Compatible, Android ecosystem owner
+  - **OpenAI** (Codex/ChatGPT) - Compatible, largest AI user base
+- Methodology is AI-agnostic, increasing buyer pool
 - Immediate liquidity vs. long-term ownership
 
 ---

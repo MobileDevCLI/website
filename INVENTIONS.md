@@ -26,11 +26,21 @@ A complete methodology for autonomous software development using AI on mobile ph
 
 **Key Components**:
 1. Linux layer on mobile (Termux/iSH)
-2. Claude Code CLI as development interface
+2. **Any AI CLI** as development interface (Claude, Grok, Gemini, Codex, etc.)
 3. Three-layer persistence (CPU + Session + Autonomous)
-4. CLAUDE.md knowledge compounding
+4. Knowledge compounding via project documentation
 5. Dual-repository deployment pattern
-6. Zero-compute architecture (all AI runs on Anthropic's servers)
+6. Zero-compute architecture (all AI runs on remote servers)
+
+**AI Platform Independence**:
+The methodology is NOT specific to Claude Code. It works with ANY AI CLI:
+- Claude Code (Anthropic) - Tested, proven
+- Grok CLI (xAI/Elon) - Compatible
+- Gemini CLI (Google) - Compatible
+- Codex/ChatGPT CLI (OpenAI) - Compatible
+- Future AI CLIs - Compatible
+
+This makes the invention more valuable (broader patent claims) and opens multiple potential acquirers.
 
 **Why It's Novel**:
 - No prior documentation of complete methodology exists
