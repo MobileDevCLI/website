@@ -246,26 +246,31 @@
 
     <main>
         <span class="hero-badge">Case Study</span>
-        <h1>Built Entirely From a Phone</h1>
-        <p class="subtitle">This entire platform — every page, every demo, every line of code — was created using the exact methodology we teach. Zero laptops involved.</p>
+        <h1>72 Hours. One Phone. One AI Session.</h1>
+        <p class="subtitle">This entire platform was built in a single continuous AI conversation running for 3 days straight on an Android phone. No laptops. No breaks. Just a phone and Claude.</p>
 
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-number">20+</div>
+                <div class="stat-number">72</div>
+                <div class="stat-label">Hours Continuous</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">25+</div>
                 <div class="stat-label">Pages Built</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">10+</div>
-                <div class="stat-label">Interactive Demos</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">1</div>
-                <div class="stat-label">Phone Used</div>
+                <div class="stat-number">17</div>
+                <div class="stat-label">WebGL Demos</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">0</div>
-                <div class="stat-label">Laptops</div>
+                <div class="stat-label">Laptops Used</div>
             </div>
+        </div>
+
+        <div class="highlight-box" style="margin-bottom: 32px;">
+            <h3>The Unbroken Session</h3>
+            <p>This wasn't multiple sessions stitched together. This was one continuous conversation with Claude Code running in Termux on an Android phone for <strong>72 hours straight</strong>. The phone never stopped. The AI never stopped. The same context window from start to finish.</p>
         </div>
 
         <div class="story-section">
@@ -276,16 +281,30 @@
 
         <div class="story-section">
             <h2>The Result</h2>
-            <p>You're looking at it. This website includes:</p>
+            <p>You're looking at it. In 72 hours of continuous development, we built:</p>
             <ul style="color: var(--text-secondary); margin-left: 24px;">
-                <li>A full landing page with Matrix animation</li>
-                <li>Interactive 3D demos (physics, fluids, particles)</li>
-                <li>Complete documentation system</li>
-                <li>User authentication flow</li>
-                <li>Legal framework (Terms, Privacy, IP)</li>
-                <li>Payment integration ready</li>
-                <li>SEO optimization</li>
+                <li>Complete SaaS landing page with Three.js physics hero</li>
+                <li>17 interactive WebGL demos (fluid, cloth, galaxy, boids, fractals...)</li>
+                <li>7-tab Pro documentation system with professor-level depth</li>
+                <li>Magic Prompts library with copy-paste setup commands</li>
+                <li>Freemium paywall protecting secret sauce</li>
+                <li>Supabase authentication with GitHub OAuth</li>
+                <li>Full legal framework (Terms, Privacy, IP, DMCA, Disclaimer)</li>
+                <li>Dual-repo Vercel deployment pipeline</li>
+                <li>Mobile-responsive design throughout</li>
+                <li>SEO optimization on all pages</li>
             </ul>
+        </div>
+
+        <div class="story-section">
+            <h2>How It Worked</h2>
+            <p>The session survived because of three layers of protection:</p>
+            <ul style="color: var(--text-secondary); margin-left: 24px;">
+                <li><strong>termux-wake-lock</strong> — Kept the CPU active even with screen off</li>
+                <li><strong>tmux</strong> — Session persisted even if Termux was backgrounded</li>
+                <li><strong>--dangerously-skip-permissions</strong> — Claude worked autonomously without waiting for approval</li>
+            </ul>
+            <p style="margin-top: 16px;">The phone ran 24/7 for 3 days. Claude would work while we slept. Wake up, check progress, give new directions, go back to sleep. Repeat.</p>
         </div>
 
         <div class="highlight-box">
