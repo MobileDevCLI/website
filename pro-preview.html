@@ -876,13 +876,35 @@ claude --dangerously-skip-permissions</pre>
                 </div>
             </div>
 
-            <div class="info-box" style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(168, 85, 247, 0.1)); border-left-color: var(--primary);">
-                <div class="info-box-title" style="color: var(--primary);">The Complete Automation Loop</div>
-                <p style="margin-bottom: 12px;">You now have the full pipeline:</p>
-                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary);">
-                    You → Claude → Code → Git Push → GitHub → Vercel → <strong style="color: var(--primary);">LIVE</strong>
+            <div class="step-card">
+                <span class="step-number">9</span>
+                <span class="step-title">Add Business Automation (Optional)</span>
+                <p style="margin-top: 16px;">Take it further with payments and social media automation:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">Bash — Business Tools</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><span class="comment"># Stripe for payments</span>
+npm install -g stripe
+stripe login
+
+<span class="comment"># Twitter API for announcements</span>
+npm install twitter-api-v2
+
+<span class="comment"># YouTube API for video uploads</span>
+npm install googleapis</pre>
                 </div>
-                <p style="margin-top: 12px; margin-bottom: 0;">This is what built this entire website from a phone in 84 hours. The same power is now yours.</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Full documentation in the <strong>Complete Guide</strong> tab → Business Automation section.</p>
+            </div>
+
+            <div class="info-box" style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(168, 85, 247, 0.1)); border-left-color: var(--primary);">
+                <div class="info-box-title" style="color: var(--primary);">The Complete Business Pipeline</div>
+                <p style="margin-bottom: 12px;">With all pieces connected:</p>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-secondary);">
+                    Code → Deploy → <span style="color: var(--accent);">Tweet</span> → <span style="color: var(--secondary);">Collect Payment</span> → <span style="color: var(--primary);">Manage Users</span> → <strong style="color: var(--primary);">PROFIT</strong>
+                </div>
+                <p style="margin-top: 12px; margin-bottom: 0;">Build features while you sleep. Wake up to deployed code, social engagement, and paying customers.</p>
             </div>
 
             <h3>Quick Reference</h3>
@@ -1754,6 +1776,472 @@ git push website master
 
 <span class="comment"># Create alias for convenience</span>
 alias gpp="git push origin master && git push website master"</pre>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- BUSINESS AUTOMATION SECTION -->
+            <!-- ============================================ -->
+            <h2>Business Automation: The Full Stack</h2>
+            <p>Development is just the beginning. A complete autonomous business requires <strong>payments, social media, and user management</strong> — all automated from your phone.</p>
+
+            <div class="info-box" style="border-left-color: var(--accent); background: rgba(168, 85, 247, 0.08);">
+                <h4 style="margin-top: 0; color: var(--accent);">The Complete Business Pipeline</h4>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; text-align: center; padding: 16px 0;">
+                    <span style="color: var(--primary);">Code</span> →
+                    <span style="color: var(--secondary);">Deploy</span> →
+                    <span style="color: var(--accent);">Announce (X/YouTube)</span> →
+                    <span style="color: var(--primary);">Collect Payment (Stripe)</span> →
+                    <span style="color: var(--secondary);">Manage Users (Supabase)</span>
+                </div>
+                <p style="margin-bottom: 0;">All of this can run autonomously. Claude handles the code, webhooks handle the rest.</p>
+            </div>
+
+            <h3>Stripe: Payment Processing</h3>
+            <p>Stripe is the industry standard for SaaS payments. Here's how to integrate it from mobile:</p>
+
+            <h4>Installation & Setup</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Stripe CLI Setup</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Install Stripe CLI</span>
+npm install -g stripe
+
+<span class="comment"># Login to Stripe</span>
+stripe login
+
+<span class="comment"># Listen for webhooks locally (for testing)</span>
+stripe listen --forward-to localhost:3000/webhook
+
+<span class="comment"># Trigger test events</span>
+stripe trigger payment_intent.succeeded</pre>
+            </div>
+
+            <h4>Key Concepts</h4>
+            <table>
+                <tr>
+                    <th>Concept</th>
+                    <th>Purpose</th>
+                    <th>Use Case</th>
+                </tr>
+                <tr>
+                    <td><strong>Checkout Sessions</strong></td>
+                    <td>Pre-built payment pages</td>
+                    <td>One-time purchases, subscriptions</td>
+                </tr>
+                <tr>
+                    <td><strong>Customer Portal</strong></td>
+                    <td>Self-service subscription management</td>
+                    <td>Users manage their own billing</td>
+                </tr>
+                <tr>
+                    <td><strong>Webhooks</strong></td>
+                    <td>Real-time event notifications</td>
+                    <td>Update user status when payment succeeds/fails</td>
+                </tr>
+                <tr>
+                    <td><strong>Products & Prices</strong></td>
+                    <td>Define what you're selling</td>
+                    <td>Free tier, Pro ($10/mo), Team ($20/user)</td>
+                </tr>
+            </table>
+
+            <h4>Creating a Subscription Product</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Create Products via CLI</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Create a product</span>
+stripe products create \
+  --name="Pro Plan" \
+  --description="Unlimited projects, priority support"
+
+<span class="comment"># Create a price (recurring monthly)</span>
+stripe prices create \
+  --product="prod_xxxxx" \
+  --unit-amount=1000 \
+  --currency=usd \
+  --recurring[interval]=month
+
+<span class="comment"># List all products</span>
+stripe products list
+
+<span class="comment"># List all prices</span>
+stripe prices list</pre>
+            </div>
+
+            <h4>Webhook Integration with Supabase</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">JavaScript — Webhook Handler</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment">// Handle Stripe webhook events</span>
+app.post('/webhook', async (req, res) => {
+  const event = req.body;
+
+  switch (event.type) {
+    case 'checkout.session.completed':
+      <span class="comment">// User completed payment</span>
+      await supabase
+        .from('subscriptions')
+        .upsert({
+          user_id: event.data.object.client_reference_id,
+          stripe_customer_id: event.data.object.customer,
+          tier: 'pro',
+          status: 'active'
+        });
+      break;
+
+    case 'customer.subscription.deleted':
+      <span class="comment">// Subscription cancelled</span>
+      await supabase
+        .from('subscriptions')
+        .update({ status: 'cancelled' })
+        .eq('stripe_customer_id', event.data.object.customer);
+      break;
+  }
+
+  res.json({ received: true });
+});</pre>
+            </div>
+
+            <div class="info-box tip">
+                <div class="info-box-title">Pro Tip: Test Mode</div>
+                <p>Stripe has a test mode with fake card numbers. Use <code>4242 4242 4242 4242</code> for successful payments. Always develop in test mode first.</p>
+            </div>
+
+            <h3>X/Twitter Automation</h3>
+            <p>Automate your social presence with the X API and scheduling tools.</p>
+
+            <h4>API Access Setup</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Getting X API Access</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># 1. Go to developer.twitter.com</span>
+<span class="comment"># 2. Create a project and app</span>
+<span class="comment"># 3. Get your API keys:</span>
+<span class="comment">#    - API Key (Consumer Key)</span>
+<span class="comment">#    - API Secret (Consumer Secret)</span>
+<span class="comment">#    - Bearer Token (for read-only)</span>
+<span class="comment">#    - Access Token & Secret (for posting)</span>
+
+<span class="comment"># Store in .env (NEVER commit this)</span>
+TWITTER_API_KEY=your_api_key
+TWITTER_API_SECRET=your_api_secret
+TWITTER_ACCESS_TOKEN=your_access_token
+TWITTER_ACCESS_SECRET=your_access_secret
+TWITTER_BEARER_TOKEN=your_bearer_token</pre>
+            </div>
+
+            <h4>Posting via API</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">JavaScript — Post a Tweet</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment">// Using twitter-api-v2 package</span>
+const { TwitterApi } = require('twitter-api-v2');
+
+const client = new TwitterApi({
+  appKey: process.env.TWITTER_API_KEY,
+  appSecret: process.env.TWITTER_API_SECRET,
+  accessToken: process.env.TWITTER_ACCESS_TOKEN,
+  accessSecret: process.env.TWITTER_ACCESS_SECRET,
+});
+
+<span class="comment">// Post a tweet</span>
+async function postTweet(text) {
+  const tweet = await client.v2.tweet(text);
+  console.log('Posted:', tweet.data.id);
+  return tweet;
+}
+
+<span class="comment">// Auto-announce deployments</span>
+async function announceDeployment(projectName, url) {
+  const text = `🚀 Just deployed ${projectName}!\n\nCheck it out: ${url}\n\n#buildinpublic #indiehacker`;
+  return postTweet(text);
+}</pre>
+            </div>
+
+            <h4>Scheduling Tools</h4>
+            <table>
+                <tr>
+                    <th>Tool</th>
+                    <th>Cost</th>
+                    <th>Best For</th>
+                </tr>
+                <tr>
+                    <td><strong>Buffer</strong></td>
+                    <td>Free tier available</td>
+                    <td>Simple scheduling, multiple platforms</td>
+                </tr>
+                <tr>
+                    <td><strong>Hypefury</strong></td>
+                    <td>$19/mo</td>
+                    <td>Twitter-focused, threads, auto-retweets</td>
+                </tr>
+                <tr>
+                    <td><strong>Typefully</strong></td>
+                    <td>Free tier available</td>
+                    <td>Thread writing, drafts, analytics</td>
+                </tr>
+                <tr>
+                    <td><strong>Custom Script</strong></td>
+                    <td>Free (API costs)</td>
+                    <td>Full automation, Claude can trigger</td>
+                </tr>
+            </table>
+
+            <h4>Automation Pattern: Deploy → Tweet</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Auto-Tweet on Deploy</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Add to your deploy script or post-push hook</span>
+#!/bin/bash
+
+<span class="comment"># Deploy</span>
+git push origin master && git push website master
+
+<span class="comment"># Wait for Vercel to deploy (~30s)</span>
+sleep 45
+
+<span class="comment"># Tweet the update</span>
+node scripts/tweet-deployment.js "New feature live! Check out..."
+
+<span class="comment"># Or use Claude to generate the tweet</span>
+echo "Write a tweet announcing the new feature" | claude</pre>
+            </div>
+
+            <h3>YouTube Automation</h3>
+            <p>Automate video uploads, descriptions, and content management.</p>
+
+            <h4>API Setup</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">YouTube Data API v3 Setup</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># 1. Go to console.cloud.google.com</span>
+<span class="comment"># 2. Create a new project</span>
+<span class="comment"># 3. Enable YouTube Data API v3</span>
+<span class="comment"># 4. Create OAuth 2.0 credentials</span>
+<span class="comment"># 5. Download client_secret.json</span>
+
+<span class="comment"># Install the client library</span>
+npm install googleapis
+
+<span class="comment"># Store credentials securely</span>
+<span class="comment"># client_secret.json should be in .gitignore</span></pre>
+            </div>
+
+            <h4>Video Upload Script</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">JavaScript — Upload Video</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>const { google } = require('googleapis');
+const fs = require('fs');
+
+async function uploadVideo(auth, filePath, title, description) {
+  const youtube = google.youtube({ version: 'v3', auth });
+
+  const response = await youtube.videos.insert({
+    part: 'snippet,status',
+    requestBody: {
+      snippet: {
+        title: title,
+        description: description,
+        tags: ['mobilecli', 'ai', 'development'],
+        categoryId: '28' <span class="comment">// Science & Technology</span>
+      },
+      status: {
+        privacyStatus: 'public', <span class="comment">// or 'private', 'unlisted'</span>
+        selfDeclaredMadeForKids: false
+      }
+    },
+    media: {
+      body: fs.createReadStream(filePath)
+    }
+  });
+
+  console.log('Video uploaded:', response.data.id);
+  return response.data;
+}</pre>
+            </div>
+
+            <h4>Content Automation Ideas</h4>
+            <ul>
+                <li><strong>Screen recordings</strong> — Record Claude building features, upload automatically</li>
+                <li><strong>Changelog videos</strong> — Generate narrated updates from git commits</li>
+                <li><strong>Tutorial generation</strong> — Claude writes script, TTS generates audio, combine with screen capture</li>
+                <li><strong>Scheduled uploads</strong> — Queue videos for optimal posting times</li>
+            </ul>
+
+            <h3>Supabase: The Backend Foundation</h3>
+            <p>Supabase provides authentication, database, realtime subscriptions, and storage — all from one platform.</p>
+
+            <h4>Core Services</h4>
+            <table>
+                <tr>
+                    <th>Service</th>
+                    <th>Purpose</th>
+                    <th>Key Features</th>
+                </tr>
+                <tr>
+                    <td><strong>Auth</strong></td>
+                    <td>User authentication</td>
+                    <td>OAuth (GitHub, Google), Magic Links, Email/Password</td>
+                </tr>
+                <tr>
+                    <td><strong>Database</strong></td>
+                    <td>PostgreSQL database</td>
+                    <td>SQL, Row Level Security, Realtime subscriptions</td>
+                </tr>
+                <tr>
+                    <td><strong>Storage</strong></td>
+                    <td>File storage</td>
+                    <td>Images, videos, documents with access control</td>
+                </tr>
+                <tr>
+                    <td><strong>Edge Functions</strong></td>
+                    <td>Serverless functions</td>
+                    <td>Webhooks, API endpoints, background jobs</td>
+                </tr>
+            </table>
+
+            <h4>Authentication Setup</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">JavaScript — Supabase Auth</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  'https://your-project.supabase.co',
+  'your-anon-key' <span class="comment">// Safe for client-side</span>
+)
+
+<span class="comment">// Sign in with GitHub</span>
+async function signInWithGitHub() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: {
+      redirectTo: 'https://yoursite.com/dashboard'
+    }
+  })
+}
+
+<span class="comment">// Check current user</span>
+async function getUser() {
+  const { data: { user } } = await supabase.auth.getUser()
+  return user
+}
+
+<span class="comment">// Sign out</span>
+async function signOut() {
+  await supabase.auth.signOut()
+  window.location.href = '/'
+}</pre>
+            </div>
+
+            <h4>Database with Row Level Security</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">SQL — Secure User Data</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment">-- Create subscriptions table</span>
+CREATE TABLE subscriptions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) NOT NULL,
+  tier TEXT NOT NULL DEFAULT 'free',
+  status TEXT NOT NULL DEFAULT 'active',
+  stripe_customer_id TEXT,
+  stripe_subscription_id TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  expires_at TIMESTAMP
+);
+
+<span class="comment">-- Enable Row Level Security</span>
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+
+<span class="comment">-- Users can only read their own subscription</span>
+CREATE POLICY "Users read own subscription"
+  ON subscriptions FOR SELECT
+  USING (auth.uid() = user_id);
+
+<span class="comment">-- Only service role can insert/update (webhooks)</span>
+CREATE POLICY "Service role manages subscriptions"
+  ON subscriptions FOR ALL
+  USING (auth.role() = 'service_role');</pre>
+            </div>
+
+            <h4>Realtime Subscriptions</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">JavaScript — Listen for Changes</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment">// Subscribe to subscription changes</span>
+const subscription = supabase
+  .channel('subscription-changes')
+  .on(
+    'postgres_changes',
+    {
+      event: '*',
+      schema: 'public',
+      table: 'subscriptions',
+      filter: `user_id=eq.${userId}`
+    },
+    (payload) => {
+      console.log('Subscription updated:', payload.new)
+      <span class="comment">// Update UI, show upgrade confirmation, etc.</span>
+    }
+  )
+  .subscribe()</pre>
+            </div>
+
+            <h3>The Complete Business Automation Flow</h3>
+            <p>Here's how all the pieces connect for a fully automated SaaS:</p>
+
+            <div style="background: var(--bg-card); border: 2px solid var(--primary); border-radius: 16px; padding: 32px; margin: 24px 0;">
+                <h4 style="margin-top: 0; color: var(--primary);">Autonomous Business Pipeline</h4>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+                    <div style="margin: 16px 0; padding: 12px; background: rgba(0,255,136,0.05); border-radius: 8px;">
+                        <strong style="color: var(--primary);">1. Development</strong><br>
+                        <span style="color: var(--text-secondary);">Claude writes code → git push → Vercel auto-deploys</span>
+                    </div>
+                    <div style="margin: 16px 0; padding: 12px; background: rgba(0,212,255,0.05); border-radius: 8px;">
+                        <strong style="color: var(--secondary);">2. Announcement</strong><br>
+                        <span style="color: var(--text-secondary);">Deploy webhook → Trigger tweet → Post to YouTube</span>
+                    </div>
+                    <div style="margin: 16px 0; padding: 12px; background: rgba(168,85,247,0.05); border-radius: 8px;">
+                        <strong style="color: var(--accent);">3. User Acquisition</strong><br>
+                        <span style="color: var(--text-secondary);">User visits site → Signs up with GitHub → Supabase creates account</span>
+                    </div>
+                    <div style="margin: 16px 0; padding: 12px; background: rgba(0,255,136,0.05); border-radius: 8px;">
+                        <strong style="color: var(--primary);">4. Monetization</strong><br>
+                        <span style="color: var(--text-secondary);">User clicks upgrade → Stripe checkout → Webhook updates Supabase</span>
+                    </div>
+                    <div style="margin: 16px 0; padding: 12px; background: rgba(0,212,255,0.05); border-radius: 8px;">
+                        <strong style="color: var(--secondary);">5. Access Control</strong><br>
+                        <span style="color: var(--text-secondary);">Page checks subscription tier → Shows Pro content if paid</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box" style="border-left-color: var(--primary);">
+                <h4 style="margin-top: 0; color: var(--primary);">The Result</h4>
+                <p style="margin-bottom: 0;">You build a feature on your phone. While you sleep, it deploys, gets announced on social media, attracts users, and collects payments. All automatically. This is the power of the complete automation pipeline.</p>
             </div>
 
             <h2>Troubleshooting Common Issues</h2>
@@ -3159,6 +3647,182 @@ Tell me:
                 </div>
             </details>
 
+            <h2 style="margin-top: 48px;">Business Automation Prompts</h2>
+            <p>Set up payments, social media, and user management with these battle-tested prompts.</p>
+
+            <details class="expandable">
+                <summary>Set Up Stripe Payments</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Help me set up Stripe payments for my SaaS.
+
+My pricing tiers:
+- Free: $0 (limited features)
+- Pro: $10/month (full access)
+- Team: $20/user/month (team features)
+
+Steps:
+1. Install and configure Stripe CLI
+2. Create products and prices in Stripe
+3. Create a checkout page that redirects to Stripe
+4. Set up webhook handler to update user subscription status
+5. Connect webhooks to my Supabase database
+6. Add subscription check to protected pages
+
+My Supabase project URL: [YOUR_SUPABASE_URL]
+
+Start with the Stripe CLI setup.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Set Up Twitter/X Automation</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Help me set up Twitter/X automation for my project.
+
+I want to:
+1. Auto-tweet when I deploy new features
+2. Schedule tweets in advance
+3. Post threads programmatically
+4. Track engagement
+
+Steps:
+1. Walk me through getting X API access at developer.twitter.com
+2. Set up environment variables for API keys (securely)
+3. Install twitter-api-v2 package
+4. Create a tweet-deployment.js script that:
+   - Takes a message as argument
+   - Posts to Twitter
+   - Returns the tweet URL
+5. Create a deploy-and-announce.sh script that:
+   - Pushes to git
+   - Waits for Vercel deploy
+   - Tweets the announcement
+
+Keep credentials secure (never commit to git).</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Set Up YouTube Automation</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Help me set up YouTube automation for uploading videos.
+
+I want to:
+1. Upload videos from command line
+2. Set titles, descriptions, and tags automatically
+3. Schedule video releases
+4. Update video metadata programmatically
+
+Steps:
+1. Walk me through setting up YouTube Data API v3 at console.cloud.google.com
+2. Create OAuth 2.0 credentials
+3. Set up authentication flow
+4. Create upload-video.js script that:
+   - Takes video file path, title, description as arguments
+   - Uploads to YouTube
+   - Returns the video URL
+5. Create a workflow for recording screen, editing, and uploading
+
+Keep client_secret.json secure (add to .gitignore).</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Set Up Supabase Authentication</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Help me set up Supabase authentication for my website.
+
+I want:
+- GitHub OAuth login
+- Google OAuth login
+- Protected dashboard page
+- Subscription tier tracking
+
+My Supabase project:
+- URL: [YOUR_SUPABASE_URL]
+- Anon Key: [YOUR_ANON_KEY]
+
+Steps:
+1. Create js/supabase-config.js with the client
+2. Create login.html with OAuth buttons
+3. Create dashboard.html that:
+   - Checks if user is logged in
+   - Shows user info
+   - Redirects to login if not authenticated
+4. Create subscriptions table in Supabase with RLS
+5. Add subscription check for Pro features
+6. Create logout functionality
+
+Walk me through each step.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Complete Business Pipeline Setup</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt — THE BIG ONE</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>I want to set up the complete autonomous business pipeline.
+
+The vision:
+- I build a feature on my phone
+- It deploys automatically
+- Social media announces it
+- Users can sign up and pay
+- Everything runs while I sleep
+
+I have:
+- Website on Vercel (connected to GitHub)
+- Supabase project (auth + database)
+- Stripe account (test mode)
+- Twitter developer account
+- YouTube API access
+
+Create the following automation chain:
+
+1. Deploy webhook that triggers on git push
+2. Tweet announcement script (auto-generates message from commit)
+3. Stripe checkout integration (Free/Pro/Team tiers)
+4. Supabase subscription tracking (synced with Stripe webhooks)
+5. Protected content gating (check subscription before showing Pro content)
+
+Make it so I can:
+1. Run: git push
+2. Everything else happens automatically
+3. Wake up to deployed code, social posts, and potential customers
+
+Let's do this step by step. Start with the deployment automation.</pre>
+                    </div>
+                </div>
+            </details>
+
             <details class="expandable">
                 <summary>The Incremental Builder</summary>
                 <div class="expandable-content">
@@ -3328,6 +3992,68 @@ curl -sL "https://www.yoursite.com" | grep "unique text"
                 <p>After a few weeks, your CLAUDE.md becomes a highly tuned instruction set that dramatically reduces errors and speeds up development.</p>
 
                 <p><strong>Key insight:</strong> Anytime Claude does something wrong, add a rule. The knowledge compounds. Future sessions are smarter.</p>
+            </div>
+
+            <div class="research-card">
+                <span class="research-tag">Business</span>
+                <h3>Full Business Automation Pipeline</h3>
+                <p>We discovered that the entire SaaS business flow can be automated from a phone:</p>
+
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: var(--bg-card); padding: 16px; border-radius: 8px; margin: 16px 0;">
+                    Code → GitHub → Vercel → Live<br>
+                    Live → Tweet API → Social Presence<br>
+                    User → Supabase → Auth<br>
+                    Auth → Stripe → Payment<br>
+                    Payment → Webhook → Access
+                </div>
+
+                <p><strong>Key insight:</strong> Every piece of this chain has an API. Connect them with webhooks, and you have a fully autonomous business. Build while sleeping, wake up to paying customers.</p>
+            </div>
+
+            <div class="research-card">
+                <span class="research-tag">API</span>
+                <h3>Stripe CLI Works in Termux</h3>
+                <p>Fully functional payment processing from your phone:</p>
+
+                <ul>
+                    <li><code>npm install -g stripe</code> works in Termux</li>
+                    <li>Can create products, prices, and checkout sessions</li>
+                    <li>Webhook testing with <code>stripe listen --forward-to</code></li>
+                    <li>Test mode with fake card numbers for development</li>
+                </ul>
+
+                <p><strong>Key insight:</strong> You can set up, test, and manage your entire payment system from your phone. No laptop required.</p>
+            </div>
+
+            <div class="research-card">
+                <span class="research-tag">API</span>
+                <h3>Twitter/X API Automation</h3>
+                <p>We tested posting via the X API v2:</p>
+
+                <ul>
+                    <li><code>twitter-api-v2</code> npm package works in Termux</li>
+                    <li>Can post tweets, threads, and media programmatically</li>
+                    <li>Claude can generate tweet content from commit messages</li>
+                    <li>Auto-announce deployments with a single script</li>
+                </ul>
+
+                <p><strong>Pattern discovered:</strong> Post-push hook that waits for Vercel deploy, then tweets the update. Fully automated build-in-public workflow.</p>
+            </div>
+
+            <div class="research-card">
+                <span class="research-tag">Integration</span>
+                <h3>Supabase + Stripe Webhook Sync</h3>
+                <p>The cleanest pattern for subscription management:</p>
+
+                <ol>
+                    <li>User clicks "Upgrade" → Redirects to Stripe Checkout</li>
+                    <li>Stripe processes payment → Fires webhook</li>
+                    <li>Webhook handler updates Supabase <code>subscriptions</code> table</li>
+                    <li>Page checks subscription tier via RLS policy</li>
+                    <li>User sees Pro content immediately</li>
+                </ol>
+
+                <p><strong>Key insight:</strong> Use Supabase Edge Functions to handle Stripe webhooks. One table, RLS policies, real-time updates. Simple and bulletproof.</p>
             </div>
         </div>
 
