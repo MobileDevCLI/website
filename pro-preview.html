@@ -111,6 +111,80 @@
             font-size: 0.9rem;
         }
 
+        /* Mobile Menu Dropdown */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 16px;
+            right: 16px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 16px;
+            z-index: 999;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu-section {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mobile-menu-section:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-menu-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 8px 12px 4px;
+            font-weight: 600;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 12px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .mobile-menu a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .mobile-menu .btn-primary {
+            display: block;
+            background: var(--primary);
+            color: #000;
+            text-align: center;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .mobile-menu .btn-pro {
+            background: linear-gradient(135deg, var(--accent), #7c3aed);
+            color: white;
+        }
+
         /* Container */
         .container {
             max-width: 1000px;
@@ -615,9 +689,48 @@
                 <a href="/games.html">Games</a>
                 <a href="/dashboard.html">Dashboard</a>
             </div>
-            <button class="mobile-menu-btn" onclick="alert('Menu')">Menu</button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">Menu</button>
         </div>
     </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-section">
+            <div class="mobile-menu-label">Product</div>
+            <a href="/pricing.html">Pricing</a>
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/proof.html">Case Study</a>
+        </div>
+        <div class="mobile-menu-section">
+            <div class="mobile-menu-label">Learn</div>
+            <a href="/learn.html">Documentation</a>
+            <a href="/quickstart.html">Quick Start</a>
+            <a href="/examples.html">Examples</a>
+            <a href="/research.html">Research</a>
+        </div>
+        <div class="mobile-menu-section">
+            <div class="mobile-menu-label">Interactive</div>
+            <a href="/demos.html">Demos</a>
+            <a href="/games.html">Games</a>
+            <a href="/labs.html">Labs</a>
+        </div>
+        <div class="mobile-menu-section">
+            <div class="mobile-menu-label">Community</div>
+            <a href="https://discord.gg/mobilecli" target="_blank">Discord</a>
+            <a href="https://github.com/MobileDevCLI" target="_blank">GitHub</a>
+            <a href="https://twitter.com/MobileDevCLI" target="_blank">Twitter / X</a>
+            <a href="https://youtube.com/@MobileDevCLI" target="_blank">YouTube</a>
+        </div>
+        <div class="mobile-menu-section">
+            <div class="mobile-menu-label">Resources</div>
+            <a href="/legal-guide.html">Legal Guide</a>
+            <a href="/security-guide.html">Security Guide</a>
+            <a href="/news.html">News</a>
+        </div>
+        <div class="mobile-menu-section">
+            <a href="/login.html" class="btn-primary">Account</a>
+        </div>
+    </div>
 
     <div class="container">
         <!-- Page Header -->
@@ -2901,6 +3014,31 @@ git push origin master && git push website master</pre>
                 }, 2000);
             });
         }
+
+        // Mobile Menu Functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+            mobileMenuBtn.textContent = mobileMenu.classList.contains('open') ? 'Close' : 'Menu';
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+                mobileMenuBtn.textContent = 'Menu';
+            }
+        });
+
+        // Close menu when clicking a link
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                mobileMenuBtn.textContent = 'Menu';
+            });
+        });
     </script>
 </body>
 </html>
