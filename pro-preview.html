@@ -631,6 +631,7 @@
             <button class="tab-btn active" onclick="showTab('quickstart')">Quick Start</button>
             <button class="tab-btn" onclick="showTab('complete')">Complete Guide</button>
             <button class="tab-btn" onclick="showTab('workflow')">Workflow Mastery</button>
+            <button class="tab-btn" onclick="showTab('prompts')">Magic Prompts</button>
             <button class="tab-btn" onclick="showTab('research')">Research Lab</button>
             <button class="tab-btn" onclick="showTab('resources')">Resources</button>
             <button class="tab-btn" onclick="showTab('troubleshoot')">Troubleshooting</button>
@@ -1952,7 +1953,481 @@ termux-notification -t "Build complete" -c "Ready for review"</pre>
         </div>
 
         <!-- ============================================ -->
-        <!-- TAB 4: RESEARCH LAB -->
+        <!-- TAB 4: MAGIC PROMPTS -->
+        <!-- ============================================ -->
+        <div id="prompts" class="tab-content">
+            <h2>Magic Prompts</h2>
+            <p>Copy-paste these prompts to set up everything in minutes. One command for Termux. One prompt for Claude. Done.</p>
+
+            <div class="info-box" style="border-left-color: var(--accent); margin-bottom: 32px;">
+                <div class="info-box-title" style="color: var(--accent);">The 3-Step Setup</div>
+                <p><strong>Step 1:</strong> Run the Termux one-liner below.<br>
+                <strong>Step 2:</strong> Run <code>claude</code> to authenticate.<br>
+                <strong>Step 3:</strong> Paste the CLAUDE.md setup prompt.<br>
+                That's it. You're ready to build anything.</p>
+            </div>
+
+            <h3>Step 1: The One-Line Termux Setup</h3>
+            <p>Copy this entire command. Paste into Termux. Wait 2-3 minutes. Everything installs automatically.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Complete Setup (One Command)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>pkg update -y && pkg upgrade -y && pkg install -y nodejs git gh openssh tmux termux-api && npm install -g @anthropic-ai/claude-code && termux-setup-storage && echo 'alias cc="claude --dangerously-skip-permissions"' >> ~/.bashrc && echo 'alias wake="termux-wake-lock"' >> ~/.bashrc && echo 'alias dev="tmux attach -t dev || tmux new -s dev"' >> ~/.bashrc && source ~/.bashrc && echo "✅ Setup complete! Run: claude"</pre>
+            </div>
+
+            <h3>Step 2: Authenticate</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>claude</pre>
+            </div>
+            <p>This opens your browser. Log in with your Anthropic account. Done.</p>
+
+            <h3>Step 3: Paste This Into Claude</h3>
+            <p>Once Claude is running, paste this prompt to set up your project:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Claude Prompt — Project Setup</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>Create a CLAUDE.md file for this project with the following sections:
+
+1. Quick Context - Project name, description, owner alias, website URL, GitHub org
+2. Tech Stack - List the technologies (HTML/CSS/JS, Three.js, Supabase, Vercel, etc.)
+3. Important Rules - Never share personal info, always push to both repos, mobile-first, etc.
+4. Git Workflow - Quick deploy command, both repos (origin + website)
+5. Common Commands - Build, test, deploy one-liners
+6. Learned Lessons - Start empty, we'll add as we go
+
+Ask me for the project details, then create the file.</pre>
+            </div>
+
+            <h2 style="margin-top: 48px;">Power Prompts</h2>
+            <p>Copy-paste prompts for common tasks. Each one is battle-tested.</p>
+
+            <details class="expandable">
+                <summary>Build a Website from Scratch</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>I want to build a website. Here are the requirements:
+
+- Name: [YOUR SITE NAME]
+- Purpose: [WHAT IT DOES]
+- Style: Dark theme, modern, premium feel
+- Tech: Vanilla HTML/CSS/JS (no frameworks)
+- Hosting: Will deploy on Vercel
+
+Create the following files:
+1. index.html - Landing page with hero section
+2. style.css - Complete styling (or inline in HTML)
+3. Basic navigation structure
+
+Use these colors:
+- Background: #000000
+- Primary: #00ff88 (green)
+- Secondary: #00d4ff (cyan)
+- Text: #ffffff
+
+Make it mobile-first and responsive. Start with index.html.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Set Up GitHub + Vercel Deployment</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Help me set up GitHub and Vercel deployment for this project.
+
+1. First, authenticate with GitHub:
+   - Run: gh auth login
+   - Walk me through the prompts
+
+2. Create a new GitHub repo:
+   - Org/name: [YOUR_ORG]/[REPO_NAME]
+   - Make it public
+
+3. Initialize git and push:
+   - git init
+   - git add -A
+   - git commit -m "Initial commit"
+   - Set up remote and push
+
+4. Add a second remote called "website" for Vercel:
+   - Create another repo: [YOUR_ORG]/website
+   - Add as remote
+   - Push to both
+
+5. Create vercel.json with cache-busting headers
+
+Walk me through each step.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Add Three.js 3D Graphics</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Add a Three.js 3D background to my website.
+
+Requirements:
+- Full-screen canvas behind content
+- Animated geometric shapes (cubes, spheres, or particles)
+- Colors that match my site (green #00ff88, cyan #00d4ff)
+- Smooth 60fps animation
+- Mobile-optimized (limit pixel ratio to 2x)
+- Touch interaction on mobile
+- Mouse interaction on desktop
+
+Use CDN for Three.js:
+https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js
+
+Add the canvas to my existing index.html without breaking anything.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Add Physics with Cannon.js</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Add physics to my Three.js scene using Cannon.js.
+
+Requirements:
+- Objects fall with gravity
+- Objects bounce off each other
+- Touch/click to add new objects
+- Objects bounce off invisible walls at screen edges
+- Sync physics bodies with Three.js meshes
+
+Use CDN:
+https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.min.js
+
+Integrate with my existing Three.js setup.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Set Up Supabase Auth</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Set up Supabase authentication for my website.
+
+My Supabase details:
+- Project URL: [YOUR_SUPABASE_URL]
+- Anon Key: [YOUR_ANON_KEY]
+
+Create:
+1. js/supabase-config.js - Initialize Supabase client
+2. login.html - Login page with GitHub OAuth button
+3. dashboard.html - Protected page (redirects if not logged in)
+
+Requirements:
+- GitHub OAuth login
+- Session persistence
+- Logout functionality
+- Redirect to dashboard after login
+- Redirect to login if accessing dashboard without auth
+
+Use Supabase CDN:
+https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Create Interactive Demo/Game</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Create an interactive WebGL demo called [DEMO_NAME].
+
+Type: [fluid simulation / particle system / physics playground / etc.]
+
+Requirements:
+- Full-screen canvas
+- Touch controls for mobile
+- Mouse controls for desktop
+- Info panel explaining controls
+- Reset button
+- Back button to return to main site
+- Target 30fps minimum on mobile
+- Use requestAnimationFrame for smooth animation
+
+Match my site's dark theme:
+- Background: #000000
+- Accent colors: #00ff88, #00d4ff
+
+Create as a standalone HTML file: demo/[name].html</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Debug and Fix Errors</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>I'm getting an error. Here's what's happening:
+
+Error message: [PASTE ERROR]
+
+File: [FILENAME]
+
+What I was trying to do: [DESCRIBE]
+
+Please:
+1. Explain what's causing the error
+2. Show me the fix
+3. Apply the fix to my file
+4. Verify it works</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Daily Development Session Start</summary>
+                <div class="expandable-content">
+                    <p>Paste this at the start of every coding session:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Read my CLAUDE.md file to understand this project.
+
+Then:
+1. Run git status to see any uncommitted changes
+2. Tell me what we were working on last time (check recent commits)
+3. Ask me what I want to work on today
+
+Keep your response brief.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>End of Session Commit</summary>
+                <div class="expandable-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Let's wrap up this session:
+
+1. Run git status and git diff to see all changes
+2. Create a clear commit message summarizing what we did
+3. Add all files and commit
+4. Push to both origin and website repos
+5. Confirm the push succeeded
+
+If anything looks wrong, tell me before committing.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>Long-Running Autonomous Task</summary>
+                <div class="expandable-content">
+                    <p>For tasks you want Claude to complete while you sleep:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>I'm going to let you work autonomously on this task. Here's what I need:
+
+TASK: [DESCRIBE THE FULL TASK]
+
+CONSTRAINTS:
+- Don't delete any existing files without asking
+- Commit after each major milestone
+- Push to both repos after each commit
+- If you encounter an error you can't solve, document it and move on
+
+WHEN DONE:
+- Send a termux-notification saying "Task complete"
+- Write a summary of what you did in CHANGELOG.md
+- Make a final commit with the summary
+
+Start now. I'll check back later.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <h2 style="margin-top: 48px;">Termux One-Liners</h2>
+            <p>Quick commands for common operations.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Start Autonomous Dev Session</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>termux-wake-lock && tmux new -s dev && claude --dangerously-skip-permissions</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Quick Deploy</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>git add -A && git commit -m "update" && git push origin master && git push website master</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Test Site Locally</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>npx http-server -p 8080 && termux-open-url "http://localhost:8080"</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Check What's Changed</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>git status && git diff --stat</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Reattach to Running Session</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>tmux attach -t dev</pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Send Notification When Done</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>termux-notification -t "Done!" -c "Your task is complete"</pre>
+            </div>
+
+            <h2 style="margin-top: 48px;">Advanced Prompt Engineering</h2>
+            <p>Techniques for getting better results from Claude.</p>
+
+            <details class="expandable">
+                <summary>The Context Primer</summary>
+                <div class="expandable-content">
+                    <p>Start every session by giving Claude context:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Before we start, read these files to understand the project:
+1. CLAUDE.md (project rules and context)
+2. package.json or index.html (project structure)
+3. The file we'll be working on
+
+Summarize what you understand in 2-3 sentences, then ask what I want to do.</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>The Verification Loop</summary>
+                <div class="expandable-content">
+                    <p>Always ask Claude to verify its work:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>After making this change:
+1. Run any relevant tests or build commands
+2. Check for errors in the output
+3. If there are errors, fix them
+4. Repeat until it works
+5. Tell me when it's verified working</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>The Screenshot Review</summary>
+                <div class="expandable-content">
+                    <p>For visual verification:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>I just took a screenshot of [WHAT YOU SCREENSHOTTED].
+
+Read the file at: ~/storage/dcim/Screenshots/[FILENAME].jpg
+
+Tell me:
+1. Does it look correct?
+2. Any visual issues you can see?
+3. Suggestions for improvement?</pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="expandable">
+                <summary>The Incremental Builder</summary>
+                <div class="expandable-content">
+                    <p>For complex features, build incrementally:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-label">Claude Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>Let's build [FEATURE] incrementally:
+
+1. First, create the minimal working version
+2. Test it works
+3. Add one enhancement
+4. Test again
+5. Repeat
+
+Start with step 1. Don't try to build everything at once.</pre>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- TAB 5: RESEARCH LAB -->
         <!-- ============================================ -->
         <div id="research" class="tab-content">
             <h2>Research Lab</h2>
