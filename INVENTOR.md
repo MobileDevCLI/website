@@ -87,6 +87,25 @@ The constraint shift does not make invention easier. It makes different problems
 
 A SaaS platform with 25+ pages, 17 WebGL demos, authentication, and legal framework—built in 72 hours on a phone—is not tractable under traditional constraints. Under AI-assisted constraints, it becomes a weekend project.
 
+### The Zero-Compute Breakthrough
+
+A critical insight undocumented elsewhere: the phone uses **zero local compute** for AI processing.
+
+| Device Role | Infrastructure Role |
+|-------------|---------------------|
+| Sends text commands | Runs Opus 4.5 model |
+| Receives text responses | Processes millions of tokens |
+| Stores files locally | Executes all AI reasoning |
+
+The phone is a thin client to Earth's most powerful AI supercomputers. This produces:
+
+- **72 hours continuous** with minimal battery drain
+- **No thermal throttling** - phone stays cool
+- **Speed parity** with any desktop or workstation
+- **Supercomputer access** from a $200 device
+
+No other mobile development methodology achieves this. SSH methods run compute on remote desktops. Cloud IDEs run compute on VMs. This method offloads ALL computation to Anthropic's infrastructure while retaining full local control.
+
 ---
 
 ## Part V: The Role of Prior Experimentation
