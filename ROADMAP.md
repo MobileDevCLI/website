@@ -452,10 +452,11 @@ Hosting: Cloudflare Pages
 8. ~~17 interactive demos~~ DONE
 
 ### Next Up (This Week)
-1. Stripe payment integration
-2. Enforce Pro paywall (check subscription)
-3. User profile page
-4. Google OAuth
+1. **AI Robotics documentation on Pro page**
+2. Stripe payment integration
+3. Enforce Pro paywall (check subscription)
+4. User profile page
+5. Google OAuth
 
 ### Medium-term (Next Month)
 9. Payment integration
@@ -468,6 +469,74 @@ Hosting: Cloudflare Pages
 14. Full analytics
 15. AI insights
 16. SEO mastery
+
+---
+
+## Phase 10: AI Robotics Control (NEXT INVENTION)
+
+**Status**: Research & Development
+**Started**: Pre-2024 (years of experimentation)
+**Documentation**: January 4, 2026
+**See**: AI_ROBOTICS.md for full details
+
+### The Vision
+AI-controlled robotics using:
+- WiFi/ExpressLRS signal control
+- Video feedback loops
+- Multimodal AI decision making
+- Specialized model orchestration (MediaPipe, YOLO)
+
+### Hardware Inventory
+| Device | Status | Method |
+|--------|--------|--------|
+| Cheap WiFi Drones | Working | Reverse-engineered |
+| DJI Tello TT | **Autonomous achieved** | Official SDK |
+| DJI RoboMaster S1 | Limited | Closed environment |
+| DJI RoboMaster EP | In progress | Official SDK |
+
+### Development Phases
+
+**Phase A: WiFi Drone Control (DONE)**
+- [x] Connect to cheap WiFi drones
+- [x] Control motors via AI
+- [x] Get video feedback
+- [x] Basic autonomous behavior
+
+**Phase B: Tello TT (DONE)**
+- [x] SDK integration
+- [x] Autonomous flight achieved
+- [x] Video processing pipeline
+
+**Phase C: ExpressLRS Integration (IN PROGRESS)**
+- [ ] PWM output from AI decisions
+- [ ] Low-latency control loop
+- [ ] Video feedback via separate channel
+
+**Phase D: RoboMaster EP (IN PROGRESS)**
+- [ ] SDK access confirmed
+- [ ] Control via Python
+- [ ] Vision pipeline integration
+
+**Phase E: Full AI Orchestration**
+- [ ] MediaPipe integration
+- [ ] YOLO model integration
+- [ ] Multi-model pipeline
+- [ ] Real-time decision making
+
+### Key Principle
+**AI orchestrates, doesn't do everything itself.**
+
+```
+Video → MediaPipe/YOLO (parallel) → Results to AI
+AI receives: [video frame + detection results]
+AI decides: "Target at X,Y, move left"
+AI sends: Control signal
+```
+
+This keeps AI responsive while specialized models handle compute-heavy detection.
+
+### Prior Art Status
+The complete methodology - AI orchestrating specialized models for real-time robot control via ExpressLRS/WiFi - is **undocumented** anywhere. This is a novel approach.
 
 ---
 
