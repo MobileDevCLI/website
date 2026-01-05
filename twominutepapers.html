@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Minute Papers - MobileCLI</title>
+    <meta name="description" content="Interactive demos and resources from Two Minute Papers. Gaussian splatting, physics simulations, neural rendering, and cutting-edge AI research you can play with.">
+    <link rel="canonical" href="https://mobilecli.com/twominutepapers">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #0f0f0f;
+            --bg-tertiary: #1a1a1a;
+            --bg-card: #111111;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --accent-1: #00ff88;
+            --accent-2: #00d4ff;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --gradient: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            --border: #222222;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        a {
+            color: var(--accent-1);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-1);
+            font-family: 'Courier New', monospace;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-links a.active {
+            color: var(--accent-purple);
+        }
+
+        /* Header */
+        .page-header {
+            padding: 120px 0 60px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(168, 85, 247, 0.1) 0%, transparent 100%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Featured Banner */
+        .featured-banner {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.1));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0 48px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .featured-icon {
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+
+        .featured-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .featured-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .featured-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        /* Section */
+        .section {
+            padding: 48px 0;
+        }
+
+        .section-title {
+            color: var(--accent-purple);
+            font-size: 1.3rem;
+            margin-bottom: 24px;
+        }
+
+        /* Grid */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .example-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .example-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-4px);
+        }
+
+        .example-preview {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+        }
+
+        .example-content {
+            padding: 20px;
+        }
+
+        .example-content h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .example-content h3 a {
+            color: var(--text);
+        }
+
+        .example-content h3 a:hover {
+            color: var(--accent-purple);
+        }
+
+        .example-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .example-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .example-link {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .example-link.demo {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+        }
+
+        .example-link.github {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        /* Lambda Banner */
+        .lambda-banner {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 255, 136, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 48px 0;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .lambda-banner .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .copyright {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .featured-banner,
+            .lambda-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .featured-links {
+                justify-content: center;
+            }
+
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile Tab Nav */
+        .mobile-tab-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.98);
+            border-top: 1px solid var(--border);
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-tab-nav {
+                display: flex;
+                justify-content: space-around;
+            }
+
+            body {
+                padding-bottom: 70px;
+            }
+        }
+
+        .mobile-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-decoration: none;
+        }
+
+        .mobile-tab.active {
+            color: var(--accent-purple);
+        }
+
+        .mobile-tab-icon {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">MobileCLI</a>
+            <div class="nav-links">
+                <a href="/pricing.html">Pricing</a>
+                <a href="/learn.html">Docs</a>
+                <a href="/examples.html">Examples</a>
+                <a href="/games.html">Games</a>
+                <a href="/twominutepapers.html" class="active">Two Minute Papers</a>
+                <a href="/demos.html">Demos</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Two Minute Papers</h1>
+            <p>Interactive demos and resources from cutting-edge AI & physics research explained by Dr. Károly Zsolnai-Fehér</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Featured Banner -->
+            <div class="featured-banner">
+                <div class="featured-icon">🎬</div>
+                <div class="featured-content">
+                    <h3>The Best AI Research Channel on YouTube</h3>
+                    <p>1.5M+ subscribers. Dr. Károly Zsolnai-Fehér explains cutting-edge research on fluid simulation, neural rendering, physics engines, Gaussian splatting, and more. "What a time to be alive!"</p>
+                    <div class="featured-links">
+                        <a href="https://www.youtube.com/user/keeroyz" target="_blank" class="btn btn-primary">YouTube Channel</a>
+                        <a href="https://www.patreon.com/TwoMinutePapers" target="_blank" class="btn btn-secondary">Patreon</a>
+                        <a href="https://x.com/twominutepapers" target="_blank" class="btn btn-secondary">X/Twitter</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Official Links Section -->
+            <section class="section">
+                <h2 class="section-title">🔗 Official Links & Social Media</h2>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-preview">🎥</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.youtube.com/user/keeroyz" target="_blank">YouTube Channel</a></h3>
+                            <p>Main channel. 1.5M+ subscribers. New videos weekly on AI/physics research.</p>
+                            <div class="example-links">
+                                <a href="https://www.youtube.com/user/keeroyz" target="_blank" class="example-link demo">Subscribe</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🐦</div>
+                        <div class="example-content">
+                            <h3><a href="https://x.com/twominutepapers" target="_blank">X (Twitter)</a></h3>
+                            <p>@twominutepapers - Daily updates, paper links, and research highlights.</p>
+                            <div class="example-links">
+                                <a href="https://x.com/twominutepapers" target="_blank" class="example-link demo">Follow</a>
+                                <a href="https://twitter.com/karoly_zsolnai" target="_blank" class="example-link github">Personal</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">📸</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.instagram.com/twominutepapers/" target="_blank">Instagram</a></h3>
+                            <p>@twominutepapers - Visual highlights and behind the scenes.</p>
+                            <div class="example-links">
+                                <a href="https://www.instagram.com/twominutepapers/" target="_blank" class="example-link demo">Follow</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">💰</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.patreon.com/TwoMinutePapers" target="_blank">Patreon</a></h3>
+                            <p>Support the channel. Nobel Laureates tier gets name in video descriptions.</p>
+                            <div class="example-links">
+                                <a href="https://www.patreon.com/TwoMinutePapers" target="_blank" class="example-link demo">Support</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🎓</div>
+                        <div class="example-content">
+                            <h3><a href="https://users.cg.tuwien.ac.at/zsolnai/" target="_blank">Academic Page (TU Wien)</a></h3>
+                            <p>Dr. Károly's research publications, PhD thesis, and academic work.</p>
+                            <div class="example-links">
+                                <a href="https://users.cg.tuwien.ac.at/zsolnai/" target="_blank" class="example-link demo">Research</a>
+                                <a href="https://scholar.google.com/citations?user=WgyrxUAAAAAJ" target="_blank" class="example-link github">Scholar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🦣</div>
+                        <div class="example-content">
+                            <h3><a href="https://sigmoid.social/@twominutepapers" target="_blank">Mastodon</a></h3>
+                            <p>twominutepapers@sigmoid.social - Decentralized social presence.</p>
+                            <div class="example-links">
+                                <a href="https://sigmoid.social/@twominutepapers" target="_blank" class="example-link demo">Follow</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dr. Károly's Research -->
+            <section class="section">
+                <h2 class="section-title">📄 Dr. Károly Zsolnai-Fehér's Own Research</h2>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-preview">🌐</div>
+                        <div class="example-content">
+                            <h3><a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/gaussian-material-synthesis/" target="_blank">Gaussian Material Synthesis</a></h3>
+                            <p>SIGGRAPH 2018 paper on material synthesis using Gaussian distributions.</p>
+                            <div class="example-links">
+                                <a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/gaussian-material-synthesis/" target="_blank" class="example-link demo">Paper</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🎨</div>
+                        <div class="example-content">
+                            <h3><a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/photorealistic-material-editing/" target="_blank">Photorealistic Material Editing</a></h3>
+                            <p>EGSR 2020 - Edit materials through direct image manipulation.</p>
+                            <div class="example-links">
+                                <a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/photorealistic-material-editing/" target="_blank" class="example-link demo">Paper</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">📚</div>
+                        <div class="example-content">
+                            <h3><a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/photorealistic-material-learning/" target="_blank">PhD Thesis (2020)</a></h3>
+                            <p>Photorealistic Material Learning and Synthesis - Complete dissertation.</p>
+                            <div class="example-links">
+                                <a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/photorealistic-material-learning/" target="_blank" class="example-link demo">Read</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🔬</div>
+                        <div class="example-content">
+                            <h3><a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/simulation-to-reality/" target="_blank">Simulation to Reality</a></h3>
+                            <p>Nature Physics 2022 - The flow from simulation to reality.</p>
+                            <div class="example-links">
+                                <a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/simulation-to-reality/" target="_blank" class="example-link demo">Paper</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🖥️</div>
+                        <div class="example-content">
+                            <h3><a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/rendering-course/" target="_blank">Rendering Course Videos</a></h3>
+                            <p>Full university course on ray tracing and global illumination. Free!</p>
+                            <div class="example-links">
+                                <a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/rendering-course/" target="_blank" class="example-link demo">Watch</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">💡</div>
+                        <div class="example-content">
+                            <h3><a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/smallpaint/" target="_blank">Smallpaint Renderer</a></h3>
+                            <p>Global illumination renderer in just 100 lines of code.</p>
+                            <div class="example-links">
+                                <a href="https://users.cg.tuwien.ac.at/zsolnai/gfx/smallpaint/" target="_blank" class="example-link demo">Demo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gaussian Splatting -->
+            <section class="section">
+                <h2 class="section-title">✨ Gaussian Splatting Web Viewers (Play in Browser!)</h2>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-preview">🎥</div>
+                        <div class="example-content">
+                            <h3><a href="https://antimatter15.com/splat/" target="_blank">WebGL Splat Viewer</a></h3>
+                            <p>THE famous Gaussian splat viewer. No dependencies, pure WebGL. Navigate 3D scenes from photos.</p>
+                            <div class="example-links">
+                                <a href="https://antimatter15.com/splat/" target="_blank" class="example-link demo">Play Now</a>
+                                <a href="https://github.com/antimatter15/splat" target="_blank" class="example-link github">Code</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🌐</div>
+                        <div class="example-content">
+                            <h3><a href="https://jatentaki.github.io/portfolio/gaussian-splatting/" target="_blank">WebGPU Gaussian Viewer</a></h3>
+                            <p>Client-side interactive NeRF rendering. Uses WebGPU for next-gen performance.</p>
+                            <div class="example-links">
+                                <a href="https://jatentaki.github.io/portfolio/gaussian-splatting/" target="_blank" class="example-link demo">Play Now</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🎬</div>
+                        <div class="example-content">
+                            <h3><a href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/" target="_blank">Original 3DGS (INRIA)</a></h3>
+                            <p>The SIGGRAPH paper that changed everything. 100+ FPS radiance field rendering.</p>
+                            <div class="example-links">
+                                <a href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/" target="_blank" class="example-link demo">Project</a>
+                                <a href="https://github.com/graphdeco-inria/gaussian-splatting" target="_blank" class="example-link github">Code</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🗂️</div>
+                        <div class="example-content">
+                            <h3><a href="https://github.com/akbartus/Gaussian-Splatting-WebViewers" target="_blank">Three.js & A-Frame Viewers</a></h3>
+                            <p>Multiple web implementations: Three.js, A-Frame, different renderers to try.</p>
+                            <div class="example-links">
+                                <a href="https://github.com/akbartus/Gaussian-Splatting-WebViewers" target="_blank" class="example-link demo">Demos</a>
+                                <a href="https://github.com/akbartus/Gaussian-Splatting-WebViewers" target="_blank" class="example-link github">Code</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">📸</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.matthewtancik.com/nerf" target="_blank">NeRF (Original)</a></h3>
+                            <p>Neural Radiance Fields - the breakthrough that started it all. Create 3D from photos.</p>
+                            <div class="example-links">
+                                <a href="https://www.matthewtancik.com/nerf" target="_blank" class="example-link demo">Project</a>
+                                <a href="https://github.com/bmild/nerf" target="_blank" class="example-link github">Code</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">📚</div>
+                        <div class="example-content">
+                            <h3><a href="https://mrnerf.github.io/awesome-3D-gaussian-splatting/" target="_blank">500+ Gaussian Papers</a></h3>
+                            <p>Complete research resource. Every paper, demo, and code repo on Gaussian splatting.</p>
+                            <div class="example-links">
+                                <a href="https://mrnerf.github.io/awesome-3D-gaussian-splatting/" target="_blank" class="example-link demo">Browse</a>
+                                <a href="https://github.com/MrNeRF/awesome-3D-gaussian-splatting" target="_blank" class="example-link github">GitHub</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SIGGRAPH Research -->
+            <section class="section">
+                <h2 class="section-title">🔬 SIGGRAPH Research Demos (Cem Yuksel - Featured on Two Minute Papers)</h2>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-preview">👔</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.cemyuksel.com/research/clothrender/" target="_blank">Real-Time Fiber Cloth</a></h3>
+                            <p>SIGGRAPH paper featured in 2 Two Minute Papers episodes! Fiber-level cloth rendering.</p>
+                            <div class="example-links">
+                                <a href="https://www.cemyuksel.com/research/clothrender/" target="_blank" class="example-link demo">Project</a>
+                                <a href="https://www.cemyuksel.com/research/" target="_blank" class="example-link github">All Research</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">💧</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.cemyuksel.com/research/narrowrangefilter/" target="_blank">Fluid Rendering</a></h3>
+                            <p>Screen-space fluid rendering with narrow-range filter. Demo and source available.</p>
+                            <div class="example-links">
+                                <a href="https://www.cemyuksel.com/research/narrowrangefilter/" target="_blank" class="example-link demo">Project</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">✨</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.cemyuksel.com/research/vertexblockdescent/" target="_blank">Vertex Block Descent</a></h3>
+                            <p>SIGGRAPH 2025 Audience Choice Award! Physics simulation breakthrough with source code.</p>
+                            <div class="example-links">
+                                <a href="https://www.cemyuksel.com/research/vertexblockdescent/" target="_blank" class="example-link demo">Project</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🧮</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.cemyuksel.com/research/interpolatingsplines/" target="_blank">Interactive Splines</a></h3>
+                            <p>C2 Interpolating Splines with INTERACTIVE DEMO in browser. Play with curves!</p>
+                            <div class="example-links">
+                                <a href="https://www.cemyuksel.com/research/interpolatingsplines/" target="_blank" class="example-link demo">Play Demo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">💡</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.cemyuksel.com/research/stochasticlightcuts/" target="_blank">Stochastic Lightcuts</a></h3>
+                            <p>Real-time global illumination. Featured on Two Minute Papers. Source code available.</p>
+                            <div class="example-links">
+                                <a href="https://www.cemyuksel.com/research/stochasticlightcuts/" target="_blank" class="example-link demo">Project</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🔗</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.cemyuksel.com/research/" target="_blank">All Cem Yuksel Research</a></h3>
+                            <p>Full research page. Hair, cloth, rendering, physics - many featured on Two Minute Papers.</p>
+                            <div class="example-links">
+                                <a href="https://www.cemyuksel.com/research/" target="_blank" class="example-link demo">Browse All</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Physics Playgrounds -->
+            <section class="section">
+                <h2 class="section-title">🎓 Physics Simulation Playgrounds (106+ Interactive Demos!)</h2>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-preview">🔬</div>
+                        <div class="example-content">
+                            <h3><a href="https://phet.colorado.edu/en/simulations/filter?subjects=physics&type=html" target="_blank">PhET Physics (106 Sims!)</a></h3>
+                            <p>Nobel Laureate-founded. 106 FREE physics simulations. Optics, mechanics, quantum, waves.</p>
+                            <div class="example-links">
+                                <a href="https://phet.colorado.edu/en/simulations/filter?subjects=physics&type=html" target="_blank" class="example-link demo">Play All</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">⚙️</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.myphysicslab.com/" target="_blank">My Physics Lab</a></h3>
+                            <p>Pendulums, springs, rigid bodies, roller coasters, billiards. Drag and interact!</p>
+                            <div class="example-links">
+                                <a href="https://www.myphysicslab.com/" target="_blank" class="example-link demo">Play All</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">📐</div>
+                        <div class="example-content">
+                            <h3><a href="https://ophysics.com/" target="_blank">oPhysics</a></h3>
+                            <p>Collection of interactive physics simulations. Mechanics, waves, optics, thermodynamics.</p>
+                            <div class="example-links">
+                                <a href="https://ophysics.com/" target="_blank" class="example-link demo">Play All</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🎨</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.algodoo.com/" target="_blank">Algodoo</a></h3>
+                            <p>FREE physics sandbox. Draw shapes, simulate physics, build machines. Like a physics game.</p>
+                            <div class="example-links">
+                                <a href="https://www.algodoo.com/" target="_blank" class="example-link demo">Download</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🔭</div>
+                        <div class="example-content">
+                            <h3><a href="https://phydemo.app/" target="_blank">PhyDemo</a></h3>
+                            <p>Open-source physics demos. 2D optics, geometric scenes, and more interactive experiments.</p>
+                            <div class="example-links">
+                                <a href="https://phydemo.app/" target="_blank" class="example-link demo">Play All</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">📋</div>
+                        <div class="example-content">
+                            <h3><a href="https://thescienceplayground.com/" target="_blank">Science Playground List</a></h3>
+                            <p>THOUSANDS of simulations! Massive spreadsheet organized by topic. The ultimate resource.</p>
+                            <div class="example-links">
+                                <a href="https://thescienceplayground.com/" target="_blank" class="example-link demo">Browse</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fluid Simulations -->
+            <section class="section">
+                <h2 class="section-title">🌊 Fluid & Smoke Simulations (WebGL)</h2>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-preview">💧</div>
+                        <div class="example-content">
+                            <h3><a href="https://paveldogreat.github.io/WebGL-Fluid-Simulation/" target="_blank">WebGL Fluid Simulation</a></h3>
+                            <p>The famous one. Touch/drag to create swirling colors. Works on mobile!</p>
+                            <div class="example-links">
+                                <a href="https://paveldogreat.github.io/WebGL-Fluid-Simulation/" target="_blank" class="example-link demo">Play Now</a>
+                                <a href="https://github.com/PavelDoGreat/WebGL-Fluid-Simulation" target="_blank" class="example-link github">Code</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🔥</div>
+                        <div class="example-content">
+                            <h3><a href="https://haxiomic.github.io/GPU-Fluid-Experiments/html5/" target="_blank">GPU Fluid Experiments</a></h3>
+                            <p>Advanced GPU fluid dynamics. Multiple modes including fire and smoke.</p>
+                            <div class="example-links">
+                                <a href="https://haxiomic.github.io/GPU-Fluid-Experiments/html5/" target="_blank" class="example-link demo">Play Now</a>
+                                <a href="https://github.com/haxiomic/GPU-Fluid-Experiments" target="_blank" class="example-link github">Code</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🕯️</div>
+                        <div class="example-content">
+                            <h3><a href="https://lucaangioloni.github.io/SmokeGL/" target="_blank">SmokeGL Candle</a></h3>
+                            <p>Realistic candle flame and smoke simulation. Beautiful particle physics.</p>
+                            <div class="example-links">
+                                <a href="https://lucaangioloni.github.io/SmokeGL/" target="_blank" class="example-link demo">Play Now</a>
+                                <a href="https://github.com/LucaAngioloni/SmokeGL" target="_blank" class="example-link github">Code</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">💨</div>
+                        <div class="example-content">
+                            <h3><a href="https://rachelbhadra.github.io/smoke_simulator/" target="_blank">Navier-Stokes Smoke</a></h3>
+                            <p>2D smoke with buoyancy. Fully interactive settings panel.</p>
+                            <div class="example-links">
+                                <a href="https://rachelbhadra.github.io/smoke_simulator/" target="_blank" class="example-link demo">Play Now</a>
+                                <a href="https://github.com/rachelbhadra/smoke_simulator" target="_blank" class="example-link github">Code</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lambda GPU Cloud -->
+            <div class="lambda-banner">
+                <div class="featured-icon">🖥️</div>
+                <div class="featured-content">
+                    <h3>Lambda GPU Cloud - Run the Papers Yourself</h3>
+                    <p>Many Two Minute Papers demos require serious GPU power. Lambda offers H100s at $1.35/hr, A100s affordable, no egress fees. Pre-installed PyTorch/CUDA. Run Gaussian Splatting, train NeRFs, run any SIGGRAPH paper.</p>
+                    <div class="featured-links">
+                        <a href="https://lambda.ai/" target="_blank" class="btn btn-primary">Lambda.ai</a>
+                        <a href="https://lambda.ai/pricing" target="_blank" class="btn btn-secondary">Pricing</a>
+                        <a href="https://lambda.ai/service/gpu-cloud" target="_blank" class="btn btn-secondary">On-Demand GPUs</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stay Updated Section -->
+            <section class="section">
+                <h2 class="section-title">📡 Stay Updated - RSS Feed & Notifications</h2>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-preview">📰</div>
+                        <div class="example-content">
+                            <h3>YouTube RSS Feed</h3>
+                            <p>Subscribe to the channel RSS feed for instant updates when new videos drop. Works with any RSS reader.</p>
+                            <div class="example-links">
+                                <a href="https://www.youtube.com/feeds/videos.xml?channel_id=UCbfYPyITQ-7l4upoX8nvctg" target="_blank" class="example-link demo">RSS Feed</a>
+                            </div>
+                            <p style="margin-top: 8px; font-size: 0.8rem; color: var(--text-muted);">Feed URL: youtube.com/feeds/videos.xml?channel_id=UCbfYPyITQ-7l4upoX8nvctg</p>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🔔</div>
+                        <div class="example-content">
+                            <h3>YouTube Notifications</h3>
+                            <p>Click the bell icon on YouTube to get notified instantly when new videos are posted.</p>
+                            <div class="example-links">
+                                <a href="https://www.youtube.com/user/keeroyz?sub_confirmation=1" target="_blank" class="example-link demo">Subscribe</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🐦</div>
+                        <div class="example-content">
+                            <h3>X/Twitter Updates</h3>
+                            <p>Follow @twominutepapers for real-time updates, paper links, and commentary on latest research.</p>
+                            <div class="example-links">
+                                <a href="https://x.com/twominutepapers" target="_blank" class="example-link demo">Follow</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">📧</div>
+                        <div class="example-content">
+                            <h3>Patreon Early Access</h3>
+                            <p>Patrons get early access to new videos before public release. Support the research!</p>
+                            <div class="example-links">
+                                <a href="https://www.patreon.com/TwoMinutePapers" target="_blank" class="example-link demo">Join</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Categories -->
+            <section class="section">
+                <h2 class="section-title">📺 Two Minute Papers Video Categories</h2>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-preview">🎬</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.youtube.com/results?search_query=two+minute+papers+fluid+simulation" target="_blank">Fluid Simulations</a></h3>
+                            <p>Water, smoke, fire dynamics.</p>
+                            <div class="example-links">
+                                <a href="https://www.youtube.com/results?search_query=two+minute+papers+fluid+simulation" target="_blank" class="example-link demo">Watch</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🎬</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.youtube.com/results?search_query=two+minute+papers+gaussian+splatting" target="_blank">Gaussian Splatting</a></h3>
+                            <p>3D from photos revolution.</p>
+                            <div class="example-links">
+                                <a href="https://www.youtube.com/results?search_query=two+minute+papers+gaussian+splatting" target="_blank" class="example-link demo">Watch</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🎬</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.youtube.com/results?search_query=two+minute+papers+cloth+simulation" target="_blank">Cloth Physics</a></h3>
+                            <p>Fabric, hair, soft bodies.</p>
+                            <div class="example-links">
+                                <a href="https://www.youtube.com/results?search_query=two+minute+papers+cloth+simulation" target="_blank" class="example-link demo">Watch</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🎬</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.youtube.com/results?search_query=two+minute+papers+stable+diffusion" target="_blank">AI Image Generation</a></h3>
+                            <p>Stable Diffusion, DALL-E.</p>
+                            <div class="example-links">
+                                <a href="https://www.youtube.com/results?search_query=two+minute+papers+stable+diffusion" target="_blank" class="example-link demo">Watch</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🎬</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.youtube.com/results?search_query=two+minute+papers+nvidia+research" target="_blank">NVIDIA Research</a></h3>
+                            <p>Latest GPU breakthroughs.</p>
+                            <div class="example-links">
+                                <a href="https://www.youtube.com/results?search_query=two+minute+papers+nvidia+research" target="_blank" class="example-link demo">Watch</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-preview">🎬</div>
+                        <div class="example-content">
+                            <h3><a href="https://www.youtube.com/results?search_query=two+minute+papers+game+physics" target="_blank">Game Physics</a></h3>
+                            <p>Destruction, vehicles, ragdoll.</p>
+                            <div class="example-links">
+                                <a href="https://www.youtube.com/results?search_query=two+minute+papers+game+physics" target="_blank" class="example-link demo">Watch</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="/terms.html">Terms</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/examples.html">Examples</a>
+                <a href="/games.html">Games</a>
+                <a href="/demos.html">Demos</a>
+            </div>
+            <p class="copyright">&copy; 2026 MobileCLI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Mobile Tab Nav -->
+    <div class="mobile-tab-nav">
+        <a href="/" class="mobile-tab">
+            <span class="mobile-tab-icon">🏠</span>
+            Home
+        </a>
+        <a href="/games.html" class="mobile-tab">
+            <span class="mobile-tab-icon">🎮</span>
+            Games
+        </a>
+        <a href="/twominutepapers.html" class="mobile-tab active">
+            <span class="mobile-tab-icon">🔬</span>
+            TMP
+        </a>
+        <a href="/demos.html" class="mobile-tab">
+            <span class="mobile-tab-icon">✨</span>
+            Demos
+        </a>
+        <a href="/examples.html" class="mobile-tab">
+            <span class="mobile-tab-icon">📚</span>
+            Examples
+        </a>
+    </div>
+</body>
+</html>
