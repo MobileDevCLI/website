@@ -1316,6 +1316,456 @@ gh pr create --title "Title" --body "Description"
 <span class="comment"># View PR status</span>
 gh pr status</pre>
             </div>
+
+            <h2>The Zero-Compute Breakthrough</h2>
+            <p>This is the insight that changes everything: <strong>your phone does ZERO AI computation</strong>.</p>
+
+            <div class="info-box" style="border-left-color: var(--primary); background: rgba(0, 255, 136, 0.05);">
+                <h4 style="color: var(--primary); margin-top: 0;">The Revolutionary Discovery</h4>
+                <p>When Claude Code runs, your phone is just sending and receiving text. The actual AI processing happens on Anthropic's servers — the most powerful AI infrastructure on the planet.</p>
+                <p style="margin-bottom: 0;"><strong>Your $200 phone = Their $100M datacenter</strong></p>
+            </div>
+
+            <h3>What This Means</h3>
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Traditional AI Apps</th>
+                    <th>MobileCLI Method</th>
+                </tr>
+                <tr>
+                    <td><strong>Battery</strong></td>
+                    <td>Heavy drain (local inference)</td>
+                    <td>Minimal (like a chat app)</td>
+                </tr>
+                <tr>
+                    <td><strong>Heat</strong></td>
+                    <td>Phone gets hot</td>
+                    <td>Phone stays cool</td>
+                </tr>
+                <tr>
+                    <td><strong>Speed</strong></td>
+                    <td>Limited by phone CPU</td>
+                    <td>As fast as any workstation</td>
+                </tr>
+                <tr>
+                    <td><strong>Session Length</strong></td>
+                    <td>Limited by battery</td>
+                    <td>72+ hours documented</td>
+                </tr>
+                <tr>
+                    <td><strong>Model Quality</strong></td>
+                    <td>Tiny models that fit on device</td>
+                    <td>Full Opus 4.5 with thinking</td>
+                </tr>
+            </table>
+
+            <p>This is why the methodology works. You're not running AI on your phone — you're controlling a supercomputer from your phone.</p>
+
+            <h2>CLAUDE.md: The Knowledge Compounding System</h2>
+            <p>One of the most powerful patterns in this methodology is the <strong>CLAUDE.md knowledge compounding system</strong>. This is how you make the AI smarter with every session.</p>
+
+            <h3>How It Works</h3>
+            <ol>
+                <li><strong>Create CLAUDE.md</strong> in your project root</li>
+                <li><strong>Document everything</strong> Claude needs to know about your project</li>
+                <li><strong>Check it into git</strong> so it persists across sessions</li>
+                <li><strong>When Claude makes a mistake</strong>, add a note so it never happens again</li>
+                <li><strong>Knowledge compounds</strong> — each session is smarter than the last</li>
+            </ol>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Example CLAUDE.md Structure</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Project Name - AI Instructions</span>
+
+<span class="comment">## Quick Context</span>
+- Project: [What this is]
+- Owner: [Your alias - never real name]
+- Website: [URL]
+- GitHub: [Org/Repo]
+
+<span class="comment">## Tech Stack</span>
+- Frontend: [Technologies]
+- Backend: [Technologies]
+- Deployment: [Where and how]
+
+<span class="comment">## Important Rules</span>
+- Always push to BOTH repos: origin AND website
+- Never commit .env files
+- Use Inter font for headings
+
+<span class="comment">## Learned Mistakes (Add as you go)</span>
+- Don't use enums, use literal unions
+- Remember to run build before commit
+- The API endpoint is /api/v2, not /api/v1
+
+<span class="comment">## Commands</span>
+- Deploy: git push origin master && git push website master
+- Test: npm run test
+- Build: npm run build</pre>
+            </div>
+
+            <h3>Why This Is Revolutionary</h3>
+            <p>Traditional AI has no memory between sessions. Every conversation starts fresh. With CLAUDE.md:</p>
+            <ul>
+                <li>AI reads the file at session start</li>
+                <li>AI knows your project context immediately</li>
+                <li>Mistakes are documented and never repeated</li>
+                <li>New contributors (AI or human) can onboard instantly</li>
+            </ul>
+
+            <div class="info-box tip">
+                <h4 style="margin-top: 0;">Pro Tip: Update After Every Session</h4>
+                <p style="margin-bottom: 0;">Before ending a session, ask Claude: "What should we add to CLAUDE.md based on what we learned today?" This ensures continuous improvement.</p>
+            </div>
+
+            <h2>Verification Loops: The 2-3x Quality Multiplier</h2>
+            <p>Boris Cherny (creator of Claude Code) says: <em>"The most important thing to get great results: give Claude a way to verify its work."</em></p>
+
+            <p>If Claude can see the results of its work, it will <strong>2-3x the quality</strong> of the output.</p>
+
+            <h3>Verification Methods by Domain</h3>
+            <table>
+                <tr>
+                    <th>What You're Building</th>
+                    <th>How Claude Verifies</th>
+                </tr>
+                <tr>
+                    <td>Web UI</td>
+                    <td>Screenshot feedback, browser testing</td>
+                </tr>
+                <tr>
+                    <td>CLI tools</td>
+                    <td>Run commands, check exit codes</td>
+                </tr>
+                <tr>
+                    <td>Libraries</td>
+                    <td>Run test suite</td>
+                </tr>
+                <tr>
+                    <td>APIs</td>
+                    <td>curl requests, response validation</td>
+                </tr>
+                <tr>
+                    <td>Mobile apps</td>
+                    <td>Simulator testing, screenshots</td>
+                </tr>
+                <tr>
+                    <td>Games</td>
+                    <td>Serve locally, screenshot, visual check</td>
+                </tr>
+            </table>
+
+            <h3>Mobile Screenshot Feedback Loop</h3>
+            <p>On Android, Claude can actually SEE your screenshots:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Screenshot Access</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Screenshots location (Samsung)</span>
+ls ~/storage/dcim/Screenshots/
+
+<span class="comment"># Screenshots location (Pixel)</span>
+ls ~/storage/pictures/Screenshots/
+
+<span class="comment"># Claude can read images directly</span>
+<span class="comment"># Just reference the path in your prompt:</span>
+"Look at ~/storage/dcim/Screenshots/Screenshot_20260104.jpg and tell me what's wrong with the UI"</pre>
+            </div>
+
+            <p>This creates a powerful loop: Build something → Screenshot it → Claude sees it → Claude improves it → Repeat.</p>
+
+            <h2>Termux:API Hardware Integration</h2>
+            <p>With Termux:API installed, you can access phone hardware from the terminal:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Hardware Commands</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Install the API package</span>
+pkg install termux-api
+
+<span class="comment"># Camera</span>
+termux-camera-photo -c 0 photo.jpg    <span class="comment"># Take photo</span>
+
+<span class="comment"># Notifications</span>
+termux-notification -t "Build Complete" --ongoing    <span class="comment"># Persistent notification</span>
+
+<span class="comment"># Clipboard</span>
+termux-clipboard-get    <span class="comment"># Read clipboard</span>
+termux-clipboard-set "text"    <span class="comment"># Write to clipboard</span>
+
+<span class="comment"># Text-to-Speech</span>
+termux-tts-speak "Build finished successfully"
+
+<span class="comment"># Battery status</span>
+termux-battery-status
+
+<span class="comment"># WiFi info</span>
+termux-wifi-connectioninfo
+
+<span class="comment"># Vibration</span>
+termux-vibrate -d 500    <span class="comment"># Vibrate for 500ms</span>
+
+<span class="comment"># Share intent (open share dialog)</span>
+termux-share -a send file.txt
+
+<span class="comment"># Open URL in browser</span>
+termux-open-url https://mobilecli.com
+
+<span class="comment"># Toast message</span>
+termux-toast "Quick message"</pre>
+            </div>
+
+            <div class="info-box tip">
+                <h4 style="margin-top: 0;">Use Case: Build Notifications</h4>
+                <p style="margin-bottom: 0;">Set up a hook so Claude notifies you when done: <code>termux-notification -t "Claude finished" -c "Check your project"</code></p>
+            </div>
+
+            <h2>Multi-Session Parallel Development</h2>
+            <p>One of the most powerful techniques: run multiple Claude sessions simultaneously.</p>
+
+            <h3>Using tmux Windows</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Multiple Sessions</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Start tmux</span>
+tmux new -s main
+
+<span class="comment"># Create new windows (Ctrl+b, then c)</span>
+<span class="comment"># Switch windows (Ctrl+b, then number)</span>
+
+<span class="comment"># Window 0: Main development</span>
+claude --dangerously-skip-permissions
+
+<span class="comment"># Window 1: Documentation (Ctrl+b, c)</span>
+claude --dangerously-skip-permissions
+
+<span class="comment"># Window 2: Testing (Ctrl+b, c)</span>
+npm run test -- --watch
+
+<span class="comment"># Switch between: Ctrl+b, 0/1/2</span></pre>
+            </div>
+
+            <h3>Parallel Agent Pattern</h3>
+            <p>Use Claude's Task tool to spawn parallel agents for independent work:</p>
+            <ul>
+                <li><strong>Agent 1:</strong> Building new feature</li>
+                <li><strong>Agent 2:</strong> Writing tests</li>
+                <li><strong>Agent 3:</strong> Updating documentation</li>
+            </ul>
+
+            <h2>Project Structure Best Practices</h2>
+            <p>Organize your mobile projects for maximum AI effectiveness:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Recommended Structure</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>project/
+├── CLAUDE.md           <span class="comment"># AI instructions (CRITICAL)</span>
+├── README.md           <span class="comment"># Human documentation</span>
+├── .gitignore          <span class="comment"># Ignore node_modules, .env, etc.</span>
+├── package.json        <span class="comment"># Dependencies</span>
+├── src/                <span class="comment"># Source code</span>
+├── docs/               <span class="comment"># Documentation</span>
+├── tests/              <span class="comment"># Test files</span>
+└── .claude/            <span class="comment"># Claude configuration</span>
+    ├── settings.json   <span class="comment"># Permissions, hooks</span>
+    ├── commands/       <span class="comment"># Custom slash commands</span>
+    └── agents/         <span class="comment"># Subagent definitions</span></pre>
+            </div>
+
+            <h2>Security Best Practices</h2>
+            <p>Keep your mobile development secure:</p>
+
+            <h3>Never Commit These</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">.gitignore — Security Essentials</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Secrets</span>
+.env
+.env.local
+.env.production
+credentials.json
+secrets.json
+*.pem
+*.key
+
+<span class="comment"># Personal files</span>
+PERSONAL_*.md
+*_PRIVATE.md
+*_SECRET.*
+
+<span class="comment"># Build artifacts</span>
+node_modules/
+dist/
+build/
+
+<span class="comment"># IDE</span>
+.vscode/
+.idea/</pre>
+            </div>
+
+            <h3>Safe vs Dangerous</h3>
+            <table>
+                <tr>
+                    <th>Safe to Commit</th>
+                    <th>Never Commit</th>
+                </tr>
+                <tr>
+                    <td>Supabase ANON key (public)</td>
+                    <td>Supabase SERVICE key</td>
+                </tr>
+                <tr>
+                    <td>Public OAuth client IDs</td>
+                    <td>OAuth secrets</td>
+                </tr>
+                <tr>
+                    <td>Public API endpoints</td>
+                    <td>Private API keys (sk-*)</td>
+                </tr>
+                <tr>
+                    <td>Your alias (Samblamz)</td>
+                    <td>Your real name, address, phone</td>
+                </tr>
+            </table>
+
+            <h2>Deployment Pipelines from Mobile</h2>
+            <p>Deploy production applications entirely from your phone:</p>
+
+            <h3>Vercel Deployment</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Vercel Setup</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Install Vercel CLI</span>
+npm install -g vercel
+
+<span class="comment"># Login</span>
+vercel login
+
+<span class="comment"># Deploy (from project directory)</span>
+vercel --prod
+
+<span class="comment"># Or just push to GitHub — Vercel auto-deploys</span>
+git push origin master</pre>
+            </div>
+
+            <h3>The Two-Repo Pattern</h3>
+            <p>For maximum reliability, maintain two repos:</p>
+            <ul>
+                <li><strong>origin</strong> — Your main source of truth</li>
+                <li><strong>website</strong> — Connected to Vercel for deployment</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-label">Bash — Two-Repo Workflow</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><span class="comment"># Check remotes</span>
+git remote -v
+
+<span class="comment"># Add website remote</span>
+git remote add website https://github.com/YourOrg/website.git
+
+<span class="comment"># Push to both</span>
+git add -A && git commit -m "message"
+git push origin master
+git push website master
+
+<span class="comment"># Create alias for convenience</span>
+alias gpp="git push origin master && git push website master"</pre>
+            </div>
+
+            <h2>Troubleshooting Common Issues</h2>
+
+            <details class="faq-item">
+                <summary>Session dies when screen locks</summary>
+                <div class="faq-answer">
+                    <p>You're missing one of the three layers:</p>
+                    <ol>
+                        <li><code>termux-wake-lock</code> — Run this first</li>
+                        <li><code>tmux new -s dev</code> — Run Claude inside tmux</li>
+                        <li>Disable battery optimization for Termux in Android settings</li>
+                    </ol>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>npm install fails with memory errors</summary>
+                <div class="faq-answer">
+                    <p>Termux has limited memory. Try:</p>
+                    <div class="code-block">
+                        <pre>npm install --no-optional
+<span class="comment"># Or install packages one at a time</span></pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Git push asks for password</summary>
+                <div class="faq-answer">
+                    <p>Use GitHub CLI authentication:</p>
+                    <div class="code-block">
+                        <pre>gh auth login
+<span class="comment"># Choose HTTPS, then browser login</span></pre>
+                    </div>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Claude says "permission denied"</summary>
+                <div class="faq-answer">
+                    <p>Run with autonomous mode:</p>
+                    <div class="code-block">
+                        <pre>claude --dangerously-skip-permissions</pre>
+                    </div>
+                    <p>Or set up permissions in <code>.claude/settings.json</code></p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Vercel not deploying after push</summary>
+                <div class="faq-answer">
+                    <p>Check these in order:</p>
+                    <ol>
+                        <li>Is the repo connected in Vercel dashboard?</li>
+                        <li>Did you push to the correct remote (website)?</li>
+                        <li>Is the repo public? (Vercel needs access)</li>
+                        <li>Try manual redeploy in Vercel dashboard</li>
+                    </ol>
+                </div>
+            </details>
+
+            <h2>What's Next?</h2>
+            <p>You now have everything you need to run autonomous AI development from your phone. The other tabs cover:</p>
+            <ul>
+                <li><strong>Workflow Mastery</strong> — Advanced techniques and patterns</li>
+                <li><strong>Magic Prompts</strong> — Copy-paste commands for common tasks</li>
+                <li><strong>Research Lab</strong> — Experimental features and discoveries</li>
+                <li><strong>The Story</strong> — How this was invented in 84 hours</li>
+                <li><strong>AI Robotics</strong> — The next invention (drones, robots, ExpressLRS)</li>
+            </ul>
+
+            <div class="info-box" style="border-left-color: var(--primary); background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(168, 85, 247, 0.05));">
+                <h4 style="color: var(--primary); margin-top: 0;">You're Ready</h4>
+                <p>You have the complete methodology. Three-layer persistence. Knowledge compounding. Zero-compute architecture. Verification loops. Security practices. Deployment pipelines.</p>
+                <p style="margin-bottom: 0;"><strong>Start building. Your phone is now a supercomputer.</strong></p>
+            </div>
         </div>
 
         <!-- ============================================ -->
