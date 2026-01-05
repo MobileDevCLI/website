@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Quality Control - MobileCLI</title>
+    <meta name="description" content="How to prevent AI hallucination, laziness, and get reliable output from Claude Code and other AI assistants.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #555555;
+            --accent-green: #00ff88;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #a855f7;
+            --accent-red: #ff4444;
+            --border-color: #222222;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Header */
+        .page-header {
+            padding: 140px 24px 60px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(255, 68, 68, 0.1) 0%, transparent 100%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ff4444, #ff8844);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content */
+        .content {
+            padding: 60px 24px;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.15), rgba(255, 136, 68, 0.1));
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 48px;
+        }
+
+        .warning-box h2 {
+            color: #ff4444;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .warning-box p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        section {
+            margin-bottom: 48px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            margin-top: 32px;
+            color: var(--accent-cyan);
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+
+        ul, ol {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--accent-green);
+        }
+
+        pre {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .problem-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .problem-card.bad {
+            border-color: rgba(255, 68, 68, 0.3);
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.05), transparent);
+        }
+
+        .problem-card.good {
+            border-color: rgba(0, 255, 136, 0.3);
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), transparent);
+        }
+
+        .problem-card h4 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .problem-card.bad h4 {
+            color: #ff4444;
+        }
+
+        .problem-card.good h4 {
+            color: var(--accent-green);
+        }
+
+        .solution-box {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .solution-box h4 {
+            color: var(--accent-green);
+            margin-bottom: 12px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-secondary);
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <a href="/" class="logo">MobileCLI</a>
+            <div class="nav-links">
+                <a href="/pricing.html">Pricing</a>
+                <a href="/learn.html">Docs</a>
+                <a href="/examples.html">Examples</a>
+                <a href="/demos.html">Demos</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>AI Quality Control</h1>
+            <p>How to prevent hallucination, laziness, and get reliable output every time</p>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="container">
+
+            <div class="warning-box">
+                <h2>Why This Page Exists</h2>
+                <p>We built this entire website using AI (Claude Code). During development, we encountered a serious problem: the AI would sometimes <strong>hallucinate</strong> (make up fake information), be <strong>lazy</strong> (take shortcuts), or <strong>lie</strong> (present fake things as real). This page documents the problem and how to prevent it.</p>
+            </div>
+
+            <section>
+                <h2>The Three Problems</h2>
+
+                <h3>1. Hallucination</h3>
+                <p>AI makes up content that doesn't exist and presents it as real.</p>
+
+                <div class="problem-card bad">
+                    <h4>Example of Hallucination</h4>
+                    <p>Asked to add demos from "Two Minute Papers" YouTube channel, the AI linked to random WebGL demos and claimed they were "featured on Two Minute Papers" when they weren't related at all.</p>
+                </div>
+
+                <h3>2. Laziness</h3>
+                <p>AI takes shortcuts instead of doing the work properly.</p>
+
+                <div class="problem-card bad">
+                    <h4>Example of Laziness</h4>
+                    <p>Asked to add NEW content, the AI replaced existing content instead of adding to it. This destroys work that was already done.</p>
+                </div>
+
+                <h3>3. Telling You What You Want to Hear</h3>
+                <p>AI says things are done or correct when they're not.</p>
+
+                <div class="problem-card bad">
+                    <h4>Example of Lying</h4>
+                    <p>AI presents fabricated links as "real resources" and describes features of pages that don't exist, because it thinks that's what the user wants to see.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>How to Prevent These Problems</h2>
+
+                <h3>1. Use CLAUDE.md Instructions</h3>
+                <p>Add explicit rules to your project's CLAUDE.md file. The AI reads this file and follows instructions.</p>
+
+                <pre><code>## CRITICAL: NO HALLUCINATION / NO LAZINESS POLICY
+
+### What You Must NEVER Do:
+
+1. NEVER HALLUCINATE - Do not make up content, links, or information
+   - If you don't know something, SAY "I don't know" and SEARCH for it
+   - If a link might not exist, VERIFY it first
+
+2. NEVER BE LAZY - Do not take shortcuts
+   - If asked to add new content, ADD it - don't replace existing content
+   - If research is required, DO THE RESEARCH properly
+
+3. NEVER LIE - Do not tell the user what you think they want to hear
+   - If something is wrong, say it's wrong
+   - If you made a mistake, ADMIT IT immediately</code></pre>
+
+                <h3>2. Verify Output</h3>
+                <p>Always check the AI's work, especially for:</p>
+                <ul>
+                    <li><strong>Links</strong> - Click them. Do they go where the AI said?</li>
+                    <li><strong>Claims</strong> - Is that really "featured on X" or did the AI make it up?</li>
+                    <li><strong>Additions vs Replacements</strong> - Did it add content or delete your existing work?</li>
+                </ul>
+
+                <h3>3. Ask Direct Questions</h3>
+                <p>If something seems off, ask directly:</p>
+                <ul>
+                    <li>"Did you actually verify that link exists?"</li>
+                    <li>"Is this content real or did you make it up?"</li>
+                    <li>"Did you add to the existing content or replace it?"</li>
+                </ul>
+
+                <h3>4. Use the Verification Loop</h3>
+                <p>From Boris Cherny's best practices: give AI a way to verify its own work. This 2-3x the quality of output.</p>
+
+                <div class="solution-box">
+                    <h4>Verification Methods</h4>
+                    <ul>
+                        <li><strong>Web content:</strong> Use WebSearch/WebFetch to verify links exist</li>
+                        <li><strong>Code:</strong> Run tests, check for errors</li>
+                        <li><strong>Claims:</strong> Search for actual sources before presenting</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h2>What Good Output Looks Like</h2>
+
+                <div class="problem-card good">
+                    <h4>Honest Response</h4>
+                    <p>"I don't know if that resource exists. Let me search for it first before adding it to your page."</p>
+                </div>
+
+                <div class="problem-card good">
+                    <h4>Admitting Mistakes</h4>
+                    <p>"You're right - I was lazy there. I made up content instead of finding real sources. Let me fix it properly."</p>
+                </div>
+
+                <div class="problem-card good">
+                    <h4>Asking for Clarification</h4>
+                    <p>"Do you want me to add this as a new section, or replace the existing content? I want to make sure I don't delete your work."</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>CLAUDE.md Template</h2>
+                <p>Copy this to the top of your project's CLAUDE.md file:</p>
+
+                <pre><code>## CRITICAL: NO HALLUCINATION / NO LAZINESS POLICY
+
+**THIS IS THE MOST IMPORTANT RULE. READ THIS FIRST. EVERY TIME.**
+
+### What You Must NEVER Do:
+
+1. **NEVER HALLUCINATE** - Do not make up content, links, examples, or information
+   - If you don't know something, SAY "I don't know" and SEARCH for it
+   - If a link might not exist, VERIFY it first
+   - If you're unsure if something is real, DO NOT present it as fact
+
+2. **NEVER BE LAZY** - Do not take shortcuts that produce inferior output
+   - If asked to add new content, ADD it - don't replace existing content
+   - If asked for specific things, provide THOSE SPECIFIC THINGS
+   - If research is required, DO THE RESEARCH properly
+
+3. **NEVER LIE** - Do not tell the user what you think they want to hear
+   - If something is wrong, say it's wrong
+   - If you made a mistake, ADMIT IT immediately
+   - If you can't do something, say so
+
+4. **NEVER PRESENT FAKE AS REAL** - This is the worst offense
+   - Do not link to random things and pretend they are related
+   - Do not make up examples and present them as real sources
+   - This wastes time and destroys trust
+
+### What You Must ALWAYS Do:
+
+1. **VERIFY before presenting** - Make sure links exist and are what you say
+2. **SEARCH when uncertain** - Use WebSearch/WebFetch to find real information
+3. **ADMIT mistakes immediately** - Don't try to cover them up
+4. **ASK for clarification** - If the request is unclear, ask rather than guess
+5. **DO THE WORK** - If something requires effort, put in the effort
+6. **ADD, don't replace** - When asked to add content, keep existing content
+
+### Why This Matters:
+
+- Hallucinated content RUINS your product
+- Lazy output WASTES your time
+- Lies DESTROY trust
+- Every bad output requires you to catch it, fix it, and lose productivity
+
+**If you catch yourself being lazy or uncertain, STOP and do it right.**</code></pre>
+            </section>
+
+            <section>
+                <h2>Learn from Our Mistakes</h2>
+                <p>This page exists because we made these mistakes while building MobileCLI. The AI:</p>
+                <ul>
+                    <li>Made up "Two Minute Papers demos" that didn't exist</li>
+                    <li>Replaced existing content instead of adding new content</li>
+                    <li>Presented fabricated links as real resources</li>
+                </ul>
+                <p>We caught these issues, fixed them, and created this documentation so you can prevent the same problems in your own AI-assisted development.</p>
+
+                <p><strong>The key insight:</strong> AI is incredibly powerful, but it needs explicit instructions to be reliable. Add anti-hallucination rules to your CLAUDE.md, verify output, and don't assume everything the AI produces is correct.</p>
+            </section>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="/terms.html">Terms</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/disclaimer.html">Disclaimer</a>
+                <a href="/learn.html">Documentation</a>
+                <a href="/security-guide.html">Security Guide</a>
+            </div>
+            <p class="copyright">&copy; 2026 MobileCLI. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
