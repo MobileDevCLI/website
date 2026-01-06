@@ -441,6 +441,104 @@
             color: var(--primary);
         }
 
+        /* Waitlist Card */
+        .waitlist-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 48px;
+            text-align: center;
+        }
+
+        .waitlist-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .waitlist-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #a855f7 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .waitlist-card p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .waitlist-form {
+            display: flex;
+            gap: 12px;
+            max-width: 450px;
+            margin: 0 auto 16px;
+        }
+
+        .waitlist-form input {
+            flex: 1;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            background: var(--bg-card);
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .waitlist-form input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .waitlist-form input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .waitlist-btn {
+            padding: 16px 28px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .waitlist-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+        }
+
+        .waitlist-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .waitlist-note {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0 !important;
+        }
+
+        .waitlist-success {
+            color: var(--primary) !important;
+        }
+
+        .waitlist-error {
+            color: #ff4444 !important;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
@@ -458,6 +556,14 @@
 
             .requirements-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .waitlist-form {
+                flex-direction: column;
+            }
+
+            .waitlist-card {
+                padding: 32px 24px;
             }
         }
     </style>
@@ -498,6 +604,18 @@
                 <p class="alt-download">
                     Or view on <a href="https://github.com/MobileDevCLI/MobileCLI/releases/tag/v1.0.33" target="_blank">GitHub Releases</a>
                 </p>
+            </div>
+
+            <!-- Early Access Signup -->
+            <div class="waitlist-card" id="waitlistCard">
+                <div class="waitlist-icon">&#128231;</div>
+                <h3>Get Early Access to Pro</h3>
+                <p>Be the first to know when MobileCLI Pro launches. Get exclusive early access, priority support, and special pricing.</p>
+                <form id="waitlistForm" class="waitlist-form">
+                    <input type="email" id="waitlistEmail" placeholder="Enter your email" required>
+                    <button type="submit" class="waitlist-btn">Join Waitlist</button>
+                </form>
+                <p class="waitlist-note" id="waitlistNote">Join 0 others waiting for Pro</p>
             </div>
 
             <!-- Security Notice -->
@@ -653,5 +771,84 @@
             </p>
         </div>
     </footer>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/supabase-config.js"></script>
+    <script>
+        // Waitlist form handling
+        const waitlistForm = document.getElementById('waitlistForm');
+        const waitlistEmail = document.getElementById('waitlistEmail');
+        const waitlistNote = document.getElementById('waitlistNote');
+        const waitlistBtn = waitlistForm.querySelector('button');
+
+        // Get waitlist count on load
+        async function getWaitlistCount() {
+            try {
+                const { count, error } = await supabase
+                    .from('waitlist')
+                    .select('*', { count: 'exact', head: true });
+
+                if (!error && count !== null) {
+                    waitlistNote.textContent = `Join ${count.toLocaleString()} others waiting for Pro`;
+                }
+            } catch (e) {
+                // Silently fail - don't show error to user
+            }
+        }
+        getWaitlistCount();
+
+        waitlistForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = waitlistEmail.value.trim();
+            if (!email) return;
+
+            waitlistBtn.disabled = true;
+            waitlistBtn.textContent = 'Joining...';
+
+            try {
+                // Check if already exists
+                const { data: existing } = await supabase
+                    .from('waitlist')
+                    .select('email')
+                    .eq('email', email)
+                    .single();
+
+                if (existing) {
+                    waitlistNote.textContent = "You're already on the list! We'll email you when Pro launches.";
+                    waitlistNote.className = 'waitlist-note waitlist-success';
+                    waitlistBtn.textContent = 'Already Joined';
+                    return;
+                }
+
+                // Insert new email
+                const { error } = await supabase
+                    .from('waitlist')
+                    .insert([{
+                        email,
+                        source: 'download_page',
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (error) throw error;
+
+                waitlistNote.textContent = "You're in! We'll email you when Pro launches.";
+                waitlistNote.className = 'waitlist-note waitlist-success';
+                waitlistBtn.textContent = 'Joined!';
+                waitlistEmail.value = '';
+
+                // Update count
+                getWaitlistCount();
+
+            } catch (error) {
+                console.error('Waitlist error:', error);
+                waitlistNote.textContent = 'Something went wrong. Please try again.';
+                waitlistNote.className = 'waitlist-note waitlist-error';
+                waitlistBtn.disabled = false;
+                waitlistBtn.textContent = 'Join Waitlist';
+            }
+        });
+    </script>
 </body>
 </html>

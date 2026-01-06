@@ -79,3 +79,26 @@ async function requireAuth() {
     }
     return session;
 }
+
+// Waitlist signup
+const waitlist = {
+    async join(email, source = 'download') {
+        const { data, error } = await supabase
+            .from('waitlist')
+            .insert([{
+                email,
+                source,
+                created_at: new Date().toISOString()
+            }]);
+        return { data, error };
+    },
+
+    async checkExists(email) {
+        const { data, error } = await supabase
+            .from('waitlist')
+            .select('email')
+            .eq('email', email)
+            .single();
+        return { exists: !!data, error };
+    }
+};
