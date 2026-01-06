@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Claude Workflow - Autonomous AI Development | MobileCLI</title>
+    <meta name="description" content="How we use two Claude Code instances working together to build MobileCLI - BUILD CLAUDE develops, TEST CLAUDE verifies. Autonomous AI collaboration.">
+    <link rel="canonical" href="https://mobilecli.com/two-claude.html">
+
+    <meta property="og:title" content="Two-Claude Workflow - Autonomous AI Development">
+    <meta property="og:description" content="Two AI instances collaborating: BUILD CLAUDE writes code, TEST CLAUDE verifies it. The future of autonomous development.">
+    <meta property="og:type" content="article">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-code: #0d1117;
+            --bg-card: #111111;
+            --text: #e6e6e6;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --matrix: #00ff41;
+            --border: #1a1a1a;
+            --gold: #ffd700;
+            --blue: #00a8ff;
+            --purple: #a855f7;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        a { color: var(--matrix); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+        nav { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; }
+        nav .container { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1200px; }
+        .logo { font-size: 1.25rem; font-weight: 700; color: var(--matrix); font-family: 'Courier New', monospace; }
+        .nav-links { display: flex; gap: 28px; }
+        .nav-links a { color: var(--text-secondary); font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--matrix); text-decoration: none; }
+
+        .hero { padding: 120px 0 60px; text-align: center; background: linear-gradient(180deg, rgba(168, 85, 247, 0.1) 0%, transparent 100%); border-bottom: 1px solid rgba(168, 85, 247, 0.3); }
+        .badge { display: inline-block; padding: 8px 20px; background: linear-gradient(135deg, var(--purple), #7c3aed); border-radius: 100px; color: #fff; font-size: 0.85rem; font-family: 'Courier New', monospace; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; color: var(--text); font-family: 'Courier New', monospace; }
+        .hero h1 span { color: var(--purple); }
+        .hero p { font-size: 1.3rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; }
+
+        .content { padding: 60px 0; }
+        .section { margin-bottom: 80px; }
+        .section-label { font-size: 0.85rem; color: var(--purple); font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 12px; }
+        h2 { font-size: 2rem; font-weight: 700; margin-bottom: 24px; color: var(--text); }
+        h3 { font-size: 1.4rem; font-weight: 600; margin: 40px 0 16px; color: var(--text); }
+        p { margin-bottom: 20px; color: var(--text-secondary); }
+        ul, ol { margin-bottom: 24px; padding-left: 24px; color: var(--text-secondary); }
+        li { margin-bottom: 12px; }
+
+        .diagram { background: var(--bg-code); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin: 32px 0; font-family: 'Courier New', monospace; font-size: 0.9rem; line-height: 1.6; overflow-x: auto; white-space: pre; color: var(--matrix); }
+
+        .claude-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin: 32px 0; }
+        .claude-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+        .claude-card.build { border-color: var(--blue); }
+        .claude-card.test { border-color: var(--purple); }
+        .claude-card h3 { margin-top: 0; font-size: 1.2rem; }
+        .claude-card.build h3 { color: var(--blue); }
+        .claude-card.test h3 { color: var(--purple); }
+        .claude-card ul { margin-bottom: 0; }
+
+        .code-block { background: var(--bg-code); border: 1px solid var(--border); border-radius: 8px; margin: 24px 0; overflow: hidden; }
+        .code-header { background: var(--bg-card); padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        .code-label { font-size: 0.8rem; color: var(--text-muted); font-family: 'Courier New', monospace; }
+        pre { padding: 20px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9rem; line-height: 1.6; color: var(--text); }
+
+        .highlight { background: var(--bg-card); border-left: 4px solid var(--purple); padding: 20px 24px; margin: 32px 0; border-radius: 0 8px 8px 0; }
+        .highlight strong { color: var(--text); }
+
+        .flow-step { display: flex; align-items: flex-start; margin-bottom: 32px; }
+        .flow-number { width: 48px; height: 48px; background: var(--purple); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: #fff; flex-shrink: 0; margin-right: 20px; }
+        .flow-content h4 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text); }
+        .flow-content p { margin-bottom: 0; }
+
+        .timeline { position: relative; padding-left: 32px; margin: 32px 0; }
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--border); }
+        .timeline-item { position: relative; margin-bottom: 24px; }
+        .timeline-item::before { content: ''; position: absolute; left: -36px; top: 8px; width: 10px; height: 10px; background: var(--purple); border-radius: 50%; }
+        .timeline-label { font-size: 0.85rem; color: var(--purple); font-family: 'Courier New', monospace; }
+
+        footer { padding: 48px 0; border-top: 1px solid var(--border); text-align: center; }
+        footer p { color: var(--text-muted); font-size: 0.85rem; }
+        footer a { margin: 0 12px; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .claude-grid { grid-template-columns: 1fr; }
+            .diagram { font-size: 0.7rem; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">MobileCLI_</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="app-story.html">App Story</a>
+                <a href="download.html">Download</a>
+                <a href="learn.html">Docs</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <span class="badge">New Development Model</span>
+            <h1>Two-Claude <span>Workflow</span></h1>
+            <p>How we use two AI instances working in parallel to build MobileCLI autonomously. BUILD CLAUDE develops, TEST CLAUDE verifies.</p>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="container">
+            <section class="section">
+                <span class="section-label">The Innovation</span>
+                <h2>What is Two-Claude?</h2>
+                <p>MobileCLI is developed using <strong>two separate Claude Code instances</strong> running on two different phones, working together through a shared communication protocol.</p>
+
+                <div class="claude-grid">
+                    <div class="claude-card build">
+                        <h3>BUILD CLAUDE</h3>
+                        <p>Runs in regular Termux on the build phone (S24 Ultra)</p>
+                        <ul>
+                            <li>Has access to source code</li>
+                            <li>Builds APK with Gradle</li>
+                            <li>Fixes bugs and adds features</li>
+                            <li>Updates test protocols</li>
+                            <li>Creates new versions</li>
+                        </ul>
+                    </div>
+                    <div class="claude-card test">
+                        <h3>TEST CLAUDE</h3>
+                        <p>Runs inside MobileCLI on the test phone (S20 Ultra)</p>
+                        <ul>
+                            <li>Reads CLAUDE.md for instructions</li>
+                            <li>Runs automated test protocol</li>
+                            <li>Reports exact results</li>
+                            <li>Verifies fixes work</li>
+                            <li>Knows full project context</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight">
+                    <strong>The key insight:</strong> By splitting development and testing across two AI instances, we create a feedback loop where BUILD CLAUDE can rapidly iterate based on TEST CLAUDE's verified reports. The user only needs to relay information between them.
+                </div>
+            </section>
+
+            <section class="section">
+                <span class="section-label">Communication</span>
+                <h2>How They Communicate</h2>
+                <p>The two Claudes communicate through a <strong>shared CLAUDE.md file</strong> that gets installed in MobileCLI's home directory. This file contains:</p>
+
+                <ul>
+                    <li>Full project history and context</li>
+                    <li>What has worked and what has failed</li>
+                    <li>Detailed test protocols with expected outputs</li>
+                    <li>How to report results back</li>
+                    <li>Known issues and fixes</li>
+                </ul>
+
+                <div class="diagram">BUILD CLAUDE                              TEST CLAUDE
+(Termux on S24)                          (MobileCLI on S20)
+     |                                         |
+     |-- updates CLAUDE.md ------------------>|
+     |-- builds APK ------------------------->|
+     |                                         |
+     |                    User installs APK    |
+     |                                         |
+     |                                    reads CLAUDE.md
+     |                                    runs test protocol
+     |                                         |
+     |<-- user reports results ---------------|
+     |                                         |
+     |-- fixes code                            |
+     |-- increments version                    |
+     |-- rebuilds APK ----------------------->|
+     |                                         |
+     v                                         v
+  (cycle repeats until all tests pass)</div>
+            </section>
+
+            <section class="section">
+                <span class="section-label">The Process</span>
+                <h2>Development Cycle</h2>
+
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <h4>BUILD CLAUDE Makes Changes</h4>
+                        <p>User describes an issue or feature. BUILD CLAUDE modifies the source code, updates the Test Claude CLAUDE.md with new test protocols, and builds a new APK version.</p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <h4>User Installs APK</h4>
+                        <p>The new APK is copied to Downloads. User transfers it to the test phone and installs it. The new CLAUDE.md is automatically installed in the home directory.</p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <h4>TEST CLAUDE Runs Protocol</h4>
+                        <p>User starts Claude Code in MobileCLI and says "test MobileCLI". TEST CLAUDE reads CLAUDE.md, understands the full context, and runs the 5-step test protocol.</p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <h4>TEST CLAUDE Reports Results</h4>
+                        <p>TEST CLAUDE reports exact results: which tests passed, which failed, exact output received, what was expected. This structured report makes debugging easy.</p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">5</div>
+                    <div class="flow-content">
+                        <h4>User Relays to BUILD CLAUDE</h4>
+                        <p>User tells BUILD CLAUDE what TEST CLAUDE reported. BUILD CLAUDE analyzes the failure, fixes the code, and the cycle repeats.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <span class="section-label">Test Protocol</span>
+                <h2>What TEST CLAUDE Checks</h2>
+                <p>TEST CLAUDE runs 5 tests in order, reporting exact results for each:</p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="timeline-label">Test 1: URL Opening</span>
+                        <p>Runs <code>am start --user 0 -a android.intent.action.VIEW -d "https://google.com"</code> and verifies browser opens.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-label">Test 2: am.apk Permissions</span>
+                        <p>Checks that am.apk has read-only (0400) permissions, required for Android 14+.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-label">Test 3: am Script</span>
+                        <p>Verifies the am script uses app_process correctly to run TermuxAm.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-label">Test 4: termux-open-url Script</span>
+                        <p>Confirms the script uses direct <code>am start</code>, not the old TermuxUrlHandlerActivity method.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-label">Test 5: Claude Code OAuth</span>
+                        <p>The ultimate test - runs <code>claude</code> and verifies pressing 1 opens the browser for authentication.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <span class="section-label">Why It Works</span>
+                <h2>Benefits of Two-Claude</h2>
+
+                <h3>Separation of Concerns</h3>
+                <p>BUILD CLAUDE focuses on code quality and architecture. TEST CLAUDE focuses on verification and reporting. Neither is distracted by the other's responsibilities.</p>
+
+                <h3>Accurate Testing</h3>
+                <p>TEST CLAUDE runs in the actual environment where the app will be used - inside MobileCLI itself. This catches issues that wouldn't appear in the build environment.</p>
+
+                <h3>Complete Context</h3>
+                <p>Both Claudes have full project context through CLAUDE.md. TEST CLAUDE knows the 43-version history, what's failed before, and exactly what to look for.</p>
+
+                <h3>Rapid Iteration</h3>
+                <p>The user only needs to relay information - they don't need to understand the technical details. This allows for fast bug-fix cycles.</p>
+
+                <h3>Autonomous Operation</h3>
+                <p>Once the workflow is established, minimal user input is needed. Say "test MobileCLI" and TEST CLAUDE knows exactly what to do.</p>
+            </section>
+
+            <section class="section">
+                <span class="section-label">The Achievement</span>
+                <h2>A New Development Paradigm</h2>
+                <p>This Two-Claude workflow represents something new in software development:</p>
+
+                <ul>
+                    <li><strong>AI Collaboration:</strong> Two AI instances working together on the same project</li>
+                    <li><strong>Shared Context:</strong> Knowledge transfer through structured documentation</li>
+                    <li><strong>Autonomous Testing:</strong> AI that can verify its own work in the target environment</li>
+                    <li><strong>Rapid Iteration:</strong> 43 versions in 2 days with increasingly autonomous operation</li>
+                </ul>
+
+                <div class="highlight">
+                    <strong>The future:</strong> Imagine AI teams where different instances specialize in different roles - architects, developers, testers, reviewers - all coordinating through shared context files. MobileCLI's Two-Claude workflow is a proof of concept for this future.
+                </div>
+            </section>
+
+            <section class="section">
+                <span class="section-label">Try It Yourself</span>
+                <h2>Getting Started</h2>
+                <p>To use the Two-Claude workflow:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">On Build Phone (Termux)</span>
+                    </div>
+                    <pre># Clone the repo
+git clone https://github.com/MobileDevCLI/MobileCLI-v2
+
+# Build
+cd MobileCLI-v2
+./gradlew assembleDebug
+
+# Copy to Downloads
+cp app/build/outputs/apk/debug/app-debug.apk /sdcard/Download/MobileCLI.apk</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">On Test Phone (MobileCLI)</span>
+                    </div>
+                    <pre># Install Claude Code
+pkg install nodejs
+npm install -g @anthropic-ai/claude-code
+
+# Run Claude Code
+claude
+
+# Say: "test MobileCLI"
+# TEST CLAUDE will read ~/CLAUDE.md and run the test protocol</pre>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                <a href="index.html">Home</a>
+                <a href="app-story.html">App Story</a>
+                <a href="download.html">Download</a>
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+            </p>
+            <p style="margin-top: 16px;">&copy; 2026 MobileCLI. Built with Claude Code on Android.</p>
+        </div>
+    </footer>
+</body>
+</html>

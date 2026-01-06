@@ -137,7 +137,7 @@
     <section class="stats">
         <div class="container" style="display: contents;">
             <div class="stat">
-                <div class="stat-number">32</div>
+                <div class="stat-number">54</div>
                 <div class="stat-label">Versions Built</div>
             </div>
             <div class="stat">
@@ -145,12 +145,12 @@
                 <div class="stat-label">Computers Used</div>
             </div>
             <div class="stat">
-                <div class="stat-number">4,763</div>
-                <div class="stat-label">Lines of Kotlin</div>
+                <div class="stat-number">2</div>
+                <div class="stat-label">Phones Used</div>
             </div>
             <div class="stat">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">Phone-Built</div>
+                <div class="stat-number">2</div>
+                <div class="stat-label">AIs Collaborating</div>
             </div>
         </div>
     </section>
@@ -196,8 +196,8 @@
 
             <section class="chapter">
                 <div class="chapter-number">Chapter 3</div>
-                <h2>The 23-Version Journey</h2>
-                <p>Building MobileCLI took 23 iterations. Each version fixed a critical issue:</p>
+                <h2>The 54-Version Journey</h2>
+                <p>Building MobileCLI took 54 iterations across two days. Each version fixed a critical issue:</p>
                 <div class="timeline">
                     <div class="timeline-item failure">
                         <div class="timeline-time">Version 1-3</div>
@@ -305,74 +305,137 @@
                         </div>
                     </div>
                     <div class="timeline-item success">
-                        <div class="timeline-time">Version 32 - 100% COMPLETE</div>
+                        <div class="timeline-time">Version 32</div>
                         <div class="timeline-content">
                             <h4>TermuxService + Wake Lock</h4>
-                            <p><strong>THE FINAL 5%:</strong> Background service with CPU + WiFi locks. Sessions survive when app is backgrounded. <strong>100% Termux compatibility achieved!</strong></p>
+                            <p>Background service with CPU + WiFi locks. Sessions survive when app is backgrounded.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item failure">
+                        <div class="timeline-time">Version 33-41</div>
+                        <div class="timeline-content">
+                            <h4>The URL Opening Battle</h4>
+                            <p>Claude Code OAuth URL wouldn't open. Tried: TermuxAmDispatcherActivity, broadcast receiver, am.apk. All failed due to Android 14+ security.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 42-45 - TWO-CLAUDE</div>
+                        <div class="timeline-content">
+                            <h4>Two-Claude Workflow</h4>
+                            <p><strong>INNOVATION:</strong> Two Claudes collaborate. BUILD CLAUDE (Termux on S24 Ultra) builds the app, TEST CLAUDE (MobileCLI on test phone) tests and reports bugs. They communicate via GitHub repo.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item failure">
+                        <div class="timeline-time">Version 46-52</div>
+                        <div class="timeline-content">
+                            <h4>Hunting the Root Cause</h4>
+                            <p>TEST CLAUDE identified: Android 14's <code>assertPackageMatchesCallingUid()</code> blocks shell calls to <code>/system/bin/am</code>. Package=com.android.shell but UID=MobileCLI. <strong>SecurityException DENIED.</strong></p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 53</div>
+                        <div class="timeline-content">
+                            <h4>GitHub Auto-Setup</h4>
+                            <p>TEST CLAUDE now has automatic GitHub access via setup-github script. <strong>Self-modification loop enabled!</strong></p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 54 - THE FIX</div>
+                        <div class="timeline-content">
+                            <h4>File-Based Am Command System</h4>
+                            <p><strong>THE SOLUTION:</strong> Instead of fighting Android's security, work with it. Shell writes to file, app polls and executes with PendingIntent. <strong>App identity, not shell identity!</strong></p>
                         </div>
                     </div>
                 </div>
                 <div class="highlight matrix">
-                    <strong>Version 10:</strong> HOME directory fix (first breakthrough). <strong>Version 19:</strong> Reflection font metrics (screen fix). <strong>Version 27:</strong> TermuxOpenReceiver (URL fix). <strong>Version 32:</strong> TermuxService + wake lock (100% complete).
+                    <strong>v10:</strong> HOME fix (breakthrough). <strong>v19:</strong> Font metrics (screen fix). <strong>v42:</strong> Two-Claude workflow. <strong>v54:</strong> File-based am system (URL fix).
                 </div>
             </section>
 
             <section class="chapter">
                 <div class="chapter-number">Chapter 4</div>
-                <h2>The Self-Referential Loop</h2>
-                <p>This is what makes MobileCLI philosophically unique:</p>
-                <div class="diagram">THE SELF-BUILDING LOOP
+                <h2>The Two-Claude Innovation</h2>
+                <p>Starting at v42, we invented a new development methodology:</p>
+                <div class="diagram">THE TWO-CLAUDE WORKFLOW
 
-Step 1: Human has phone with terminal environment
-        │
-        ▼
-Step 2: Human installs Claude Code
-        │
-        ▼
-Step 3: Human asks Claude Code to build MobileCLI app
-        │
-        ▼
-Step 4: Claude Code writes Kotlin code (MainActivity.kt)
-        │
-        ▼
-Step 5: Claude Code runs Gradle build on phone
-        │
-        ▼
-Step 6: APK is created: MobileCLI-v32.apk
-        │
-        ▼
-Step 7: User installs MobileCLI app
-        │
-        ▼
-Step 8: MobileCLI downloads bootstrap, becomes compatible
-        │
-        ▼
-Step 9: User runs Claude Code INSIDE MobileCLI
-        │
-        ▼
-Step 10: Claude Code can now improve MobileCLI itself
-        │
-        └──────────────► LOOP COMPLETE ◄──────────────
-
-The tool built the container. The container runs the tool.
-The tool can now improve the container. Ad infinitum.</div>
+┌─────────────────────────────────────────────────────────────────┐
+│                     Two Phones, Two AIs                          │
+│                                                                  │
+│   Samsung S24 Ultra              Samsung S20 Ultra               │
+│   ┌─────────────────┐            ┌─────────────────┐            │
+│   │    Termux       │            │   MobileCLI     │            │
+│   │                 │            │                 │            │
+│   │  BUILD CLAUDE   │◄──────────►│  TEST CLAUDE    │            │
+│   │                 │   GitHub    │                 │            │
+│   │  • Writes code  │   Bridge    │  • Tests app    │            │
+│   │  • Builds APK   │            │  • Reports bugs │            │
+│   │  • Pushes to GH │            │  • Suggests fix │            │
+│   └─────────────────┘            └─────────────────┘            │
+│                                                                  │
+│   The AI that built the app now helps debug it from INSIDE!     │
+└─────────────────────────────────────────────────────────────────┘</div>
+                <p>BUILD CLAUDE creates new versions, TEST CLAUDE tests them and writes reports. They communicate through a shared GitHub repository (<code>claude-bridge</code>). This allows rapid iteration without human bottlenecks.</p>
             </section>
 
             <section class="chapter">
                 <div class="chapter-number">Chapter 5</div>
+                <h2>The Self-Modifying AI</h2>
+                <p>With v53-54, we achieved something unprecedented:</p>
+                <div class="diagram">THE SELF-MODIFYING LOOP
+
+Step 1: Claude Code runs inside MobileCLI
+        │
+        ▼
+Step 2: Claude detects a bug in MobileCLI
+        │
+        ▼
+Step 3: Claude clones MobileCLI source from GitHub
+        │
+        ▼
+Step 4: Claude reads and understands the Kotlin code
+        │
+        ▼
+Step 5: Claude writes a fix
+        │
+        ▼
+Step 6: Claude runs ./gradlew assembleDebug ON THE PHONE
+        │
+        ▼
+Step 7: Claude pushes to GitHub
+        │
+        ▼
+Step 8: User installs new APK
+        │
+        ▼
+Step 9: Claude tests the fix
+        │
+        └──────────────► LOOP COMPLETE ◄──────────────
+
+THE AI IS IMPROVING ITS OWN CONTAINER.
+No computer. No human coding. Just AI editing AI's home.</div>
+                <div class="highlight">
+                    <strong>World First:</strong> An AI running inside an Android app that can modify the source code of that app, rebuild it, and test the changes. Self-modifying mobile AI.
+                </div>
+            </section>
+
+            <section class="chapter">
+                <div class="chapter-number">Chapter 6</div>
                 <h2>Legal & Intellectual Property</h2>
                 <div class="legal-section">
                     <h3>Ownership Declaration</h3>
-                    <p>The following components are original works (4,763 total lines):</p>
+                    <p>The following components are original works:</p>
                     <ul>
-                        <li><strong>MainActivity.kt</strong> - Original Kotlin code (1,248 lines)</li>
-                        <li><strong>BootstrapInstaller.kt</strong> - Original Kotlin code (1,558 lines)</li>
-                        <li><strong>TermuxApiReceiver.kt</strong> - Original Kotlin code (1,548 lines)</li>
-                        <li><strong>TermuxOpenReceiver.kt</strong> - Original Kotlin code (112 lines)</li>
-                        <li><strong>TermuxService.kt</strong> - Original Kotlin code (297 lines)</li>
+                        <li><strong>MainActivity.kt</strong> - Original Kotlin code</li>
+                        <li><strong>BootstrapInstaller.kt</strong> - Original Kotlin code</li>
+                        <li><strong>TermuxApiReceiver.kt</strong> - Original Kotlin code</li>
+                        <li><strong>TermuxOpenReceiver.kt</strong> - Original Kotlin code</li>
+                        <li><strong>TermuxService.kt</strong> - Original Kotlin code with file-based am system</li>
+                        <li><strong>AmSocketServer.kt</strong> - Original Unix socket server (NEW in v54)</li>
+                        <li><strong>TermuxAmDispatcherActivity.kt</strong> - Original intent dispatcher</li>
                         <li><strong>All XML layouts</strong> - Original layout definitions</li>
-                        <li><strong>App architecture and design</strong> - Original conception</li>
-                        <li><strong>The development workflow</strong> - Original methodology</li>
+                        <li><strong>Two-Claude workflow</strong> - Novel methodology</li>
+                        <li><strong>File-based am command system</strong> - Novel architecture</li>
+                        <li><strong>Self-modification architecture</strong> - Novel capability</li>
                     </ul>
                 </div>
                 <div class="legal-section">
@@ -388,7 +451,7 @@ The tool can now improve the container. Ad infinitum.</div>
             </section>
 
             <section class="chapter">
-                <div class="chapter-number">Chapter 6</div>
+                <div class="chapter-number">Chapter 7</div>
                 <h2>What This Proves</h2>
                 <div class="version-grid">
                     <div class="version-card success">
@@ -400,19 +463,26 @@ The tool can now improve the container. Ad infinitum.</div>
                         <p>With proper guidance, AI assistants can write production-quality native applications.</p>
                     </div>
                     <div class="version-card success">
-                        <h4>Self-Referential Development Works</h4>
-                        <p>Tools can build containers for themselves. The resulting system is stable and functional.</p>
+                        <h4>AI Can Debug AI's Home</h4>
+                        <p>The AI running inside the app can identify bugs, write fixes, rebuild, and test. Self-modifying AI containers are possible.</p>
                     </div>
                     <div class="version-card success">
-                        <h4>Mobile-First is Viable</h4>
-                        <p>Professional software can be developed entirely on mobile devices. No desktop required.</p>
+                        <h4>Multi-AI Collaboration Works</h4>
+                        <p>Two AIs on two devices can collaborate effectively via shared repositories. Novel development methodology.</p>
                     </div>
                 </div>
                 <div class="highlight">
-                    <strong>Historical Significance:</strong> This is the first documented case of an Android app built entirely on an Android phone, using AI for the entire development process, where the resulting app can run the AI that built it. <strong>With v32, we achieved 100% Termux compatibility</strong> - background service, wake lock, WiFi lock, 50+ API commands.
+                    <strong>Historical Significance:</strong> This is the world's first:
+                    <ol>
+                        <li>Android app built entirely on an Android phone (no computer)</li>
+                        <li>AI-built AI container (Claude Code built an app that runs Claude Code)</li>
+                        <li>Self-modifying mobile application (AI can edit its own source and rebuild)</li>
+                        <li>Two-AI collaborative development system</li>
+                    </ol>
                 </div>
-                <p><strong>Date of initial achievement:</strong> January 5, 2026 (v10 breakthrough)</p>
-                <p><strong>Date of 100% completion:</strong> January 6, 2026 (v32 - full Termux parity)</p>
+                <p><strong>Date of v10 breakthrough:</strong> January 5, 2026 (HOME directory fix)</p>
+                <p><strong>Date of Two-Claude workflow:</strong> January 6, 2026 (v42)</p>
+                <p><strong>Date of self-modification capability:</strong> January 6, 2026 (v53-54)</p>
             </section>
 
         </div>
