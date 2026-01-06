@@ -137,7 +137,7 @@
     <section class="stats">
         <div class="container" style="display: contents;">
             <div class="stat">
-                <div class="stat-number">12</div>
+                <div class="stat-number">32</div>
                 <div class="stat-label">Versions Built</div>
             </div>
             <div class="stat">
@@ -145,7 +145,7 @@
                 <div class="stat-label">Computers Used</div>
             </div>
             <div class="stat">
-                <div class="stat-number">1,100+</div>
+                <div class="stat-number">4,763</div>
                 <div class="stat-label">Lines of Kotlin</div>
             </div>
             <div class="stat">
@@ -196,8 +196,8 @@
 
             <section class="chapter">
                 <div class="chapter-number">Chapter 3</div>
-                <h2>The 12-Version Journey</h2>
-                <p>Building MobileCLI took 12 iterations. Each version fixed a critical issue:</p>
+                <h2>The 23-Version Journey</h2>
+                <p>Building MobileCLI took 23 iterations. Each version fixed a critical issue:</p>
                 <div class="timeline">
                     <div class="timeline-item failure">
                         <div class="timeline-time">Version 1-3</div>
@@ -235,15 +235,85 @@
                         </div>
                     </div>
                     <div class="timeline-item">
-                        <div class="timeline-time">Version 11-12</div>
+                        <div class="timeline-time">Version 11-14</div>
                         <div class="timeline-content">
-                            <h4>UI & Features</h4>
-                            <p>Rotation persistence, text size, extra keys, context menu, auto-setup system.</p>
+                            <h4>UI Polish</h4>
+                            <p>Rotation persistence, text size, extra keys, context menu, DrawerLayout navigation, Ctrl+C fix.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item failure">
+                        <div class="timeline-time">Version 15-18</div>
+                        <div class="timeline-content">
+                            <h4>The Screen Size Battle</h4>
+                            <p>AI chooser dialog worked, but terminal only used half the screen. Font metrics mismatch.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 19 - SCREEN FIX</div>
+                        <div class="timeline-content">
+                            <h4>Reflection-Based Font Metrics</h4>
+                            <p>Used Java reflection to get actual font dimensions from TerminalView's internal renderer. <strong>Full-screen terminal!</strong></p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 20</div>
+                        <div class="timeline-content">
+                            <h4>Built-in Termux API</h4>
+                            <p>No separate app needed. Clipboard, toast, vibrate, notifications, flashlight - all built in.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 21</div>
+                        <div class="timeline-content">
+                            <h4>Multi-Session Support</h4>
+                            <p>Up to 10 concurrent terminal sessions with tabs. Switch, kill, persist across rotation.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item failure">
+                        <div class="timeline-time">Version 22</div>
+                        <div class="timeline-content">
+                            <h4>Text Selection Fix (Crash Bug)</h4>
+                            <p>Fixed long-press for text selection. But introduced crash: <code>setBackgroundResource(android.R.attr.*)</code> is WRONG.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 23</div>
+                        <div class="timeline-content">
+                            <h4>Bug Fix Release</h4>
+                            <p><strong>android.R.attr.* is an attribute, not a resource ID.</strong> Fixed with <code>setBackgroundColor()</code>.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item failure">
+                        <div class="timeline-time">Version 24-25</div>
+                        <div class="timeline-content">
+                            <h4>URL Opening Battle</h4>
+                            <p>Claude OAuth URL wouldn't open. v24 used broadcast (wrong). v25 learned real Termux uses <code>am start</code> directly.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 26-27 - URL FIX</div>
+                        <div class="timeline-content">
+                            <h4>TermuxOpenReceiver</h4>
+                            <p>Created receiver at <code>com.termux.app.TermuxOpenReceiver</code> - the EXACT path real Termux uses. <strong>OAuth works!</strong></p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 28-31</div>
+                        <div class="timeline-content">
+                            <h4>100% API Coverage</h4>
+                            <p>50+ Termux API commands: Keystore, NFC, SAF, Speech-to-Text. Full hardware access.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 32 - 100% COMPLETE</div>
+                        <div class="timeline-content">
+                            <h4>TermuxService + Wake Lock</h4>
+                            <p><strong>THE FINAL 5%:</strong> Background service with CPU + WiFi locks. Sessions survive when app is backgrounded. <strong>100% Termux compatibility achieved!</strong></p>
                         </div>
                     </div>
                 </div>
                 <div class="highlight matrix">
-                    <strong>Version 10 was the breakthrough.</strong> The fix was trivially simple once discovered - add <code>/home</code> to the path. But finding it required systematically comparing every environment variable against working installations.
+                    <strong>Version 10:</strong> HOME directory fix (first breakthrough). <strong>Version 19:</strong> Reflection font metrics (screen fix). <strong>Version 27:</strong> TermuxOpenReceiver (URL fix). <strong>Version 32:</strong> TermuxService + wake lock (100% complete).
                 </div>
             </section>
 
@@ -268,7 +338,7 @@ Step 4: Claude Code writes Kotlin code (MainActivity.kt)
 Step 5: Claude Code runs Gradle build on phone
         │
         ▼
-Step 6: APK is created: MobileCLI-v12.apk
+Step 6: APK is created: MobileCLI-v32.apk
         │
         ▼
 Step 7: User installs MobileCLI app
@@ -293,10 +363,13 @@ The tool can now improve the container. Ad infinitum.</div>
                 <h2>Legal & Intellectual Property</h2>
                 <div class="legal-section">
                     <h3>Ownership Declaration</h3>
-                    <p>The following components are original works:</p>
+                    <p>The following components are original works (4,763 total lines):</p>
                     <ul>
-                        <li><strong>MainActivity.kt</strong> - Original Kotlin code (~660 lines)</li>
-                        <li><strong>BootstrapInstaller.kt</strong> - Original Kotlin code (~470 lines)</li>
+                        <li><strong>MainActivity.kt</strong> - Original Kotlin code (1,248 lines)</li>
+                        <li><strong>BootstrapInstaller.kt</strong> - Original Kotlin code (1,558 lines)</li>
+                        <li><strong>TermuxApiReceiver.kt</strong> - Original Kotlin code (1,548 lines)</li>
+                        <li><strong>TermuxOpenReceiver.kt</strong> - Original Kotlin code (112 lines)</li>
+                        <li><strong>TermuxService.kt</strong> - Original Kotlin code (297 lines)</li>
                         <li><strong>All XML layouts</strong> - Original layout definitions</li>
                         <li><strong>App architecture and design</strong> - Original conception</li>
                         <li><strong>The development workflow</strong> - Original methodology</li>
@@ -336,9 +409,10 @@ The tool can now improve the container. Ad infinitum.</div>
                     </div>
                 </div>
                 <div class="highlight">
-                    <strong>Historical Significance:</strong> This is the first documented case of an Android app built entirely on an Android phone, using AI for the entire development process, where the resulting app can run the AI that built it.
+                    <strong>Historical Significance:</strong> This is the first documented case of an Android app built entirely on an Android phone, using AI for the entire development process, where the resulting app can run the AI that built it. <strong>With v32, we achieved 100% Termux compatibility</strong> - background service, wake lock, WiFi lock, 50+ API commands.
                 </div>
-                <p><strong>Date of achievement:</strong> January 5, 2026</p>
+                <p><strong>Date of initial achievement:</strong> January 5, 2026 (v10 breakthrough)</p>
+                <p><strong>Date of 100% completion:</strong> January 6, 2026 (v32 - full Termux parity)</p>
             </section>
 
         </div>
