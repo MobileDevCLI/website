@@ -8,6 +8,8 @@
 
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
 
     <style>
         * {
@@ -590,6 +592,47 @@
             display: none !important;
         }
 
+        /* License Section */
+        .license-section {
+            margin-bottom: 32px;
+        }
+
+        .license-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .plan-badge.pro {
+            background: linear-gradient(135deg, #a855f7, #00ff88);
+        }
+
+        .plan-badge.team {
+            background: linear-gradient(135deg, #00d4ff, #a855f7);
+        }
+
+        .plan-banner.pro {
+            border-color: #a855f7;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 255, 65, 0.05));
+        }
+
+        .subscription-details {
+            display: flex;
+            gap: 24px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .subscription-detail {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .subscription-detail strong {
+            color: var(--text);
+        }
+
         /* Responsive */
         @media (max-width: 900px) {
             .sidebar {
@@ -880,16 +923,35 @@
                     </div>
                 </section>
 
-                <!-- Plan Banner -->
-                <div class="plan-banner">
+                <!-- Subscription Status -->
+                <div class="plan-banner" id="subscriptionBanner">
                     <div class="plan-info">
-                        <h3>
+                        <h3 id="planTitle">
                             You're on the Free Plan
-                            <span class="plan-badge">FREE</span>
+                            <span class="plan-badge" id="planBadge">FREE</span>
                         </h3>
-                        <p>Upgrade to Pro for unlimited projects and premium features</p>
+                        <p id="planDescription">Upgrade to Pro for unlimited projects and premium features</p>
                     </div>
-                    <a href="/pricing.html" class="btn btn-primary">Upgrade to Pro</a>
+                    <div id="planActions">
+                        <a href="/pricing.html" class="btn btn-primary" id="upgradeBtn">Upgrade to Pro</a>
+                    </div>
+                </div>
+
+                <!-- License Key Section (for Pro users) -->
+                <div class="license-section hidden" id="licenseSection">
+                    <h3 class="section-title">Your App License Key</h3>
+                    <div class="license-card">
+                        <p style="color: var(--text-secondary); margin-bottom: 12px;">
+                            Use this key in the MobileCLI app to unlock Pro features:
+                        </p>
+                        <div class="code-block">
+                            <code id="licenseKey">Loading...</code>
+                            <button class="copy-btn" onclick="copyLicenseKey()">Copy</button>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px;">
+                            This key is tied to your account. Don't share it with others.
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Social Section -->
@@ -927,8 +989,10 @@
     </div>
 
     <script src="/js/supabase-config.js"></script>
+    <script src="/js/stripe-config.js"></script>
     <script>
         let completedSteps = JSON.parse(localStorage.getItem('completedSteps') || '[]');
+        let currentSubscription = null;
 
         // Check auth and load dashboard
         (async () => {
@@ -949,6 +1013,9 @@
             document.getElementById('userName').textContent = name;
             document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
 
+            // Load subscription status
+            await loadSubscriptionStatus();
+
             // Restore completed steps
             updateProgress();
 
@@ -956,6 +1023,104 @@
             document.getElementById('loading').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
         })();
+
+        // Load and display subscription status
+        async function loadSubscriptionStatus() {
+            try {
+                currentSubscription = await payments.getSubscription();
+
+                const banner = document.getElementById('subscriptionBanner');
+                const title = document.getElementById('planTitle');
+                const badge = document.getElementById('planBadge');
+                const description = document.getElementById('planDescription');
+                const actions = document.getElementById('planActions');
+                const licenseSection = document.getElementById('licenseSection');
+
+                if (currentSubscription && currentSubscription.tier !== 'free') {
+                    const tier = currentSubscription.tier;
+                    const tierCapitalized = tier.charAt(0).toUpperCase() + tier.slice(1);
+
+                    // Update banner for Pro/Team users
+                    banner.classList.add('pro');
+                    badge.textContent = tierCapitalized.toUpperCase();
+                    badge.classList.add(tier);
+
+                    title.innerHTML = `You're on the ${tierCapitalized} Plan <span class="plan-badge ${tier}">${tierCapitalized.toUpperCase()}</span>`;
+
+                    // Format expiration date
+                    let expireText = '';
+                    if (currentSubscription.current_period_end) {
+                        const expireDate = new Date(currentSubscription.current_period_end);
+                        expireText = expireDate.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                    }
+
+                    description.innerHTML = `
+                        <div class="subscription-details">
+                            <span class="subscription-detail"><strong>Status:</strong> ${currentSubscription.status === 'active' ? 'Active' : currentSubscription.status}</span>
+                            ${expireText ? `<span class="subscription-detail"><strong>Renews:</strong> ${expireText}</span>` : ''}
+                        </div>
+                    `;
+
+                    // Update action button
+                    actions.innerHTML = `
+                        <button class="btn btn-secondary" onclick="manageSubscription()">Manage Subscription</button>
+                    `;
+
+                    // Show license section and load license key
+                    licenseSection.classList.remove('hidden');
+                    await loadLicenseKey();
+                }
+            } catch (error) {
+                console.error('Error loading subscription:', error);
+            }
+        }
+
+        // Load license key for Pro users
+        async function loadLicenseKey() {
+            try {
+                const licenseData = await licenses.getLicenseKey();
+
+                if (licenseData && licenseData.license_key) {
+                    document.getElementById('licenseKey').textContent = licenseData.license_key;
+                } else {
+                    // Generate a new license key
+                    const newLicense = await licenses.generateLicenseKey();
+                    if (newLicense && newLicense.license_key) {
+                        document.getElementById('licenseKey').textContent = newLicense.license_key;
+                    } else {
+                        document.getElementById('licenseKey').textContent = 'Unable to generate license key';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading license key:', error);
+                document.getElementById('licenseKey').textContent = 'Error loading license key';
+            }
+        }
+
+        // Copy license key
+        function copyLicenseKey() {
+            const key = document.getElementById('licenseKey').textContent;
+            if (key && key !== 'Loading...' && !key.includes('Error')) {
+                navigator.clipboard.writeText(key);
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            }
+        }
+
+        // Manage subscription (open Stripe portal)
+        async function manageSubscription() {
+            try {
+                await payments.openCustomerPortal();
+            } catch (error) {
+                console.error('Error opening portal:', error);
+                alert('Unable to open billing portal. Please try again.');
+            }
+        }
 
         // Mark step as complete
         function markStep(stepNum) {

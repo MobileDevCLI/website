@@ -7,6 +7,11 @@
     <meta name="description" content="MobileCLI pricing plans - Free, Pro, and Team tiers for mobile AI development">
     <link rel="canonical" href="https://mobilecli.com/pricing.html">
 
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+
     <style>
         * {
             margin: 0;
@@ -476,7 +481,7 @@
                         <div class="price-amount"><span class="currency">$</span>0</div>
                         <div class="price-period">forever free</div>
                     </div>
-                    <a href="/login.html" class="plan-cta secondary">Get Started</a>
+                    <a href="/login.html" class="plan-cta secondary" id="freeCta">Get Started</a>
                     <ul class="plan-features">
                         <li><span class="check">✓</span> Setup wizard</li>
                         <li><span class="check">✓</span> 1 project</li>
@@ -496,7 +501,7 @@
                         <div class="price-amount" id="proPrice"><span class="currency">$</span>10</div>
                         <div class="price-period" id="proPeriod">per month</div>
                     </div>
-                    <a href="/login.html" class="plan-cta primary">Start Free Trial</a>
+                    <button class="plan-cta primary" id="proCta" onclick="subscribePro()">Start Free Trial</button>
                     <ul class="plan-features">
                         <li><span class="check">✓</span> The Complete Methodology</li>
                         <li><span class="check">✓</span> 72-Hour Session Techniques</li>
@@ -518,7 +523,7 @@
                         <div class="price-amount" id="teamPrice"><span class="currency">$</span>20</div>
                         <div class="price-period" id="teamPeriod">per user/month</div>
                     </div>
-                    <a href="/login.html" class="plan-cta secondary">Contact Sales</a>
+                    <button class="plan-cta secondary" id="teamCta" onclick="subscribeTeam()">Contact Sales</button>
                     <ul class="plan-features">
                         <li><span class="check">✓</span> Everything in Pro</li>
                         <li><span class="check">✓</span> Unlimited team members</li>
@@ -598,8 +603,26 @@
         </div>
     </footer>
 
+    <script src="/js/supabase-config.js"></script>
+    <script src="/js/stripe-config.js"></script>
     <script>
         let isAnnual = false;
+        let currentUser = null;
+
+        // Check if user is logged in
+        (async () => {
+            const session = await auth.getSession();
+            if (session) {
+                currentUser = await auth.getUser();
+
+                // Check if user already has Pro
+                const hasPro = await payments.hasProAccess();
+                if (hasPro) {
+                    document.getElementById('proCta').textContent = 'Manage Subscription';
+                    document.getElementById('proCta').onclick = openPortal;
+                }
+            }
+        })();
 
         function toggleBilling() {
             isAnnual = !isAnnual;
@@ -621,6 +644,75 @@
                 document.getElementById('teamPeriod').textContent = 'per user/month';
             }
         }
+
+        // Subscribe to Pro plan
+        async function subscribePro() {
+            const btn = document.getElementById('proCta');
+            const originalText = btn.textContent;
+
+            try {
+                // Check if logged in
+                const session = await auth.getSession();
+                if (!session) {
+                    // Store redirect URL and go to login
+                    sessionStorage.setItem('redirectAfterLogin', '/pricing.html?subscribe=pro');
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                btn.textContent = 'Loading...';
+                btn.disabled = true;
+
+                // Determine price ID based on billing cycle
+                const priceId = isAnnual
+                    ? 'price_pro_annual'  // Replace with actual Stripe price ID
+                    : 'price_pro_monthly'; // Replace with actual Stripe price ID
+
+                await payments.createCheckoutSession(priceId);
+
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('Unable to start checkout. Please try again.');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Subscribe to Team plan (contact sales for now)
+        async function subscribeTeam() {
+            // For now, redirect to email contact
+            // Later can be replaced with Stripe checkout for Team plan
+            window.location.href = 'mailto:mobiledevcli@gmail.com?subject=MobileCLI Team Plan Inquiry&body=Hi, I\'m interested in the Team plan for my organization.%0A%0ACompany:%0ATeam size:%0AUse case:';
+        }
+
+        // Open Stripe customer portal
+        async function openPortal() {
+            const btn = document.getElementById('proCta');
+            const originalText = btn.textContent;
+
+            try {
+                btn.textContent = 'Loading...';
+                btn.disabled = true;
+
+                await payments.openCustomerPortal();
+            } catch (error) {
+                console.error('Portal error:', error);
+                alert('Unable to open billing portal. Please try again.');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Handle redirect after login with subscribe intent
+        (async () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('subscribe') === 'pro') {
+                // Clear the param
+                window.history.replaceState({}, '', '/pricing.html');
+                // Trigger subscription
+                setTimeout(() => subscribePro(), 500);
+            }
+        })();
     </script>
 </body>
 </html>
