@@ -1,14 +1,37 @@
-# MobileCLI Robots.txt
-# https://mobilecli.com
+# MobileCLI - PRIVATE / STEALTH MODE
+# This site is not for public discovery
+# Direct links only
 
 User-agent: *
-Allow: /
+Disallow: /
 
-# Sitemap location
-Sitemap: https://mobilecli.com/sitemap.xml
+# Block all known crawlers explicitly
+User-agent: Googlebot
+Disallow: /
 
-# Disallow admin/preview pages
-Disallow: /pro-preview.html
+User-agent: Bingbot
+Disallow: /
 
-# Crawl delay (be nice to servers)
-Crawl-delay: 1
+User-agent: Slurp
+Disallow: /
+
+User-agent: DuckDuckBot
+Disallow: /
+
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: YandexBot
+Disallow: /
+
+User-agent: facebookexternalhit
+Disallow: /
+
+User-agent: Twitterbot
+Disallow: /
+
+User-agent: LinkedInBot
+Disallow: /
+
+# No sitemap - we don't want indexing
+# Sitemap: none
