@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MobileCLI App - The Self-Building App Story | MobileDevCLI Pro</title>
+    <meta name="description" content="How we built an Android app entirely on an Android phone - an app that can run the AI that built it. The world's first self-referential mobile development achievement.">
+    <link rel="canonical" href="https://mobilecli.com/app-story.html">
+
+    <meta property="og:title" content="MobileCLI App - The Self-Building App Story">
+    <meta property="og:description" content="Built an Android app on Android. The app runs Claude Code. Claude Code built the app. The loop is complete.">
+    <meta property="og:type" content="article">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-code: #0d1117;
+            --bg-card: #111111;
+            --text: #e6e6e6;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --matrix: #00ff41;
+            --border: #1a1a1a;
+            --gold: #ffd700;
+            --warning: #f97316;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        a { color: var(--matrix); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+        nav { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; }
+        nav .container { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1200px; }
+        .logo { font-size: 1.25rem; font-weight: 700; color: var(--matrix); font-family: 'Courier New', monospace; }
+        .pro-badge { background: linear-gradient(135deg, var(--gold), #ffaa00); color: #000; padding: 4px 12px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; margin-left: 8px; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 28px; }
+        .nav-links a { color: var(--text-secondary); font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--matrix); text-decoration: none; }
+        .mobile-tabs { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg-secondary); border-bottom: 1px solid var(--border); z-index: 999; overflow-x: auto; }
+        .mobile-tabs-inner { display: flex; min-width: max-content; }
+        .mobile-tab { padding: 12px 16px; color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap; border-bottom: 2px solid transparent; }
+        .mobile-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .pro-header { background: linear-gradient(180deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%); border-bottom: 1px solid rgba(255, 215, 0, 0.3); padding: 120px 0 60px; text-align: center; }
+        .pro-label { display: inline-block; padding: 8px 20px; background: linear-gradient(135deg, var(--gold), #ffaa00); border-radius: 100px; color: #000; font-size: 0.85rem; font-family: 'Courier New', monospace; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+        .pro-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; color: var(--text); font-family: 'Courier New', monospace; }
+        .pro-header h1 span { color: var(--gold); }
+        .pro-header p { font-size: 1.3rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 48px 0; border-bottom: 1px solid var(--border); }
+        .stat { text-align: center; }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: var(--gold); font-family: 'Courier New', monospace; }
+        .stat-label { font-size: 0.9rem; color: var(--text-secondary); margin-top: 8px; }
+        .content { padding: 60px 0; }
+        .chapter { margin-bottom: 80px; }
+        .chapter-number { font-size: 0.85rem; color: var(--gold); font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 12px; }
+        h2 { font-size: 2rem; font-weight: 700; margin-bottom: 24px; color: var(--text); }
+        h3 { font-size: 1.4rem; font-weight: 600; margin: 40px 0 16px; color: var(--text); }
+        p { margin-bottom: 20px; color: var(--text-secondary); }
+        ul, ol { margin-bottom: 24px; padding-left: 24px; color: var(--text-secondary); }
+        li { margin-bottom: 12px; }
+        .code-block { background: var(--bg-code); border: 1px solid var(--border); border-radius: 8px; margin: 24px 0; overflow: hidden; }
+        .code-header { background: var(--bg-card); padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .code-label { font-size: 0.8rem; color: var(--text-muted); font-family: 'Courier New', monospace; }
+        pre { padding: 20px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9rem; line-height: 1.6; color: var(--text); }
+        .highlight { background: var(--bg-card); border-left: 4px solid var(--gold); padding: 20px 24px; margin: 32px 0; border-radius: 0 8px 8px 0; }
+        .highlight.matrix { border-left-color: var(--matrix); }
+        .highlight strong { color: var(--text); }
+        .timeline { position: relative; padding-left: 32px; margin: 32px 0; }
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--border); }
+        .timeline-item { position: relative; margin-bottom: 32px; }
+        .timeline-item::before { content: ''; position: absolute; left: -36px; top: 8px; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; }
+        .timeline-item.success::before { background: var(--matrix); }
+        .timeline-item.failure::before { background: #ff4444; }
+        .timeline-time { font-size: 0.85rem; color: var(--gold); font-family: 'Courier New', monospace; margin-bottom: 8px; }
+        .timeline-content h4 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text); }
+        .timeline-content p { margin-bottom: 0; font-size: 0.95rem; }
+        .version-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 32px 0; }
+        .version-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+        .version-card.success { border-color: var(--matrix); }
+        .version-card.failure { border-color: #ff4444; }
+        .version-card h4 { color: var(--gold); margin-bottom: 12px; font-size: 1rem; font-family: 'Courier New', monospace; }
+        .version-card.success h4 { color: var(--matrix); }
+        .version-card p { font-size: 0.9rem; margin-bottom: 0; }
+        .diagram { background: var(--bg-code); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin: 32px 0; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.4; overflow-x: auto; white-space: pre; color: var(--matrix); }
+        .legal-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin: 32px 0; }
+        .legal-section h3 { margin-top: 0; color: var(--gold); }
+        footer { padding: 48px 0; border-top: 1px solid var(--border); text-align: center; }
+        footer p { color: var(--text-muted); font-size: 0.85rem; }
+        footer a { margin: 0 12px; }
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .mobile-tabs { display: block; }
+            .nav-links { display: none; }
+            .pro-header { padding-top: 140px; }
+            .pro-header h1 { font-size: 2rem; }
+            .stats { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .stat-number { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            pre { font-size: 0.75rem; }
+            .diagram { font-size: 0.65rem; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">&gt;_ MobileDevCLI <span class="pro-badge">PRO</span></a>
+            <div class="nav-links">
+                <a href="/games.html">Games</a>
+                <a href="/learn.html">Learn</a>
+                <a href="/proof.html">Proof</a>
+                <a href="/app-story.html">App Story</a>
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-tabs">
+        <div class="mobile-tabs-inner">
+            <a href="/" class="mobile-tab">Home</a>
+            <a href="/games.html" class="mobile-tab">Games</a>
+            <a href="/learn.html" class="mobile-tab">Learn</a>
+            <a href="/proof.html" class="mobile-tab">Proof</a>
+            <a href="/app-story.html" class="mobile-tab active">App Story</a>
+            <a href="https://github.com/MobileDevCLI" class="mobile-tab">GitHub</a>
+        </div>
+    </div>
+
+    <header class="pro-header">
+        <div class="container">
+            <div class="pro-label">MobileDevCLI Pro - Exclusive</div>
+            <h1>The <span>Self-Building</span> App</h1>
+            <p>How we built an Android app entirely on an Android phone - using AI that now runs inside the app it helped create. The world's first self-referential mobile development achievement.</p>
+        </div>
+    </header>
+
+    <section class="stats">
+        <div class="container" style="display: contents;">
+            <div class="stat">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Versions Built</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Computers Used</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">1,100+</div>
+                <div class="stat-label">Lines of Kotlin</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Phone-Built</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="content">
+        <div class="container">
+
+            <section class="chapter">
+                <div class="chapter-number">Chapter 1</div>
+                <h2>The Vision: An App That Contains Its Creator</h2>
+                <p>After proving that a phone could build websites (see <a href="/proof.html">Proof of Concept</a>), a bigger question emerged:</p>
+                <div class="highlight">
+                    <strong>Can a phone build an Android app?</strong><br><br>
+                    Not just any app - an app that provides the same development environment used to build it. An app that runs Claude Code. An app that can build more apps.
+                </div>
+                <p>The implications were profound: Self-referential development, zero-computer app development, infinite loop capability, and true mobile-first development.</p>
+                <p>On January 5th, 2026, we set out to prove this was possible.</p>
+            </section>
+
+            <section class="chapter">
+                <div class="chapter-number">Chapter 2</div>
+                <h2>The Technical Challenge</h2>
+                <p>Building an Android app that runs Linux binaries isn't straightforward. Here's what we discovered:</p>
+                <div class="version-grid">
+                    <div class="version-card">
+                        <h4>Package Name Lock</h4>
+                        <p>Binaries have hardcoded paths like <code>/data/data/com.termux/files/usr/lib</code>. App MUST use package name <code>com.termux</code>.</p>
+                    </div>
+                    <div class="version-card">
+                        <h4>targetSdk Restriction</h4>
+                        <p>Android 10+ blocks executing binaries from app data. Must use <code>targetSdk = 28</code> or lower.</p>
+                    </div>
+                    <div class="version-card">
+                        <h4>HOME Path Precision</h4>
+                        <p>HOME must be exactly <code>/data/data/com.termux/files/home</code>. One directory level difference breaks everything.</p>
+                    </div>
+                    <div class="version-card">
+                        <h4>Symlink Format</h4>
+                        <p>Bootstrap symlinks use <code>target←link</code> with unicode arrow. Wrong format corrupts the filesystem.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="chapter">
+                <div class="chapter-number">Chapter 3</div>
+                <h2>The 12-Version Journey</h2>
+                <p>Building MobileCLI took 12 iterations. Each version fixed a critical issue:</p>
+                <div class="timeline">
+                    <div class="timeline-item failure">
+                        <div class="timeline-time">Version 1-3</div>
+                        <div class="timeline-content">
+                            <h4>Foundation & Terminal Display</h4>
+                            <p>Basic Android app. Terminal displayed but binaries wouldn't execute.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item failure">
+                        <div class="timeline-time">Version 4</div>
+                        <div class="timeline-content">
+                            <h4>The targetSdk Discovery</h4>
+                            <p>Android 10+ blocks binary execution. Solution: <code>targetSdk = 28</code>.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item failure">
+                        <div class="timeline-time">Version 5</div>
+                        <div class="timeline-content">
+                            <h4>Package Name Revelation</h4>
+                            <p>Changed from <code>com.mobilecli</code> to <code>com.termux</code> for library paths.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item failure">
+                        <div class="timeline-time">Version 6-9</div>
+                        <div class="timeline-content">
+                            <h4>Symlinks, passwd, LD_PRELOAD, SSL</h4>
+                            <p>Fixed symlink format, created /etc/passwd, added LD_PRELOAD, investigated SSL (red herring).</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-time">Version 10 - BREAKTHROUGH</div>
+                        <div class="timeline-content">
+                            <h4>HOME Directory Fix</h4>
+                            <p><strong>THE CRITICAL BUG:</strong> HOME was <code>/files/</code> but needed <code>/files/home/</code>. <strong>CLAUDE CODE WORKS!</strong></p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">Version 11-12</div>
+                        <div class="timeline-content">
+                            <h4>UI & Features</h4>
+                            <p>Rotation persistence, text size, extra keys, context menu, auto-setup system.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="highlight matrix">
+                    <strong>Version 10 was the breakthrough.</strong> The fix was trivially simple once discovered - add <code>/home</code> to the path. But finding it required systematically comparing every environment variable against working installations.
+                </div>
+            </section>
+
+            <section class="chapter">
+                <div class="chapter-number">Chapter 4</div>
+                <h2>The Self-Referential Loop</h2>
+                <p>This is what makes MobileCLI philosophically unique:</p>
+                <div class="diagram">THE SELF-BUILDING LOOP
+
+Step 1: Human has phone with terminal environment
+        │
+        ▼
+Step 2: Human installs Claude Code
+        │
+        ▼
+Step 3: Human asks Claude Code to build MobileCLI app
+        │
+        ▼
+Step 4: Claude Code writes Kotlin code (MainActivity.kt)
+        │
+        ▼
+Step 5: Claude Code runs Gradle build on phone
+        │
+        ▼
+Step 6: APK is created: MobileCLI-v12.apk
+        │
+        ▼
+Step 7: User installs MobileCLI app
+        │
+        ▼
+Step 8: MobileCLI downloads bootstrap, becomes compatible
+        │
+        ▼
+Step 9: User runs Claude Code INSIDE MobileCLI
+        │
+        ▼
+Step 10: Claude Code can now improve MobileCLI itself
+        │
+        └──────────────► LOOP COMPLETE ◄──────────────
+
+The tool built the container. The container runs the tool.
+The tool can now improve the container. Ad infinitum.</div>
+            </section>
+
+            <section class="chapter">
+                <div class="chapter-number">Chapter 5</div>
+                <h2>Legal & Intellectual Property</h2>
+                <div class="legal-section">
+                    <h3>Ownership Declaration</h3>
+                    <p>The following components are original works:</p>
+                    <ul>
+                        <li><strong>MainActivity.kt</strong> - Original Kotlin code (~660 lines)</li>
+                        <li><strong>BootstrapInstaller.kt</strong> - Original Kotlin code (~470 lines)</li>
+                        <li><strong>All XML layouts</strong> - Original layout definitions</li>
+                        <li><strong>App architecture and design</strong> - Original conception</li>
+                        <li><strong>The development workflow</strong> - Original methodology</li>
+                    </ul>
+                </div>
+                <div class="legal-section">
+                    <h3>Third-Party Components</h3>
+                    <p><strong>terminal-view & terminal-emulator:</strong> Apache 2.0 (commercial use permitted with attribution)</p>
+                    <p><strong>Bootstrap packages:</strong> GPL-3.0 (downloaded at runtime from original source)</p>
+                    <p><strong>AndroidX libraries:</strong> Apache 2.0</p>
+                </div>
+                <div class="legal-section">
+                    <h3>Package Name Technical Requirement</h3>
+                    <p>The package name <code>com.termux</code> is used due to hardcoded RUNPATH in binaries. This is a technical compatibility requirement. Users see "MobileCLI" as the app name - never the internal package identifier.</p>
+                </div>
+            </section>
+
+            <section class="chapter">
+                <div class="chapter-number">Chapter 6</div>
+                <h2>What This Proves</h2>
+                <div class="version-grid">
+                    <div class="version-card success">
+                        <h4>Phone = Development Machine</h4>
+                        <p>A phone can serve as a complete Android development workstation. Gradle, Kotlin compiler, APK signing - all work on mobile.</p>
+                    </div>
+                    <div class="version-card success">
+                        <h4>AI Can Build Production Apps</h4>
+                        <p>With proper guidance, AI assistants can write production-quality native applications.</p>
+                    </div>
+                    <div class="version-card success">
+                        <h4>Self-Referential Development Works</h4>
+                        <p>Tools can build containers for themselves. The resulting system is stable and functional.</p>
+                    </div>
+                    <div class="version-card success">
+                        <h4>Mobile-First is Viable</h4>
+                        <p>Professional software can be developed entirely on mobile devices. No desktop required.</p>
+                    </div>
+                </div>
+                <div class="highlight">
+                    <strong>Historical Significance:</strong> This is the first documented case of an Android app built entirely on an Android phone, using AI for the entire development process, where the resulting app can run the AI that built it.
+                </div>
+                <p><strong>Date of achievement:</strong> January 5, 2026</p>
+            </section>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>
+                <a href="/">Home</a>
+                <a href="/learn.html">Learn</a>
+                <a href="/proof.html">Proof</a>
+                <a href="https://github.com/MobileDevCLI">GitHub</a>
+            </p>
+            <p style="margin-top: 16px;">
+                <a href="/terms.html">Terms</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/disclaimer.html">Disclaimer</a>
+            </p>
+            <p style="margin-top: 16px;">&copy; 2026 MobileDevCLI. All rights reserved.</p>
+            <p style="margin-top: 8px; font-size: 0.75rem;">MobileCLI App Story - First documented January 5, 2026</p>
+        </div>
+    </footer>
+</body>
+</html>
