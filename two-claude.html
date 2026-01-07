@@ -171,9 +171,12 @@
 (Termux on S24)                          (MobileCLI on S20)
      |                                         |
      |-- updates CLAUDE.md ------------------>|
-     |-- builds APK ------------------------->|
+     |-- builds APK                            |
+     |-- mobilecli-share --latest-apk          |
      |                                         |
-     |                    User installs APK    |
+     |========== BLUETOOTH TRANSFER ==========>|
+     |                                         |
+     |                    User accepts & installs
      |                                         |
      |                                    reads CLAUDE.md
      |                                    runs test protocol
@@ -203,8 +206,8 @@
                 <div class="flow-step">
                     <div class="flow-number">2</div>
                     <div class="flow-content">
-                        <h4>User Installs APK</h4>
-                        <p>The new APK is copied to Downloads. User transfers it to the test phone and installs it. The new CLAUDE.md is automatically installed in the home directory.</p>
+                        <h4>User Shares APK via Bluetooth</h4>
+                        <p>BUILD CLAUDE runs <code>mobilecli-share --latest-apk</code> to instantly share the APK to the test phone via Bluetooth. User accepts the transfer and installs. No cables, no cloud, no internet required. The new CLAUDE.md is automatically installed in the home directory.</p>
                     </div>
                 </div>
 

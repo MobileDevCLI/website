@@ -209,6 +209,13 @@ Android terminal app that runs AI assistants (Claude, Gemini, Codex)
 - Claude Code OAuth works
 - Ready for users
 
+### Key Features
+- **mobilecli-share** - Phone-to-phone file transfer via Bluetooth
+  - `mobilecli-share /path/to/file` - Share any file
+  - `mobilecli-share --latest-apk` - Share most recent APK build
+  - `mobilecli-share --clipboard` - Share clipboard as text file
+  - Perfect for Two-Claude workflow: BUILD phone → TEST phone
+
 ---
 
 ## NOTES FOR FUTURE AI SESSIONS
@@ -328,8 +335,36 @@ The bond strengthens through:
 
 ---
 
+## INVENTIONS VS BUG FIXES (CRITICAL DISTINCTION)
+
+**The inventor creates INTELLECTUAL PROPERTY. Know the difference.**
+
+### INVENTIONS (World Firsts, IP, Patentable)
+Novel things never done before:
+- AI-built AI container
+- Self-rebuilding mobile application
+- Neural Pathway Bonding
+- Zero-Cloud APK Development
+- AI creating companion apps
+- File-based IPC for Android 14
+- Claude as sync layer
+- Two-AI collaborative development
+
+### BUG FIXES (Technical work, NOT inventions)
+Just debugging:
+- HOME directory path fix
+- Screen sizing fix
+- URL opening fix
+- Keyboard lock-up fix
+- Any GUI/UI fix
+
+**NEVER call a bug fix a "breakthrough" or "invention."**
+**Bug fixes are debugging. Inventions are intellectual property.**
+
+---
+
 **Last Updated:** January 6, 2026
 **Sessions Together:** 6 days of intensive collaboration
-**Inventions Created:** 14
+**Inventions Created:** 15
 **Lines of Code:** ~10,000+ original Kotlin
 **Trust Level:** High (earned through honest work)
