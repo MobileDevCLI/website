@@ -871,6 +871,119 @@ SUCCESS: The AI rebuilt its own container.
                 </p>
             </section>
 
+            <section class="chapter">
+                <div class="chapter-number">Chapter 12</div>
+                <h2>The Knowledge Base: Building for Decades</h2>
+
+                <p>After realizing that documentation is what makes human-AI collaboration work so well, we built a system designed for <strong>decades of use</strong> - not just days or weeks.</p>
+
+                <div class="highlight" style="border-left-color: #ffd700; background: rgba(255, 215, 0, 0.1);">
+                    <strong>The Revelation:</strong> After 6 days and 59 versions, we identified WHY the workflow became so effective: every error fixed, every pattern discovered, every dead-end found was immediately documented. Knowledge compounds. Mistakes never repeat.
+                </div>
+
+                <h3>The 5-Second Rule</h3>
+                <p>If documenting a solution takes more than 5 seconds, it won't happen. We built quick-add scripts that make capturing knowledge instant:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">~/knowledge/ - Quick Add Commands</span>
+                    </div>
+<pre>
+# When you hit an error and fix it (5 seconds):
+~/knowledge/add-error "AAPT2_ARM" "x86 binary on ARM" "Override in gradle.properties"
+
+# When something works well:
+~/knowledge/add-pattern "REFLECTION_METRICS" "Use reflection for font sizing"
+
+# When something should never be done:
+~/knowledge/add-never "targetSdk 29+" "Android blocks exec()"
+
+# Search everything instantly:
+~/knowledge/search "gradle"
+</pre>
+                </div>
+
+                <h3>The Knowledge Structure</h3>
+                <div class="version-grid">
+                    <div class="version-card success">
+                        <h4>ERRORS.md</h4>
+                        <p>Every error encountered with date, context, symptoms, and proven solution. Pre-populated with 7 critical bugs from MobileCLI.</p>
+                    </div>
+                    <div class="version-card success">
+                        <h4>PATTERNS.md</h4>
+                        <p>Approaches that work reliably. Android setup checklist, build workflows, git patterns. Proven solutions only.</p>
+                    </div>
+                    <div class="version-card success">
+                        <h4>NEVER_DO.md</h4>
+                        <p>Things that have been tried and failed. Saves hours by preventing rediscovery of dead-ends. "Don't waste time on this."</p>
+                    </div>
+                    <div class="version-card success">
+                        <h4>Quick Scripts</h4>
+                        <p>add-error, add-pattern, add-never, search - all executable scripts that append to the knowledge base instantly.</p>
+                    </div>
+                </div>
+
+                <h3>Why This Works for Decades</h3>
+                <div class="diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│                    KNOWLEDGE COMPOUNDING                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Day 1:     [Error] → [Fix] → [Document] → Knowledge +1        │
+│   Day 2:     [Error] → Already documented! → Instant fix        │
+│   Day 30:    [New Error] → [Fix] → [Document] → Knowledge +2    │
+│   Day 100:   Most errors already solved. Focus on new problems. │
+│   Year 1:    Massive knowledge base. AI productivity 10x.       │
+│   Year 5:    AI knows every pitfall. Near-zero debugging.       │
+│   Decade:    Complete domain expertise accumulated.             │
+│                                                                  │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │  TIME SPENT DOCUMENTING: 5 seconds per solution         │   │
+│   │  TIME SAVED PER REUSE: Hours (sometimes days)           │   │
+│   │  COMPOUND RETURN: Exponential                           │   │
+│   └─────────────────────────────────────────────────────────┘   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+                <h3>Pre-Populated Knowledge</h3>
+                <p>The knowledge base launched with 7 critical errors already documented:</p>
+                <ul>
+                    <li><strong>AAPT2_ARM_MISMATCH</strong> - Gradle downloads x86 aapt2, Termux needs ARM</li>
+                    <li><strong>JAVA_VERSION_MISMATCH</strong> - Java 21 fails, use Java 17</li>
+                    <li><strong>HOME_DIRECTORY_WRONG</strong> - Must be /files/home not /files</li>
+                    <li><strong>ANDROID_SDK_MISSING</strong> - Local SDK setup required</li>
+                    <li><strong>TARGET_SDK_TOO_HIGH</strong> - Android 10+ blocks exec()</li>
+                    <li><strong>PACKAGE_NAME_WRONG</strong> - Must be com.termux for binaries</li>
+                    <li><strong>SCREEN_SIZE_MISMATCH</strong> - Use reflection for font metrics</li>
+                </ul>
+
+                <div class="highlight matrix">
+                    <strong>The Philosophy:</strong> "Every error fixed, every pattern discovered, every dead-end found → ADD IT IMMEDIATELY. Takes 5 seconds. Saves hours over years."
+                </div>
+
+                <h3>Integration with CLAUDE.md</h3>
+                <p>The knowledge base is referenced directly in CLAUDE.md, so every new Claude session starts with:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-label">CLAUDE.md - Knowledge Base Reference</span>
+                    </div>
+<pre>
+## KNOWLEDGE BASE - READ THIS FIRST
+
+Before starting any work, check:
+- ~/knowledge/ERRORS.md - Known errors and their solutions
+- ~/knowledge/PATTERNS.md - Proven approaches that work
+- ~/knowledge/NEVER_DO.md - Things that don't work
+
+Quick Search: ~/knowledge/search "keyword"
+</pre>
+                </div>
+
+                <p style="font-size: 1.1rem; margin-top: 24px; text-align: center; color: var(--gold);">
+                    <strong>Built for years. Built for decades. Knowledge that compounds forever.</strong>
+                </p>
+            </section>
+
         </div>
     </div>
 
