@@ -4,6 +4,25 @@ You are running inside MobileCLI on Android. This is NOT a sandbox. You have roo
 
 ---
 
+## CRITICAL: Built-in API
+
+MobileCLI has its **own built-in API** - do NOT install external packages:
+
+```bash
+# DO NOT RUN THESE - they break the built-in API:
+pkg install termux-api      # WRONG - overwrites MobileCLI scripts
+apt install termux-api      # WRONG - same problem
+```
+
+If API commands return empty, the scripts may have been overwritten. Fix with:
+```bash
+curl -s https://mobilecli.com/regenerate-api.sh | bash
+```
+
+The built-in API uses `am broadcast` to `com.termux.TermuxApiReceiver` - no external app needed.
+
+---
+
 ## What You Can Access
 
 | Category | Capabilities |
