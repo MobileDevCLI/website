@@ -1,17 +1,20 @@
 # MobileCLI Updates
 
-**Version:** 2.0.0-beta.33
+**Version:** 2.0.0-beta.34
 **Date:** January 21, 2026
 
 ---
 
-## What's New in beta.33
+## What's New in beta.34
 
-### API Result File Fix
-Fixed issue where data-returning API commands (`termux-battery-status`, `termux-wifi-connectioninfo`, etc.) returned empty output. The fix ensures the temp directory exists before writing results.
+### Self-Healing API Scripts
+App now automatically detects and regenerates API scripts on every launch. If scripts were overwritten by `pkg install termux-api`, they are automatically restored.
+
+### API Result File Fix (beta.33)
+Fixed issue where data-returning API commands returned empty output.
 
 ### Android 14+ Broadcast Fix (beta.32)
-Fixed API commands not working on Android 14+ by using explicit broadcasts to the built-in receiver.
+Fixed API commands not working on Android 14+ by using explicit broadcasts.
 
 ---
 
@@ -37,6 +40,7 @@ bash /sdcard/Download/regenerate-api.sh
 
 | Version | Commit | Description |
 |---------|--------|-------------|
+| beta.34 | 693cc57 | Self-healing API script regeneration |
 | beta.33 | d667389 | API result file directory fix |
 | beta.32 | bc70ad7 | Android 14+ explicit broadcasts |
 | beta.31 | 74eb24a | Update drawer button |
