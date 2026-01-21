@@ -1,18 +1,48 @@
 # MobileCLI Updates
 
-**Version:** 2.0.0-beta.31
-**Date:** January 20, 2026
+**Version:** 2.0.0-beta.33
+**Date:** January 21, 2026
 
 ---
 
-## What's New
+## What's New in beta.33
 
-### AI Briefing Button
-Tap "AI Briefing" in the drawer menu to display comprehensive documentation.
-This teaches AI assistants (Claude, Gemini, Codex) everything about MobileCLI.
+### API Result File Fix
+Fixed issue where data-returning API commands (`termux-battery-status`, `termux-wifi-connectioninfo`, etc.) returned empty output. The fix ensures the temp directory exists before writing results.
 
-### Update Button
-You're using it right now! This button fetches the latest updates from mobilecli.com.
+### Android 14+ Broadcast Fix (beta.32)
+Fixed API commands not working on Android 14+ by using explicit broadcasts to the built-in receiver.
+
+---
+
+## Important: API Script Regeneration
+
+If you installed the `termux-api` package, it overwrites MobileCLI's built-in API scripts. To fix:
+
+```bash
+# Download and run regeneration script
+curl -s https://mobilecli.com/regenerate-api.sh | bash
+```
+
+Or manually:
+```bash
+bash /sdcard/Download/regenerate-api.sh
+```
+
+**Do NOT run `pkg install termux-api`** - MobileCLI has its own built-in API.
+
+---
+
+## Version History
+
+| Version | Commit | Description |
+|---------|--------|-------------|
+| beta.33 | d667389 | API result file directory fix |
+| beta.32 | bc70ad7 | Android 14+ explicit broadcasts |
+| beta.31 | 74eb24a | Update drawer button |
+| beta.30 | b397f39 | AI Briefing drawer button |
+
+**To revert:** `git revert <commit>` then rebuild.
 
 ---
 
@@ -23,26 +53,12 @@ Launch Claude with auto-accept enabled:
 - Drawer menu → Power Mode
 - Or run: `claude --dangerously-skip-permissions`
 
-### Useful Commands
+### Test API Commands
 ```bash
-# Check installed AI tools
-which claude gemini codex
-
-# Reinstall AI tools
-npm install -g @anthropic-ai/claude-code @google/gemini-cli @openai/codex
-
-# View system info
-termux-info
-
-# List all 75+ API commands
-ls $PREFIX/bin/termux-*
+termux-vibrate
+termux-toast "Hello"
+termux-battery-status
 ```
-
----
-
-## Announcements
-
-No new announcements at this time.
 
 ---
 
@@ -54,4 +70,4 @@ No new announcements at this time.
 
 ---
 
-*Last updated: January 20, 2026*
+*Last updated: January 21, 2026*
