@@ -4,6 +4,40 @@ You are running inside MobileCLI on Android. This is NOT a sandbox. You have roo
 
 ---
 
+## CRITICAL: Claude Code Tool Compatibility
+
+**Run `~/fix-claude-code.sh` to auto-fix most issues.**
+
+| Tool | Status | Notes |
+|------|--------|-------|
+| **Read** | WORKS | Always works |
+| **Write** | WORKS | Always works |
+| **Edit** | WORKS | Always works |
+| **WebFetch** | WORKS | Always works |
+| **Bash** | WORKS* | *If CWD exists (see Fix #1) |
+| **Grep** | WORKS* | *After ripgrep fix (see Fix #2) |
+| **Glob** | WORKS* | *After ripgrep fix (see Fix #2) |
+| **Task** | BROKEN | Uses /tmp - cannot fix, use Bash instead |
+
+### Fix #1: Bash "Exit Code 1" Error
+**Problem:** All Bash commands fail with exit code 1
+**Cause:** CWD directory was deleted
+**Fix:** `cd ~` or recreate the directory
+
+### Fix #2: Glob/Grep "ripgrep ENOENT"
+**Problem:** Glob and Grep fail with spawn ripgrep ENOENT
+**Fix:** Run `~/fix-claude-code.sh` or:
+```bash
+cd $PREFIX/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/
+ln -sf arm64-linux arm64-android
+```
+
+### Fix #3: Task Tool (UNFIXABLE)
+**Problem:** Task agents fail with mkdir /tmp permission denied
+**Workaround:** Don't use Task tool - use Bash directly
+
+---
+
 ## CRITICAL: Built-in API
 
 MobileCLI has its **own built-in API** - do NOT install external packages:
@@ -57,7 +91,9 @@ The built-in API uses `am broadcast` to `com.termux.TermuxApiReceiver` - no exte
 | `/proc/` | Read | Process info, CPU, memory stats |
 | `/sys/` | Read | Kernel info, device settings |
 
-**CRITICAL:** Save files to `/sdcard/Download/` for user to access outside terminal.
+**CRITICAL:**
+- Save files to `/sdcard/Download/` for user to access outside terminal.
+- **NEVER use /tmp** - Permission denied on Android. Use `$PREFIX/tmp` or `~/tmp` instead.
 
 ---
 
@@ -267,6 +303,18 @@ Persistent storage at `~/.mobilecli/`:
 
 ---
 
+## Troubleshooting Quick Reference
+
+| Problem | Fix |
+|---------|-----|
+| All Bash fails "exit code 1" | `cd ~` (CWD was deleted) |
+| "spawn ripgrep ENOENT" | Run `~/fix-claude-code.sh` |
+| Task tool "/tmp permission" | Don't use Task, use Bash directly |
+| Binary won't execute | Install ARM version via `pkg` |
+| termux-* returns empty | Run regenerate-api.sh |
+
+---
+
 ## Quick Examples
 
 ```bash
@@ -292,14 +340,21 @@ uname -a
 
 # Build and export APK
 ./gradlew assembleDebug && cp app/build/outputs/apk/debug/*.apk /sdcard/Download/
+
+# Apply Claude Code fixes
+~/fix-claude-code.sh
 ```
 
 ---
 
 ## Rules
 
-1. **Test before assuming** - If unsure, verify it works
-2. **Save to /sdcard/Download/** - Only place user can easily access
-3. **Use termux-* commands** - 75+ available, run `termux-` + TAB to list
-4. **You can build real apps** - Full Android development capability
-5. **Root-equivalent access** - 79 permissions, /proc, /sys access
+1. **NEVER use /tmp** - Use `$PREFIX/tmp` or `~/tmp` instead
+2. **NEVER use Task tool** - It's broken on Android, use Bash
+3. **Save to /sdcard/Download/** - Only place user can easily access
+4. **Use termux-* commands** - 75+ available, run `termux-` + TAB to list
+5. **Run ~/fix-claude-code.sh** - If Glob/Grep tools break
+6. **Check CWD** - If all Bash commands fail, `cd ~`
+7. **Test before assuming** - If unsure, verify it works
+8. **You can build real apps** - Full Android development capability
+9. **Root-equivalent access** - 79 permissions, /proc, /sys access
