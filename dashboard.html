@@ -1114,14 +1114,10 @@
             }
         }
 
-        // Manage subscription (open Stripe portal)
+        // Manage subscription (PayPal)
         async function manageSubscription() {
-            try {
-                await payments.openCustomerPortal();
-            } catch (error) {
-                console.error('Error opening portal:', error);
-                alert('Unable to open billing portal. Please try again.');
-            }
+            // PayPal subscription management - link to PayPal or contact support
+            window.open('https://www.paypal.com/myaccount/autopay/', '_blank');
         }
 
         // Mark step as complete

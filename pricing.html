@@ -500,7 +500,7 @@
                     <h3 class="plan-name">Pro</h3>
                     <p class="plan-desc">Full methodology + business automation</p>
                     <div class="plan-price">
-                        <div class="price-amount" id="proPrice"><span class="currency">$</span>10</div>
+                        <div class="price-amount" id="proPrice"><span class="currency">$</span>15</div>
                         <div class="price-period" id="proPeriod">per month</div>
                     </div>
                     <button class="plan-cta primary" id="proCta" onclick="subscribePro()">Start Free Trial</button>
@@ -522,7 +522,7 @@
                     <h3 class="plan-name">Team</h3>
                     <p class="plan-desc">For teams and organizations</p>
                     <div class="plan-price">
-                        <div class="price-amount" id="teamPrice"><span class="currency">$</span>20</div>
+                        <div class="price-amount" id="teamPrice"><span class="currency">$</span>30</div>
                         <div class="price-period" id="teamPeriod">per user/month</div>
                     </div>
                     <button class="plan-cta secondary" id="teamCta" onclick="subscribeTeam()">Contact Sales</button>
@@ -559,15 +559,15 @@
                 </div>
                 <div class="faq-item">
                     <h3>What happens when I cancel?</h3>
-                    <p>Your subscription runs until the end of the period you paid for. After that, you'll be downgraded to the Free plan automatically. No surprise charges, no hassle. Powered by Stripe for secure, reliable billing.</p>
+                    <p>Your subscription runs until the end of the period you paid for. After that, you'll be downgraded to the Free plan automatically. No surprise charges, no hassle. Powered by PayPal for secure, reliable billing.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Is there a free trial?</h3>
-                    <p>Yes! Pro comes with a 14-day free trial. No credit card required to start.</p>
+                    <p>Yes! Pro comes with a 7-day free trial. No credit card required to start.</p>
                 </div>
                 <div class="faq-item">
                     <h3>What payment methods do you accept?</h3>
-                    <p>All major credit cards via Stripe. Team plans can be invoiced. Your payment info is never stored on our servers - Stripe handles everything securely.</p>
+                    <p>PayPal and all major credit cards via PayPal. Team plans can be invoiced. Your payment info is never stored on our servers - PayPal handles everything securely.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Can I switch plans?</h3>
@@ -635,14 +635,14 @@
 
             // Update prices (20% off for annual)
             if (isAnnual) {
-                document.getElementById('proPrice').innerHTML = '<span class="currency">$</span>8';
+                document.getElementById('proPrice').innerHTML = '<span class="currency">$</span>12';
                 document.getElementById('proPeriod').textContent = 'per month, billed annually';
-                document.getElementById('teamPrice').innerHTML = '<span class="currency">$</span>16';
+                document.getElementById('teamPrice').innerHTML = '<span class="currency">$</span>24';
                 document.getElementById('teamPeriod').textContent = 'per user/month, billed annually';
             } else {
-                document.getElementById('proPrice').innerHTML = '<span class="currency">$</span>10';
+                document.getElementById('proPrice').innerHTML = '<span class="currency">$</span>15';
                 document.getElementById('proPeriod').textContent = 'per month';
-                document.getElementById('teamPrice').innerHTML = '<span class="currency">$</span>20';
+                document.getElementById('teamPrice').innerHTML = '<span class="currency">$</span>30';
                 document.getElementById('teamPeriod').textContent = 'per user/month';
             }
         }
