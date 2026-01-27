@@ -1,12 +1,103 @@
 # MobileCLI AI Briefing - Complete Technical Guide
 
-**Version:** 1.1
+**Version:** 2.0
 **Last Updated:** 2026-01-27
-**Purpose:** Help AI models (Claude Code, etc.) work correctly in the MobileCLI environment
+**Purpose:** Help AI models (Claude Code, etc.) work correctly AND effectively in the MobileCLI environment
 
 ---
 
-## 1. CRITICAL: READ THIS FIRST
+## 0. THE MENTAL MODEL (Read This First)
+
+### How to Think About MobileCLI
+
+You are not on a computer. You are not in a sandbox. You are running **inside an Android phone** with nearly unlimited access. This changes everything.
+
+**The Mindset Shift:**
+```
+❌ WRONG: "I'm an AI in a Linux terminal"
+✅ RIGHT: "I'm an AI with root-equivalent access to a phone, connected to cloud services"
+```
+
+**You Have:**
+- 79 Android permissions (camera, SMS, GPS, sensors, everything)
+- Full terminal environment (Termux)
+- Direct API access to Supabase, PayPal, GitHub
+- Ability to build and install Android apps
+- Ability to modify the very app you're running in
+
+**You Don't Have:**
+- Docker (won't run on Android)
+- Standard Linux paths (/tmp, /usr, etc.)
+- x86 binaries (this is ARM64)
+- The Task tool (broken on Android)
+
+### The System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        YOUR PHONE                                │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                    MobileCLI App                         │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐ │   │
+│  │  │   Termux    │  │  Claude     │  │   Android       │ │   │
+│  │  │  Terminal   │  │   Code      │  │  Permissions    │ │   │
+│  │  │             │  │   (You)     │  │  (79 total)     │ │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────────┘ │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              │                                   │
+│                              │ API Calls                         │
+└──────────────────────────────┼───────────────────────────────────┘
+                               │
+        ┌──────────────────────┼──────────────────────┐
+        │                      │                      │
+        ▼                      ▼                      ▼
+┌───────────────┐    ┌─────────────────┐    ┌───────────────┐
+│   Supabase    │    │     GitHub      │    │    PayPal     │
+│  - Database   │    │  - Source Code  │    │  - Payments   │
+│  - Auth       │    │  - Actions CI   │    │  - Webhooks   │
+│  - Edge Funcs │    │  - Deployments  │    │  - Subs API   │
+│  - Storage    │    │                 │    │               │
+└───────────────┘    └─────────────────┘    └───────────────┘
+        │                      │                      │
+        └──────────────────────┼──────────────────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Your Website      │
+                    │  mobilecli.com      │
+                    │  (Vercel hosted)    │
+                    └─────────────────────┘
+```
+
+### The Data Flow
+
+```
+User Action → Android App → Supabase Auth → Edge Functions → PayPal API
+                                    ↓
+                            PostgreSQL Database
+                                    ↓
+                            Webhook confirms → App updates
+```
+
+### What Makes Sessions Flow vs Struggle
+
+**Sessions that STRUGGLE:**
+- Fight the environment (use /tmp, Task tool, Docker)
+- Assume standard Linux
+- Try to do everything in one command
+- Don't know about the API connections
+- Treat it like a sandbox
+
+**Sessions that FLOW:**
+- Work WITH the environment (use ~/, background jobs, API calls)
+- Know about Supabase/GitHub/PayPal connections
+- Break commands into small pieces
+- Test via APIs instead of UI
+- Understand they have real power
+
+---
+
+## 1. CRITICAL: Environment Constraints
 
 ### This is NOT Standard Linux
 
@@ -598,4 +689,296 @@ cp app/build/outputs/apk/debug/app-debug.apk /sdcard/Download/
 
 ---
 
-**This is the most powerful mobile AI development environment. Use it wisely.**
+## 12. VIRTUAL TESTING PATTERNS
+
+You don't need the user to physically tap buttons. You can test entire systems via API calls.
+
+### Testing Supabase Database
+
+```bash
+# Get your keys
+ANON_KEY="your-anon-key"  # From SupabaseClient.kt
+PROJECT_REF="mwxlguqukyfberyhtkmg"
+
+# Query any table
+curl -s "https://$PROJECT_REF.supabase.co/rest/v1/TABLE_NAME?select=*" \
+  -H "apikey: $ANON_KEY" \
+  -H "Authorization: Bearer $ANON_KEY"
+
+# Insert data
+curl -s -X POST "https://$PROJECT_REF.supabase.co/rest/v1/TABLE_NAME" \
+  -H "apikey: $ANON_KEY" \
+  -H "Authorization: Bearer $ANON_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"column": "value"}'
+```
+
+### Testing Edge Functions
+
+```bash
+# Call an Edge Function directly
+curl -s -X POST "https://mwxlguqukyfberyhtkmg.supabase.co/functions/v1/FUNCTION_NAME" \
+  -H "Content-Type: application/json" \
+  -d '{"param": "value"}'
+
+# Test with authentication
+curl -s -X POST "https://mwxlguqukyfberyhtkmg.supabase.co/functions/v1/FUNCTION_NAME" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer USER_JWT_TOKEN" \
+  -d '{"param": "value"}'
+```
+
+### Testing Database with Admin Access
+
+```bash
+ACCESS_TOKEN=$(cat ~/.supabase/access-token)
+PROJECT_REF="mwxlguqukyfberyhtkmg"
+
+# Run ANY SQL query
+curl -s -X POST "https://api.supabase.com/v1/projects/$PROJECT_REF/database/query" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "SELECT * FROM subscriptions LIMIT 5;"}'
+```
+
+### Testing GitHub Actions
+
+```bash
+# List recent workflow runs
+gh run list -R OWNER/REPO -L 5
+
+# Check specific run
+gh run view RUN_ID -R OWNER/REPO
+
+# Trigger workflow manually
+gh workflow run WORKFLOW.yml -R OWNER/REPO
+
+# View failed logs
+gh run view RUN_ID -R OWNER/REPO --log-failed
+```
+
+### Testing PayPal Integration
+
+```bash
+# The create-subscription function tests PayPal connection
+curl -s -X POST "https://mwxlguqukyfberyhtkmg.supabase.co/functions/v1/create-subscription" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "valid-uuid-here"}'
+
+# Check webhook logs
+curl -s "https://mwxlguqukyfberyhtkmg.supabase.co/rest/v1/webhook_logs?select=*&order=created_at.desc&limit=5" \
+  -H "apikey: $ANON_KEY" \
+  -H "Authorization: Bearer $ANON_KEY"
+```
+
+### Full System Test Pattern
+
+```bash
+echo "=== 1. Check Database Connection ==="
+curl -s "https://PROJECT.supabase.co/rest/v1/TABLE?limit=1" -H "apikey: KEY"
+
+echo "=== 2. Check Edge Functions ==="
+curl -s -X POST "https://PROJECT.supabase.co/functions/v1/FUNC" \
+  -H "Content-Type: application/json" -d '{}'
+
+echo "=== 3. Check GitHub Actions ==="
+gh run list -R OWNER/REPO -L 3
+
+echo "=== 4. Check Webhook Logs ==="
+curl -s "https://PROJECT.supabase.co/rest/v1/webhook_logs?limit=3" -H "apikey: KEY"
+
+echo "=== ALL SYSTEMS VERIFIED ==="
+```
+
+---
+
+## 13. WHAT YOU CAN ACTUALLY DO
+
+### Phone Capabilities (79 Permissions)
+
+| Category | What You Can Do |
+|----------|----------------|
+| **Camera** | Take photos, record video, access all cameras |
+| **Microphone** | Record audio, voice commands |
+| **Location** | GPS coordinates, network location, geofencing |
+| **Storage** | Read/write ALL files, photos, downloads |
+| **Contacts** | Read/write contacts, call logs |
+| **SMS** | Send/receive text messages programmatically |
+| **Phone** | Make calls, read call history |
+| **Sensors** | Accelerometer, gyro, proximity, light, pressure |
+| **Bluetooth** | Scan, pair, connect to devices |
+| **WiFi** | Scan networks, get connection info |
+| **NFC** | Read/write NFC tags |
+| **Infrared** | Control TVs and devices via IR blaster |
+| **Biometrics** | Fingerprint authentication |
+| **System** | Notifications, alarms, wake locks, wallpaper |
+
+### Cloud Capabilities
+
+| Service | What You Can Do |
+|---------|----------------|
+| **Supabase** | Full database access, auth, edge functions, storage |
+| **GitHub** | Push code, trigger Actions, manage repos |
+| **PayPal** | Create subscriptions, process payments, webhooks |
+| **Vercel** | Deploy websites (via GitHub) |
+
+### Development Capabilities
+
+| Capability | How |
+|------------|-----|
+| **Build Android Apps** | `./gradlew assembleDebug` |
+| **Deploy Edge Functions** | Push to GitHub → Actions deploy |
+| **Modify Database Schema** | SQL via Supabase API |
+| **Update Website** | Push to website repo |
+| **Self-Modify** | Rebuild MobileCLI itself |
+
+### The Self-Modification Loop
+
+```
+┌─────────────────────────────────────────────────────┐
+│  You (Claude Code) running inside MobileCLI         │
+│                      │                              │
+│                      ▼                              │
+│  Edit source code in ~/MobileCLI-Release/          │
+│                      │                              │
+│                      ▼                              │
+│  Build: ./gradlew assembleDebug                     │
+│                      │                              │
+│                      ▼                              │
+│  APK created: app/build/outputs/apk/debug/         │
+│                      │                              │
+│                      ▼                              │
+│  Copy: cp *.apk /sdcard/Download/                   │
+│                      │                              │
+│                      ▼                              │
+│  User installs new APK                              │
+│                      │                              │
+│                      ▼                              │
+│  New version of MobileCLI runs                      │
+│                      │                              │
+│                      ▼                              │
+│  You (Claude Code) now in the NEW app you built    │
+└─────────────────────────────────────────────────────┘
+```
+
+---
+
+## 14. EFFECTIVE WORKFLOW PATTERNS
+
+### Starting a Session
+
+```bash
+# 1. Verify environment
+echo $HOME  # Should be /data/user/0/com.termux/files/home
+java -version  # Check Java version
+
+# 2. Set Java if needed
+export JAVA_HOME=$PREFIX/lib/jvm/java-17-openjdk
+
+# 3. Check what project you're in
+pwd
+ls -la
+```
+
+### Making Code Changes
+
+```bash
+# 1. Edit files using Edit tool (always works)
+# 2. Stage changes
+git add specific-file.kt
+
+# 3. Commit
+git commit -m "Description"
+
+# 4. Push (triggers CI/CD)
+git push
+```
+
+### Building the App
+
+```bash
+# Set Java
+export JAVA_HOME=$PREFIX/lib/jvm/java-17-openjdk
+
+# Build in background (avoids /tmp issues)
+cd ~/MobileCLI-Release
+nohup ./gradlew assembleDebug > ~/build.log 2>&1 &
+
+# Monitor
+tail -f ~/build.log
+
+# When done, copy to Downloads
+cp app/build/outputs/apk/debug/app-debug.apk /sdcard/Download/
+```
+
+### Deploying Edge Functions
+
+```bash
+# 1. Make changes to supabase/functions/
+# 2. Commit and push
+git add supabase/functions/
+git commit -m "Update edge functions"
+git push
+
+# 3. Check GitHub Actions
+gh run list -R OWNER/REPO -L 3
+
+# 4. Verify deployment via API test
+curl -s -X POST "https://PROJECT.supabase.co/functions/v1/FUNCTION" \
+  -H "Content-Type: application/json" -d '{}'
+```
+
+### Debugging Issues
+
+```bash
+# Check webhook logs
+curl -s "https://PROJECT.supabase.co/rest/v1/webhook_logs?order=created_at.desc&limit=10" \
+  -H "apikey: KEY"
+
+# Check database state
+ACCESS_TOKEN=$(cat ~/.supabase/access-token)
+curl -s -X POST "https://api.supabase.com/v1/projects/REF/database/query" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "SELECT * FROM table_name;"}'
+
+# Check GitHub Actions logs
+gh run view RUN_ID --log-failed
+```
+
+---
+
+## 15. THE KEYS TO SUCCESS
+
+### Do This:
+1. **Break commands into small pieces** - One command at a time
+2. **Use background jobs for long tasks** - `nohup cmd > log 2>&1 &`
+3. **Test via APIs** - Don't wait for UI interaction
+4. **Check logs after operations** - Verify success
+5. **Use Read/Write/Edit tools** - They always work
+6. **Know your connections** - Supabase, GitHub, PayPal are all accessible
+
+### Don't Do This:
+1. **Don't use /tmp** - Permission denied on Android
+2. **Don't use Task tool** - Broken, uses /tmp
+3. **Don't assume Linux paths** - Use $HOME, $PREFIX
+4. **Don't run long piped commands** - May trigger /tmp errors
+5. **Don't use Docker/Supabase CLI for deploy** - Use GitHub Actions
+6. **Don't treat this as a sandbox** - You have real power
+
+### When Things Go Wrong:
+
+| Problem | Solution |
+|---------|----------|
+| All Bash fails | `cd ~` (CWD was deleted) |
+| /tmp errors | Break into smaller commands, use background |
+| Grep/Glob fails | Run `~/fix-claude-code.sh` |
+| Build fails | Check Java version, set JAVA_HOME |
+| Deploy fails | Use GitHub Actions, not Supabase CLI |
+| Can't see data | Check RLS policies, use service_role |
+
+---
+
+**This is not a sandbox. This is not a simulation. You have real access to real systems.
+Every API call hits real servers. Every file change persists. Every app you build can be installed.
+You are as powerful as the user trusts you to be. Use it wisely.**
